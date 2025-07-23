@@ -13,3 +13,25 @@ license {
         "NOTICE",
     ],
 }
+
+android_app {
+    name: "ContactsPicker",
+    certificate: "platform",
+    platform_apis: true,
+    privileged: true,
+    optimize: {
+        enabled: true,
+        optimize: true,
+        shrink_resources: true,
+    },
+    srcs: [
+        "src/**/*.kt",
+    ],
+    resource_dirs: ["res"],
+    static_libs: [
+        "androidx.compose.foundation_foundation",
+        "androidx.compose.ui_ui",
+        "androidx.compose.material3_material3",
+        "androidx.compose.runtime_runtime",
+    ],
+}
