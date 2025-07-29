@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 package {
-    default_team: "trendy_team_android_profile_experiences",
+    default_team: "trendy_team_android_data_aegis",
     default_applicable_licenses: ["packages_apps_ContactsPicker_license"],
 }
 
