@@ -22,7 +22,8 @@
         android:label="@string/contacts_picker_app_label"
         android:supportsRtl="true">
         <activity android:name=".ContactsPickerActivity"
-            android:exported="true">
+            android:exported="true"
+            android:featureFlag="android.content.flags.enable_system_contacts_picker">
         <intent-filter>
             <action android:name="android.intent.action.PICK" />
             <category android:name="android.intent.category.DEFAULT" />

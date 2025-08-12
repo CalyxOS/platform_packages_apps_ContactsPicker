@@ -16,10 +16,19 @@
 
 package com.android.contactspicker
 
-import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithText
+import android.content.Context
+import android.content.Intent
+import android.content.flags.Flags
+import android.platform.test.annotations.RequiresFlagsDisabled
+import android.platform.test.annotations.RequiresFlagsEnabled
+import android.platform.test.flag.junit.CheckFlagsRule
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.lifecycle.Lifecycle
+import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
+import org.junit.Assert.assertThrows
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,10 +36,26 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ContactsPickerActivityTest {
 
-    @get:Rule val composeTestRule = createAndroidComposeRule<ContactsPickerActivity>()
+    @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
+    private val context: Context = ApplicationProvider.getApplicationContext()
 
     @Test
-    fun contactsPickerText_isDisplayed() {
-        composeTestRule.onNodeWithText("Contacts Picker").assertIsDisplayed()
+    @RequiresFlagsDisabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
+    fun intent_contactPicketFlagDisabled_throws() {
+        val intent = Intent(context, ContactsPickerActivity::class.java)
+
+        assertThrows(RuntimeException::class.java) {
+            ActivityScenario.launch<ContactsPickerActivity>(intent)
+        }
+    }
+
+    @Test
+    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
+    fun intent_contactPicketFlagEnabled_startsActivity() {
+        val intent = Intent(context, ContactsPickerActivity::class.java)
+        ActivityScenario.launch<ContactsPickerActivity>(intent).use { scenario ->
+            assertThat(scenario.state).isAnyOf(Lifecycle.State.STARTED, Lifecycle.State.CREATED)
+            scenario.close()
+        }
     }
 }

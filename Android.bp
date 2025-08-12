@@ -34,4 +34,7 @@ android_app {
         "androidx.compose.material3_material3",
         "androidx.compose.runtime_runtime",
     ],
+    flags_packages: [
+        "android.content.flags-aconfig",
+    ],
 }
