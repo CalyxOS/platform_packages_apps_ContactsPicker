@@ -28,17 +28,21 @@ android_test {
     instrumentation_for: "ContactsPicker",
     manifest: "AndroidManifest.xml",
     static_libs: [
+        "android.content.flags-aconfig-java",
+        "androidx.compose.ui_ui-test-junit4",
         "androidx.test.core",
         "androidx.test.ext.junit",
         "androidx.test.ext.truth",
         "androidx.test.rules",
         "androidx.test.runner",
+        "flag-junit",
         "kotlin-test",
         "platform-test-annotations",
-        "flag-junit",
-        "android.content.flags-aconfig-java",
     ],
     test_suites: [
         "general-tests",
+    ],
+    associates: [
+        "ContactsPicker",
     ],
 }

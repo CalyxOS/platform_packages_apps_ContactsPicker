@@ -18,13 +18,8 @@ package com.android.contactspicker
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
+import com.android.contactspicker.ui.components.ContactsPickerBottomSheet
+import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
 
 /** The main activity for the Contacts Picker system app. */
 class ContactsPickerActivity : ComponentActivity() {
@@ -33,13 +28,7 @@ class ContactsPickerActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    text = "Contacts Picker",
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.headlineSmall,
-                )
-            }
+            ContactsPickerAppTheme { ContactsPickerBottomSheet(onDismissRequest = { finish() }) }
         }
     }
 }

@@ -23,10 +23,16 @@ import android.platform.test.annotations.RequiresFlagsDisabled
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import androidx.lifecycle.Lifecycle
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeDown
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.contactspicker.ui.components.BOTTOM_SHEET_TEST_TAG
 import com.google.common.truth.Truth.assertThat
 import org.junit.Assert.assertThrows
 import org.junit.Rule
@@ -37,13 +43,14 @@ import org.junit.runner.RunWith
 class ContactsPickerActivityTest {
 
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
+    @get:Rule val composeTestRule = createAndroidComposeRule<ContactsPickerActivity>()
+
     private val context: Context = ApplicationProvider.getApplicationContext()
 
     @Test
     @RequiresFlagsDisabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
-    fun intent_contactPicketFlagDisabled_throws() {
+    fun intent_contactPickerFlagDisabled_throws() {
         val intent = Intent(context, ContactsPickerActivity::class.java)
-
         assertThrows(RuntimeException::class.java) {
             ActivityScenario.launch<ContactsPickerActivity>(intent)
         }
@@ -51,11 +58,15 @@ class ContactsPickerActivityTest {
 
     @Test
     @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
-    fun intent_contactPicketFlagEnabled_startsActivity() {
-        val intent = Intent(context, ContactsPickerActivity::class.java)
-        ActivityScenario.launch<ContactsPickerActivity>(intent).use { scenario ->
-            assertThat(scenario.state).isAnyOf(Lifecycle.State.STARTED, Lifecycle.State.CREATED)
-            scenario.close()
-        }
+    fun contactsPickerText_isDisplayed() {
+        composeTestRule.onNodeWithText("Contacts Picker").assertIsDisplayed()
+    }
+
+    @Test
+    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
+    fun whenSwipedDown_activityFinishes() {
+        composeTestRule.onNodeWithTag(BOTTOM_SHEET_TEST_TAG).performTouchInput { swipeDown() }
+
+        composeTestRule.runOnIdle { assertThat(composeTestRule.activity.isFinishing).isTrue() }
     }
 }
