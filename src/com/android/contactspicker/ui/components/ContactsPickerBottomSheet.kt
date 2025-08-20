@@ -15,10 +15,12 @@
  */
 package com.android.contactspicker.ui.components
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -26,7 +28,6 @@ import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
@@ -36,7 +37,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 internal const val BOTTOM_SHEET_TEST_TAG = "bottom_sheet"
@@ -70,15 +70,13 @@ fun ContactsPickerBottomSheet(onDismissRequest: () -> Unit) {
         sheetShadowElevation = 8.dp,
         containerColor = Color.Transparent,
         sheetContent = {
-            Box(
-                modifier = Modifier.fillMaxSize().testTag(BOTTOM_SHEET_TEST_TAG),
-                contentAlignment = Alignment.Center,
+            Column(
+                modifier =
+                    Modifier.fillMaxSize().padding(vertical = 8.dp).testTag(BOTTOM_SHEET_TEST_TAG),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(
-                    text = "Contacts Picker",
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.headlineSmall,
-                )
+                TopBar()
+                Spacer(modifier = Modifier.fillMaxSize())
             }
         },
     ) { /* Empty content of the screen that appears behind the bottom sheet. */

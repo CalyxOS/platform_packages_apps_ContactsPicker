@@ -15,6 +15,7 @@
  */
 package com.android.contactspicker.ui.components
 
+import android.content.Context
 import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
@@ -22,6 +23,7 @@ import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
@@ -29,8 +31,10 @@ import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.swipeUp
 import androidx.compose.ui.unit.height
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsPickerActivity
+import com.android.contactspicker.R
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -42,9 +46,31 @@ class ContactsPickerBottomSheetTest {
     @get:Rule val composeTestRule = createAndroidComposeRule<ContactsPickerActivity>()
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
+    private val context: Context = ApplicationProvider.getApplicationContext()
+
     @Test
-    fun sheetContent_isDisplayed() {
-        composeTestRule.onNodeWithText("Contacts Picker").assertExists().assertIsDisplayed()
+    fun searchBox_isDisplayed() {
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.top_bar_search_placeholder_hint))
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun profileSelector_isDisplayed() {
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.profile_switcher_content_description)
+            )
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun privacyButton_isDisplayed() {
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.privacy_info_content_description)
+            )
+            .assertIsDisplayed()
     }
 
     @Test

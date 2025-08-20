@@ -58,8 +58,10 @@ class ContactsPickerActivityTest {
 
     @Test
     @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
-    fun contactsPickerText_isDisplayed() {
-        composeTestRule.onNodeWithText("Contacts Picker").assertIsDisplayed()
+    fun topBarSearchText_isDisplayed() {
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.top_bar_search_placeholder_hint))
+            .assertIsDisplayed()
     }
 
     @Test
