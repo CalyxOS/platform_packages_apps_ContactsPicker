@@ -16,7 +16,6 @@
 package com.android.contactspicker.ui.components
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,13 +37,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.android.contactspicker.contact.Contact
 
 internal const val BOTTOM_SHEET_TEST_TAG = "bottom_sheet"
 internal const val BOTTOM_SHEET_PEEK_HEIGHT_RATIO = 0.75f
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContactsPickerBottomSheet(onDismissRequest: () -> Unit) {
+fun ContactsPickerBottomSheet(contacts: List<Contact>, onDismissRequest: () -> Unit) {
     val peekHeight = LocalConfiguration.current.screenHeightDp.dp * BOTTOM_SHEET_PEEK_HEIGHT_RATIO
     val bottomSheetState =
         rememberStandardBottomSheetState(
@@ -76,7 +76,7 @@ fun ContactsPickerBottomSheet(onDismissRequest: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 TopBar()
-                Spacer(modifier = Modifier.fillMaxSize())
+                ContactsList(contacts = contacts)
             }
         },
     ) { /* Empty content of the screen that appears behind the bottom sheet. */

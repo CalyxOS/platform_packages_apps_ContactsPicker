@@ -17,13 +17,21 @@ license {
 android_app {
     name: "ContactsPicker",
     certificate: "platform",
-    platform_apis: true,
     privileged: true,
+    platform_apis: true,
+    static_libs: [
+        "ContactsPickerLib",
+    ],
     optimize: {
         enabled: true,
         optimize: true,
         shrink_resources: true,
     },
+}
+
+android_library {
+    name: "ContactsPickerLib",
+    platform_apis: true,
     srcs: [
         "src/**/*.kt",
     ],
