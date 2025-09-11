@@ -19,7 +19,7 @@ package {
 }
 
 android_test {
-    name: "ContactsPickerTests",
+    name: "ContactsPickerIntegrationTests",
     certificate: "platform",
     sdk_version: "test_current",
     srcs: [
