@@ -24,9 +24,11 @@ import androidx.compose.runtime.getValue
 import com.android.contactspicker.ui.components.ContactsPickerBottomSheet
 import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
 import com.android.contactspicker.viewmodel.ContactsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 /** The main activity for the Contacts Picker system app. */
-class ContactsPickerActivity : ComponentActivity() {
+@AndroidEntryPoint(ComponentActivity::class)
+class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
 
     private val contactsViewModel: ContactsViewModel by viewModels()
 

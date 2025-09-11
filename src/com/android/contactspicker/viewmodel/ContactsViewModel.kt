@@ -18,6 +18,8 @@ package com.android.contactspicker.viewmodel
 import androidx.lifecycle.ViewModel
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.contact.Contact
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -26,7 +28,8 @@ import kotlinx.coroutines.flow.StateFlow
  *
  * This class is responsible for fetching and preparing the contacts data to be displayed by the UI.
  */
-class ContactsViewModel : ViewModel() {
+@HiltViewModel
+class ContactsViewModel @Inject constructor() : ViewModel() {
 
     // TODO(b/442966559): change the hardcoded contacts list to contacts from a CP2 query
     private val _contacts =
