@@ -24,6 +24,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.contactspicker.DisplayMode
 import com.android.contactspicker.contact.Contact
 import org.junit.Rule
 import org.junit.Test
@@ -36,13 +37,53 @@ class ContactItemTest {
     @get:Rule val composeTestRule = createComposeRule()
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
+    private val testContact =
+        Contact(
+            id = 1,
+            displayName = "Alice Wonderland",
+            phone = "111-222-3333",
+            email = "alice@wonderland.org",
+        )
+
     @Test
-    fun contactName_isDisplayed() {
-        val displayName = "Alice Wonderland"
-        val contact = Contact(id = 1, displayName = displayName)
+    fun contactItem_inContactMode_showsName() {
+        composeTestRule.setContent {
+            ContactItem(contact = testContact, displayMode = DisplayMode.CONTACT_SELECTION)
+        }
 
-        composeTestRule.setContent { ContactItem(contact = contact) }
+        composeTestRule.onNodeWithText(testContact.displayName).assertIsDisplayed()
+    }
 
-        composeTestRule.onNodeWithText(displayName).assertIsDisplayed()
+    @Test
+    fun contactItem_inEmailMode_showsNameAndEmailAddress() {
+        composeTestRule.setContent {
+            ContactItem(contact = testContact, displayMode = DisplayMode.EMAIL_SELECTION)
+        }
+
+        composeTestRule.onNodeWithText(testContact.displayName).assertIsDisplayed()
+        composeTestRule.onNodeWithText(testContact.email!!).assertIsDisplayed()
+        composeTestRule.onNodeWithText(testContact.phone!!).assertDoesNotExist()
+    }
+
+    @Test
+    fun contactItem_inPhoneMode_showsNameAndPhoneNumber() {
+        composeTestRule.setContent {
+            ContactItem(contact = testContact, displayMode = DisplayMode.PHONE_SELECTION)
+        }
+
+        composeTestRule.onNodeWithText(testContact.displayName).assertIsDisplayed()
+        composeTestRule.onNodeWithText(testContact.phone!!).assertIsDisplayed()
+        composeTestRule.onNodeWithText(testContact.email!!).assertDoesNotExist()
+    }
+
+    @Test
+    fun contactItem_inContactMode_doesNotShowSecondaryText() {
+        composeTestRule.setContent {
+            ContactItem(contact = testContact, displayMode = DisplayMode.CONTACT_SELECTION)
+        }
+
+        composeTestRule.onNodeWithText(testContact.displayName).assertIsDisplayed()
+        composeTestRule.onNodeWithText(testContact.phone!!).assertDoesNotExist()
+        composeTestRule.onNodeWithText(testContact.email!!).assertDoesNotExist()
     }
 }

@@ -32,11 +32,14 @@ class ContactsPickerActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (savedInstanceState == null) {
+            contactsViewModel.processIntent(intent.action, intent.type)
+        }
 
         setContent {
-            val contacts by contactsViewModel.contacts.collectAsState()
+            val uiState by contactsViewModel.uiState.collectAsState()
             ContactsPickerAppTheme {
-                ContactsPickerBottomSheet(contacts = contacts, onDismissRequest = { finish() })
+                ContactsPickerBottomSheet(onDismissRequest = { finish() }, uiState = uiState)
             }
         }
     }

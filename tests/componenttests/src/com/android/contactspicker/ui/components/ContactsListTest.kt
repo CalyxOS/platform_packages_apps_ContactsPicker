@@ -27,6 +27,7 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.contactspicker.DisplayMode
 import com.android.contactspicker.contact.Contact
 import org.junit.Rule
 import org.junit.Test
@@ -48,7 +49,9 @@ class ContactsListTest {
                 Contact(id = 2L, displayName = "Gamma"),
             )
 
-        composeTestRule.setContent { ContactsList(contacts = contacts) }
+        composeTestRule.setContent {
+            ContactsList(contacts = contacts, displayMode = DisplayMode.CONTACT_SELECTION)
+        }
 
         composeTestRule
             .onNode(hasTestTag(CONTACTS_LIST_SECTION_HEADER_TEST_TAG) and hasText("A"))

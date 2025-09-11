@@ -16,6 +16,7 @@
 package com.android.contactspicker.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.android.contactspicker.DisplayMode
 import com.android.contactspicker.contact.Contact
 
 /**
@@ -35,9 +37,10 @@ import com.android.contactspicker.contact.Contact
  * name.
  *
  * @param contact The contact to display.
+ * @param displayMode The current display mode, which determines which contact details to show.
  */
 @Composable
-fun ContactItem(contact: Contact) {
+fun ContactItem(contact: Contact, displayMode: DisplayMode) {
     Surface(color = MaterialTheme.colorScheme.surfaceBright, shape = RoundedCornerShape(20.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -45,11 +48,28 @@ fun ContactItem(contact: Contact) {
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Avatar(displayName = contact.displayName)
-            Text(
-                text = contact.displayName,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium,
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = contact.displayName,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium,
+                )
+                // Secondary text changes based on display mode
+                val secondaryText =
+                    when (displayMode) {
+                        // TODO(b/436818961): have a fallback for missing email/phone when expected
+                        DisplayMode.EMAIL_SELECTION -> contact.email
+                        DisplayMode.PHONE_SELECTION -> contact.phone
+                        DisplayMode.CONTACT_SELECTION -> null
+                    }
+                if (secondaryText != null) {
+                    Text(
+                        text = secondaryText,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
         }
     }
 }

@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.contactspicker.contact
+package com.android.contactspicker
+
+import com.android.contactspicker.contact.Contact
 
 /**
- * Represents a single contact entity.
- *
- * @property id The unique identifier for the contact.
- * @property displayName The primary name to display for the contact.
- * @property phone The phone number of the contact, if available.
- * @property email The email address of the contact, if available.
+ * A sealed interface to represent the different states of the contacts picker screen. This makes UI
+ * updates safer and more predictable.
  */
-data class Contact(
-    val id: Long,
-    val displayName: String,
-    val phone: String? = null,
-    val email: String? = null,
-)
+sealed interface ContactsUiState {
+    object Loading : ContactsUiState
+
+    data class Success(val displayMode: DisplayMode, val contacts: List<Contact>) : ContactsUiState
+
+    data class Error(val message: String) : ContactsUiState
+}

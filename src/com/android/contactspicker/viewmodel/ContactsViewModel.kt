@@ -16,6 +16,7 @@
 package com.android.contactspicker.viewmodel
 
 import androidx.lifecycle.ViewModel
+import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.contact.Contact
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,18 +32,37 @@ class ContactsViewModel : ViewModel() {
     private val _contacts =
         MutableStateFlow(
             listOf(
-                Contact(1, "Alice Wonderland"),
-                Contact(2, "Bob The Builder"),
-                Contact(3, "Charlie Chaplin"),
-                Contact(4, "David Copperfield"),
-                Contact(5, "Emily Dickinson"),
-                Contact(6, "Frank Sinatra"),
-                Contact(7, "Grace Hopper"),
-                Contact(8, "Henry Ford"),
-                Contact(9, "Ivy Lee"),
-                Contact(10, "Jack London"),
+                Contact(1, "Alice Wonderland", "123-456-7890", "alice@wonderland.com"),
+                Contact(2, "Bob The Builder", "987-654-3210", "bobthebuilder@example.com"),
+                Contact(3, "Charlie Chaplin", "555-555-5555", "charlie@chaplin.com"),
+                Contact(4, "David Copperfield", "111-222-3333", "david@copperfield.com"),
+                Contact(5, "Emily Dickinson", "444-444-4444", "emily@dickinson.com"),
+                Contact(6, "Frank Sinatra", "777-777-7777", "frank@sinatra.com"),
+                Contact(7, "Grace Hopper", "888-888-8888", "grace@hopper.com"),
+                Contact(8, "Henry Ford", "999-999-9999", "henry@ford.com"),
+                Contact(9, "Ivy Lee", "333-333-3333", "ivy@lee.com"),
+                Contact(10, "Jack London", "666-666-6666", "jack@london.com"),
             )
         )
+    private val _uiState = MutableStateFlow<ContactsUiState>(ContactsUiState.Loading)
 
-    val contacts: StateFlow<List<Contact>> = _contacts
+    val uiState: StateFlow<ContactsUiState> = _uiState
+
+    /**
+     * Determines the display mode based on the intent. Should only be called from the Activity to
+     * trigger the ViewModel's logic, as it changes the [ContactsUiState].
+     */
+    fun processIntent(intentAction: String?, intentType: String?) {
+        val mode = DisplayModeResolver.resolve(intentAction, intentType)
+
+        if (mode == null) {
+            // TODO(b/444459883): iterate on error handling and error messages
+            _uiState.value = ContactsUiState.Error("Invalid intent action or type.")
+            return
+        }
+
+        _uiState.value = ContactsUiState.Loading
+        // TODO(b/442966559): fetch contacts from a CP2 query while the _uiState is set to loading
+        _uiState.value = ContactsUiState.Success(mode, _contacts.value)
+    }
 }

@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.contactspicker.contact
+package com.android.contactspicker
 
 /**
- * Represents a single contact entity.
- *
- * @property id The unique identifier for the contact.
- * @property displayName The primary name to display for the contact.
- * @property phone The phone number of the contact, if available.
- * @property email The email address of the contact, if available.
+ * Defines the different display modes for the Contacts Picker. It determines which contact details
+ * are shown in the list.
  */
-data class Contact(
-    val id: Long,
-    val displayName: String,
-    val phone: String? = null,
-    val email: String? = null,
-)
+enum class DisplayMode {
+    CONTACT_SELECTION,
+    EMAIL_SELECTION,
+    PHONE_SELECTION,
+}

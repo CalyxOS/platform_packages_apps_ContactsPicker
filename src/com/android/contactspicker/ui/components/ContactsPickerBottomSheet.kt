@@ -15,6 +15,7 @@
  */
 package com.android.contactspicker.ui.components
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
@@ -24,9 +25,11 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
@@ -37,14 +40,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import com.android.contactspicker.contact.Contact
+import com.android.contactspicker.ContactsUiState
 
 internal const val BOTTOM_SHEET_TEST_TAG = "bottom_sheet"
+internal const val BOTTOM_SHEET_LOADING_INDICATOR_TEST_TAG = "bottom_sheet_loading_indicator"
 internal const val BOTTOM_SHEET_PEEK_HEIGHT_RATIO = 0.75f
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContactsPickerBottomSheet(contacts: List<Contact>, onDismissRequest: () -> Unit) {
+fun ContactsPickerBottomSheet(onDismissRequest: () -> Unit, uiState: ContactsUiState) {
     val peekHeight = LocalConfiguration.current.screenHeightDp.dp * BOTTOM_SHEET_PEEK_HEIGHT_RATIO
     val bottomSheetState =
         rememberStandardBottomSheetState(
@@ -75,8 +79,36 @@ fun ContactsPickerBottomSheet(contacts: List<Contact>, onDismissRequest: () -> U
                     Modifier.fillMaxSize().padding(vertical = 8.dp).testTag(BOTTOM_SHEET_TEST_TAG),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                TopBar()
-                ContactsList(contacts = contacts)
+                when (val state = uiState) {
+                    is ContactsUiState.Loading -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.testTag(BOTTOM_SHEET_LOADING_INDICATOR_TEST_TAG)
+                            )
+                        }
+                    }
+
+                    is ContactsUiState.Error -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize().padding(16.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = state.message,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        }
+                    }
+
+                    is ContactsUiState.Success -> {
+                        TopBar()
+                        ContactsList(contacts = state.contacts, displayMode = state.displayMode)
+                    }
+                }
             }
         },
     ) { /* Empty content of the screen that appears behind the bottom sheet. */
