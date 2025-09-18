@@ -17,14 +17,21 @@ package com.android.contactspicker
 
 import com.android.contactspicker.data.model.Contact
 
-/**
- * A sealed interface to represent the different states of the contacts picker screen. This makes UI
- * updates safer and more predictable.
- */
+/** Defines the possible states for the Contacts Picker screen. */
 sealed interface ContactsUiState {
+    /** The screen is currently loading data. */
     object Loading : ContactsUiState
 
-    data class Success(val displayMode: DisplayMode, val contacts: List<Contact>) : ContactsUiState
-
+    /** An error occurred. */
     data class Error(val message: String) : ContactsUiState
+
+    /**
+     * The data was loaded successfully.
+     *
+     * The UI should inspect the type of contacts in this list (e.g., BasicContact, PhoneContact) to
+     * determine how to render them.
+     *
+     * @param contacts The list of contacts to display.
+     */
+    data class Success(val contacts: List<Contact>) : ContactsUiState
 }

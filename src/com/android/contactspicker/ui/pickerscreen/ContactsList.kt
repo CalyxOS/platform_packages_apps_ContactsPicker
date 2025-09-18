@@ -25,17 +25,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.android.contactspicker.DisplayMode
 import com.android.contactspicker.data.model.Contact
 
 /**
  * A composable that displays a list of contacts, grouped by the first letter of their display name.
  *
  * @param contactsViewModel The view model that provides the list of contacts.
- * @param displayMode The display mode to use for the contact items.
  */
 @Composable
-fun ContactsList(contacts: List<Contact>, displayMode: DisplayMode) {
+fun ContactsList(contacts: List<Contact>) {
     val groupedContacts =
         remember(contacts) {
             // TODO(b/436818961): consider moving the grouping logic to the view models
@@ -57,7 +55,7 @@ fun ContactsList(contacts: List<Contact>, displayMode: DisplayMode) {
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    ContactItem(contact = contact, displayMode = displayMode)
+                    ContactItem(contact = contact)
                 }
             }
         }

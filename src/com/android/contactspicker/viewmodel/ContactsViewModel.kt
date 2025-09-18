@@ -15,13 +15,16 @@
  */
 package com.android.contactspicker.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.android.contactspicker.ContactsUiState
-import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.repository.ContactsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 /**
  * ViewModel for the Contacts Picker screen.
@@ -29,24 +32,13 @@ import kotlinx.coroutines.flow.StateFlow
  * This class is responsible for fetching and preparing the contacts data to be displayed by the UI.
  */
 @HiltViewModel
-class ContactsViewModel @Inject constructor() : ViewModel() {
+class ContactsViewModel @Inject constructor(private val contactsRepository: ContactsRepository) :
+    ViewModel() {
 
-    // TODO(b/442966559): change the hardcoded contacts list to contacts from a CP2 query
-    private val _contacts =
-        MutableStateFlow(
-            listOf(
-                Contact(1, "Alice Wonderland", "123-456-7890", "alice@wonderland.com"),
-                Contact(2, "Bob The Builder", "987-654-3210", "bobthebuilder@example.com"),
-                Contact(3, "Charlie Chaplin", "555-555-5555", "charlie@chaplin.com"),
-                Contact(4, "David Copperfield", "111-222-3333", "david@copperfield.com"),
-                Contact(5, "Emily Dickinson", "444-444-4444", "emily@dickinson.com"),
-                Contact(6, "Frank Sinatra", "777-777-7777", "frank@sinatra.com"),
-                Contact(7, "Grace Hopper", "888-888-8888", "grace@hopper.com"),
-                Contact(8, "Henry Ford", "999-999-9999", "henry@ford.com"),
-                Contact(9, "Ivy Lee", "333-333-3333", "ivy@lee.com"),
-                Contact(10, "Jack London", "666-666-6666", "jack@london.com"),
-            )
-        )
+    companion object {
+        private const val TAG = "ContactsViewModel"
+    }
+
     private val _uiState = MutableStateFlow<ContactsUiState>(ContactsUiState.Loading)
 
     val uiState: StateFlow<ContactsUiState> = _uiState
@@ -56,16 +48,19 @@ class ContactsViewModel @Inject constructor() : ViewModel() {
      * trigger the ViewModel's logic, as it changes the [ContactsUiState].
      */
     fun processIntent(intentAction: String?, intentType: String?) {
-        val mode = DisplayModeResolver.resolve(intentAction, intentType)
-
-        if (mode == null) {
-            // TODO(b/444459883): iterate on error handling and error messages
-            _uiState.value = ContactsUiState.Error("Invalid intent action or type.")
-            return
-        }
-
         _uiState.value = ContactsUiState.Loading
-        // TODO(b/442966559): fetch contacts from a CP2 query while the _uiState is set to loading
-        _uiState.value = ContactsUiState.Success(mode, _contacts.value)
+
+        viewModelScope.launch {
+            try {
+                val contacts = contactsRepository.fetchContacts(intentAction, intentType)
+                _uiState.value = ContactsUiState.Success(contacts)
+            } catch (e: IllegalArgumentException) {
+                // TODO(b/444459883): iterate on error handling and error messages
+                _uiState.value = ContactsUiState.Error(e.message ?: "Invalid intent.")
+            } catch (e: Exception) {
+                Log.e(TAG, "An unexpected error occurred.", e)
+                _uiState.value = ContactsUiState.Error("An unexpected error occurred.")
+            }
+        }
     }
 }

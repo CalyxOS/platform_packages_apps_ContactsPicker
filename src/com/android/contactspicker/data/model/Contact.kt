@@ -18,14 +18,70 @@ package com.android.contactspicker.data.model
 /**
  * Represents a single contact entity.
  *
- * @property id The unique identifier for the contact.
- * @property displayName The primary name to display for the contact.
- * @property phone The phone number of the contact, if available.
- * @property email The email address of the contact, if available.
+ * This sealed class ensures that a [Contact] can only be one of the well-defined subtypes:
+ * - [DisplayNameContact]: Contains only the basic information of a contact.
+ * - [PhoneContact]: Contains base info plus a non-empty list of phone numbers.
+ * - [EmailContact]: Contains base info plus a non-empty list of email addresses.
  */
-data class Contact(
-    val id: Long,
-    val displayName: String,
-    val phone: String? = null,
-    val email: String? = null,
-)
+sealed class Contact {
+    /** A unique, stable identifier for the contact. */
+    abstract val id: Long
+
+    /** The name of the contact, suitable for display. */
+    abstract val displayName: String
+}
+
+/**
+ * A [Contact] that contains only basic information.
+ *
+ * @param id A unique identifier for the contact.
+ * @param displayName The name of the contact. Must not be blank.
+ * @throws IllegalArgumentException if [displayName] is blank.
+ */
+data class DisplayNameContact(override val id: Long, override val displayName: String) : Contact() {
+    init {
+        require(displayName.isNotBlank()) { "Display name must not be blank." }
+    }
+}
+
+/**
+ * A [Contact] that includes a non-blank phone number.
+ *
+ * @param id A unique identifier for the contact.
+ * @param displayName The name of the contact. Must not be blank.
+ * @param phone The phone number of the contact. Must not be blank
+ * @throws IllegalArgumentException if [displayName] or [phone] is blank.
+ */
+data class PhoneContact(
+    override val id: Long,
+    override val displayName: String,
+    val phone: String,
+) : Contact() {
+    init {
+        require(displayName.isNotBlank()) {
+            "A PhoneContact must be created with a non blank display name."
+        }
+        require(phone.isNotBlank()) { "A PhoneContact must be created with a phone number." }
+    }
+}
+
+/**
+ * A [Contact] that includes a non-blank email address.
+ *
+ * @param id A unique identifier for the contact.
+ * @param displayName The name of the contact. Must not be blank.
+ * @param email The email address of the contact. Must not be blank.
+ * @throws IllegalArgumentException if [displayName] or [email] is blank.
+ */
+data class EmailContact(
+    override val id: Long,
+    override val displayName: String,
+    val email: String,
+) : Contact() {
+    init {
+        require(displayName.isNotBlank()) {
+            "A PhoneContact must be created with a non blank display name."
+        }
+        require(email.isNotBlank()) { "An EmailContact must be created with an email address." }
+    }
+}

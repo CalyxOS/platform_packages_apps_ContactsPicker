@@ -36,9 +36,8 @@ import androidx.compose.ui.unit.height
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsUiState
-import com.android.contactspicker.DisplayMode
 import com.android.contactspicker.R
-import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
@@ -56,13 +55,7 @@ class ContactsPickerBottomSheetTest {
 
     private val context: Context = ApplicationProvider.getApplicationContext()
 
-    private val testContact =
-        Contact(
-            id = 1,
-            displayName = "Jon Snow",
-            phone = "111-222-3333",
-            email = "jon.snow@thewall.org",
-        )
+    private val testContact = DisplayNameContact(id = 1, displayName = "Jon Snow")
 
     @Test
     fun whenStateIsLoading_showsLoadingIndicator() {
@@ -91,11 +84,7 @@ class ContactsPickerBottomSheetTest {
         composeTestRule.setContent {
             ContactsPickerBottomSheet(
                 onDismissRequest = {},
-                uiState =
-                    ContactsUiState.Success(
-                        displayMode = DisplayMode.CONTACT_SELECTION,
-                        contacts = listOf(testContact),
-                    ),
+                uiState = ContactsUiState.Success(contacts = listOf(testContact)),
             )
         }
 
@@ -107,11 +96,7 @@ class ContactsPickerBottomSheetTest {
         composeTestRule.setContent {
             ContactsPickerBottomSheet(
                 onDismissRequest = {},
-                uiState =
-                    ContactsUiState.Success(
-                        displayMode = DisplayMode.CONTACT_SELECTION,
-                        contacts = listOf(testContact),
-                    ),
+                uiState = ContactsUiState.Success(contacts = listOf(testContact)),
             )
         }
 
@@ -125,11 +110,7 @@ class ContactsPickerBottomSheetTest {
         composeTestRule.setContent {
             ContactsPickerBottomSheet(
                 onDismissRequest = {},
-                uiState =
-                    ContactsUiState.Success(
-                        displayMode = DisplayMode.CONTACT_SELECTION,
-                        contacts = listOf(testContact),
-                    ),
+                uiState = ContactsUiState.Success(contacts = listOf(testContact)),
             )
         }
 
@@ -145,11 +126,7 @@ class ContactsPickerBottomSheetTest {
         composeTestRule.setContent {
             ContactsPickerBottomSheet(
                 onDismissRequest = {},
-                uiState =
-                    ContactsUiState.Success(
-                        displayMode = DisplayMode.CONTACT_SELECTION,
-                        contacts = listOf(testContact),
-                    ),
+                uiState = ContactsUiState.Success(contacts = listOf(testContact)),
             )
         }
 
@@ -165,11 +142,7 @@ class ContactsPickerBottomSheetTest {
         composeTestRule.setContent {
             ContactsPickerBottomSheet(
                 onDismissRequest = {},
-                uiState =
-                    ContactsUiState.Success(
-                        displayMode = DisplayMode.CONTACT_SELECTION,
-                        contacts = listOf(testContact),
-                    ),
+                uiState = ContactsUiState.Success(contacts = listOf(testContact)),
             )
         }
 
@@ -189,11 +162,7 @@ class ContactsPickerBottomSheetTest {
         composeTestRule.setContent {
             ContactsPickerBottomSheet(
                 onDismissRequest = {},
-                uiState =
-                    ContactsUiState.Success(
-                        displayMode = DisplayMode.CONTACT_SELECTION,
-                        contacts = listOf(testContact),
-                    ),
+                uiState = ContactsUiState.Success(contacts = listOf(testContact)),
             )
         }
 
@@ -215,11 +184,7 @@ class ContactsPickerBottomSheetTest {
         composeTestRule.setContent {
             ContactsPickerBottomSheet(
                 onDismissRequest = mockOnDismissRequest,
-                uiState =
-                    ContactsUiState.Success(
-                        displayMode = DisplayMode.CONTACT_SELECTION,
-                        contacts = listOf(testContact),
-                    ),
+                uiState = ContactsUiState.Success(contacts = listOf(testContact)),
             )
         }
 
@@ -231,7 +196,7 @@ class ContactsPickerBottomSheetTest {
 
     @Test
     fun whenSearchBarClicked_bottomSheet_expandsToFullHeight() {
-        val uiState = ContactsUiState.Success(DisplayMode.CONTACT_SELECTION, listOf(testContact))
+        val uiState = ContactsUiState.Success(listOf(testContact))
 
         composeTestRule.setContent {
             ContactsPickerAppTheme {
