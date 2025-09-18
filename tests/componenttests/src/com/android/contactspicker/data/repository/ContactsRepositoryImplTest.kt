@@ -15,26 +15,35 @@
  */
 package com.android.contactspicker.data.repository
 
+import android.content.Context
 import android.content.Intent
 import android.content.flags.Flags
+import android.content.pm.ProviderInfo
+import android.database.Cursor
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsContract.Contacts
+import android.test.mock.MockContentResolver
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.PhoneContact
+import com.android.contactspicker.fakes.FakeContentProvider
 import com.google.common.truth.Truth.assertThat
 import kotlin.reflect.KClass
 import kotlin.test.assertFailsWith
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 /**
  * Unit tests for [ContactsRepository].
@@ -43,7 +52,7 @@ import org.junit.runners.Parameterized
  */
 @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
 @RunWith(Parameterized::class)
-class ContactsRepositoryTest(
+class ContactsRepositoryImplTest(
     private val intentAction: String?,
     private val intentType: String?,
     private val expectException: Boolean,
@@ -55,6 +64,10 @@ class ContactsRepositoryTest(
         @JvmStatic
         @Parameterized.Parameters(name = "Action={0}, Type={1}, ExpectsException={2}")
         fun data(): Collection<Array<Any?>> {
+            // TODO(b/439807858): Add more thorough tests for:
+            //  1. Sorting order
+            //  2. Grouping of contacts.
+            //  3. No contacts found in the cursor.
             return listOf(
                 arrayOf(Intent.ACTION_PICK, Email.CONTENT_TYPE, false, EmailContact::class),
                 arrayOf(Intent.ACTION_PICK, Email.CONTENT_ITEM_TYPE, false, EmailContact::class),
@@ -80,7 +93,21 @@ class ContactsRepositoryTest(
         }
     }
 
-    private val repository = ContactsRepository()
+    private val mockContext: Context = mock()
+    private val fakeContentProvider = FakeContentProvider()
+    private val mockContentResolver = MockContentResolver()
+    private val mockCursor: Cursor = mock()
+    private lateinit var repository: ContactsRepository
+
+    @Before
+    fun setUp() {
+        val providerInfo = ProviderInfo().apply { authority = ContactsContract.AUTHORITY }
+        fakeContentProvider.attachInfo(mockContext, providerInfo)
+
+        mockContentResolver.addProvider(ContactsContract.AUTHORITY, fakeContentProvider)
+        whenever(mockContext.contentResolver).thenReturn(mockContentResolver)
+        repository = ContactsRepositoryImpl(mockContext)
+    }
 
     @Test
     fun fetchContacts_returnsCorrectContactTypeOrThrows() = runTest {
@@ -91,12 +118,45 @@ class ContactsRepositoryTest(
             }
         } else {
             // Test for success
+            val uriToExpect =
+                when (intentType) {
+                    Email.CONTENT_TYPE,
+                    Email.CONTENT_ITEM_TYPE -> Email.CONTENT_URI
+                    Phone.CONTENT_TYPE,
+                    Phone.CONTENT_ITEM_TYPE -> Phone.CONTENT_URI
+                    Contacts.CONTENT_TYPE,
+                    Contacts.CONTENT_ITEM_TYPE -> Contacts.CONTENT_URI
+                    else -> throw IllegalArgumentException("Unsupported intent type: $intentType")
+                }
+
+            fakeContentProvider.setCursorForUri(uriToExpect, mockCursor)
+
+            prepareMockCursor()
+
             val contacts = repository.fetchContacts(intentAction, intentType)
 
-            // Check that the list is not empty and the first item
-            // is an instance of the class we expect.
             assertThat(contacts).isNotEmpty()
             assertThat(contacts.first()).isInstanceOf(expectedResultType!!.java)
         }
+    }
+
+    private fun prepareMockCursor() {
+        // Simulate a single row: make moveToNext() return true once, then false.
+        whenever(mockCursor.moveToNext()).thenReturn(true, false)
+        whenever(mockCursor.count).thenReturn(1)
+
+        whenever(mockCursor.getColumnIndex(Contacts._ID)).thenReturn(0)
+        whenever(mockCursor.getColumnIndex(Email.CONTACT_ID)).thenReturn(0)
+        whenever(mockCursor.getColumnIndex(Phone.CONTACT_ID)).thenReturn(0)
+        whenever(mockCursor.getLong(0)).thenReturn(1L)
+
+        whenever(mockCursor.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY)).thenReturn(1)
+        whenever(mockCursor.getString(1)).thenReturn("Test Contact")
+
+        whenever(mockCursor.getColumnIndex(Email.ADDRESS)).thenReturn(2)
+        whenever(mockCursor.getString(2)).thenReturn("test@example.com")
+
+        whenever(mockCursor.getColumnIndex(Phone.NUMBER)).thenReturn(3)
+        whenever(mockCursor.getString(3)).thenReturn("555-0123")
     }
 }
