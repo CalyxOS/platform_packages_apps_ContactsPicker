@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.android.contactspicker.R
 
 @Composable
-fun TopBar() {
+fun TopBar(onSearchBarToggled: (isExpanded: Boolean) -> Unit) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
@@ -44,7 +44,10 @@ fun TopBar() {
         ContactsPickerSearchBar(
             modifier = Modifier.weight(1.0f),
             expanded = expanded,
-            onExpandedChange = { expanded = it },
+            onExpandedChange = { isExpanded ->
+                expanded = isExpanded
+                onSearchBarToggled(isExpanded)
+            },
         )
         if (!expanded) {
             ProfileSwitcher()

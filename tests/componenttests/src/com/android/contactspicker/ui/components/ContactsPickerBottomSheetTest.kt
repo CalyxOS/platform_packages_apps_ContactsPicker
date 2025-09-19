@@ -20,6 +20,7 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -27,6 +28,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.swipeUp
@@ -37,6 +39,7 @@ import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.DisplayMode
 import com.android.contactspicker.R
 import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -44,6 +47,7 @@ import org.junit.runner.RunWith
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
 @RunWith(AndroidJUnit4::class)
 class ContactsPickerBottomSheetTest {
@@ -223,5 +227,28 @@ class ContactsPickerBottomSheetTest {
         composeTestRule.waitForIdle()
 
         verify(mockOnDismissRequest).invoke()
+    }
+
+    @Test
+    fun whenSearchBarClicked_bottomSheet_expandsToFullHeight() {
+        val uiState = ContactsUiState.Success(DisplayMode.CONTACT_SELECTION, listOf(testContact))
+
+        composeTestRule.setContent {
+            ContactsPickerAppTheme {
+                ContactsPickerBottomSheet(onDismissRequest = {}, uiState = uiState)
+            }
+        }
+
+        val sheetNode = composeTestRule.onNodeWithTag(BOTTOM_SHEET_TEST_TAG)
+        val initialBounds = sheetNode.getUnclippedBoundsInRoot()
+
+        val searchHint = context.getString(R.string.top_bar_search_placeholder_hint)
+        composeTestRule.onNodeWithText(searchHint).performClick()
+
+        composeTestRule.waitForIdle()
+
+        val expandedBounds = sheetNode.getUnclippedBoundsInRoot()
+        sheetNode.assertIsDisplayed()
+        assert(expandedBounds.top < initialBounds.top)
     }
 }
