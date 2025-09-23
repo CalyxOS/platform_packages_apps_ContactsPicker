@@ -26,6 +26,7 @@ android_app {
         enabled: true,
         optimize: true,
         shrink_resources: true,
+        d8_on_eng: true,
     },
 }
 
