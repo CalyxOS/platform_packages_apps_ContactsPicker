@@ -17,7 +17,7 @@ package com.android.contactspicker.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.android.contactspicker.ContactsUiState
-import com.android.contactspicker.contact.Contact
+import com.android.contactspicker.data.model.Contact
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.contactspicker.ui.components
+package com.android.contactspicker.ui.pickerscreen
 
 import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
@@ -28,7 +28,8 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.DisplayMode
-import com.android.contactspicker.contact.Contact
+import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.ui.components.AVATAR_TEST_TAG
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
