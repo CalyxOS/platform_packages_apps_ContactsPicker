@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.contactspicker.ui.components
+package com.android.contactspicker.ui.pickerscreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,7 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.DisplayMode
-import com.android.contactspicker.contact.Contact
+import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.ui.components.Avatar
 
 /**
  * A composable that displays a single contact item, including the contact's avatar and display

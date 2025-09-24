@@ -15,7 +15,7 @@
  */
 package com.android.contactspicker
 
-import com.android.contactspicker.contact.Contact
+import com.android.contactspicker.data.model.Contact
 
 /**
  * A sealed interface to represent the different states of the contacts picker screen. This makes UI

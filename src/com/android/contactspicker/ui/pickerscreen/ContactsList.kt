@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.contactspicker.ui.components
+package com.android.contactspicker.ui.pickerscreen
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.DisplayMode
-import com.android.contactspicker.contact.Contact
+import com.android.contactspicker.data.model.Contact
 
 /**
  * A composable that displays a list of contacts, grouped by the first letter of their display name.

@@ -36,7 +36,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.DisplayMode
 import com.android.contactspicker.R
-import com.android.contactspicker.contact.Contact
+import com.android.contactspicker.data.model.Contact
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test

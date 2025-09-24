@@ -41,6 +41,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.ContactsUiState
+import com.android.contactspicker.ui.pickerscreen.ContactsList
+import com.android.contactspicker.ui.pickerscreen.TopBar
 
 internal const val BOTTOM_SHEET_TEST_TAG = "bottom_sheet"
 internal const val BOTTOM_SHEET_LOADING_INDICATOR_TEST_TAG = "bottom_sheet_loading_indicator"
