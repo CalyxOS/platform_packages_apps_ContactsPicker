@@ -34,6 +34,7 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.ui.pickerscreen.ContactsList
 import com.android.contactspicker.ui.pickerscreen.TopBar
+import kotlinx.coroutines.launch
 
 internal const val BOTTOM_SHEET_TEST_TAG = "bottom_sheet"
 internal const val BOTTOM_SHEET_LOADING_INDICATOR_TEST_TAG = "bottom_sheet_loading_indicator"
@@ -58,7 +60,7 @@ fun ContactsPickerBottomSheet(onDismissRequest: () -> Unit, uiState: ContactsUiS
             skipHiddenState = false,
         )
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
-
+    val scope = rememberCoroutineScope()
     LaunchedEffect(bottomSheetState.currentValue) {
         if (bottomSheetState.currentValue == SheetValue.Hidden) {
             onDismissRequest()
@@ -107,7 +109,13 @@ fun ContactsPickerBottomSheet(onDismissRequest: () -> Unit, uiState: ContactsUiS
                     }
 
                     is ContactsUiState.Success -> {
-                        TopBar()
+                        TopBar(
+                            onSearchBarToggled = { isExpanded ->
+                                if (isExpanded) {
+                                    scope.launch { bottomSheetState.expand() }
+                                }
+                            }
+                        )
                         ContactsList(contacts = state.contacts, displayMode = state.displayMode)
                     }
                 }
