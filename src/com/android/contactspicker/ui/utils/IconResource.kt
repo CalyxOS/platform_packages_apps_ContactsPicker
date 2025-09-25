@@ -27,5 +27,5 @@ sealed class IconResource {
     data class Vector(val imageVector: ImageVector) : IconResource()
 
     /** An icon from a drawable resource ID (e.g., R.drawable.my_icon). */
-    data class Painter(@DrawableRes val id: Int) : IconResource()
+    data class Painter(@get:DrawableRes val id: Int) : IconResource()
 }

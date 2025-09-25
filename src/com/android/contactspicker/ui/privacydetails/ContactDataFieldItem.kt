@@ -21,6 +21,6 @@ import com.android.contactspicker.ui.utils.IconResource
 /** A data class representing the UI state for a single row in the contactDataField list */
 data class ContactDataFieldItem(
     val icon: IconResource,
-    @StringRes val headerTextResId: Int,
-    @StringRes val contentDescriptionResId: Int,
+    @get:StringRes val headerTextResId: Int,
+    @get:StringRes val contentDescriptionResId: Int,
 )
