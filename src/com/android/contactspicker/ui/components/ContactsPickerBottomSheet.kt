@@ -43,7 +43,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.ui.pickerscreen.ContactsList
-import com.android.contactspicker.ui.pickerscreen.TopBar
+import com.android.contactspicker.ui.pickerscreen.ContactsPickerTopBar
 import kotlinx.coroutines.launch
 
 internal const val BOTTOM_SHEET_TEST_TAG = "bottom_sheet"
@@ -109,7 +109,7 @@ fun ContactsPickerBottomSheet(onDismissRequest: () -> Unit, uiState: ContactsUiS
                     }
 
                     is ContactsUiState.Success -> {
-                        TopBar(
+                        ContactsPickerTopBar(
                             onSearchBarToggled = { isExpanded ->
                                 if (isExpanded) {
                                     scope.launch { bottomSheetState.expand() }

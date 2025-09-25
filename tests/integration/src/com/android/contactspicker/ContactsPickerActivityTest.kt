@@ -30,6 +30,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
+import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -68,7 +69,9 @@ class ContactsPickerActivityTest {
         ActivityScenario.launch<ContactsPickerActivity>(intent)
 
         composeTestRule
-            .onNodeWithText(context.getString(R.string.top_bar_search_placeholder_hint))
+            .onNodeWithText(
+                context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
+            )
             .assertIsDisplayed()
     }
 
@@ -79,7 +82,7 @@ class ContactsPickerActivityTest {
         composeTestRule.onNodeWithTag(BOTTOM_SHEET_TEST_TAG).performTouchInput { swipeDown() }
         composeTestRule.waitForIdle()
 
-        scenario.onActivity { activity -> assertThat(activity.isFinishing).isTrue() }
+        assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
     }
 
     @Test

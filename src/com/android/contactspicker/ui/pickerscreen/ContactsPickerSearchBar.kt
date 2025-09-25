@@ -65,7 +65,9 @@ fun ContactsPickerSearchBar(
                 onSearch = { onExpandedChange(false) },
                 expanded = expanded,
                 onExpandedChange = onExpandedChange,
-                placeholder = { Text(stringResource(R.string.top_bar_search_placeholder_hint)) },
+                placeholder = {
+                    Text(stringResource(R.string.contacts_picker_top_bar_search_placeholder_hint))
+                },
                 leadingIcon = {
                     SearchBarLeadingIcon(
                         expanded = expanded,
@@ -80,7 +82,9 @@ fun ContactsPickerSearchBar(
                                 Icons.Filled.Close,
                                 contentDescription =
                                     stringResource(
-                                        id = R.string.top_bar_search_clear_text_content_description
+                                        id =
+                                            R.string
+                                                .contacts_picker_top_bar_search_clear_text_content_description
                                     ),
                             )
                         }
@@ -132,14 +136,18 @@ private fun SearchBarLeadingIcon(
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription =
-                    stringResource(id = R.string.top_bar_search_arrow_back_content_description),
+                    stringResource(
+                        id = R.string.contacts_picker_top_bar_search_arrow_back_content_description
+                    ),
             )
         }
     } else {
         Icon(
             imageVector = Icons.Outlined.Search,
             contentDescription =
-                stringResource(id = R.string.top_bar_search_icon_content_description),
+                stringResource(
+                    id = R.string.contacts_picker_top_bar_search_icon_content_description
+                ),
         )
     }
 }

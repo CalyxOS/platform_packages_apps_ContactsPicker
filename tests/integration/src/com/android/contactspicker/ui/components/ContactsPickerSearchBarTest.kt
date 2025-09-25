@@ -64,9 +64,12 @@ class ContactsPickerSearchBarTest {
 
     @Test
     fun whenSearchBoxCollapsed() {
-        val placeholderText = context.getString(R.string.top_bar_search_placeholder_hint)
+        val placeholderText =
+            context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
         val clearTextContentDescription =
-            context.getString(R.string.top_bar_search_clear_text_content_description)
+            context.getString(
+                R.string.contacts_picker_top_bar_search_clear_text_content_description
+            )
 
         composeTestRule.onNodeWithContentDescription(placeholderText).assertExists()
         composeTestRule
@@ -76,9 +79,12 @@ class ContactsPickerSearchBarTest {
 
     @Test
     fun whenSearchBoxTapped_searchBoxIsExpanded() {
-        val placeholderText = context.getString(R.string.top_bar_search_placeholder_hint)
+        val placeholderText =
+            context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
         val clearTextContentDescription =
-            context.getString(R.string.top_bar_search_clear_text_content_description)
+            context.getString(
+                R.string.contacts_picker_top_bar_search_clear_text_content_description
+            )
 
         composeTestRule.onNodeWithText(placeholderText).performClick()
 
@@ -87,7 +93,8 @@ class ContactsPickerSearchBarTest {
 
     @Test
     fun whenInputEntered_queryIsDisplayed() {
-        val placeholderText = context.getString(R.string.top_bar_search_placeholder_hint)
+        val placeholderText =
+            context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
         composeTestRule.onNodeWithText(placeholderText).performClick()
 
         val testQuery = "Test Query"
@@ -98,9 +105,12 @@ class ContactsPickerSearchBarTest {
 
     @Test
     fun whenClearButtonIsTapped_queryIsCleared() {
-        val placeholderText = context.getString(R.string.top_bar_search_placeholder_hint)
+        val placeholderText =
+            context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
         val clearTextContentDescription =
-            context.getString(R.string.top_bar_search_clear_text_content_description)
+            context.getString(
+                R.string.contacts_picker_top_bar_search_clear_text_content_description
+            )
         composeTestRule.onNodeWithText(placeholderText).performClick()
         val testQuery = "Test Query"
         composeTestRule.onNodeWithText(placeholderText).performTextInput(testQuery)

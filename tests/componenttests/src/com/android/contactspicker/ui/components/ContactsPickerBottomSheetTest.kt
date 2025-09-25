@@ -116,7 +116,9 @@ class ContactsPickerBottomSheetTest {
         }
 
         composeTestRule
-            .onNodeWithText(context.getString(R.string.top_bar_search_placeholder_hint))
+            .onNodeWithText(
+                context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
+            )
             .assertIsDisplayed()
     }
 
@@ -242,7 +244,7 @@ class ContactsPickerBottomSheetTest {
         val sheetNode = composeTestRule.onNodeWithTag(BOTTOM_SHEET_TEST_TAG)
         val initialBounds = sheetNode.getUnclippedBoundsInRoot()
 
-        val searchHint = context.getString(R.string.top_bar_search_placeholder_hint)
+        val searchHint = context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
         composeTestRule.onNodeWithText(searchHint).performClick()
 
         composeTestRule.waitForIdle()

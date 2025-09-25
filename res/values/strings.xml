@@ -21,16 +21,16 @@
     <string name="contacts_picker_app_label">Contacts Picker</string>
 
     <!-- Placeholder text shown in the search box. [CHAR LIMIT=25] -->
-    <string name="top_bar_search_placeholder_hint">Search</string>
+    <string name="contacts_picker_top_bar_search_placeholder_hint">Search</string>
     <!--Content description for the search icon button in the collapsed search bar. Tapping it
         expands the search top bar. [CHAR LIMIT=NONE] -->
-    <string name="top_bar_search_icon_content_description">Search</string>
+    <string name="contacts_picker_top_bar_search_icon_content_description">Search</string>
     <!--Content description for the 'X' icon button in the expanded search bar. Tapping it clears
         the text that has been entered in the search field. [CHAR LIMIT=NONE] -->
-    <string name="top_bar_search_clear_text_content_description">Clear search text</string>
+    <string name="contacts_picker_top_bar_search_clear_text_content_description">Clear search text</string>
     <!--Content description for the back arrow icon button in the expanded search bar. Tapping it
         closes the search field. [CHAR LIMIT=NONE] -->
-    <string name="top_bar_search_arrow_back_content_description">Close search</string>
+    <string name="contacts_picker_top_bar_search_arrow_back_content_description">Close search</string>
     <!--Content description for the profile switcher icon button in the top bar. Tapping it
         expands the profile switcher. [CHAR LIMIT=NONE] -->
     <string name="profile_switcher_content_description">Switch profile</string>

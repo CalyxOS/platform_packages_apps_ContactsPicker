@@ -35,7 +35,7 @@ import org.junit.runner.RunWith
 
 @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
 @RunWith(AndroidJUnit4::class)
-class TopBarTest {
+class PrivacyDetailsTopBarTest {
     @get:Rule val composeTestRule = createComposeRule()
 
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
@@ -43,7 +43,7 @@ class TopBarTest {
 
     @Test
     fun topBar_displaysHeaderText() {
-        composeTestRule.setContent { TopBar(onBackPressed = {}) }
+        composeTestRule.setContent { PrivacyDetailsTopBar(onBackPressed = {}) }
 
         composeTestRule
             .onNodeWithText(context.getString(R.string.privacy_details_top_bar_header))
@@ -53,7 +53,7 @@ class TopBarTest {
     @Test
     fun topBar_backButton_isDisplayedAndClickable() {
         var backPressed = false
-        composeTestRule.setContent { TopBar(onBackPressed = { backPressed = true }) }
+        composeTestRule.setContent { PrivacyDetailsTopBar(onBackPressed = { backPressed = true }) }
 
         composeTestRule
             .onNodeWithContentDescription(

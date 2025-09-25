@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.android.contactspicker.R
 
 @Composable
-fun TopBar(onSearchBarToggled: (isExpanded: Boolean) -> Unit) {
+fun ContactsPickerTopBar(onSearchBarToggled: (isExpanded: Boolean) -> Unit) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),

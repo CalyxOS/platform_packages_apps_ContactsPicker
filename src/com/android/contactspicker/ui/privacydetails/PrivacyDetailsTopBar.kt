@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.android.contactspicker.R
 
 @Composable
-fun TopBar(onBackPressed: () -> Unit, modifier: Modifier = Modifier) {
+fun PrivacyDetailsTopBar(onBackPressed: () -> Unit, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
