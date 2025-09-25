@@ -18,6 +18,7 @@ package com.android.contactspicker.data.model
 import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import java.lang.IllegalArgumentException
 import org.junit.Test
 import org.junit.runner.RunWith
 

@@ -94,10 +94,10 @@ data class EmailContact(
  * Represents a single phone entry with its unique ID corresponding to the ID in the Data._ID table,
  * number, and a user-readable label (e.g., "Home", "Work").
  */
-data class PhoneEntry(val id: Long, val number: String, val label: String)
+data class PhoneEntry(val id: Long, val number: String, val label: String? = null)
 
 /**
  * Represents a single email entry with its unique ID corresponding to the ID in the Data._ID table,
  * address, and a user-readable label (e.g., "Home", "Work").
  */
-data class EmailEntry(val id: Long, val address: String, val label: String)
+data class EmailEntry(val id: Long, val address: String, val label: String? = null)

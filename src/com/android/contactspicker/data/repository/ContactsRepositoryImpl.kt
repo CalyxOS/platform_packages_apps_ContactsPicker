@@ -17,6 +17,7 @@ package com.android.contactspicker.data.repository
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsContract.Contacts
@@ -40,6 +41,13 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
 
     private val contentResolver = context.contentResolver
 
+    companion object {
+        private val PHONE_FILTER_PROJECTION =
+            arrayOf(Phone.CONTACT_ID, Phone.DISPLAY_NAME_PRIMARY, Phone.NUMBER, Phone._ID)
+        private val EMAIL_FILTER_PROJECTION =
+            arrayOf(Email.CONTACT_ID, Email.DISPLAY_NAME_PRIMARY, Email.ADDRESS, Email._ID)
+    }
+
     /** Fetches contacts from the data source based on the intent action and type. */
     override suspend fun fetchContacts(intentAction: String?, intentType: String?): List<Contact> =
         withContext(Dispatchers.IO) {
@@ -58,6 +66,48 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 else -> throw IllegalArgumentException("Unsupported intent action: $intentAction")
             }
         }
+
+    /**
+     * Searches for contacts that match the given query based on the intent action and type.
+     *
+     * @param query The text to search for in contact names, emails, phone numbers, or other
+     *   contact's fields.
+     * @param intentAction The action from the intent (e.g., Intent.ACTION_PICK).
+     * @param intentType The MIME type from the intent (e.g., Phone.CONTENT_TYPE).
+     * @return A list of matching [Contact]s.
+     * @throws IllegalArgumentException if the action or type is unsupported.
+     */
+    override suspend fun searchContacts(
+        query: String,
+        intentAction: String?,
+        intentType: String?,
+    ): List<Contact> {
+        if (query.isBlank()) {
+            return emptyList()
+        }
+        return withContext(Dispatchers.IO) {
+            when (intentAction) {
+                Intent.ACTION_PICK ->
+                    when (intentType) {
+                        Email.CONTENT_ITEM_TYPE,
+                        Email.CONTENT_TYPE -> searchEmails(query)
+
+                        Phone.CONTENT_ITEM_TYPE,
+                        Phone.CONTENT_TYPE -> searchPhones(query)
+
+                        Contacts.CONTENT_TYPE,
+                        Contacts.CONTENT_ITEM_TYPE ->
+                            emptyList() // TODO(b/443023150) implement contacts filtering for custom
+                        // view mode
+
+                        else ->
+                            throw IllegalArgumentException("Unsupported intent type: $intentType")
+                    }
+
+                else -> throw IllegalArgumentException("Unsupported intent action: $intentAction")
+            }
+        }
+    }
 
     private fun fetchEmailContacts(): List<Contact> {
         val contacts = mutableMapOf<Long, EmailContact>()
@@ -187,6 +237,68 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 val name = it.getString(nameIndex)
                 if (name != null) {
                     contacts.add(DisplayNameContact(id, name))
+                }
+            }
+        }
+        return contacts
+    }
+
+    private fun searchPhones(query: String): List<Contact> {
+        return searchWithFilter(
+            query,
+            Phone.CONTENT_FILTER_URI,
+            PHONE_FILTER_PROJECTION,
+            Phone.NUMBER,
+        ) { id, displayName, dataId, number ->
+            PhoneContact(
+                id = id,
+                displayName = displayName,
+                phones = listOf(PhoneEntry(dataId, number)),
+            )
+        }
+    }
+
+    private fun searchEmails(query: String): List<Contact> {
+        return searchWithFilter(
+            query,
+            Email.CONTENT_FILTER_URI,
+            EMAIL_FILTER_PROJECTION,
+            Email.ADDRESS,
+        ) { id, displayName, dataId, address ->
+            EmailContact(
+                id = id,
+                displayName = displayName,
+                emails = listOf(EmailEntry(dataId, address)),
+            )
+        }
+    }
+
+    private fun searchWithFilter(
+        query: String,
+        filterUri: Uri,
+        projection: Array<String>,
+        dataColumnName: String,
+        parseContact: (id: Long, displayName: String, dataId: Long, dataValue: String) -> Contact,
+    ): List<Contact> {
+        val contacts = mutableListOf<Contact>()
+        val uri = filterUri.buildUpon().appendPath(query).build()
+
+        contentResolver.query(uri, projection, null, null, null)?.use { cursor ->
+            val idIndex = cursor.getColumnIndex(Data.CONTACT_ID)
+            val nameIndex = cursor.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)
+            val dataValueIndex = cursor.getColumnIndex(dataColumnName)
+            val dataIdIndex = cursor.getColumnIndex(Data._ID)
+
+            while (cursor.moveToNext()) {
+                val id = cursor.getLong(idIndex)
+                val name = cursor.getString(nameIndex)
+                val dataValue = cursor.getString(dataValueIndex)
+                val dataId = cursor.getLong(dataIdIndex)
+
+                if (!name.isNullOrBlank() && !dataValue.isNullOrBlank()) {
+                    // TODO(b/451963918) Confirm if we return aggregated contacts or single data
+                    // rows
+                    contacts.add(parseContact(id, name, dataId, dataValue))
                 }
             }
         }

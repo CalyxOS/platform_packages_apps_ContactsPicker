@@ -184,7 +184,7 @@ private fun ExpandedEmailContactEntry(contact: EmailContact) {
 }
 
 @Composable
-private fun ExpandedContactEntry(text: String, label: String, icon: @Composable () -> Unit) {
+private fun ExpandedContactEntry(text: String, label: String?, icon: @Composable () -> Unit) {
     // TODO(b/436818961): move state to the ContactsList to hold all selected rows
     var checked by remember { mutableStateOf(false) }
     Row(
@@ -204,11 +204,13 @@ private fun ExpandedContactEntry(text: String, label: String, icon: @Composable 
         Spacer(modifier = Modifier.padding(ICON_TEXT_SPACING))
         Column(modifier = Modifier.weight(1f)) {
             Text(text = text, style = MaterialTheme.typography.bodyMedium)
-            Text(
-                text = label,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            if (!label.isNullOrBlank()) {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
         Checkbox(checked = checked, onCheckedChange = { checked = it })
     }
