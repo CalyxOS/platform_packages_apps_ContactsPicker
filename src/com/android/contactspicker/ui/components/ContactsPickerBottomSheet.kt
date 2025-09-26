@@ -116,7 +116,7 @@ fun ContactsPickerBottomSheet(onDismissRequest: () -> Unit, uiState: ContactsUiS
                                 }
                             }
                         )
-                        ContactsList(contacts = state.contacts, displayMode = state.displayMode)
+                        ContactsList(contacts = state.contacts)
                     }
                 }
             }

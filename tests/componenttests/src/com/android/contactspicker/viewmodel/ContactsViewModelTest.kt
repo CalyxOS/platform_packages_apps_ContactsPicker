@@ -23,15 +23,16 @@ import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import android.provider.ContactsContract
 import com.android.contactspicker.ContactsUiState
-import com.android.contactspicker.DisplayMode
+import com.android.contactspicker.data.model.DisplayNameContact
+import com.android.contactspicker.data.model.EmailContact
+import com.android.contactspicker.data.model.PhoneContact
+import com.android.contactspicker.data.repository.ContactsRepository
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -51,7 +52,7 @@ class ContactsViewModelTest {
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        viewModel = ContactsViewModel()
+        viewModel = ContactsViewModel(ContactsRepository())
     }
 
     @After
@@ -62,24 +63,19 @@ class ContactsViewModelTest {
     @Test
     fun processIntent_setsLoadingThenSuccessState() = runTest {
         val collectedStates = mutableListOf<ContactsUiState>()
-
-        val collectorJob =
-            launch(UnconfinedTestDispatcher(testScheduler)) {
-                viewModel.uiState.toList(collectedStates)
-            }
-
-        assertThat(collectedStates.first() is ContactsUiState.Loading).isTrue()
+        val job = launch { viewModel.uiState.toList(collectedStates) }
 
         viewModel.processIntent(
             Intent.ACTION_PICK,
             ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE,
         )
+        testDispatcher.scheduler.advanceUntilIdle()
 
         assertThat(collectedStates).hasSize(2)
         assertThat(collectedStates[0] is ContactsUiState.Loading).isTrue()
         assertThat(collectedStates[1] is ContactsUiState.Success).isTrue()
 
-        collectorJob.cancel()
+        job.cancel()
     }
 
     @Test
@@ -88,13 +84,14 @@ class ContactsViewModelTest {
             Intent.ACTION_PICK,
             ContactsContract.CommonDataKinds.Email.CONTENT_TYPE,
         )
+        testDispatcher.scheduler.advanceUntilIdle()
 
         val uiState = viewModel.uiState.value
-        assertThat(uiState).isInstanceOf(ContactsUiState.Success::class.java)
+        assertThat(uiState is ContactsUiState.Success).isTrue()
 
         val successState = uiState as ContactsUiState.Success
-        assertThat(successState.displayMode).isEqualTo(DisplayMode.EMAIL_SELECTION)
         assertThat(successState.contacts).hasSize(10)
+        assertThat(successState.contacts[0] is EmailContact).isTrue()
     }
 
     @Test
@@ -103,43 +100,48 @@ class ContactsViewModelTest {
             Intent.ACTION_PICK,
             ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE,
         )
+        testDispatcher.scheduler.advanceUntilIdle()
 
         val uiState = viewModel.uiState.value
-        assertThat(uiState).isInstanceOf(ContactsUiState.Success::class.java)
+        assertThat(uiState is ContactsUiState.Success).isTrue()
 
         val successState = uiState as ContactsUiState.Success
-        assertThat(successState.displayMode).isEqualTo(DisplayMode.PHONE_SELECTION)
         assertThat(successState.contacts).hasSize(10)
+        assertThat(successState.contacts[0] is PhoneContact).isTrue()
     }
 
     @Test
     fun processIntent_withContactPickIntent_setsSuccessStateWithContactMode() = runTest {
         viewModel.processIntent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_TYPE)
+        testDispatcher.scheduler.advanceUntilIdle()
 
         val uiState = viewModel.uiState.value
-        assertThat(uiState).isInstanceOf(ContactsUiState.Success::class.java)
+        assertThat(uiState is ContactsUiState.Success).isTrue()
 
         val successState = uiState as ContactsUiState.Success
-        assertThat(successState.displayMode).isEqualTo(DisplayMode.CONTACT_SELECTION)
         assertThat(successState.contacts).hasSize(10)
+        assertThat(successState.contacts[0] is DisplayNameContact).isTrue()
     }
 
     @Test
     fun processIntent_withInvalidAction_setsErrorState() = runTest {
-        viewModel.processIntent("com.android.contactspicker.INVALID_ACTION", null)
+        viewModel.processIntent("com.android.INVALID_ACTION", null)
+        testDispatcher.scheduler.advanceUntilIdle()
 
         val uiState = viewModel.uiState.value
-        assertThat(uiState).isInstanceOf(ContactsUiState.Error::class.java)
+        assertThat(uiState is ContactsUiState.Error).isTrue()
 
         val errorState = uiState as ContactsUiState.Error
-        assertThat(errorState.message).isEqualTo("Invalid intent action or type.")
+        assertThat(errorState.message)
+            .isEqualTo("Unsupported intent action: com.android.INVALID_ACTION")
     }
 
     @Test
     fun processIntent_withNullAction_setsErrorState() = runTest {
         viewModel.processIntent(null, ContactsContract.Contacts.CONTENT_TYPE)
+        testDispatcher.scheduler.advanceUntilIdle()
 
         val uiState = viewModel.uiState.value
-        assertThat(uiState).isInstanceOf(ContactsUiState.Error::class.java)
+        assertThat(uiState is ContactsUiState.Error).isTrue()
     }
 }
