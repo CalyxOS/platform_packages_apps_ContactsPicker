@@ -1,0 +1,124 @@
+/*
+ * Copyright (C) 2025 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.android.contactspicker.ui.pickerscreen
+
+import androidx.annotation.StringRes
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.android.contactspicker.R
+
+/**
+ * A banner that provides a privacy notice about sharing contact data with the requesting
+ * application
+ *
+ * @param appName The name of the calling application.
+ * @param onMoreDetails Callback to be invoked when the "More details" button is clicked.
+ * @param onDismissRequest Callback to be invoked when the "Dismiss" button is clicked.
+ */
+// TODO(b/446119760) - Implement navigation logic for navigating to MoreDetails page
+// TODO(b/446667703) : Implement logic to dynamically fetch the name of the calling application
+@Composable
+fun PrivacyBanner(
+    appName: String = "SampleApp",
+    onMoreDetails: () -> Unit,
+    onDismissRequest: () -> Unit,
+) {
+    Column(
+        modifier =
+            Modifier.fillMaxWidth()
+                .padding(top = 8.dp, start = 16.dp, end = 16.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    shape = RoundedCornerShape(28.dp),
+                )
+    ) {
+        PrivacyBannerDescription(appName, modifier = Modifier.padding(16.dp))
+        PrivacyBannerActions(
+            onMoreDetails,
+            onDismissRequest,
+            modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
+        )
+    }
+}
+
+@Composable
+private fun PrivacyBannerDescription(appName: String, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.android_security_privacy),
+            contentDescription = stringResource(R.string.privacy_info_content_description),
+            tint = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(4.dp).size(24.dp),
+        )
+        Text(
+            text = stringResource(R.string.privacy_banner_description, appName),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun PrivacyBannerActions(
+    onMoreDetails: () -> Unit,
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End,
+    ) {
+        ActionButton(textResId = R.string.privacy_banner_more_details, onClick = onMoreDetails)
+        ActionButton(textResId = R.string.privacy_banner_dismiss, onClick = onDismissRequest)
+    }
+}
+
+@Composable
+private fun ActionButton(@StringRes textResId: Int, onClick: () -> Unit) {
+    TextButton(
+        onClick = onClick,
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+    ) {
+        Text(
+            text = stringResource(textResId),
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
