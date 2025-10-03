@@ -15,31 +15,55 @@
  */
 package com.android.contactspicker.ui.privacydetails
 
+import android.content.Context
 import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.contactspicker.R
 import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 
 @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
 @RunWith(AndroidJUnit4::class)
 class PrivacyDetailsScreenTest {
     @get:Rule val composeTestRule = createComposeRule()
-
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
+
+    private val context: Context = ApplicationProvider.getApplicationContext()
 
     @Test
     fun privacyDetailsScreen_displaysTopBarAndBody() {
-        composeTestRule.setContent { ContactsPickerAppTheme { PrivacyDetailsScreen() } }
+        composeTestRule.setContent {
+            ContactsPickerAppTheme { PrivacyDetailsScreen(onBackPressed = {}) }
+        }
 
         composeTestRule.onNodeWithTag(PRIVACY_DETAILS_SCREEN_TOP_BAR_TEST_TAG).assertIsDisplayed()
         composeTestRule.onNodeWithTag(PRIVACY_DETAILS_SCREEN_BODY_TEST_TAG).assertIsDisplayed()
+    }
+
+    @Test
+    fun privacyDetailsScreen_invokesOnBackPressedCallback() {
+        val mockOnBackPressed: () -> Unit = mock()
+
+        composeTestRule.setContent { PrivacyDetailsScreen(onBackPressed = mockOnBackPressed) }
+
+        val backButtonContentDescription =
+            context.getString(R.string.privacy_details_top_bar_back_button_content_description)
+        composeTestRule.onNodeWithContentDescription(backButtonContentDescription).performClick()
+
+        verify(mockOnBackPressed, times(1)).invoke()
     }
 }

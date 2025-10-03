@@ -33,11 +33,10 @@ internal const val PRIVACY_DETAILS_SCREEN_TOP_BAR_TEST_TAG = "privacy_details_sc
 internal const val PRIVACY_DETAILS_SCREEN_BODY_TEST_TAG = "privacy_details_screen_body"
 
 @Composable
-fun PrivacyDetailsScreen() {
+fun PrivacyDetailsScreen(onBackPressed: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize()) {
         PrivacyDetailsTopBar(
-            // Todo(b/446119760) - implement back navigation
-            onBackPressed = {},
+            onBackPressed = onBackPressed,
             modifier =
                 Modifier.padding(TOPBAR_PADDING).testTag(PRIVACY_DETAILS_SCREEN_TOP_BAR_TEST_TAG),
         )

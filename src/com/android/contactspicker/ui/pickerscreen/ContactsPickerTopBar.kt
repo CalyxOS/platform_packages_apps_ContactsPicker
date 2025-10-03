@@ -28,10 +28,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.R
+
+const val CONTACTS_PICKER_TOP_BAR_PRIVACY_ICON_TEST_TAG = "contacts_picker_top_bar_privacy_icon"
 
 @Composable
 fun ContactsPickerTopBar(onSearchBarToggled: (isExpanded: Boolean) -> Unit) {
@@ -55,6 +58,7 @@ fun ContactsPickerTopBar(onSearchBarToggled: (isExpanded: Boolean) -> Unit) {
                 painter = painterResource(id = R.drawable.android_security_privacy),
                 contentDescription = stringResource(R.string.privacy_info_content_description),
                 tint = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.testTag(CONTACTS_PICKER_TOP_BAR_PRIVACY_ICON_TEST_TAG),
             )
         }
     }
