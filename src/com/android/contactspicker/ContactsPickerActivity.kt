@@ -26,6 +26,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.android.contactspicker.provider.CallingPackageProvider
@@ -36,6 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /** The main activity for the Contacts Picker system app. */
+@OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint(ComponentActivity::class)
 class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
 
