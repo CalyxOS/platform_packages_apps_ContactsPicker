@@ -81,7 +81,7 @@ class ContactsViewModelTest {
 
     @Test
     fun processIntent_whenRepositorySucceeds_setsSuccessState() = runTest {
-        val testContacts = listOf(EmailContact(1L, "Test", "a@b.com"))
+        val testContacts = listOf(EmailContact(1L, "Test", listOf("a@b.com")))
         fakeRepository.setContacts(testContacts)
 
         viewModel.processIntent(Intent.ACTION_PICK, Email.CONTENT_TYPE)

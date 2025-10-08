@@ -49,19 +49,21 @@ data class DisplayNameContact(override val id: Long, override val displayName: S
  *
  * @param id A unique identifier for the contact.
  * @param displayName The name of the contact. Must not be blank.
- * @param phone The phone number of the contact. Must not be blank
- * @throws IllegalArgumentException if [displayName] or [phone] is blank.
+ * @param phones The non-empty list of phone numbers.
+ * @throws IllegalArgumentException if [displayName] is blank or [phones] is empty.
  */
 data class PhoneContact(
     override val id: Long,
     override val displayName: String,
-    val phone: String,
+    val phones: List<String>,
 ) : Contact() {
     init {
         require(displayName.isNotBlank()) {
             "A PhoneContact must be created with a non blank display name."
         }
-        require(phone.isNotBlank()) { "A PhoneContact must be created with a phone number." }
+        require(phones.isNotEmpty()) {
+            "A PhoneContact must be created with at least one phone number."
+        }
     }
 }
 
@@ -70,18 +72,20 @@ data class PhoneContact(
  *
  * @param id A unique identifier for the contact.
  * @param displayName The name of the contact. Must not be blank.
- * @param email The email address of the contact. Must not be blank.
- * @throws IllegalArgumentException if [displayName] or [email] is blank.
+ * @param emails The non-empty list of email addresses.
+ * @throws IllegalArgumentException if [displayName] is blank or [emails] is empty.
  */
 data class EmailContact(
     override val id: Long,
     override val displayName: String,
-    val email: String,
+    val emails: List<String>,
 ) : Contact() {
     init {
         require(displayName.isNotBlank()) {
-            "A PhoneContact must be created with a non blank display name."
+            "A EmailContact must be created with a non blank display name."
         }
-        require(email.isNotBlank()) { "An EmailContact must be created with an email address." }
+        require(emails.isNotEmpty()) {
+            "An EmailContact must be created with at least one email address."
+        }
     }
 }

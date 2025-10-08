@@ -42,6 +42,23 @@
     <!--Content description for the privacy icon button in the top bar. Tapping it opens the privacy
         information banner. [CHAR LIMIT=NONE] -->
     <string name="privacy_info_content_description">Privacy information</string>
+    <!-- Content description for the drop down button to expand contacts with multiple email
+        addresses or phone numbers. [CHAR LIMIT=NONE] -->
+    <string name="contact_item_expand_button_content_description">Expand</string>
+    <!-- Content description for the button to collapse the expanded contacts with multiple email
+        addresses or phone numbers. [CHAR LIMIT=NONE] -->
+    <string name="contact_item_collapse_button_content_description">Collapse</string>
+    <!-- Content description for the phone icon in the expanded contacts with multiple phone
+        numbers. [CHAR LIMIT=NONE] -->
+    <string name="contact_item_phone_icon_content_description">Phone</string>
+    <!-- Content description for the email icon in the expanded contacts with multiple email
+        addresses. [CHAR LIMIT=NONE] -->
+    <string name="contact_item_email_icon_content_description">Email</string>
+    <!-- Count of emails shown in the collapsed contact item with multiple emails. [CHAR LIMIT=NONE] -->
+    <string name="contact_item_emails_count">%d emails</string>
+    <!-- Count of phone numbers shown in the collapsed contact item with multiple numbers.
+        [CHAR LIMIT=NONE] -->
+    <string name="contact_item_phones_count">%d phone numbers</string>
 
     <!-- Description for the privacy banner shown at the top of the contact picker. %1$s is the app name. -->
     <string name="privacy_banner_description">"%1$s will only have access to info from the contacts you select"</string>

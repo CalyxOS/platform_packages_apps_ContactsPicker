@@ -81,11 +81,10 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 if (!name.isNullOrBlank() && !address.isNullOrBlank()) {
                     if (contacts.containsKey(id)) {
                         val existingContact = contacts[id]!!
-                        // TODO(b/441477119): change to a list of email addresses
                         contacts[id] =
-                            existingContact.copy(email = existingContact.email + ", " + address)
+                            existingContact.copy(emails = existingContact.emails + address)
                     } else {
-                        contacts[id] = EmailContact(id, name, address)
+                        contacts[id] = EmailContact(id, name, listOf(address))
                     }
                 }
             }
@@ -117,11 +116,10 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 if (!name.isNullOrBlank() && !number.isNullOrBlank()) {
                     if (contacts.containsKey(id)) {
                         val existingContact = contacts[id]!!
-                        // TODO(b/441477119): change to a list of phone numbers
                         contacts[id] =
-                            existingContact.copy(phone = existingContact.phone + ", " + number)
+                            existingContact.copy(phones = existingContact.phones + number)
                     } else {
-                        contacts[id] = PhoneContact(id, name, number)
+                        contacts[id] = PhoneContact(id, name, listOf(number))
                     }
                 }
             }
