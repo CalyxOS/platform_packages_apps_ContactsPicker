@@ -25,5 +25,5 @@
         android:label="Contacts Picker Tests"
         android:targetPackage="com.android.contactspicker" />
 
-    <uses-sdk android:minSdkVersion="36" android:targetSdkVersion="36" />
+    <uses-sdk android:minSdkVersion="37" android:targetSdkVersion="37" />
 </manifest>
