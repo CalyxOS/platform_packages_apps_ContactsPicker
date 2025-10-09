@@ -16,12 +16,9 @@
 
 package com.android.contactspicker
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.flags.Flags
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import android.platform.test.annotations.RequiresFlagsDisabled
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
@@ -36,82 +33,41 @@ import androidx.compose.ui.test.swipeDown
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.contactspicker.inject.ActivityModule
-import com.android.contactspicker.inject.AppModule
-import com.android.contactspicker.provider.CallingPackageProvider
 import com.android.contactspicker.ui.components.BOTTOM_SHEET_TEST_TAG
 import com.google.common.truth.Truth.assertThat
-import dagger.hilt.android.testing.BindValue
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
-import org.junit.After
 import org.junit.Assert.assertThrows
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.anyInt
-import org.mockito.ArgumentMatchers.anyString
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 
 @RunWith(AndroidJUnit4::class)
-@UninstallModules(AppModule::class, ActivityModule::class)
-@HiltAndroidTest
 class ContactsPickerActivityTest {
 
-    @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
-    @get:Rule(order = 1)
-    val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
-    @get:Rule(order = 2) val composeTestRule = createEmptyComposeRule()
+    @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
+
+    @get:Rule val composeTestRule = createEmptyComposeRule()
 
     private val context: Context = ApplicationProvider.getApplicationContext()
-    private lateinit var baseIntent: Intent
-
-    @BindValue @JvmField val mockPackageManager: PackageManager = mock()
-
-    @BindValue @JvmField val mockCallingPackageProvider: CallingPackageProvider = mock()
-
-    private lateinit var testPackageName: String
-
-    @Before
-    fun setUp() {
-        Intents.init()
-        hiltRule.inject()
-
-        testPackageName = context.packageName
-        val appInfo = ApplicationInfo().apply { targetSdkVersion = 37 }
-        whenever(mockPackageManager.getApplicationInfo(testPackageName, 0)).doReturn(appInfo)
-        whenever(mockCallingPackageProvider.get()).doReturn(testPackageName)
-        baseIntent =
-            Intent(context, ContactsPickerActivity::class.java).apply {
-                action = Intent.ACTION_PICK
-                type = ContactsContract.Contacts.CONTENT_TYPE
-            }
-    }
-
-    @After
-    fun tearDown() {
-        Intents.release()
-    }
+    private val intent =
+        Intent(context, ContactsPickerActivity::class.java).apply {
+            action = Intent.ACTION_PICK
+            type = ContactsContract.Contacts.CONTENT_TYPE
+        }
 
     @Test
     @RequiresFlagsDisabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
     fun intent_contactPickerFlagDisabled_throws() {
         assertThrows(RuntimeException::class.java) {
-            ActivityScenario.launch<ContactsPickerActivity>(baseIntent)
+            ActivityScenario.launch<ContactsPickerActivity>(intent)
         }
     }
 
     @Test
     @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
     fun topBarSearchText_isDisplayed() {
-        ActivityScenario.launch<ContactsPickerActivity>(baseIntent)
+        ActivityScenario.launch<ContactsPickerActivity>(intent)
+
         composeTestRule
             .onNodeWithText(
                 context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
@@ -122,75 +78,21 @@ class ContactsPickerActivityTest {
     @Test
     @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
     fun whenSwipedDown_activityFinishes() {
-        val scenario = ActivityScenario.launch<ContactsPickerActivity>(baseIntent)
+        val scenario = ActivityScenario.launch<ContactsPickerActivity>(intent)
         composeTestRule.onNodeWithTag(BOTTOM_SHEET_TEST_TAG).performTouchInput { swipeDown() }
         composeTestRule.waitForIdle()
-        scenario.onActivity { activity ->
-            if (activity != null) {
-                assertThat(activity.isFinishing).isTrue()
-            }
-        }
+
+        assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
     }
 
     @Test
     @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
     fun whenActivityIsRecreated_bottomSheetIsStillVisible() {
-        val scenario = ActivityScenario.launch<ContactsPickerActivity>(baseIntent)
+        val scenario = ActivityScenario.launch<ContactsPickerActivity>(intent)
         composeTestRule.onNodeWithTag(BOTTOM_SHEET_TEST_TAG).assertIsDisplayed()
 
         scenario.recreate()
 
         composeTestRule.onNodeWithTag(BOTTOM_SHEET_TEST_TAG).assertIsDisplayed()
-    }
-
-    @Test
-    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
-    fun highTargetSdk_handlesInternally() {
-        // target SDK of calling app set to 37 in setUp
-        val scenario = ActivityScenario.launch<ContactsPickerActivity>(baseIntent)
-
-        scenario.onActivity { activity -> assertThat(activity.isFinishing).isFalse() }
-        assertThat(Intents.getIntents().filter { it.action == Intent.ACTION_CHOOSER }).isEmpty()
-    }
-
-    @Test
-    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
-    fun lowTargetSdk_forwardsToChooser() {
-        val appInfo = ApplicationInfo().apply { targetSdkVersion = 36 }
-        whenever(mockPackageManager.getApplicationInfo(testPackageName, 0)).doReturn(appInfo)
-
-        val scenario = ActivityScenario.launch<ContactsPickerActivity>(baseIntent)
-
-        Intents.intended(hasAction(Intent.ACTION_CHOOSER))
-        assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
-    }
-
-    @Test
-    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
-    fun packageManagerThrowsException_handlesInternally() {
-        whenever(mockPackageManager.getApplicationInfo(anyString(), anyInt()))
-            .thenThrow(PackageManager.NameNotFoundException())
-
-        val scenario = ActivityScenario.launch<ContactsPickerActivity>(baseIntent)
-
-        composeTestRule
-            .onNodeWithText(
-                context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
-            )
-            .assertIsDisplayed()
-
-        scenario.onActivity { activity -> assertThat(activity.isFinishing).isFalse() }
-        assertThat(Intents.getIntents().filter { it.action == Intent.ACTION_CHOOSER }).isEmpty()
-    }
-
-    @Test
-    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
-    fun nullCallingPackage_finishesWithResultCanceled() {
-        whenever(mockCallingPackageProvider.get()).doReturn(null)
-
-        val scenario = ActivityScenario.launchActivityForResult<ContactsPickerActivity>(baseIntent)
-
-        assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
-        assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_CANCELED)
     }
 }

@@ -22,7 +22,7 @@
 
     <test class="com.android.tradefed.testtype.AndroidJUnitTest">
         <option name="package" value="com.android.contactspicker.integrationtests" />
-        <option name="runner" value="com.android.contactspicker.HiltTestRunner"/>
+        <option name="runner" value="androidx.test.runner.AndroidJUnitRunner" />
         <option name="hidden-api-checks" value="false" />
     </test>
 </configuration>
