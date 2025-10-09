@@ -51,8 +51,6 @@ class ContactsViewModel @Inject constructor(private val contactsRepository: Cont
         viewModelScope.launch {
             try {
                 val contacts = contactsRepository.fetchContacts(intentAction, intentType)
-                Log.e(TAG, "_uiState.value: $_uiState.value")
-                Log.e(TAG, "Contacts: $contacts")
                 // TODO(b/444459883): check and handle empty list
                 _uiState.value = ContactsUiState.Success(contacts)
             } catch (e: IllegalArgumentException) {
