@@ -20,11 +20,6 @@
     <!-- The Contacts Picker app label. [CHAR LIMIT=25] -->
     <string name="contacts_picker_app_label">Contacts Picker</string>
 
-    <!-- The title of the chooser activity launched for apps targeting SDK below 37. -->
-    <string name="contacts_picker_chooser_activity_title">Contacts Picker</string>
-    <!-- Text shown to the user in a Toast when no app can handle the chooser intent. -->
-    <string name="contacts_picker_chooser_activity_no_app_can_handle_action">No application can handle this action.</string>
-
     <!-- Placeholder text shown in the search box. [CHAR LIMIT=25] -->
     <string name="contacts_picker_top_bar_search_placeholder_hint">Search</string>
     <!--Content description for the search icon button in the collapsed search bar. Tapping it

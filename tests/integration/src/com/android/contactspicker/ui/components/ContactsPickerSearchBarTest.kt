@@ -19,8 +19,6 @@ package com.android.contactspicker.ui.components
 import android.content.Context
 import android.content.Intent
 import android.content.flags.Flags
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
@@ -34,45 +32,23 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import com.android.contactspicker.ContactsPickerActivity
 import com.android.contactspicker.R
-import com.android.contactspicker.inject.ActivityModule
-import com.android.contactspicker.inject.AppModule
-import com.android.contactspicker.provider.CallingPackageProvider
-import dagger.hilt.android.testing.BindValue
-import dagger.hilt.android.testing.HiltAndroidRule
-import dagger.hilt.android.testing.HiltAndroidTest
-import dagger.hilt.android.testing.UninstallModules
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 
 @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
-@UninstallModules(AppModule::class, ActivityModule::class)
-@HiltAndroidTest
 class ContactsPickerSearchBarTest {
 
-    @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
-    @get:Rule(order = 1)
-    val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
-    @get:Rule(order = 2) val composeTestRule = createEmptyComposeRule()
+    @get:Rule val composeTestRule = createEmptyComposeRule()
+    @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
     private val context: Context = ApplicationProvider.getApplicationContext()
 
     private lateinit var scenario: ActivityScenario<ContactsPickerActivity>
 
-    @BindValue @JvmField val mockPackageManager: PackageManager = mock()
-
-    @BindValue @JvmField val mockCallingPackageProvider: CallingPackageProvider = mock()
-
     @Before
     fun setUp() {
-        val testPackageName = context.packageName
-        val appInfo = ApplicationInfo().apply { targetSdkVersion = 37 }
-        whenever(mockPackageManager.getApplicationInfo(testPackageName, 0)).doReturn(appInfo)
-        whenever(mockCallingPackageProvider.get()).doReturn(testPackageName)
         val intent =
             Intent(context, ContactsPickerActivity::class.java).apply {
                 action = Intent.ACTION_PICK

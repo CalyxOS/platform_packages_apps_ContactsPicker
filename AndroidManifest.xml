@@ -25,11 +25,10 @@
         android:supportsRtl="true">
         <activity android:name=".ContactsPickerActivity"
             android:exported="true"
-            android:launchMode="singleTop"
-            android:noHistory="true"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.ActivityTheme"
             android:featureFlag="android.content.flags.enable_system_contacts_picker">
-        <intent-filter android:priority="101">
+        <intent-filter>
             <action android:name="android.intent.action.PICK" />
             <category android:name="android.intent.category.DEFAULT" />
             <data android:mimeType="vnd.android.cursor.dir/contact" />
@@ -38,7 +37,6 @@
         </intent-filter>
     </activity>
     </application>
-
-    <uses-sdk android:minSdkVersion="37" android:targetSdkVersion="37" />
+    <uses-sdk android:minSdkVersion="36" android:targetSdkVersion="36" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 </manifest>
