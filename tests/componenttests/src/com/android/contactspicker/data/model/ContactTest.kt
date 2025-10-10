@@ -26,42 +26,60 @@ import org.junit.runner.RunWith
 class ContactTest {
 
     @Test(expected = IllegalArgumentException::class)
-    fun createBasicContact_withBlankDisplayName_throwsException() {
+    fun createDisplayNameContact_withBlankDisplayName_throwsException() {
         DisplayNameContact(id = 1, displayName = " ")
     }
 
     @Test
-    fun createBasicContact_withValidDisplayName_succeeds() {
+    fun createDisplayNameContact_withValidDisplayName_succeeds() {
         DisplayNameContact(id = 1, displayName = "John Doe")
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun createPhoneContact_withBlankDisplayName_throwsException() {
-        PhoneContact(id = 1, displayName = " ", phone = "123-456-7890")
+        PhoneContact(id = 1, displayName = " ", phones = listOf("123-456-7890"))
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun createPhoneContact_withBlankPhone_throwsException() {
-        PhoneContact(id = 1, displayName = "John Doe", phone = " ")
+    fun createPhoneContact_withEmptyPhoneList_throwsException() {
+        PhoneContact(id = 1, displayName = "John Doe", phones = emptyList())
     }
 
     @Test
     fun createPhoneContact_withValidData_succeeds() {
-        PhoneContact(id = 1, displayName = "John Doe", phone = "123-456-7890")
+        PhoneContact(id = 1, displayName = "John Doe", phones = listOf("123-456-7890"))
+    }
+
+    @Test
+    fun createPhoneContact_withMultiplePhones_succeeds() {
+        PhoneContact(
+            id = 1,
+            displayName = "John Doe",
+            phones = listOf("123-456-7890", "098-765-4321"),
+        )
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun createEmailContact_withBlankDisplayName_throwsException() {
-        EmailContact(id = 1, displayName = " ", email = "john.doe@example.com")
+        EmailContact(id = 1, displayName = " ", emails = listOf("john.doe@example.com"))
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun createEmailContact_withBlankEmail_throwsException() {
-        EmailContact(id = 1, displayName = "John Doe", email = " ")
+    fun createEmailContact_withEmptyEmailList_throwsException() {
+        EmailContact(id = 1, displayName = "John Doe", emails = emptyList())
     }
 
     @Test
     fun createEmailContact_withValidData_succeeds() {
-        EmailContact(id = 1, displayName = "John Doe", email = "john.doe@example.com")
+        EmailContact(id = 1, displayName = "John Doe", emails = listOf("john.doe@example.com"))
+    }
+
+    @Test
+    fun createEmailContact_withMultipleEmails_succeeds() {
+        EmailContact(
+            id = 1,
+            displayName = "John Doe",
+            emails = listOf("john.doe@example.com", "j.doe@work.com"),
+        )
     }
 }

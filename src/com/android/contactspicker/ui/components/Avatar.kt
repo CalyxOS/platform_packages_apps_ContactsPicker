@@ -30,7 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-internal const val AVATAR_TEST_TAG = "contact_avatar"
+const val AVATAR_TEST_TAG = "contact_avatar"
 
 /**
  * A composable that displays a circular avatar with the first initial of a display name.
