@@ -27,4 +27,6 @@
         android:name="androidx.test.runner.AndroidJUnitRunner"
         android:targetPackage="com.android.contactspicker.componenttests"
         android:label="Component Tests for ContactsPicker"/>
+
+    <uses-sdk android:minSdkVersion="37" android:targetSdkVersion="37" />
 </manifest>
