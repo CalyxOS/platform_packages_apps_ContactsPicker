@@ -20,6 +20,7 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.collection.longObjectMapOf
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -55,6 +56,8 @@ class ContactsPickerScreenTest {
                 uiState = ContactsUiState.Loading,
                 onMoreDetails = {},
                 onExpandRequest = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
             )
         }
         composeTestRule
@@ -71,6 +74,8 @@ class ContactsPickerScreenTest {
                 uiState = ContactsUiState.Error(errorMessage),
                 onMoreDetails = {},
                 onExpandRequest = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
             )
         }
 
@@ -81,9 +86,11 @@ class ContactsPickerScreenTest {
     fun whenStateIsSuccess_showsContact() {
         composeTestRule.setContent {
             ContactsPickerScreen(
-                uiState = ContactsUiState.Success(listOf(testContact)),
+                uiState = ContactsUiState.Success(listOf(testContact), longObjectMapOf()),
                 onMoreDetails = {},
                 onExpandRequest = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
             )
         }
         composeTestRule.onNodeWithText(testContact.displayName).assertIsDisplayed()
@@ -93,9 +100,11 @@ class ContactsPickerScreenTest {
     fun whenStateIsSuccess_showsSearchBox() {
         composeTestRule.setContent {
             ContactsPickerScreen(
-                uiState = ContactsUiState.Success(listOf(testContact)),
+                uiState = ContactsUiState.Success(listOf(testContact), longObjectMapOf()),
                 onMoreDetails = {},
                 onExpandRequest = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
             )
         }
         composeTestRule
@@ -109,9 +118,11 @@ class ContactsPickerScreenTest {
     fun whenStateIsSuccess_showsProfileSelector() {
         composeTestRule.setContent {
             ContactsPickerScreen(
-                uiState = ContactsUiState.Success(listOf(testContact)),
+                uiState = ContactsUiState.Success(listOf(testContact), longObjectMapOf()),
                 onMoreDetails = {},
                 onExpandRequest = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
             )
         }
 
@@ -126,9 +137,11 @@ class ContactsPickerScreenTest {
     fun whenStateIsSuccess_showsPrivacyButton() {
         composeTestRule.setContent {
             ContactsPickerScreen(
-                uiState = ContactsUiState.Success(listOf(testContact)),
+                uiState = ContactsUiState.Success(listOf(testContact), longObjectMapOf()),
                 onMoreDetails = {},
                 onExpandRequest = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
             )
         }
         composeTestRule
@@ -142,9 +155,11 @@ class ContactsPickerScreenTest {
 
         composeTestRule.setContent {
             ContactsPickerScreen(
-                uiState = ContactsUiState.Success(emptyList()),
+                uiState = ContactsUiState.Success(emptyList(), longObjectMapOf()),
                 onMoreDetails = {},
                 onExpandRequest = mockOnExpandRequest,
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
             )
         }
 

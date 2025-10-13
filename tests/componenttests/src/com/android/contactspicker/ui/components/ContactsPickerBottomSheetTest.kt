@@ -15,21 +15,34 @@
  */
 package com.android.contactspicker.ui.components
 
+import android.content.Context
 import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.collection.LongObjectMap
+import androidx.collection.longObjectMapOf
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.swipeUp
 import androidx.compose.ui.unit.height
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.contactspicker.ContactsUiState
+import com.android.contactspicker.R
+import com.android.contactspicker.data.model.DisplayNameContact
+import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -42,16 +55,24 @@ import org.mockito.kotlin.verify
 @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
 @RunWith(AndroidJUnit4::class)
 class ContactsPickerBottomSheetTest {
+
     @get:Rule val composeTestRule = createComposeRule()
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
+    private var selectedContacts by mutableStateOf<LongObjectMap<Set<Long>>>(longObjectMapOf())
+
+    private val testContact = DisplayNameContact(id = 1, displayName = "Contacty Contact")
+    private val testSuccessState =
+        ContactsUiState.Success(
+            availableContacts = listOf(testContact),
+            selectedContacts = selectedContacts,
+        )
+
+    private val context: Context = ApplicationProvider.getApplicationContext()
+
     @Test
     fun initialState_peekHeightIsCorrect() {
-        val mockOnDismissRequest: () -> Unit = mock()
-
-        composeTestRule.setContent {
-            ContactsPickerBottomSheet(onDismissRequest = mockOnDismissRequest)
-        }
+        setupBottomSheet()
 
         val sheetBounds =
             composeTestRule.onNodeWithTag(BOTTOM_SHEET_TEST_TAG).getUnclippedBoundsInRoot()
@@ -66,11 +87,7 @@ class ContactsPickerBottomSheetTest {
 
     @Test
     fun whenSheetIsSwipedUp_expands() {
-        val mockOnDismissRequest: () -> Unit = mock()
-
-        composeTestRule.setContent {
-            ContactsPickerBottomSheet(onDismissRequest = mockOnDismissRequest)
-        }
+        setupBottomSheet()
 
         val sheetNode = composeTestRule.onNodeWithTag(BOTTOM_SHEET_TEST_TAG)
         val initialBounds = sheetNode.getUnclippedBoundsInRoot()
@@ -86,10 +103,7 @@ class ContactsPickerBottomSheetTest {
     @Test
     fun whenSheetIsSwipedDown_onDismissIsCalled() {
         val mockOnDismissRequest: () -> Unit = mock()
-
-        composeTestRule.setContent {
-            ContactsPickerBottomSheet(onDismissRequest = mockOnDismissRequest)
-        }
+        setupBottomSheet(onDismissRequest = mockOnDismissRequest)
 
         composeTestRule.onNodeWithTag(BOTTOM_SHEET_TEST_TAG).performTouchInput { swipeDown() }
         composeTestRule.waitForIdle()
@@ -99,15 +113,117 @@ class ContactsPickerBottomSheetTest {
 
     @Test
     fun scrim_isDisplayed_onlyWhenSheetIsVisible() {
-        val mockOnDismissRequest: () -> Unit = mock()
-        composeTestRule.setContent {
-            ContactsPickerBottomSheet(onDismissRequest = mockOnDismissRequest)
-        }
+        setupBottomSheet()
 
         composeTestRule.onNodeWithTag(SCRIM_TEST_TAG).assertIsDisplayed()
 
         composeTestRule.onNodeWithTag(BOTTOM_SHEET_TEST_TAG).performTouchInput { swipeDown() }
         composeTestRule.waitForIdle()
         composeTestRule.onNodeWithTag(SCRIM_TEST_TAG).assertDoesNotExist()
+    }
+
+    @Test
+    fun selectionBar_inLoadingState_isNotVisible() {
+        setupBottomSheet()
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.selection_bottom_bar_clear_button_content_description)
+            )
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun selectionBar_inSuccessState_isNotInitiallyVisible() {
+        setupBottomSheet(uiState = testSuccessState)
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.selection_bottom_bar_clear_button_content_description)
+            )
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun selectionBar_isVisible_whenAContactIsSelected() {
+        composeTestRule.setContent {
+            ContactsPickerAppTheme {
+                ContactsPickerBottomSheet(
+                    onDismissRequest = {},
+                    uiState =
+                        ContactsUiState.Success(
+                            availableContacts = listOf(testContact),
+                            selectedContacts = selectedContacts,
+                        ),
+                    onToggleEntrySelection = { _, _ -> },
+                    onToggleContactSelection = {},
+                    onClearSelection = {},
+                )
+            }
+        }
+
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.selection_bottom_bar_clear_button_content_description)
+            )
+            .assertDoesNotExist()
+
+        selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id))
+
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.selection_bottom_bar_clear_button_content_description)
+            )
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithText(selectedContacts.size.toString()).assertIsDisplayed()
+    }
+
+    @Test
+    fun selectionBar_isNotVisible_afterSelectionIsCleared() {
+        selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id))
+        composeTestRule.setContent {
+            ContactsPickerAppTheme {
+                ContactsPickerBottomSheet(
+                    onDismissRequest = {},
+                    uiState =
+                        ContactsUiState.Success(
+                            availableContacts = listOf(testContact),
+                            selectedContacts = selectedContacts,
+                        ),
+                    onToggleEntrySelection = { _, _ -> },
+                    onToggleContactSelection = {},
+                    onClearSelection = {},
+                )
+            }
+        }
+
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.selection_bottom_bar_clear_button_content_description)
+            )
+            .assertIsDisplayed()
+
+        selectedContacts = longObjectMapOf()
+
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.selection_bottom_bar_clear_button_content_description)
+            )
+            .assertDoesNotExist()
+    }
+
+    private fun setupBottomSheet(
+        onDismissRequest: () -> Unit = {},
+        uiState: ContactsUiState = ContactsUiState.Loading,
+    ) {
+        composeTestRule.setContent {
+            ContactsPickerAppTheme {
+                ContactsPickerBottomSheet(
+                    onDismissRequest = onDismissRequest,
+                    uiState = uiState,
+                    onToggleEntrySelection = { _, _ -> },
+                    onToggleContactSelection = {},
+                    onClearSelection = {},
+                )
+            }
+        }
     }
 }

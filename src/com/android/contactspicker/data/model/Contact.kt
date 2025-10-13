@@ -29,6 +29,22 @@ sealed class Contact {
 
     /** The name of the contact, suitable for display. */
     abstract val displayName: String
+
+    /**
+     * Returns true if all entries of the [Contact] are present in the [selectedEntries] set.
+     *
+     * For [DisplayNameContact], this means the contact ID is in the selected set. For
+     * [EmailContact] and [PhoneContact], it means all associated entry IDs are in the set.
+     */
+    fun isFullySelected(selectedEntries: Set<Long>?): Boolean =
+        if (selectedEntries.isNullOrEmpty()) {
+            false
+        } else
+            when (this) {
+                is DisplayNameContact -> selectedEntries.isNotEmpty()
+                is EmailContact -> selectedEntries.size == emails.size
+                is PhoneContact -> selectedEntries.size == phones.size
+            }
 }
 
 /**

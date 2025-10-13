@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.ContactsUiState
+import com.android.contactspicker.data.model.Contact
 
 internal const val CONTACTS_PICKER_SCREEN_LOADING_INDICATOR_TEST_TAG =
     "contacts_picker_screen_loading_indicator"
@@ -36,6 +37,8 @@ internal const val CONTACTS_PICKER_SCREEN_TEST_TAG = "contacts_picker_screen"
 @Composable
 fun ContactsPickerScreen(
     uiState: ContactsUiState,
+    onToggleContactSelection: (Contact) -> Unit,
+    onToggleEntrySelection: (Long, Long) -> Unit,
     onMoreDetails: () -> Unit,
     onExpandRequest: () -> Unit,
 ) {
@@ -79,7 +82,10 @@ fun ContactsPickerScreen(
                 // TODO(b/449172596): Handle dismissal logic of privacy banner
 
                 ContactsPickerBody(
-                    contacts = state.contacts,
+                    contacts = state.availableContacts,
+                    selectedContacts = state.selectedContacts,
+                    onToggleContactSelection = onToggleContactSelection,
+                    onToggleEntrySelection = onToggleEntrySelection,
                     onPrivacyBannerMoreDetails = onMoreDetails,
                     onPrivacyBannerDismissRequest = {},
                 )

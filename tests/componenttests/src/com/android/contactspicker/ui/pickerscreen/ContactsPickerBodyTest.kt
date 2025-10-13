@@ -20,6 +20,7 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.collection.longObjectMapOf
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasAnyDescendant
 import androidx.compose.ui.test.hasTestTag
@@ -53,8 +54,11 @@ class ContactsPickerBodyTest {
         composeTestRule.setContent {
             ContactsPickerBody(
                 contacts = contacts,
+                selectedContacts = longObjectMapOf(),
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
             )
         }
 
@@ -73,13 +77,22 @@ class ContactsPickerBodyTest {
         composeTestRule.onNodeWithText("Gamma").assertIsDisplayed()
 
         composeTestRule
-            .onNode(hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("A")))
+            .onNode(
+                hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("A")),
+                useUnmergedTree = true,
+            )
             .assertIsDisplayed()
         composeTestRule
-            .onNode(hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("B")))
+            .onNode(
+                hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("B")),
+                useUnmergedTree = true,
+            )
             .assertIsDisplayed()
         composeTestRule
-            .onNode(hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("G")))
+            .onNode(
+                hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("G")),
+                useUnmergedTree = true,
+            )
             .assertIsDisplayed()
     }
 
@@ -88,8 +101,11 @@ class ContactsPickerBodyTest {
         composeTestRule.setContent {
             ContactsPickerBody(
                 contacts = listOf(DisplayNameContact(id = 1L, displayName = "Alpha")),
+                selectedContacts = longObjectMapOf(),
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
             )
         }
         composeTestRule.onNode(hasTestTag(PRIVACY_BANNER_TEST_TAG)).assertIsDisplayed()
@@ -103,8 +119,11 @@ class ContactsPickerBodyTest {
         composeTestRule.setContent {
             ContactsPickerBody(
                 contacts = contacts,
+                selectedContacts = longObjectMapOf(),
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
             )
         }
 

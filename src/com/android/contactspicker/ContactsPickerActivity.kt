@@ -119,7 +119,13 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
         setContent {
             val uiState by contactsViewModel.uiState.collectAsState()
             ContactsPickerAppTheme {
-                ContactsPickerBottomSheet(onDismissRequest = { finish() }, uiState = uiState)
+                ContactsPickerBottomSheet(
+                    onDismissRequest = { finish() },
+                    uiState = uiState,
+                    onToggleContactSelection = contactsViewModel::toggleContactSelection,
+                    onToggleEntrySelection = contactsViewModel::toggleEntrySelection,
+                    onClearSelection = contactsViewModel::clearSelection,
+                )
             }
         }
     }

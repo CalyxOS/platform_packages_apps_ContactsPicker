@@ -15,6 +15,7 @@
  */
 package com.android.contactspicker.ui.pickerscreen
 
+import androidx.collection.LongObjectMap
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -42,12 +43,18 @@ const val CONTACTS_LIST_TEST_TAG = "contacts_list"
  *   the privacy banner is clicked.
  * @param onPrivacyBannerDismissRequest The callback to be invoked when the "Dismiss" button on the
  *   privacy banner is clicked.
+ * @param selectedContacts The map of currently selected contacts, keyed by contact ID.
+ * @param onToggleContactSelection A callback invoked when a contact's avatar is clicked.
+ * @param onToggleEntrySelection A callback invoked when a single entry row is clicked.
  */
 @Composable
 fun ContactsPickerBody(
     contacts: List<Contact>,
     onPrivacyBannerMoreDetails: () -> Unit,
     onPrivacyBannerDismissRequest: () -> Unit,
+    selectedContacts: LongObjectMap<Set<Long>>,
+    onToggleContactSelection: (Contact) -> Unit,
+    onToggleEntrySelection: (contactId: Long, entryId: Long) -> Unit,
 ) {
     val groupedContacts =
         remember(contacts) {
@@ -76,7 +83,12 @@ fun ContactsPickerBody(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    ContactItem(contact = contact)
+                    ContactItem(
+                        contact = contact,
+                        selectedEntries = selectedContacts[contact.id],
+                        onToggleContactSelection = onToggleContactSelection,
+                        onToggleEntrySelection = onToggleEntrySelection,
+                    )
                 }
             }
         }

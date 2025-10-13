@@ -54,11 +54,25 @@
     <!-- Content description for the email icon in the expanded contacts with multiple email
         addresses. [CHAR LIMIT=NONE] -->
     <string name="contact_item_email_icon_content_description">Email</string>
+
     <!-- Count of emails shown in the collapsed contact item with multiple emails. [CHAR LIMIT=NONE] -->
     <string name="contact_item_emails_count">%d emails</string>
     <!-- Count of phone numbers shown in the collapsed contact item with multiple numbers.
         [CHAR LIMIT=NONE] -->
     <string name="contact_item_phones_count">%d phone numbers</string>
+
+    <!-- Content description for the checkmark icon that replaces the avatar when a contact is
+        selected. The parameter is the contact's name. [CHAR LIMIT=NONE] -->
+    <string name="contact_item_selected_content_description">%1$s selected</string>
+    <!-- Content description for the button that clears all selected contacts in the selection bar.
+        [CHAR LIMIT=NONE] -->
+    <string name="selection_bottom_bar_clear_button_content_description">Clear selection</string>
+    <!-- Label for the button in the selection bar that allows the user to preview their selected
+        contacts. [CHAR LIMIT=20] -->
+    <string name="selection_bottom_bar_preview_button_label">Preview</string>
+    <!-- Label for the button in the selection bar that confirms the user's selection and closes the picker.
+        [CHAR LIMIT=20] -->
+    <string name="selection_bottom_bar_done_button_label">Done</string>
 
     <!-- Description for the privacy banner shown at the top of the contact picker. %1$s is the app name. -->
     <string name="privacy_banner_description">"%1$s will only have access to info from the contacts you select"</string>
