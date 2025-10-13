@@ -141,17 +141,18 @@ private fun Contact.secondaryText(): String? =
         is DisplayNameContact -> null
         is EmailContact ->
             if (emails.size > 1) stringResource(R.string.contact_item_emails_count, emails.size)
-            else emails.first()
+            else emails.first().address
         is PhoneContact ->
             if (phones.size > 1) stringResource(R.string.contact_item_phones_count, phones.size)
-            else phones.first()
+            else phones.first().number
     }
 
 @Composable
 private fun ExpandedPhoneContactEntry(contact: PhoneContact) {
     contact.phones.forEach { phone ->
         ExpandedContactEntry(
-            text = phone,
+            text = phone.number,
+            label = phone.label,
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.Phone,
@@ -168,7 +169,8 @@ private fun ExpandedPhoneContactEntry(contact: PhoneContact) {
 private fun ExpandedEmailContactEntry(contact: EmailContact) {
     contact.emails.forEach { email ->
         ExpandedContactEntry(
-            text = email,
+            text = email.address,
+            label = email.label,
             icon = {
                 Icon(
                     imageVector = Icons.Outlined.Email,
@@ -182,7 +184,7 @@ private fun ExpandedEmailContactEntry(contact: EmailContact) {
 }
 
 @Composable
-private fun ExpandedContactEntry(text: String, icon: @Composable () -> Unit) {
+private fun ExpandedContactEntry(text: String, label: String, icon: @Composable () -> Unit) {
     // TODO(b/436818961): move state to the ContactsList to hold all selected rows
     var checked by remember { mutableStateOf(false) }
     Row(
@@ -196,14 +198,18 @@ private fun ExpandedContactEntry(text: String, icon: @Composable () -> Unit) {
                     bottom = EXPANDED_CONTACT_ITEM_VERTICAL_PADDING,
                 ),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(ICON_TEXT_SPACING),
     ) {
         icon()
         Spacer(modifier = Modifier.padding(ICON_TEXT_SPACING))
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.weight(1f),
-        )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = text, style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
         Checkbox(checked = checked, onCheckedChange = { checked = it })
     }
 }

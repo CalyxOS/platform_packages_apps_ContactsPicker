@@ -49,13 +49,13 @@ data class DisplayNameContact(override val id: Long, override val displayName: S
  *
  * @param id A unique identifier for the contact.
  * @param displayName The name of the contact. Must not be blank.
- * @param phones The non-empty list of phone numbers.
+ * @param phones The non-empty list of phone entries.
  * @throws IllegalArgumentException if [displayName] is blank or [phones] is empty.
  */
 data class PhoneContact(
     override val id: Long,
     override val displayName: String,
-    val phones: List<String>,
+    val phones: List<PhoneEntry>,
 ) : Contact() {
     init {
         require(displayName.isNotBlank()) {
@@ -72,13 +72,13 @@ data class PhoneContact(
  *
  * @param id A unique identifier for the contact.
  * @param displayName The name of the contact. Must not be blank.
- * @param emails The non-empty list of email addresses.
+ * @param emails The non-empty list of email entries.
  * @throws IllegalArgumentException if [displayName] is blank or [emails] is empty.
  */
 data class EmailContact(
     override val id: Long,
     override val displayName: String,
-    val emails: List<String>,
+    val emails: List<EmailEntry>,
 ) : Contact() {
     init {
         require(displayName.isNotBlank()) {
@@ -89,3 +89,15 @@ data class EmailContact(
         }
     }
 }
+
+/**
+ * Represents a single phone entry with its unique ID corresponding to the ID in the Data._ID table,
+ * number, and a user-readable label (e.g., "Home", "Work").
+ */
+data class PhoneEntry(val id: Long, val number: String, val label: String)
+
+/**
+ * Represents a single email entry with its unique ID corresponding to the ID in the Data._ID table,
+ * address, and a user-readable label (e.g., "Home", "Work").
+ */
+data class EmailEntry(val id: Long, val address: String, val label: String)
