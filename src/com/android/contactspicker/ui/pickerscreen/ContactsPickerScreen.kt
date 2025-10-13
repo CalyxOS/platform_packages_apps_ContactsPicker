@@ -76,10 +76,13 @@ fun ContactsPickerScreen(
                         }
                     }
                 )
-                // TODO(b/448053355): Make the Privacy Banner Scroll with the Contact List
                 // TODO(b/449172596): Handle dismissal logic of privacy banner
-                PrivacyBanner(onMoreDetails = onMoreDetails, onDismissRequest = {})
-                ContactsList(contacts = state.contacts)
+
+                ContactsPickerBody(
+                    contacts = state.contacts,
+                    onPrivacyBannerMoreDetails = onMoreDetails,
+                    onPrivacyBannerDismissRequest = {},
+                )
             }
         }
     }

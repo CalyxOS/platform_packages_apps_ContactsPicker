@@ -31,11 +31,14 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.R
+
+internal const val PRIVACY_BANNER_TEST_TAG = "PrivacyBanner"
 
 /**
  * A banner that provides a privacy notice about sharing contact data with the requesting
@@ -45,7 +48,6 @@ import com.android.contactspicker.R
  * @param onMoreDetails Callback to be invoked when the "More details" button is clicked.
  * @param onDismissRequest Callback to be invoked when the "Dismiss" button is clicked.
  */
-// TODO(b/446119760) - Implement navigation logic for navigating to MoreDetails page
 // TODO(b/446667703) : Implement logic to dynamically fetch the name of the calling application
 @Composable
 fun PrivacyBanner(
@@ -61,6 +63,7 @@ fun PrivacyBanner(
                     color = MaterialTheme.colorScheme.surfaceContainerHighest,
                     shape = RoundedCornerShape(28.dp),
                 )
+                .testTag(PRIVACY_BANNER_TEST_TAG)
     ) {
         PrivacyBannerDescription(appName, modifier = Modifier.padding(16.dp))
         PrivacyBannerActions(

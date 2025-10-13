@@ -24,16 +24,31 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.data.model.Contact
 
+const val CONTACTS_LIST_TEST_TAG = "contacts_list"
+
 /**
- * A composable that displays a list of contacts, grouped by the first letter of their display name.
+ * Displays the main content of the contact picker, including a privacy banner and a vertically
+ * scrollable list of contacts.
  *
- * @param contactsViewModel The view model that provides the list of contacts.
+ * The contacts are grouped alphabetically by their display name, with a sticky header for each
+ * letter.
+ *
+ * @param contacts The list of [Contact]s to be displayed.
+ * @param onPrivacyBannerMoreDetails The callback to be invoked when the "More details" button on
+ *   the privacy banner is clicked.
+ * @param onPrivacyBannerDismissRequest The callback to be invoked when the "Dismiss" button on the
+ *   privacy banner is clicked.
  */
 @Composable
-fun ContactsList(contacts: List<Contact>) {
+fun ContactsPickerBody(
+    contacts: List<Contact>,
+    onPrivacyBannerMoreDetails: () -> Unit,
+    onPrivacyBannerDismissRequest: () -> Unit,
+) {
     val groupedContacts =
         remember(contacts) {
             // TODO(b/436818961): consider moving the grouping logic to the view models
@@ -47,7 +62,13 @@ fun ContactsList(contacts: List<Contact>) {
                 }
             }
         }
-    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+    LazyColumn(modifier = Modifier.fillMaxWidth().testTag(CONTACTS_LIST_TEST_TAG)) {
+        item(key = "privacy_banner") {
+            PrivacyBanner(
+                onMoreDetails = onPrivacyBannerMoreDetails,
+                onDismissRequest = onPrivacyBannerDismissRequest,
+            )
+        }
         groupedContacts.forEach { (letter, contactsInGroup) ->
             stickyHeader(key = "header_$letter") { SectionHeader(letter = letter) }
             items(items = contactsInGroup, key = { contact -> contact.id }) { contact ->
