@@ -24,7 +24,9 @@ import android.provider.ContactsContract.Data
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
+import com.android.contactspicker.data.model.EmailEntry
 import com.android.contactspicker.data.model.PhoneContact
+import com.android.contactspicker.data.model.PhoneEntry
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -59,7 +61,15 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
 
     private fun fetchEmailContacts(): List<Contact> {
         val contacts = mutableMapOf<Long, EmailContact>()
-        val projection = arrayOf(Email.CONTACT_ID, Email.DISPLAY_NAME_PRIMARY, Email.ADDRESS)
+        val projection =
+            arrayOf(
+                Email.CONTACT_ID,
+                Email.DISPLAY_NAME_PRIMARY,
+                Email.ADDRESS,
+                Email._ID,
+                Email.TYPE,
+                Email.LABEL,
+            )
         val cursor =
             contentResolver.query(
                 Email.CONTENT_URI,
@@ -73,18 +83,28 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             val idIndex = it.getColumnIndex(Email.CONTACT_ID)
             val nameIndex = it.getColumnIndex(Email.DISPLAY_NAME_PRIMARY)
             val addressIndex = it.getColumnIndex(Email.ADDRESS)
+            val dataIdIndex = it.getColumnIndex(Email._ID)
+            val typeIndex = it.getColumnIndex(Email.TYPE)
+            val labelIndex = it.getColumnIndex(Email.LABEL)
 
             while (it.moveToNext()) {
                 val id = it.getLong(idIndex)
                 val name = it.getString(nameIndex)
                 val address = it.getString(addressIndex)
+                val dataId = it.getLong(dataIdIndex)
+                val type = it.getInt(typeIndex)
+                val customLabel = it.getString(labelIndex)
+                // TODO(b/436818961): support displaying contacts that do not have display name
                 if (!name.isNullOrBlank() && !address.isNullOrBlank()) {
+                    val label = Email.getTypeLabel(context.resources, type, customLabel).toString()
+                    val emailEntry = EmailEntry(dataId, address, label)
+
                     if (contacts.containsKey(id)) {
                         val existingContact = contacts[id]!!
                         contacts[id] =
-                            existingContact.copy(emails = existingContact.emails + address)
+                            existingContact.copy(emails = existingContact.emails + emailEntry)
                     } else {
-                        contacts[id] = EmailContact(id, name, listOf(address))
+                        contacts[id] = EmailContact(id, name, listOf(emailEntry))
                     }
                 }
             }
@@ -94,7 +114,15 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
 
     private fun fetchPhoneContacts(): List<Contact> {
         val contacts = mutableMapOf<Long, PhoneContact>()
-        val projection = arrayOf(Phone.CONTACT_ID, Phone.DISPLAY_NAME_PRIMARY, Phone.NUMBER)
+        val projection =
+            arrayOf(
+                Phone.CONTACT_ID,
+                Phone.DISPLAY_NAME_PRIMARY,
+                Phone.NUMBER,
+                Phone._ID,
+                Phone.TYPE,
+                Phone.LABEL,
+            )
         val cursor =
             contentResolver.query(
                 Phone.CONTENT_URI,
@@ -108,18 +136,27 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             val idIndex = it.getColumnIndex(Phone.CONTACT_ID)
             val nameIndex = it.getColumnIndex(Phone.DISPLAY_NAME_PRIMARY)
             val numberIndex = it.getColumnIndex(Phone.NUMBER)
+            val dataIdIndex = it.getColumnIndex(Phone._ID)
+            val typeIndex = it.getColumnIndex(Phone.TYPE)
+            val labelIndex = it.getColumnIndex(Phone.LABEL)
 
             while (it.moveToNext()) {
                 val id = it.getLong(idIndex)
                 val name = it.getString(nameIndex)
                 val number = it.getString(numberIndex)
+                val dataId = it.getLong(dataIdIndex)
+                val type = it.getInt(typeIndex)
+                val customLabel = it.getString(labelIndex)
                 if (!name.isNullOrBlank() && !number.isNullOrBlank()) {
+                    val label = Phone.getTypeLabel(context.resources, type, customLabel).toString()
+                    val phoneEntry = PhoneEntry(dataId, number, label)
+
                     if (contacts.containsKey(id)) {
                         val existingContact = contacts[id]!!
                         contacts[id] =
-                            existingContact.copy(phones = existingContact.phones + number)
+                            existingContact.copy(phones = existingContact.phones + phoneEntry)
                     } else {
-                        contacts[id] = PhoneContact(id, name, listOf(number))
+                        contacts[id] = PhoneContact(id, name, listOf(phoneEntry))
                     }
                 }
             }

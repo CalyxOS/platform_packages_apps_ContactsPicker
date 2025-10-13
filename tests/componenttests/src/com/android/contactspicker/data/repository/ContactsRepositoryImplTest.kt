@@ -28,6 +28,7 @@ import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsContract.Contacts
 import android.test.mock.MockContentResolver
+import androidx.test.core.app.ApplicationProvider
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
@@ -93,7 +94,9 @@ class ContactsRepositoryImplTest(
         }
     }
 
+    private val context: Context = ApplicationProvider.getApplicationContext()
     private val mockContext: Context = mock()
+
     private val fakeContentProvider = FakeContentProvider()
     private val mockContentResolver = MockContentResolver()
     private val mockCursor: Cursor = mock()
@@ -106,6 +109,7 @@ class ContactsRepositoryImplTest(
 
         mockContentResolver.addProvider(ContactsContract.AUTHORITY, fakeContentProvider)
         whenever(mockContext.contentResolver).thenReturn(mockContentResolver)
+        whenever(mockContext.resources).thenReturn(context.resources)
         repository = ContactsRepositoryImpl(mockContext)
     }
 
@@ -140,23 +144,73 @@ class ContactsRepositoryImplTest(
         }
     }
 
+    @Test
+    fun fetchContacts_groupsMultipleEntriesForSameContact() = runTest {
+        // This test only runs for phone contacts, but logic is shared.
+        if (intentType == Phone.CONTENT_TYPE) {
+            fakeContentProvider.setCursorForUri(Phone.CONTENT_URI, mockCursor)
+            // Simulate two rows for the same contact ID
+            whenever(mockCursor.moveToNext()).thenReturn(true, true, false)
+            whenever(mockCursor.count).thenReturn(2)
+
+            // Both rows have the same contact ID and name
+            whenever(mockCursor.getColumnIndex(Phone.CONTACT_ID)).thenReturn(0)
+            whenever(mockCursor.getLong(0)).thenReturn(1L)
+            whenever(mockCursor.getColumnIndex(Phone.DISPLAY_NAME_PRIMARY)).thenReturn(1)
+            whenever(mockCursor.getString(1)).thenReturn("Test Contact")
+
+            // First row data
+            whenever(mockCursor.getColumnIndex(Phone.NUMBER)).thenReturn(2)
+            whenever(mockCursor.getString(2)).thenReturn("555-0123", "555-0124")
+            whenever(mockCursor.getColumnIndex(Phone._ID)).thenReturn(3)
+            whenever(mockCursor.getLong(3)).thenReturn(101L, 102L)
+            whenever(mockCursor.getColumnIndex(Phone.TYPE)).thenReturn(4)
+            whenever(mockCursor.getInt(4)).thenReturn(Phone.TYPE_HOME, Phone.TYPE_WORK)
+            whenever(mockCursor.getColumnIndex(Phone.LABEL)).thenReturn(5)
+            whenever(mockCursor.getString(5)).thenReturn(null, null)
+
+            val contacts = repository.fetchContacts(intentAction, intentType)
+
+            assertThat(contacts).hasSize(1) // Should be grouped into one contact
+            val phoneContact = contacts.first() as PhoneContact
+            assertThat(phoneContact.phones).hasSize(2)
+            assertThat(phoneContact.phones[0].number).isEqualTo("555-0123")
+            assertThat(phoneContact.phones[0].label).isEqualTo("Home")
+            assertThat(phoneContact.phones[1].number).isEqualTo("555-0124")
+            assertThat(phoneContact.phones[1].label).isEqualTo("Work")
+        }
+    }
+
     private fun prepareMockCursor() {
         // Simulate a single row: make moveToNext() return true once, then false.
         whenever(mockCursor.moveToNext()).thenReturn(true, false)
         whenever(mockCursor.count).thenReturn(1)
 
+        // Common fields
         whenever(mockCursor.getColumnIndex(Contacts._ID)).thenReturn(0)
         whenever(mockCursor.getColumnIndex(Email.CONTACT_ID)).thenReturn(0)
         whenever(mockCursor.getColumnIndex(Phone.CONTACT_ID)).thenReturn(0)
         whenever(mockCursor.getLong(0)).thenReturn(1L)
-
         whenever(mockCursor.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY)).thenReturn(1)
         whenever(mockCursor.getString(1)).thenReturn("Test Contact")
 
+        // Email-specific fields
         whenever(mockCursor.getColumnIndex(Email.ADDRESS)).thenReturn(2)
         whenever(mockCursor.getString(2)).thenReturn("test@example.com")
 
+        // Phone-specific fields
         whenever(mockCursor.getColumnIndex(Phone.NUMBER)).thenReturn(3)
         whenever(mockCursor.getString(3)).thenReturn("555-0123")
+
+        // New fields for Entry data
+        whenever(mockCursor.getColumnIndex(Email._ID)).thenReturn(4)
+        whenever(mockCursor.getColumnIndex(Phone._ID)).thenReturn(4)
+        whenever(mockCursor.getLong(4)).thenReturn(101L)
+        whenever(mockCursor.getColumnIndex(Email.TYPE)).thenReturn(5)
+        whenever(mockCursor.getColumnIndex(Phone.TYPE)).thenReturn(5)
+        whenever(mockCursor.getInt(5)).thenReturn(Phone.TYPE_HOME) // Default to HOME
+        whenever(mockCursor.getColumnIndex(Email.LABEL)).thenReturn(6)
+        whenever(mockCursor.getColumnIndex(Phone.LABEL)).thenReturn(6)
+        whenever(mockCursor.getString(6)).thenReturn(null) // Default to no custom label
     }
 }

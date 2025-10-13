@@ -26,6 +26,7 @@ import android.provider.ContactsContract.CommonDataKinds.Phone
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
+import com.android.contactspicker.data.model.EmailEntry
 import com.android.contactspicker.fakes.FakeContactsRepository
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
@@ -81,7 +82,14 @@ class ContactsViewModelTest {
 
     @Test
     fun processIntent_whenRepositorySucceeds_setsSuccessState() = runTest {
-        val testContacts = listOf(EmailContact(1L, "Test", listOf("a@b.com")))
+        val testContacts =
+            listOf(
+                EmailContact(
+                    1L,
+                    "Test",
+                    listOf(EmailEntry(id = 11L, address = "alice@wonderland.org", label = "Home")),
+                )
+            )
         fakeRepository.setContacts(testContacts)
 
         viewModel.processIntent(Intent.ACTION_PICK, Email.CONTENT_TYPE)

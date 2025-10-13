@@ -25,6 +25,10 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ContactTest {
 
+    private val testPhoneEntry = PhoneEntry(id = 1L, number = "123-456-7890", label = "Home")
+    private val testEmailEntry =
+        EmailEntry(id = 2L, address = "john.doe@example.com", label = "Home")
+
     @Test(expected = IllegalArgumentException::class)
     fun createDisplayNameContact_withBlankDisplayName_throwsException() {
         DisplayNameContact(id = 1, displayName = " ")
@@ -37,7 +41,7 @@ class ContactTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun createPhoneContact_withBlankDisplayName_throwsException() {
-        PhoneContact(id = 1, displayName = " ", phones = listOf("123-456-7890"))
+        PhoneContact(id = 1, displayName = " ", phones = listOf(testPhoneEntry))
     }
 
     @Test(expected = IllegalArgumentException::class)
@@ -47,21 +51,22 @@ class ContactTest {
 
     @Test
     fun createPhoneContact_withValidData_succeeds() {
-        PhoneContact(id = 1, displayName = "John Doe", phones = listOf("123-456-7890"))
+        PhoneContact(id = 1, displayName = "John Doe", phones = listOf(testPhoneEntry))
     }
 
     @Test
     fun createPhoneContact_withMultiplePhones_succeeds() {
+        val anotherPhoneEntry = PhoneEntry(id = 3L, number = "098-765-4321", label = "Work")
         PhoneContact(
             id = 1,
             displayName = "John Doe",
-            phones = listOf("123-456-7890", "098-765-4321"),
+            phones = listOf(testPhoneEntry, anotherPhoneEntry),
         )
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun createEmailContact_withBlankDisplayName_throwsException() {
-        EmailContact(id = 1, displayName = " ", emails = listOf("john.doe@example.com"))
+        EmailContact(id = 1, displayName = " ", emails = listOf(testEmailEntry))
     }
 
     @Test(expected = IllegalArgumentException::class)
@@ -71,15 +76,16 @@ class ContactTest {
 
     @Test
     fun createEmailContact_withValidData_succeeds() {
-        EmailContact(id = 1, displayName = "John Doe", emails = listOf("john.doe@example.com"))
+        EmailContact(id = 1, displayName = "John Doe", emails = listOf(testEmailEntry))
     }
 
     @Test
     fun createEmailContact_withMultipleEmails_succeeds() {
+        val anotherEmailEntry = EmailEntry(id = 4L, address = "j.doe@work.com", label = "Work")
         EmailContact(
             id = 1,
             displayName = "John Doe",
-            emails = listOf("john.doe@example.com", "j.doe@work.com"),
+            emails = listOf(testEmailEntry, anotherEmailEntry),
         )
     }
 }

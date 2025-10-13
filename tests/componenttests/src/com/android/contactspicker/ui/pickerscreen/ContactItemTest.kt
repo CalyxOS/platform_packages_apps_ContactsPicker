@@ -38,7 +38,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.R
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
+import com.android.contactspicker.data.model.EmailEntry
 import com.android.contactspicker.data.model.PhoneContact
+import com.android.contactspicker.data.model.PhoneEntry
 import com.android.contactspicker.ui.components.AVATAR_TEST_TAG
 import org.junit.Rule
 import org.junit.Test
@@ -55,27 +57,39 @@ class ContactItemTest {
         DisplayNameContact(id = 1, displayName = "Alice Wonderland")
 
     private val testSinglePhoneContact =
-        PhoneContact(id = 1, displayName = "Alice Wonderland", phones = listOf("111-222-3333"))
+        PhoneContact(
+            id = 1,
+            displayName = "Alice Wonderland",
+            phones = listOf(PhoneEntry(id = 10L, number = "111-222-3333", label = "Mobile")),
+        )
 
     private val testSingleEmailContact =
         EmailContact(
             id = 1,
             displayName = "Alice Wonderland",
-            emails = listOf("alice@wonderland.org"),
+            emails = listOf(EmailEntry(id = 11L, address = "alice@wonderland.org", label = "Home")),
         )
 
     private val testMultiPhoneContact =
         PhoneContact(
             id = 1,
             displayName = "Bob The Builder",
-            phones = listOf("111-222-3333", "444-555-6666"),
+            phones =
+                listOf(
+                    PhoneEntry(id = 12L, number = "111-222-3333", label = "Mobile"),
+                    PhoneEntry(id = 13L, number = "444-555-6666", label = "Work"),
+                ),
         )
 
     private val testMultiEmailContact =
         EmailContact(
             id = 1,
             displayName = "Charlie Chaplin",
-            emails = listOf("charlie@chaplin.org", "cc@hollywood.com"),
+            emails =
+                listOf(
+                    EmailEntry(id = 14L, address = "charlie@chaplin.org", label = "Home"),
+                    EmailEntry(id = 15L, address = "cc@hollywood.com", label = "Work"),
+                ),
         )
 
     private val context: Context = ApplicationProvider.getApplicationContext()
@@ -97,7 +111,9 @@ class ContactItemTest {
         composeTestRule.setContent { ContactItem(contact = testSingleEmailContact) }
 
         composeTestRule.onNodeWithText(testSingleEmailContact.displayName).assertIsDisplayed()
-        composeTestRule.onNodeWithText(testSingleEmailContact.emails.first()).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(testSingleEmailContact.emails.first().address)
+            .assertIsDisplayed()
         composeTestRule
             .onNodeWithContentDescription(
                 context.getString(R.string.contact_item_expand_button_content_description)
@@ -110,8 +126,15 @@ class ContactItemTest {
         composeTestRule.setContent { ContactItem(contact = testSinglePhoneContact) }
 
         composeTestRule.onNodeWithText(testSinglePhoneContact.displayName).assertIsDisplayed()
-        composeTestRule.onNodeWithText(testSinglePhoneContact.phones.first()).assertIsDisplayed()
-        composeTestRule.onNodeWithContentDescription("Expand").assertDoesNotExist()
+        composeTestRule
+            .onNodeWithText(testSinglePhoneContact.phones.first().number)
+            .assertIsDisplayed()
+        // The content description for the expand button should not exist.
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.contact_item_expand_button_content_description)
+            )
+            .assertDoesNotExist()
     }
 
     @Test
@@ -133,8 +156,12 @@ class ContactItemTest {
             )
             .assertIsDisplayed()
         // Emails should not be visible initially
-        composeTestRule.onNodeWithText(testMultiEmailContact.emails.first()).assertDoesNotExist()
-        composeTestRule.onNodeWithText(testMultiEmailContact.emails.last()).assertDoesNotExist()
+        composeTestRule
+            .onNodeWithText(testMultiEmailContact.emails.first().address)
+            .assertDoesNotExist()
+        composeTestRule
+            .onNodeWithText(testMultiEmailContact.emails.last().address)
+            .assertDoesNotExist()
     }
 
     @Test
@@ -156,8 +183,12 @@ class ContactItemTest {
             )
             .assertIsDisplayed()
         // Phones should not be visible initially
-        composeTestRule.onNodeWithText(testMultiPhoneContact.phones.first()).assertDoesNotExist()
-        composeTestRule.onNodeWithText(testMultiPhoneContact.phones.last()).assertDoesNotExist()
+        composeTestRule
+            .onNodeWithText(testMultiPhoneContact.phones.first().number)
+            .assertDoesNotExist()
+        composeTestRule
+            .onNodeWithText(testMultiPhoneContact.phones.last().number)
+            .assertDoesNotExist()
     }
 
     @Test
@@ -173,7 +204,8 @@ class ContactItemTest {
             )
             .assertIsDisplayed()
         testMultiEmailContact.emails.forEach { email ->
-            composeTestRule.onNodeWithText(email).assertIsDisplayed()
+            composeTestRule.onNodeWithText(email.address).assertIsDisplayed()
+            composeTestRule.onNodeWithText(email.label).assertIsDisplayed()
         }
 
         // Collapse
@@ -184,7 +216,9 @@ class ContactItemTest {
                 context.getString(R.string.contact_item_expand_button_content_description)
             )
             .assertIsDisplayed()
-        composeTestRule.onNodeWithText(testMultiEmailContact.emails.first()).assertDoesNotExist()
+        composeTestRule
+            .onNodeWithText(testMultiEmailContact.emails.first().address)
+            .assertDoesNotExist()
     }
 
     @Test
@@ -200,7 +234,8 @@ class ContactItemTest {
             )
             .assertIsDisplayed()
         testMultiPhoneContact.phones.forEach { phone ->
-            composeTestRule.onNodeWithText(phone).assertIsDisplayed()
+            composeTestRule.onNodeWithText(phone.number).assertIsDisplayed()
+            composeTestRule.onNodeWithText(phone.label).assertIsDisplayed()
         }
 
         // Collapse
@@ -211,16 +246,15 @@ class ContactItemTest {
                 context.getString(R.string.contact_item_expand_button_content_description)
             )
             .assertIsDisplayed()
-        composeTestRule.onNodeWithText(testMultiPhoneContact.phones.first()).assertDoesNotExist()
+        composeTestRule
+            .onNodeWithText(testMultiPhoneContact.phones.first().number)
+            .assertDoesNotExist()
     }
 
     @Test
     fun contactItem_avatarForAlice_displaysInitialA() {
         composeTestRule.setContent { ContactItem(contact = testDisplayNameContact) }
 
-        // This assertion mimics the one failing in ContactsListTest.
-        // It now assumes the Avatar composable internally uses testTag("contact_avatar")
-        // on the same Text composable that displays the initial.
         composeTestRule
             .onNode(hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("A")))
             .assertIsDisplayed()
@@ -233,7 +267,7 @@ class ContactItemTest {
         // Expand the item
         composeTestRule.onNodeWithText(testMultiEmailContact.displayName).performClick()
 
-        val firstEmail = testMultiEmailContact.emails.first()
+        val firstEmail = testMultiEmailContact.emails.first().address
         // useUnmergedTree = true is needed because the Row containing the checkbox and text
         // might merge their semantics, making the checkbox difficult to find.
         val checkbox =
