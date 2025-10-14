@@ -96,4 +96,18 @@ class ContactsPickerBottomSheetTest {
 
         verify(mockOnDismissRequest, times(1)).invoke()
     }
+
+    @Test
+    fun scrim_isDisplayed_onlyWhenSheetIsVisible() {
+        val mockOnDismissRequest: () -> Unit = mock()
+        composeTestRule.setContent {
+            ContactsPickerBottomSheet(onDismissRequest = mockOnDismissRequest)
+        }
+
+        composeTestRule.onNodeWithTag(SCRIM_TEST_TAG).assertIsDisplayed()
+
+        composeTestRule.onNodeWithTag(BOTTOM_SHEET_TEST_TAG).performTouchInput { swipeDown() }
+        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag(SCRIM_TEST_TAG).assertDoesNotExist()
+    }
 }

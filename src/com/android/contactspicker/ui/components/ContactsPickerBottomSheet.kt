@@ -15,8 +15,11 @@
  */
 package com.android.contactspicker.ui.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -41,7 +44,10 @@ import com.android.contactspicker.navigation.ContactsPickerNavHost
 import kotlinx.coroutines.launch
 
 internal const val BOTTOM_SHEET_TEST_TAG = "bottom_sheet"
+internal const val SCRIM_TEST_TAG = "scrim"
+
 internal const val BOTTOM_SHEET_PEEK_HEIGHT_RATIO = 0.75f
+private const val SCRIM_ALPHA = 0.32f
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,24 +70,37 @@ fun ContactsPickerBottomSheet(
         }
     }
 
-    BottomSheetScaffold(
-        modifier =
-            Modifier.windowInsetsPadding(WindowInsets.statusBars.union(WindowInsets.displayCutout)),
-        scaffoldState = scaffoldState,
-        sheetPeekHeight = peekHeight,
-        sheetShape = MaterialTheme.shapes.extraLarge,
-        sheetContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-        sheetContentColor = MaterialTheme.colorScheme.onSurface,
-        sheetShadowElevation = 8.dp,
-        containerColor = Color.Transparent,
-        sheetContent = {
-            ContactsPickerNavHost(
-                navController,
-                uiState,
-                onExpandRequest = { scope.launch { bottomSheetState.expand() } },
-                modifier = Modifier.testTag(BOTTOM_SHEET_TEST_TAG),
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Draw a scrim behind the scaffold when the sheet is not hidden
+        if (bottomSheetState.currentValue != SheetValue.Hidden) {
+            Box(
+                modifier =
+                    Modifier.fillMaxSize()
+                        .background(MaterialTheme.colorScheme.scrim.copy(alpha = SCRIM_ALPHA))
+                        .testTag(SCRIM_TEST_TAG)
             )
-        },
-    ) { /* Empty content of the screen that appears behind the bottom sheet. */
+        }
+        BottomSheetScaffold(
+            modifier =
+                Modifier.windowInsetsPadding(
+                    WindowInsets.statusBars.union(WindowInsets.displayCutout)
+                ),
+            scaffoldState = scaffoldState,
+            sheetPeekHeight = peekHeight,
+            sheetShape = MaterialTheme.shapes.extraLarge,
+            sheetContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+            sheetContentColor = MaterialTheme.colorScheme.onSurface,
+            sheetShadowElevation = 8.dp,
+            containerColor = Color.Transparent,
+            sheetContent = {
+                ContactsPickerNavHost(
+                    navController,
+                    uiState,
+                    onExpandRequest = { scope.launch { bottomSheetState.expand() } },
+                    modifier = Modifier.testTag(BOTTOM_SHEET_TEST_TAG),
+                )
+            },
+        ) { /* Empty content of the screen that appears behind the bottom sheet. */
+        }
     }
 }
