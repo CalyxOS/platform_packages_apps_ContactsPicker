@@ -21,11 +21,11 @@ import com.android.contactspicker.data.repository.ContactsRepository
 /** A fake implementation of ContactsRepository for use in tests. */
 class FakeContactsRepository : ContactsRepository {
 
-    private var contactsToReturn: List<Contact> = emptyList()
+    private var contactsToReturnForFetch: List<Contact> = emptyList()
     private var exceptionToThrow: Exception? = null
 
     fun setContacts(contacts: List<Contact>) {
-        contactsToReturn = contacts
+        contactsToReturnForFetch = contacts
         exceptionToThrow = null
     }
 
@@ -35,6 +35,14 @@ class FakeContactsRepository : ContactsRepository {
 
     override suspend fun fetchContacts(intentAction: String?, intentType: String?): List<Contact> {
         exceptionToThrow?.let { throw it }
-        return contactsToReturn
+        return contactsToReturnForFetch
+    }
+
+    override suspend fun searchContacts(
+        query: String,
+        intentAction: String?,
+        intentType: String?,
+    ): List<Contact> {
+        return emptyList()
     }
 }

@@ -42,6 +42,7 @@ import com.android.contactspicker.data.model.EmailEntry
 import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.model.PhoneEntry
 import com.android.contactspicker.ui.components.AVATAR_TEST_TAG
+import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -205,7 +206,8 @@ class ContactItemTest {
             .assertIsDisplayed()
         testMultiEmailContact.emails.forEach { email ->
             composeTestRule.onNodeWithText(email.address).assertIsDisplayed()
-            composeTestRule.onNodeWithText(email.label).assertIsDisplayed()
+            assertThat(email.label).isNotNull()
+            composeTestRule.onNodeWithText(email.label!!).assertIsDisplayed()
         }
 
         // Collapse
@@ -235,7 +237,8 @@ class ContactItemTest {
             .assertIsDisplayed()
         testMultiPhoneContact.phones.forEach { phone ->
             composeTestRule.onNodeWithText(phone.number).assertIsDisplayed()
-            composeTestRule.onNodeWithText(phone.label).assertIsDisplayed()
+            assertThat(phone.label).isNotNull()
+            composeTestRule.onNodeWithText(phone.label!!).assertIsDisplayed()
         }
 
         // Collapse
