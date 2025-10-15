@@ -48,18 +48,20 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             arrayOf(Email.CONTACT_ID, Email.DISPLAY_NAME_PRIMARY, Email.ADDRESS, Email._ID)
     }
 
-    /** Fetches contacts from the data source based on the intent action and type. */
-    override suspend fun fetchContacts(intentAction: String?, intentType: String?): List<Contact> =
+    override suspend fun getContactsForIntent(
+        intentAction: String?,
+        intentType: String?,
+    ): List<Contact> =
         withContext(Dispatchers.IO) {
             when (intentAction) {
                 Intent.ACTION_PICK ->
                     when (intentType) {
                         Email.CONTENT_ITEM_TYPE,
-                        Email.CONTENT_TYPE -> fetchEmailContacts()
+                        Email.CONTENT_TYPE -> getEmailContacts()
                         Phone.CONTENT_ITEM_TYPE,
-                        Phone.CONTENT_TYPE -> fetchPhoneContacts()
+                        Phone.CONTENT_TYPE -> getPhoneContacts()
                         Contacts.CONTENT_TYPE,
-                        Contacts.CONTENT_ITEM_TYPE -> fetchDisplayNameContacts()
+                        Contacts.CONTENT_ITEM_TYPE -> getDisplayNameContacts()
                         else ->
                             throw IllegalArgumentException("Unsupported intent type: $intentType")
                     }
@@ -109,7 +111,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         }
     }
 
-    private fun fetchEmailContacts(): List<Contact> {
+    private fun getEmailContacts(): List<Contact> {
         val contacts = mutableMapOf<Long, EmailContact>()
         val projection =
             arrayOf(
@@ -162,7 +164,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         return contacts.values.toList()
     }
 
-    private fun fetchPhoneContacts(): List<Contact> {
+    private fun getPhoneContacts(): List<Contact> {
         val contacts = mutableMapOf<Long, PhoneContact>()
         val projection =
             arrayOf(
@@ -214,7 +216,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         return contacts.values.toList()
     }
 
-    private fun fetchDisplayNameContacts(): List<Contact> {
+    private fun getDisplayNameContacts(): List<Contact> {
         val contacts = mutableListOf<DisplayNameContact>()
         val projection = arrayOf(Contacts._ID, Contacts.DISPLAY_NAME_PRIMARY)
         val selection = "${Contacts.DISPLAY_NAME_PRIMARY} IS NOT NULL"

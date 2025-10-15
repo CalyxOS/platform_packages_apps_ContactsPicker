@@ -118,7 +118,7 @@ class ContactsRepositoryImplTest(
         if (expectException) {
             // Test for failure
             assertFailsWith<IllegalArgumentException> {
-                repository.fetchContacts(intentAction, intentType)
+                repository.getContactsForIntent(intentAction, intentType)
             }
         } else {
             // Test for success
@@ -137,7 +137,7 @@ class ContactsRepositoryImplTest(
 
             prepareMockCursor()
 
-            val contacts = repository.fetchContacts(intentAction, intentType)
+            val contacts = repository.getContactsForIntent(intentAction, intentType)
 
             assertThat(contacts).isNotEmpty()
             assertThat(contacts.first()).isInstanceOf(expectedResultType!!.java)
@@ -169,7 +169,7 @@ class ContactsRepositoryImplTest(
             whenever(mockCursor.getColumnIndex(Phone.LABEL)).thenReturn(5)
             whenever(mockCursor.getString(5)).thenReturn(null, null)
 
-            val contacts = repository.fetchContacts(intentAction, intentType)
+            val contacts = repository.getContactsForIntent(intentAction, intentType)
 
             assertThat(contacts).hasSize(1) // Should be grouped into one contact
             val phoneContact = contacts.first() as PhoneContact

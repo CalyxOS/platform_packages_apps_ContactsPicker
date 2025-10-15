@@ -66,7 +66,7 @@ class ContactsViewModelTest {
     @Test
     fun processIntent_setsLoadingThenSuccessState() = runTest {
         val testContacts = listOf(DisplayNameContact(1L, "Test"))
-        fakeRepository.setContacts(testContacts)
+        fakeRepository.setInitialContacts(testContacts)
         val collectedStates = mutableListOf<ContactsUiState>()
         val job = launch { viewModel.uiState.toList(collectedStates) }
 
@@ -90,7 +90,7 @@ class ContactsViewModelTest {
                     listOf(EmailEntry(id = 11L, address = "alice@wonderland.org", label = "Home")),
                 )
             )
-        fakeRepository.setContacts(testContacts)
+        fakeRepository.setInitialContacts(testContacts)
 
         viewModel.processIntent(Intent.ACTION_PICK, Email.CONTENT_TYPE)
         testDispatcher.scheduler.advanceUntilIdle()

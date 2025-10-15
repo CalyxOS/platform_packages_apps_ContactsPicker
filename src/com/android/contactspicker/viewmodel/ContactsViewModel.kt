@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for the Contacts Picker screen.
  *
- * This class is responsible for fetching and preparing the contacts data to be displayed by the UI.
+ * This class is responsible for loading and preparing the contacts data to be displayed by the UI.
  */
 @HiltViewModel
 class ContactsViewModel @Inject constructor(private val contactsRepository: ContactsRepository) :
@@ -50,7 +50,7 @@ class ContactsViewModel @Inject constructor(private val contactsRepository: Cont
     fun processIntent(intentAction: String?, intentType: String?) {
         viewModelScope.launch {
             try {
-                val contacts = contactsRepository.fetchContacts(intentAction, intentType)
+                val contacts = contactsRepository.getContactsForIntent(intentAction, intentType)
                 // TODO(b/444459883): check and handle empty list
                 _uiState.value = ContactsUiState.Success(contacts)
             } catch (e: IllegalArgumentException) {
