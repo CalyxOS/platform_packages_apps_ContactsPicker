@@ -19,7 +19,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.flags.Flags
 import android.content.pm.ProviderInfo
-import android.database.Cursor
+import android.database.MatrixCursor
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
@@ -99,7 +99,6 @@ class ContactsRepositoryImplTest(
 
     private val fakeContentProvider = FakeContentProvider()
     private val mockContentResolver = MockContentResolver()
-    private val mockCursor: Cursor = mock()
     private lateinit var repository: ContactsRepository
 
     @Before
@@ -114,7 +113,7 @@ class ContactsRepositoryImplTest(
     }
 
     @Test
-    fun fetchContacts_returnsCorrectContactTypeOrThrows() = runTest {
+    fun getContactsForIntent_returnsCorrectContactTypeOrThrows() = runTest {
         if (expectException) {
             // Test for failure
             assertFailsWith<IllegalArgumentException> {
@@ -122,21 +121,79 @@ class ContactsRepositoryImplTest(
             }
         } else {
             // Test for success
-            val uriToExpect =
+            val (uriToExpect, cursor) =
                 when (intentType) {
                     Email.CONTENT_TYPE,
-                    Email.CONTENT_ITEM_TYPE -> Email.CONTENT_URI
+                    Email.CONTENT_ITEM_TYPE ->
+                        Pair(
+                            Email.CONTENT_URI,
+                            MatrixCursor(
+                                arrayOf(
+                                    Email.CONTACT_ID,
+                                    Email.DISPLAY_NAME_PRIMARY,
+                                    Email.ADDRESS,
+                                    Email._ID,
+                                    Email.TYPE,
+                                    Email.LABEL,
+                                )
+                            ),
+                        )
                     Phone.CONTENT_TYPE,
-                    Phone.CONTENT_ITEM_TYPE -> Phone.CONTENT_URI
+                    Phone.CONTENT_ITEM_TYPE ->
+                        Pair(
+                            Phone.CONTENT_URI,
+                            MatrixCursor(
+                                arrayOf(
+                                    Phone.CONTACT_ID,
+                                    Phone.DISPLAY_NAME_PRIMARY,
+                                    Phone.NUMBER,
+                                    Phone._ID,
+                                    Phone.TYPE,
+                                    Phone.LABEL,
+                                )
+                            ),
+                        )
+                    // ...
                     Contacts.CONTENT_TYPE,
-                    Contacts.CONTENT_ITEM_TYPE -> Contacts.CONTENT_URI
+                    Contacts.CONTENT_ITEM_TYPE ->
+                        // Fix: Return a Pair, just like the other branches
+                        Pair(
+                            Contacts.CONTENT_URI,
+                            MatrixCursor(
+                                arrayOf(
+                                    Contacts._ID, // Matches the '1L' in your addRow
+                                    Contacts.DISPLAY_NAME_PRIMARY, // Matches the 'Test Contact'
+                                )
+                            ),
+                        )
                     else -> throw IllegalArgumentException("Unsupported intent type: $intentType")
                 }
 
-            fakeContentProvider.setCursorForUri(uriToExpect, mockCursor)
+            // Add a row to the cursor
+            when (intentType) {
+                Email.CONTENT_TYPE,
+                Email.CONTENT_ITEM_TYPE ->
+                    (cursor as MatrixCursor).addRow(
+                        arrayOf<Any?>(
+                            1L,
+                            "Test Contact",
+                            "test@example.com",
+                            101L,
+                            Email.TYPE_HOME,
+                            null,
+                        )
+                    )
+                Phone.CONTENT_TYPE,
+                Phone.CONTENT_ITEM_TYPE ->
+                    (cursor as MatrixCursor).addRow(
+                        arrayOf<Any?>(1L, "Test Contact", "555-0123", 101L, Phone.TYPE_HOME, null)
+                    )
+                Contacts.CONTENT_TYPE,
+                Contacts.CONTENT_ITEM_TYPE ->
+                    (cursor as MatrixCursor).addRow(arrayOf<Any>(1L, "Test Contact"))
+            }
 
-            prepareMockCursor()
-
+            fakeContentProvider.setCursorForUri(uriToExpect, cursor)
             val contacts = repository.getContactsForIntent(intentAction, intentType)
 
             assertThat(contacts).isNotEmpty()
@@ -145,29 +202,28 @@ class ContactsRepositoryImplTest(
     }
 
     @Test
-    fun fetchContacts_groupsMultipleEntriesForSameContact() = runTest {
+    fun getContactsForIntent_groupsMultipleEntriesForSameContact() = runTest {
         // This test only runs for phone contacts, but logic is shared.
         if (intentType == Phone.CONTENT_TYPE) {
-            fakeContentProvider.setCursorForUri(Phone.CONTENT_URI, mockCursor)
-            // Simulate two rows for the same contact ID
-            whenever(mockCursor.moveToNext()).thenReturn(true, true, false)
-            whenever(mockCursor.count).thenReturn(2)
+            val cursor =
+                MatrixCursor(
+                    arrayOf(
+                        Phone.CONTACT_ID,
+                        Phone.DISPLAY_NAME_PRIMARY,
+                        Phone.NUMBER,
+                        Phone._ID,
+                        Phone.TYPE,
+                        Phone.LABEL,
+                    )
+                )
+            cursor.addRow(
+                arrayOf<Any?>(1L, "Test Contact", "555-0123", 101L, Phone.TYPE_HOME, null)
+            )
+            cursor.addRow(
+                arrayOf<Any?>(1L, "Test Contact", "555-0124", 102L, Phone.TYPE_WORK, null)
+            )
 
-            // Both rows have the same contact ID and name
-            whenever(mockCursor.getColumnIndex(Phone.CONTACT_ID)).thenReturn(0)
-            whenever(mockCursor.getLong(0)).thenReturn(1L)
-            whenever(mockCursor.getColumnIndex(Phone.DISPLAY_NAME_PRIMARY)).thenReturn(1)
-            whenever(mockCursor.getString(1)).thenReturn("Test Contact")
-
-            // First row data
-            whenever(mockCursor.getColumnIndex(Phone.NUMBER)).thenReturn(2)
-            whenever(mockCursor.getString(2)).thenReturn("555-0123", "555-0124")
-            whenever(mockCursor.getColumnIndex(Phone._ID)).thenReturn(3)
-            whenever(mockCursor.getLong(3)).thenReturn(101L, 102L)
-            whenever(mockCursor.getColumnIndex(Phone.TYPE)).thenReturn(4)
-            whenever(mockCursor.getInt(4)).thenReturn(Phone.TYPE_HOME, Phone.TYPE_WORK)
-            whenever(mockCursor.getColumnIndex(Phone.LABEL)).thenReturn(5)
-            whenever(mockCursor.getString(5)).thenReturn(null, null)
+            fakeContentProvider.setCursorForUri(Phone.CONTENT_URI, cursor)
 
             val contacts = repository.getContactsForIntent(intentAction, intentType)
 
@@ -179,38 +235,5 @@ class ContactsRepositoryImplTest(
             assertThat(phoneContact.phones[1].number).isEqualTo("555-0124")
             assertThat(phoneContact.phones[1].label).isEqualTo("Work")
         }
-    }
-
-    private fun prepareMockCursor() {
-        // Simulate a single row: make moveToNext() return true once, then false.
-        whenever(mockCursor.moveToNext()).thenReturn(true, false)
-        whenever(mockCursor.count).thenReturn(1)
-
-        // Common fields
-        whenever(mockCursor.getColumnIndex(Contacts._ID)).thenReturn(0)
-        whenever(mockCursor.getColumnIndex(Email.CONTACT_ID)).thenReturn(0)
-        whenever(mockCursor.getColumnIndex(Phone.CONTACT_ID)).thenReturn(0)
-        whenever(mockCursor.getLong(0)).thenReturn(1L)
-        whenever(mockCursor.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY)).thenReturn(1)
-        whenever(mockCursor.getString(1)).thenReturn("Test Contact")
-
-        // Email-specific fields
-        whenever(mockCursor.getColumnIndex(Email.ADDRESS)).thenReturn(2)
-        whenever(mockCursor.getString(2)).thenReturn("test@example.com")
-
-        // Phone-specific fields
-        whenever(mockCursor.getColumnIndex(Phone.NUMBER)).thenReturn(3)
-        whenever(mockCursor.getString(3)).thenReturn("555-0123")
-
-        // New fields for Entry data
-        whenever(mockCursor.getColumnIndex(Email._ID)).thenReturn(4)
-        whenever(mockCursor.getColumnIndex(Phone._ID)).thenReturn(4)
-        whenever(mockCursor.getLong(4)).thenReturn(101L)
-        whenever(mockCursor.getColumnIndex(Email.TYPE)).thenReturn(5)
-        whenever(mockCursor.getColumnIndex(Phone.TYPE)).thenReturn(5)
-        whenever(mockCursor.getInt(5)).thenReturn(Phone.TYPE_HOME) // Default to HOME
-        whenever(mockCursor.getColumnIndex(Email.LABEL)).thenReturn(6)
-        whenever(mockCursor.getColumnIndex(Phone.LABEL)).thenReturn(6)
-        whenever(mockCursor.getString(6)).thenReturn(null) // Default to no custom label
     }
 }
