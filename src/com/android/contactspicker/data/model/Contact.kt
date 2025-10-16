@@ -58,10 +58,11 @@ sealed class Contact {
 data class DisplayNameContact(
     override val id: Long,
     override val displayName: String,
-    val lookupKey: String? = null,
+    val lookupKey: String,
 ) : Contact() {
     init {
         require(displayName.isNotBlank()) { "Display name must not be blank." }
+        require(lookupKey.isNotBlank()) { "Lookup key must not be blank." }
     }
 }
 

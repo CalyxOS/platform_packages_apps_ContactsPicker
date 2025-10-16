@@ -61,7 +61,12 @@ class ContactsPickerBottomSheetTest {
 
     private var selectedContacts by mutableStateOf<LongObjectMap<Set<Long>>>(longObjectMapOf())
 
-    private val testContact = DisplayNameContact(id = 1, displayName = "Contacty Contact")
+    private val testContact =
+        DisplayNameContact(
+            id = 1,
+            displayName = "Contacty Contact",
+            lookupKey = "contacty_contact_lookup",
+        )
     private val testSuccessState =
         ContactsUiState.Success(
             availableContacts = listOf(testContact),

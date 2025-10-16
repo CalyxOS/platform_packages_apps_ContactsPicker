@@ -46,9 +46,9 @@ class ContactsPickerBodyTest {
     fun contactsList_displaysHeadersAndContacts() {
         val contacts =
             listOf(
-                DisplayNameContact(id = 1L, displayName = "Alpha"),
-                DisplayNameContact(id = 3L, displayName = "Beta"),
-                DisplayNameContact(id = 2L, displayName = "Gamma"),
+                DisplayNameContact(id = 1L, displayName = "Alpha", lookupKey = "alpha_lookup"),
+                DisplayNameContact(id = 3L, displayName = "Beta", lookupKey = "beta_lookup"),
+                DisplayNameContact(id = 2L, displayName = "Gamma", lookupKey = "gamma_lookup"),
             )
 
         composeTestRule.setContent {
@@ -100,7 +100,14 @@ class ContactsPickerBodyTest {
     fun privacyBanner_isDisplayed() {
         composeTestRule.setContent {
             ContactsPickerBody(
-                contacts = listOf(DisplayNameContact(id = 1L, displayName = "Alpha")),
+                contacts =
+                    listOf(
+                        DisplayNameContact(
+                            id = 1L,
+                            displayName = "Alpha",
+                            lookupKey = "alpha_lookup",
+                        )
+                    ),
                 selectedContacts = longObjectMapOf(),
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
@@ -114,7 +121,13 @@ class ContactsPickerBodyTest {
     @Test
     fun privacyBanner_isNotDisplayed_afterScrollingTheContactList() {
         val contacts =
-            List(30) { i -> DisplayNameContact(id = i.toLong(), displayName = "Contact $i") }
+            List(30) { i ->
+                DisplayNameContact(
+                    id = i.toLong(),
+                    displayName = "Contact $i",
+                    lookupKey = "contact${i}_lookup",
+                )
+            }
 
         composeTestRule.setContent {
             ContactsPickerBody(

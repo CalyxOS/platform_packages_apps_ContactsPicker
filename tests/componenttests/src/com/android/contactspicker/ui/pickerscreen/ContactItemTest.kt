@@ -51,7 +51,7 @@ class ContactItemTest {
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
     private val testDisplayNameContact =
-        DisplayNameContact(id = 1, displayName = "Alice Wonderland")
+        DisplayNameContact(id = 1, displayName = "Alice Wonderland", lookupKey = "alice_lookup")
 
     private val testSinglePhoneContact =
         PhoneContact(

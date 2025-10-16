@@ -153,27 +153,25 @@ class ContactsRepositoryImplTest(
                                 )
                             ),
                         )
-                    // ...
                     Contacts.CONTENT_TYPE,
                     Contacts.CONTENT_ITEM_TYPE ->
-                        // Fix: Return a Pair, just like the other branches
                         Pair(
                             Contacts.CONTENT_URI,
                             MatrixCursor(
                                 arrayOf(
-                                    Contacts._ID, // Matches the '1L' in your addRow
-                                    Contacts.DISPLAY_NAME_PRIMARY, // Matches the 'Test Contact'
+                                    Contacts._ID,
+                                    Contacts.DISPLAY_NAME_PRIMARY,
+                                    Contacts.LOOKUP_KEY,
                                 )
                             ),
                         )
                     else -> throw IllegalArgumentException("Unsupported intent type: $intentType")
                 }
 
-            // Add a row to the cursor
             when (intentType) {
                 Email.CONTENT_TYPE,
                 Email.CONTENT_ITEM_TYPE ->
-                    (cursor as MatrixCursor).addRow(
+                    cursor.addRow(
                         arrayOf<Any?>(
                             1L,
                             "Test Contact",
@@ -185,25 +183,25 @@ class ContactsRepositoryImplTest(
                     )
                 Phone.CONTENT_TYPE,
                 Phone.CONTENT_ITEM_TYPE ->
-                    (cursor as MatrixCursor).addRow(
+                    cursor.addRow(
                         arrayOf<Any?>(1L, "Test Contact", "555-0123", 101L, Phone.TYPE_HOME, null)
                     )
                 Contacts.CONTENT_TYPE,
                 Contacts.CONTENT_ITEM_TYPE ->
-                    (cursor as MatrixCursor).addRow(arrayOf<Any>(1L, "Test Contact"))
+                    cursor.addRow(arrayOf<Any>(1L, "Test Contact", "contact_lookup_key"))
             }
 
             fakeContentProvider.setCursorForUri(uriToExpect, cursor)
             val contacts = repository.getContactsForIntent(intentAction, intentType)
 
             assertThat(contacts).isNotEmpty()
-            assertThat(contacts.first()).isInstanceOf(expectedResultType!!.java)
+            val contact = contacts.first()
+            assertThat(contact).isInstanceOf(expectedResultType!!.java)
         }
     }
 
     @Test
     fun getContactsForIntent_groupsMultipleEntriesForSameContact() = runTest {
-        // This test only runs for phone contacts, but logic is shared.
         if (intentType == Phone.CONTENT_TYPE) {
             val cursor =
                 MatrixCursor(
@@ -220,14 +218,14 @@ class ContactsRepositoryImplTest(
                 arrayOf<Any?>(1L, "Test Contact", "555-0123", 101L, Phone.TYPE_HOME, null)
             )
             cursor.addRow(
-                arrayOf<Any?>(1L, "Test Contact", "555-0124", 102L, Phone.TYPE_WORK, null)
+                arrayOf<Any?>(1L, "Test Contact2", "555-0124", 102L, Phone.TYPE_WORK, null)
             )
 
             fakeContentProvider.setCursorForUri(Phone.CONTENT_URI, cursor)
 
             val contacts = repository.getContactsForIntent(intentAction, intentType)
 
-            assertThat(contacts).hasSize(1) // Should be grouped into one contact
+            assertThat(contacts).hasSize(1)
             val phoneContact = contacts.first() as PhoneContact
             assertThat(phoneContact.phones).hasSize(2)
             assertThat(phoneContact.phones[0].number).isEqualTo("555-0123")

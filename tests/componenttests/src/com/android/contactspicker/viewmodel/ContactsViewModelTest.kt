@@ -54,7 +54,8 @@ class ContactsViewModelTest {
     private lateinit var viewModel: ContactsViewModel
 
     // Test Data
-    private val displayNameContact = DisplayNameContact(id = 1, displayName = "Just Name")
+    private val displayNameContact =
+        DisplayNameContact(id = 1, displayName = "Just Name", lookupKey = "just_name_lookup")
     private val singleEmailContact =
         EmailContact(
             id = 2,
@@ -86,7 +87,7 @@ class ContactsViewModelTest {
 
     @Test
     fun processIntent_setsLoadingThenSuccessState() = runTest {
-        val testContacts = listOf(DisplayNameContact(1L, "Test"))
+        val testContacts = listOf(displayNameContact)
         fakeRepository.setInitialContacts(testContacts)
         val collectedStates = mutableListOf<ContactsUiState>()
         val job = launch { viewModel.uiState.toList(collectedStates) }

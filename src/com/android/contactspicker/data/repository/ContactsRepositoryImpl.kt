@@ -156,7 +156,8 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                         contacts[id] =
                             existingContact.copy(emails = existingContact.emails + emailEntry)
                     } else {
-                        contacts[id] = EmailContact(id, name, listOf(emailEntry))
+                        contacts[id] =
+                            EmailContact(id = id, displayName = name, emails = listOf(emailEntry))
                     }
                 }
             }
@@ -208,7 +209,8 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                         contacts[id] =
                             existingContact.copy(phones = existingContact.phones + phoneEntry)
                     } else {
-                        contacts[id] = PhoneContact(id, name, listOf(phoneEntry))
+                        contacts[id] =
+                            PhoneContact(id = id, displayName = name, phones = listOf(phoneEntry))
                     }
                 }
             }
@@ -218,7 +220,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
 
     private fun getDisplayNameContacts(): List<Contact> {
         val contacts = mutableListOf<DisplayNameContact>()
-        val projection = arrayOf(Contacts._ID, Contacts.DISPLAY_NAME_PRIMARY)
+        val projection = arrayOf(Contacts._ID, Contacts.DISPLAY_NAME_PRIMARY, Contacts.LOOKUP_KEY)
         val selection = "${Contacts.DISPLAY_NAME_PRIMARY} IS NOT NULL"
 
         val cursor =
@@ -233,12 +235,16 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         cursor?.use {
             val idIndex = it.getColumnIndex(Contacts._ID)
             val nameIndex = it.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY)
+            val lookupKeyIndex = it.getColumnIndex(Contacts.LOOKUP_KEY)
 
             while (it.moveToNext()) {
                 val id = it.getLong(idIndex)
                 val name = it.getString(nameIndex)
+                val lookupKey = it.getString(lookupKeyIndex)
                 if (name != null) {
-                    contacts.add(DisplayNameContact(id, name))
+                    contacts.add(
+                        DisplayNameContact(id = id, displayName = name, lookupKey = lookupKey)
+                    )
                 }
             }
         }

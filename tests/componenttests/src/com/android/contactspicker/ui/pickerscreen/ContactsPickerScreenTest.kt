@@ -47,7 +47,8 @@ class ContactsPickerScreenTest {
 
     private val context: Context = ApplicationProvider.getApplicationContext()
 
-    private val testContact = DisplayNameContact(id = 1, displayName = "Jon Snow")
+    private val testContact =
+        DisplayNameContact(id = 1, displayName = "Jon Snow", lookupKey = "jon_snow_lookup")
 
     @Test
     fun whenStateIsLoading_showsLoadingIndicator() {
