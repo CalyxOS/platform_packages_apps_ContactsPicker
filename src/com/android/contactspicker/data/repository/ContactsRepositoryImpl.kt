@@ -46,6 +46,8 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             arrayOf(Phone.CONTACT_ID, Phone.DISPLAY_NAME_PRIMARY, Phone.NUMBER, Phone._ID)
         private val EMAIL_FILTER_PROJECTION =
             arrayOf(Email.CONTACT_ID, Email.DISPLAY_NAME_PRIMARY, Email.ADDRESS, Email._ID)
+        private val DISPLAY_NAME_FILTER_PROJECTION =
+            arrayOf(Contacts._ID, Contacts.DISPLAY_NAME_PRIMARY, Contacts.LOOKUP_KEY)
     }
 
     /** Fetches contacts from the data source based on the intent action and type. */
@@ -96,9 +98,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                         Phone.CONTENT_TYPE -> searchPhones(query)
 
                         Contacts.CONTENT_TYPE,
-                        Contacts.CONTENT_ITEM_TYPE ->
-                            emptyList() // TODO(b/443023150) implement contacts filtering for custom
-                        // view mode
+                        Contacts.CONTENT_ITEM_TYPE -> searchDisplayNames(query)
 
                         else ->
                             throw IllegalArgumentException("Unsupported intent type: $intentType")
@@ -271,6 +271,40 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 emails = listOf(EmailEntry(dataId, address)),
             )
         }
+    }
+
+    /**
+     * Searches contacts using [Contacts.CONTENT_FILTER_URI], which matches against name, phone,
+     * email, and other data fields.
+     *
+     * @return A list of [DisplayNameContact] matching the search query.
+     */
+    private fun searchDisplayNames(query: String): List<Contact> {
+        val filterUri = Uri.withAppendedPath(Contacts.CONTENT_FILTER_URI, query)
+        val contacts = mutableListOf<DisplayNameContact>()
+        contentResolver.query(filterUri, DISPLAY_NAME_FILTER_PROJECTION, null, null, null)?.use {
+            cursor ->
+            val idIndex = cursor.getColumnIndex(Contacts._ID)
+            val nameIndex = cursor.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY)
+            val lookupKeyIndex = cursor.getColumnIndex(Contacts.LOOKUP_KEY)
+
+            while (cursor.moveToNext()) {
+                val contactId = cursor.getLong(idIndex)
+                val displayName = cursor.getString(nameIndex)
+                val lookupKey = cursor.getString(lookupKeyIndex)
+
+                if (!displayName.isNullOrBlank() && !lookupKey.isNullOrBlank()) {
+                    contacts.add(
+                        DisplayNameContact(
+                            id = contactId,
+                            displayName = displayName,
+                            lookupKey = lookupKey,
+                        )
+                    )
+                }
+            }
+        }
+        return contacts
     }
 
     private fun searchWithFilter(

@@ -30,6 +30,7 @@ import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.test.mock.MockContentResolver
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.fakes.FakeContentProvider
 import com.google.common.truth.Truth.assertThat
 import kotlin.test.assertFailsWith
@@ -109,6 +110,36 @@ class ContactsRepositorySearchTest {
             assertThat(id).isEqualTo(102L)
             assertThat(number).isEqualTo("123-456-7890")
         }
+    }
+
+    @Test
+    fun searchContacts_inDisplayNameMode_returnsDisplayNameContacts() = runTest {
+        val cursor =
+            MatrixCursor(
+                arrayOf(
+                    ContactsContract.Contacts._ID,
+                    ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
+                    ContactsContract.Contacts.LOOKUP_KEY,
+                )
+            )
+        cursor.addRow(arrayOf<Any?>(3L, "Alice Smith", "lookupKeyAlice"))
+        val query = "alice"
+        val filterUri =
+            ContactsContract.Contacts.CONTENT_FILTER_URI.buildUpon().appendPath(query).build()
+        fakeContentProvider.setCursorForUri(filterUri, cursor)
+
+        val contacts =
+            repository.searchContacts(
+                query,
+                Intent.ACTION_PICK,
+                ContactsContract.Contacts.CONTENT_TYPE,
+            )
+
+        assertThat(contacts).hasSize(1)
+        val contact = contacts.first() as DisplayNameContact
+        assertThat(contact.id).isEqualTo(3L)
+        assertThat(contact.displayName).isEqualTo("Alice Smith")
+        assertThat(contact.lookupKey).isEqualTo("lookupKeyAlice")
     }
 
     @Test
