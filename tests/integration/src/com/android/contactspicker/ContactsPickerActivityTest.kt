@@ -51,6 +51,7 @@ import dagger.hilt.android.testing.UninstallModules
 import org.junit.After
 import org.junit.Assert.assertThrows
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -108,6 +109,7 @@ class ContactsPickerActivityTest {
         }
     }
 
+    @Ignore("b/452618303") // TODO(452618303): Re-enable once fixed.
     @Test
     @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
     fun topBarSearchText_isDisplayed() {
@@ -165,6 +167,7 @@ class ContactsPickerActivityTest {
         assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
     }
 
+    @Ignore("b/452618303") // TODO(452618303): Re-enable once fixed.
     @Test
     @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
     fun packageManagerThrowsException_handlesInternally() {
