@@ -36,9 +36,14 @@ sealed class Contact {
  *
  * @param id A unique identifier for the contact.
  * @param displayName The name of the contact. Must not be blank.
+ * @param lookupKey A unique, stable identifier for the contact.
  * @throws IllegalArgumentException if [displayName] is blank.
  */
-data class DisplayNameContact(override val id: Long, override val displayName: String) : Contact() {
+data class DisplayNameContact(
+    override val id: Long,
+    override val displayName: String,
+    val lookupKey: String? = null,
+) : Contact() {
     init {
         require(displayName.isNotBlank()) { "Display name must not be blank." }
     }

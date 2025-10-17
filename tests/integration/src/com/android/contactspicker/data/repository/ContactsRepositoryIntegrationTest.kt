@@ -152,6 +152,58 @@ class ContactsRepositoryIntegrationTest {
     }
 
     @Test
+    fun searchContacts_displayNameMode_findsByName() = runTest {
+        insertContact(TEST_CONTACT_NAME)
+        val result =
+            repository.searchContacts(
+                TEST_CONTACT_NAME,
+                Intent.ACTION_PICK,
+                ContactsContract.Contacts.CONTENT_TYPE,
+            )
+        assertContactNamePresent(result, TEST_CONTACT_NAME)
+    }
+
+    @Test
+    fun searchContacts_displayNameMode_findByPrefix() = runTest {
+        insertContact(TEST_CONTACT_NAME)
+        val result =
+            repository.searchContacts(
+                TEST_CONTACT_NAME.substring(0, 4),
+                Intent.ACTION_PICK,
+                ContactsContract.Contacts.CONTENT_TYPE,
+            )
+        assertContactNamePresent(result, TEST_CONTACT_NAME)
+    }
+
+    @Test
+    fun searchContacts_displayNameMode_findsByEmail() = runTest {
+        insertContact(TEST_CONTACT_NAME, emails = listOf(TEST_CONTACT_EMAIL_1))
+
+        // Search by email
+        val result =
+            repository.searchContacts(
+                TEST_CONTACT_EMAIL_1,
+                Intent.ACTION_PICK,
+                ContactsContract.Contacts.CONTENT_TYPE,
+            )
+        assertContactNamePresent(result, TEST_CONTACT_NAME)
+    }
+
+    @Test
+    fun searchContacts_displayNameMode_findsByPhone() = runTest {
+        insertContact(TEST_CONTACT_NAME, phones = listOf(TEST_CONTACT_PHONE_1))
+
+        // Search by phone
+        val result =
+            repository.searchContacts(
+                TEST_CONTACT_PHONE_1,
+                Intent.ACTION_PICK,
+                ContactsContract.Contacts.CONTENT_TYPE,
+            )
+        assertContactNamePresent(result, TEST_CONTACT_NAME)
+    }
+
+    @Test
     fun searchContacts_emailType_multipleEmails_findsContact() = runTest {
         insertContact(
             TEST_CONTACT_NAME,
