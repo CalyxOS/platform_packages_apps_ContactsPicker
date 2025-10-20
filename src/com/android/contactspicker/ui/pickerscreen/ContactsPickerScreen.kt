@@ -23,6 +23,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -36,12 +37,13 @@ internal const val CONTACTS_PICKER_SCREEN_TEST_TAG = "contacts_picker_screen"
 
 @Composable
 fun ContactsPickerScreen(
-    uiState: ContactsUiState,
+    uiState: State<ContactsUiState>,
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (Long, Long) -> Unit,
     onMoreDetails: () -> Unit,
     onExpandRequest: () -> Unit,
 ) {
+    val uiStateValue = uiState.value
     Column(
         modifier =
             Modifier.fillMaxSize()
@@ -49,7 +51,7 @@ fun ContactsPickerScreen(
                 .testTag(CONTACTS_PICKER_SCREEN_TEST_TAG),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        when (val state = uiState) {
+        when (uiStateValue) {
             is ContactsUiState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(
@@ -65,7 +67,7 @@ fun ContactsPickerScreen(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = state.message,
+                        text = uiStateValue.message,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.error,
                     )
@@ -82,8 +84,8 @@ fun ContactsPickerScreen(
                 // TODO(b/449172596): Handle dismissal logic of privacy banner
 
                 ContactsPickerBody(
-                    contacts = state.availableContacts,
-                    selectedContacts = state.selectedContacts,
+                    contacts = uiStateValue.availableContacts,
+                    selectedContacts = uiStateValue.selectedContacts,
                     onToggleContactSelection = onToggleContactSelection,
                     onToggleEntrySelection = onToggleEntrySelection,
                     onPrivacyBannerMoreDetails = onMoreDetails,

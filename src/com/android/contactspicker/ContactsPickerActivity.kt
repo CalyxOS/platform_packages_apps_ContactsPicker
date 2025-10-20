@@ -28,7 +28,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import com.android.contactspicker.provider.CallingPackageProvider
 import com.android.contactspicker.ui.components.ContactsPickerBottomSheet
 import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
@@ -117,7 +116,7 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
     // configuration change.
     private fun setupComposeUi() {
         setContent {
-            val uiState by contactsViewModel.uiState.collectAsState()
+            val uiState = contactsViewModel.uiState.collectAsState()
             ContactsPickerAppTheme {
                 ContactsPickerBottomSheet(
                     onDismissRequest = { finish() },

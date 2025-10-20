@@ -16,6 +16,7 @@
 package com.android.contactspicker.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -29,7 +30,7 @@ import com.android.contactspicker.ui.privacydetails.PrivacyDetailsScreen
 @Composable
 fun ContactsPickerNavHost(
     navController: NavHostController,
-    uiState: ContactsUiState,
+    uiState: State<ContactsUiState>,
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (Long, Long) -> Unit,
     onExpandRequest: () -> Unit,

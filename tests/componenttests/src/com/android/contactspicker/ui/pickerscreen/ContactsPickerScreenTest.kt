@@ -21,6 +21,7 @@ import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.collection.longObjectMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -53,7 +54,7 @@ class ContactsPickerScreenTest {
 
         composeTestRule.setContent {
             ContactsPickerScreen(
-                uiState = ContactsUiState.Loading,
+                uiState = mutableStateOf(ContactsUiState.Loading),
                 onMoreDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -71,7 +72,7 @@ class ContactsPickerScreenTest {
 
         composeTestRule.setContent {
             ContactsPickerScreen(
-                uiState = ContactsUiState.Error(errorMessage),
+                uiState = mutableStateOf(ContactsUiState.Error(errorMessage)),
                 onMoreDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -86,7 +87,8 @@ class ContactsPickerScreenTest {
     fun whenStateIsSuccess_showsContact() {
         composeTestRule.setContent {
             ContactsPickerScreen(
-                uiState = ContactsUiState.Success(listOf(testContact), longObjectMapOf()),
+                uiState =
+                    mutableStateOf(ContactsUiState.Success(listOf(testContact), longObjectMapOf())),
                 onMoreDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -100,7 +102,8 @@ class ContactsPickerScreenTest {
     fun whenStateIsSuccess_showsSearchBox() {
         composeTestRule.setContent {
             ContactsPickerScreen(
-                uiState = ContactsUiState.Success(listOf(testContact), longObjectMapOf()),
+                uiState =
+                    mutableStateOf(ContactsUiState.Success(listOf(testContact), longObjectMapOf())),
                 onMoreDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -118,7 +121,8 @@ class ContactsPickerScreenTest {
     fun whenStateIsSuccess_showsProfileSelector() {
         composeTestRule.setContent {
             ContactsPickerScreen(
-                uiState = ContactsUiState.Success(listOf(testContact), longObjectMapOf()),
+                uiState =
+                    mutableStateOf(ContactsUiState.Success(listOf(testContact), longObjectMapOf())),
                 onMoreDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -137,7 +141,8 @@ class ContactsPickerScreenTest {
     fun whenStateIsSuccess_showsPrivacyButton() {
         composeTestRule.setContent {
             ContactsPickerScreen(
-                uiState = ContactsUiState.Success(listOf(testContact), longObjectMapOf()),
+                uiState =
+                    mutableStateOf(ContactsUiState.Success(listOf(testContact), longObjectMapOf())),
                 onMoreDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -155,7 +160,7 @@ class ContactsPickerScreenTest {
 
         composeTestRule.setContent {
             ContactsPickerScreen(
-                uiState = ContactsUiState.Success(emptyList(), longObjectMapOf()),
+                uiState = mutableStateOf(ContactsUiState.Success(emptyList(), longObjectMapOf())),
                 onMoreDetails = {},
                 onExpandRequest = mockOnExpandRequest,
                 onToggleContactSelection = {},

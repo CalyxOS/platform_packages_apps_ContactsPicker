@@ -38,6 +38,7 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -66,7 +67,7 @@ private const val SCRIM_ALPHA = 0.32f
 @Composable
 fun ContactsPickerBottomSheet(
     onDismissRequest: () -> Unit,
-    uiState: ContactsUiState,
+    uiState: State<ContactsUiState>,
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (Long, Long) -> Unit,
     onClearSelection: () -> Unit,
@@ -83,6 +84,7 @@ fun ContactsPickerBottomSheet(
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val uiStateValue = uiState.value
 
     LaunchedEffect(bottomSheetState.currentValue) {
         if (bottomSheetState.currentValue == SheetValue.Hidden) {
@@ -124,12 +126,12 @@ fun ContactsPickerBottomSheet(
         ) { /* Empty content of the screen that appears behind the bottom sheet. */
         }
 
-        if (uiState is ContactsUiState.Success) {
+        if (uiStateValue is ContactsUiState.Success) {
             AnimatedSelectionBottomBar(
                 visible =
-                    uiState.selectedContacts.isNotEmpty() &&
+                    uiStateValue.selectedContacts.isNotEmpty() &&
                         currentRoute == ContactsPickerRoute.route,
-                selectedContactsCount = uiState.selectedContacts.totalElementsSize(),
+                selectedContactsCount = uiStateValue.selectedContacts.totalElementsSize(),
                 onClearSelection = onClearSelection,
                 modifier = Modifier.align(Alignment.BottomCenter),
             )

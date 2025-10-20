@@ -149,9 +149,11 @@ class ContactsPickerBottomSheetTest {
                 ContactsPickerBottomSheet(
                     onDismissRequest = {},
                     uiState =
-                        ContactsUiState.Success(
-                            availableContacts = listOf(testContact),
-                            selectedContacts = selectedContacts,
+                        mutableStateOf(
+                            ContactsUiState.Success(
+                                availableContacts = listOf(testContact),
+                                selectedContacts = selectedContacts,
+                            )
                         ),
                     onToggleEntrySelection = { _, _ -> },
                     onToggleContactSelection = {},
@@ -184,9 +186,11 @@ class ContactsPickerBottomSheetTest {
                 ContactsPickerBottomSheet(
                     onDismissRequest = {},
                     uiState =
-                        ContactsUiState.Success(
-                            availableContacts = listOf(testContact),
-                            selectedContacts = selectedContacts,
+                        mutableStateOf(
+                            ContactsUiState.Success(
+                                availableContacts = listOf(testContact),
+                                selectedContacts = selectedContacts,
+                            )
                         ),
                     onToggleEntrySelection = { _, _ -> },
                     onToggleContactSelection = {},
@@ -218,7 +222,7 @@ class ContactsPickerBottomSheetTest {
             ContactsPickerAppTheme {
                 ContactsPickerBottomSheet(
                     onDismissRequest = onDismissRequest,
-                    uiState = uiState,
+                    uiState = mutableStateOf(uiState),
                     onToggleEntrySelection = { _, _ -> },
                     onToggleContactSelection = {},
                     onClearSelection = {},
