@@ -13,49 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.android.contactspicker
+package com.android.contactspicker.ui.privacydetails
 
 import android.content.Context
-import android.content.Intent
 import android.content.flags.Flags
-import android.platform.test.annotations.RequiresFlagsDisabled
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import androidx.lifecycle.Lifecycle
-import androidx.test.core.app.ActivityScenario
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.contactspicker.R
 import com.google.common.truth.Truth.assertThat
-import org.junit.Assert.assertThrows
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
 @RunWith(AndroidJUnit4::class)
-class ContactsPickerActivityTest {
+class PrivacyDetailsTopBarTest {
+    @get:Rule val composeTestRule = createComposeRule()
 
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
     private val context: Context = ApplicationProvider.getApplicationContext()
 
     @Test
-    @RequiresFlagsDisabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
-    fun intent_contactPicketFlagDisabled_throws() {
-        val intent = Intent(context, ContactsPickerActivity::class.java)
+    fun topBar_displaysHeaderText() {
+        composeTestRule.setContent { PrivacyDetailsTopBar(onBackPressed = {}) }
 
-        assertThrows(RuntimeException::class.java) {
-            ActivityScenario.launch<ContactsPickerActivity>(intent)
-        }
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.privacy_details_top_bar_header))
+            .assertIsDisplayed()
     }
 
     @Test
-    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
-    fun intent_contactPicketFlagEnabled_startsActivity() {
-        val intent = Intent(context, ContactsPickerActivity::class.java)
-        ActivityScenario.launch<ContactsPickerActivity>(intent).use { scenario ->
-            assertThat(scenario.state).isAnyOf(Lifecycle.State.STARTED, Lifecycle.State.CREATED)
-            scenario.close()
-        }
+    fun topBar_backButton_isDisplayedAndClickable() {
+        var backPressed = false
+        composeTestRule.setContent { PrivacyDetailsTopBar(onBackPressed = { backPressed = true }) }
+
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.privacy_details_top_bar_back_button_content_description)
+            )
+            .assertIsDisplayed()
+            .performClick()
+
+        assertThat(backPressed).isTrue()
     }
 }

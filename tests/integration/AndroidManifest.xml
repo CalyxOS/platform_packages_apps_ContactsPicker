@@ -13,16 +13,17 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<configuration description="Tests for ContactsPicker">
-    <option name="test-suite-tag" value="device-tests" />
-    <target_preparer class="com.android.tradefed.targetprep.suite.SuiteApkInstaller">
-        <option name="cleanup-apks" value="true" />
-        <option name="test-file-name" value="ContactsPickerTests.apk" />
-    </target_preparer>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.android.contactspicker.integrationtests">
 
-    <test class="com.android.tradefed.testtype.AndroidJUnitTest">
-        <option name="package" value="com.android.contactspicker.tests" />
-        <option name="runner" value="androidx.test.runner.AndroidJUnitRunner" />
-        <option name="hidden-api-checks" value="false" />
-    </test>
-</configuration>
+    <application>
+        <uses-library android:name="android.test.runner" />
+    </application>
+
+    <instrumentation
+        android:name="com.android.contactspicker.HiltTestRunner"
+        android:label="Contacts Picker Tests"
+        android:targetPackage="com.android.contactspicker" />
+
+    <uses-sdk android:minSdkVersion="37" android:targetSdkVersion="37" />
+</manifest>

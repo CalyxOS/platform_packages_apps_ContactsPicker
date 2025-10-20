@@ -19,24 +19,35 @@ package {
 }
 
 android_test {
-    name: "ContactsPickerTests",
+    name: "ContactsPickerComponentTests",
     certificate: "platform",
     sdk_version: "test_current",
     srcs: [
         "src/**/*.kt",
     ],
-    instrumentation_for: "ContactsPicker",
-    manifest: "AndroidManifest.xml",
     static_libs: [
+        "android.content.flags-aconfig-java",
+        "android.test.mock.stubs",
+        "androidx.compose.material3_material3",
+        "androidx.compose.runtime_runtime",
+        "androidx.compose.ui_ui-test-junit4",
+        "androidx.compose.ui_ui-test-manifest",
+        "androidx.navigation_navigation-compose",
+        "androidx.navigation_navigation-testing",
         "androidx.test.core",
         "androidx.test.ext.junit",
         "androidx.test.ext.truth",
         "androidx.test.rules",
         "androidx.test.runner",
-        "kotlin-test",
-        "platform-test-annotations",
+        "ContactsPickerLib",
         "flag-junit",
-        "android.content.flags-aconfig-java",
+        "kotlin-test",
+        "mockito-kotlin2",
+        "mockito-target-minus-junit4",
+        "platform-test-annotations",
+    ],
+    associates: [
+        "ContactsPickerLib",
     ],
     test_suites: [
         "general-tests",

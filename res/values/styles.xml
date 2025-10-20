@@ -13,17 +13,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.contactspicker.tests">
 
-    <application>
-        <uses-library android:name="android.test.runner" />
-    </application>
-
-    <instrumentation
-        android:name="androidx.test.runner.AndroidJUnitRunner"
-        android:label="Contacts Picker Tests"
-        android:targetPackage="com.android.contactspicker" />
-
-    <uses-sdk android:minSdkVersion="36" android:targetSdkVersion="36" />
-</manifest>
+<resources >
+    <style name="Theme.ActivityTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+</resources>
