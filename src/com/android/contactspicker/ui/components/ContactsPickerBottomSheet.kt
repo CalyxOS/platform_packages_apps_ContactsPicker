@@ -107,7 +107,6 @@ fun ContactsPickerBottomSheet(
                 ),
             scaffoldState = scaffoldState,
             sheetPeekHeight = peekHeight,
-            sheetShape = MaterialTheme.shapes.extraLarge,
             sheetContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             sheetContentColor = MaterialTheme.colorScheme.onSurface,
             sheetShadowElevation = 8.dp,
