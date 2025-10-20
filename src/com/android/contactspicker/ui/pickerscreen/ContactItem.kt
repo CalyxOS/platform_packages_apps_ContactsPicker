@@ -75,7 +75,7 @@ private val ICON_TEXT_SPACING = 8.dp
  * provided. If a contact has multiple phone numbers or emails, it will be expandable.
  *
  * @param contact The contact to display.
- * @param selectedContacts The map of currently selected contacts, keyed by contact ID.
+ * @param selectedEntries The list of currently selected entries for the contact, keyed by IDs.
  * @param onToggleContactSelection A callback invoked when the avatar is clicked to select/deselect
  *   the whole contact.
  * @param onToggleEntrySelection A callback invoked when a single entry (e.g. an email) is selected
