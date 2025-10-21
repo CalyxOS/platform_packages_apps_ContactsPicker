@@ -110,4 +110,61 @@ class ContactTest {
             )
         assertThat(contact.emails).hasSize(2)
     }
+
+    @Test
+    fun isFullySelected_withNullOrEmptySelectedEntries_returnsFalse() {
+        val displayNameContact = DisplayNameContact(id = 1, displayName = "John Doe")
+        val phoneContact =
+            PhoneContact(id = 1, displayName = "John Doe", phones = listOf(testPhoneEntry))
+        val emailContact =
+            EmailContact(id = 1, displayName = "John Doe", emails = listOf(testEmailEntry))
+
+        // Test with null set
+        assertThat(displayNameContact.isFullySelected(null)).isFalse()
+        assertThat(phoneContact.isFullySelected(null)).isFalse()
+        assertThat(emailContact.isFullySelected(null)).isFalse()
+
+        // Test with empty set
+        assertThat(displayNameContact.isFullySelected(emptySet())).isFalse()
+        assertThat(phoneContact.isFullySelected(emptySet())).isFalse()
+        assertThat(emailContact.isFullySelected(emptySet())).isFalse()
+    }
+
+    @Test
+    fun isFullySelected_forDisplayNameContact_withNonEmptySelectedEntries_returnsTrue() {
+        val contact = DisplayNameContact(id = 1, displayName = "John Doe")
+        assertThat(contact.isFullySelected(setOf(1L))).isTrue()
+    }
+
+    @Test
+    fun isFullySelected_forPhoneContact_withPartialAndFullSelection() {
+        val anotherPhoneEntry = PhoneEntry(id = 3L, number = "098-765-4321", label = "Work")
+        val contact =
+            PhoneContact(
+                id = 1,
+                displayName = "John Doe",
+                phones = listOf(testPhoneEntry, anotherPhoneEntry),
+            )
+        // A single phone contact is not fully selected
+        assertThat(contact.isFullySelected(setOf(testPhoneEntry.id))).isFalse()
+        // All phone contacts are selected
+        assertThat(contact.isFullySelected(setOf(testPhoneEntry.id, anotherPhoneEntry.id))).isTrue()
+    }
+
+    @Test
+    fun isFullySelected_forEmailContact_withPartialAndFullSelection() {
+        val anotherEmailEntry = EmailEntry(id = 4L, address = "j.doe@work.com", label = "Work")
+        val contact =
+            EmailContact(
+                id = 1,
+                displayName = "John Doe",
+                emails = listOf(testEmailEntry, anotherEmailEntry),
+            )
+
+        // A single email contact is not fully selected
+        assertThat(contact.isFullySelected(setOf(testEmailEntry.id))).isFalse()
+
+        // All email contacts are selected
+        assertThat(contact.isFullySelected(setOf(testEmailEntry.id, anotherEmailEntry.id))).isTrue()
+    }
 }
