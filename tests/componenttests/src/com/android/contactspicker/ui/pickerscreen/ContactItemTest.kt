@@ -32,6 +32,7 @@ import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.R
+import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.EmailEntry
@@ -97,6 +98,7 @@ class ContactItemTest {
             ContactItem(
                 contact = testDisplayNameContact,
                 selectedEntries = emptySet(),
+                isMultiSelectEnabled = true,
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
             )
@@ -116,6 +118,7 @@ class ContactItemTest {
             ContactItem(
                 contact = testSingleEmailContact,
                 selectedEntries = emptySet(),
+                isMultiSelectEnabled = true,
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
             )
@@ -138,6 +141,7 @@ class ContactItemTest {
             ContactItem(
                 contact = testSinglePhoneContact,
                 selectedEntries = emptySet(),
+                isMultiSelectEnabled = true,
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
             )
@@ -161,6 +165,7 @@ class ContactItemTest {
             ContactItem(
                 contact = testMultiEmailContact,
                 selectedEntries = emptySet(),
+                isMultiSelectEnabled = true,
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
             )
@@ -194,6 +199,7 @@ class ContactItemTest {
             ContactItem(
                 contact = testMultiPhoneContact,
                 selectedEntries = emptySet(),
+                isMultiSelectEnabled = true,
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
             )
@@ -228,6 +234,7 @@ class ContactItemTest {
             ContactItem(
                 contact = testMultiEmailContact,
                 selectedEntries = emptySet(),
+                isMultiSelectEnabled = true,
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
             )
@@ -268,6 +275,7 @@ class ContactItemTest {
             ContactItem(
                 contact = testMultiPhoneContact,
                 selectedEntries = emptySet(),
+                isMultiSelectEnabled = true,
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
             )
@@ -307,6 +315,7 @@ class ContactItemTest {
             ContactItem(
                 contact = testMultiEmailContact,
                 selectedEntries = selectedEntries,
+                isMultiSelectEnabled = true,
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
             )
@@ -330,6 +339,7 @@ class ContactItemTest {
             ContactItem(
                 contact = testMultiEmailContact,
                 selectedEntries = selectedEntries,
+                isMultiSelectEnabled = true,
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
             )
@@ -355,13 +365,119 @@ class ContactItemTest {
     }
 
     @Test
-    fun onToggleContact_isCalled_whenAvatarClicked() {
+    fun selectableAvatarClick_withDisplayNameContactInMultiSelectMode_callsOnToggleContactSelection() {
+        assertAvatarClickBehavior(
+            contact = testDisplayNameContact,
+            isMultiSelectEnabled = true,
+            expectToggleContactCalled = true,
+            expectItemExpanded = false,
+        )
+    }
+
+    @Test
+    fun selectableAvatarClick_withSingleEmailContactInMultiSelectMode_callsOnToggleContactSelection() {
+        assertAvatarClickBehavior(
+            contact = testSingleEmailContact,
+            isMultiSelectEnabled = true,
+            expectToggleContactCalled = true,
+            expectItemExpanded = false,
+        )
+    }
+
+    @Test
+    fun selectableAvatar_withMultiEmailContactInMultiSelectMode_callsOnToggleContactSelection() {
+        assertAvatarClickBehavior(
+            contact = testMultiPhoneContact,
+            isMultiSelectEnabled = true,
+            expectToggleContactCalled = true,
+            expectItemExpanded = false,
+        )
+    }
+
+    @Test
+    fun selectableAvatarClick_withSinglePhoneContactInMultiSelectMode_callsOnToggleContactSelection() {
+        assertAvatarClickBehavior(
+            contact = testSinglePhoneContact,
+            isMultiSelectEnabled = true,
+            expectToggleContactCalled = true,
+            expectItemExpanded = false,
+        )
+    }
+
+    @Test
+    fun selectableAvatar_withMultiPhoneContactInMultiSelectMode_callsOnToggleContactSelection() {
+        assertAvatarClickBehavior(
+            contact = testMultiPhoneContact,
+            isMultiSelectEnabled = true,
+            expectToggleContactCalled = true,
+            expectItemExpanded = false,
+        )
+    }
+
+    @Test
+    fun selectableAvatarClick_withDisplayNameContactInSingleSelectMode_callsOnToggleContactSelection() {
+        assertAvatarClickBehavior(
+            contact = testDisplayNameContact,
+            isMultiSelectEnabled = false,
+            expectToggleContactCalled = true,
+            expectItemExpanded = false,
+        )
+    }
+
+    @Test
+    fun selectableAvatarClick_withSingleEmailContactInSingleSelectMode_callsOnToggleContactSelection() {
+        assertAvatarClickBehavior(
+            contact = testSingleEmailContact,
+            isMultiSelectEnabled = false,
+            expectToggleContactCalled = true,
+            expectItemExpanded = false,
+        )
+    }
+
+    @Test
+    fun selectableAvatar_withMultiEmailContactInSingleSelectMode_expandsItem() {
+        assertAvatarClickBehavior(
+            contact = testMultiPhoneContact,
+            isMultiSelectEnabled = false,
+            expectToggleContactCalled = false,
+            expectItemExpanded = true,
+        )
+    }
+
+    @Test
+    fun selectableAvatarClick_withSinglePhoneContactInSingleSelectMode_callsOnToggleContactSelection() {
+        assertAvatarClickBehavior(
+            contact = testSinglePhoneContact,
+            isMultiSelectEnabled = false,
+            expectToggleContactCalled = true,
+            expectItemExpanded = false,
+        )
+    }
+
+    @Test
+    fun selectableAvatar_withMultiPhoneContactInSingleSelectMode_expandsItem() {
+        assertAvatarClickBehavior(
+            contact = testMultiPhoneContact,
+            isMultiSelectEnabled = false,
+            expectToggleContactCalled = false,
+            expectItemExpanded = true,
+        )
+    }
+
+    /** Helper function to test the click behavior of the avatar in a [ContactItem]. */
+    private fun assertAvatarClickBehavior(
+        contact: Contact,
+        isMultiSelectEnabled: Boolean,
+        expectToggleContactCalled: Boolean,
+        expectItemExpanded: Boolean,
+    ) {
         var onToggleContactCalled = false
         var onToggleEntryCalled = false
         composeTestRule.setContent {
             ContactItem(
-                contact = testMultiPhoneContact,
+                contact = contact,
                 selectedEntries = emptySet(),
+                isMultiSelectEnabled = isMultiSelectEnabled,
                 onToggleContactSelection = { onToggleContactCalled = true },
                 onToggleEntrySelection = { _, _ -> onToggleEntryCalled = true },
             )
@@ -369,31 +485,22 @@ class ContactItemTest {
 
         composeTestRule.onNode(hasTestTag(AVATAR_TEST_TAG), useUnmergedTree = true).performClick()
 
-        assertThat(onToggleContactCalled).isTrue()
+        assertThat(onToggleContactCalled).isEqualTo(expectToggleContactCalled)
         assertThat(onToggleEntryCalled).isFalse()
-    }
 
-    @Test
-    fun onToggleEntry_isCalled_whenExpandedEntryClicked() {
-        var onToggleContactCalled = false
-        var onToggleEntryCalled = false
-
-        composeTestRule.setContent {
-            ContactItem(
-                contact = testMultiEmailContact,
-                selectedEntries = emptySet(),
-                onToggleContactSelection = { onToggleContactCalled = true },
-                onToggleEntrySelection = { _, _ -> onToggleEntryCalled = true },
-            )
+        if (expectItemExpanded) {
+            when (contact) {
+                is PhoneContact ->
+                    contact.phones.forEach { phoneEntry ->
+                        composeTestRule.onNodeWithText(phoneEntry.number).assertIsDisplayed()
+                    }
+                is EmailContact ->
+                    contact.emails.forEach { emailEntry ->
+                        composeTestRule.onNodeWithText(emailEntry.address).assertIsDisplayed()
+                    }
+                is DisplayNameContact ->
+                    throw AssertionError("DisplayNameContact should not be expandable")
+            }
         }
-
-        // Expand the item to make the entry visible
-        composeTestRule.onNodeWithText(testMultiEmailContact.displayName).performClick()
-
-        val firstEmail = testMultiEmailContact.emails.first()
-        composeTestRule.onNodeWithText(firstEmail.address).performClick()
-
-        assertThat(onToggleContactCalled).isFalse()
-        assertThat(onToggleEntryCalled).isTrue()
     }
 }

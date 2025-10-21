@@ -71,6 +71,7 @@ class ContactsPickerBottomSheetTest {
         ContactsUiState.Success(
             availableContacts = listOf(testContact),
             selectedContacts = selectedContacts,
+            isMultiSelectEnabled = false,
         )
 
     private val context: Context = ApplicationProvider.getApplicationContext()
@@ -158,6 +159,7 @@ class ContactsPickerBottomSheetTest {
                             ContactsUiState.Success(
                                 availableContacts = listOf(testContact),
                                 selectedContacts = selectedContacts,
+                                isMultiSelectEnabled = false,
                             )
                         ),
                     onToggleEntrySelection = { _, _ -> },
@@ -195,6 +197,7 @@ class ContactsPickerBottomSheetTest {
                             ContactsUiState.Success(
                                 availableContacts = listOf(testContact),
                                 selectedContacts = selectedContacts,
+                                isMultiSelectEnabled = false,
                             )
                         ),
                     onToggleEntrySelection = { _, _ -> },

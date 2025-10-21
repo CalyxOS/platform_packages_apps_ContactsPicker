@@ -31,10 +31,12 @@ sealed interface ContactsUiState {
      * @param selectedContacts A map representing the current selection, where the key is the
      *   contact ID and the value is a set of selected entry IDs. For a [DisplayNameContact] that
      *   has no entries, its own contact.id is used.
+     * @param isMultiSelectEnabled True if multiple contacts can be selected, false otherwise.
      */
     data class Success(
         val availableContacts: List<Contact>,
         val selectedContacts: LongObjectMap<Set<Long>>,
+        val isMultiSelectEnabled: Boolean,
     ) : ContactsUiState
 
     /**

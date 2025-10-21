@@ -55,6 +55,7 @@ class ContactsPickerBodyTest {
             ContactsPickerBody(
                 contacts = contacts,
                 selectedContacts = longObjectMapOf(),
+                isMultiSelectEnabled = false,
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
                 onToggleContactSelection = {},
@@ -109,6 +110,7 @@ class ContactsPickerBodyTest {
                         )
                     ),
                 selectedContacts = longObjectMapOf(),
+                isMultiSelectEnabled = false,
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
                 onToggleContactSelection = {},
@@ -133,6 +135,7 @@ class ContactsPickerBodyTest {
             ContactsPickerBody(
                 contacts = contacts,
                 selectedContacts = longObjectMapOf(),
+                isMultiSelectEnabled = false,
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
                 onToggleContactSelection = {},

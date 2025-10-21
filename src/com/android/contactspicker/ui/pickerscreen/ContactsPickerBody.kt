@@ -53,6 +53,7 @@ fun ContactsPickerBody(
     onPrivacyBannerMoreDetails: () -> Unit,
     onPrivacyBannerDismissRequest: () -> Unit,
     selectedContacts: LongObjectMap<Set<Long>>,
+    isMultiSelectEnabled: Boolean,
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (contactId: Long, entryId: Long) -> Unit,
 ) {
@@ -86,6 +87,7 @@ fun ContactsPickerBody(
                     ContactItem(
                         contact = contact,
                         selectedEntries = selectedContacts[contact.id],
+                        isMultiSelectEnabled = isMultiSelectEnabled,
                         onToggleContactSelection = onToggleContactSelection,
                         onToggleEntrySelection = onToggleEntrySelection,
                     )

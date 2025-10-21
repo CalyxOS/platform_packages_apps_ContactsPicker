@@ -48,8 +48,7 @@ fun ContactsPickerContent(
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (contactId: Long, entryId: Long) -> Unit,
 ) {
-    val uiStateValue = uiState.value
-    when (uiStateValue) {
+    when (val uiStateValue = uiState.value) {
         is ContactsUiState.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(
@@ -74,6 +73,7 @@ fun ContactsPickerContent(
             ContactsPickerBody(
                 contacts = uiStateValue.availableContacts,
                 selectedContacts = uiStateValue.selectedContacts,
+                isMultiSelectEnabled = uiStateValue.isMultiSelectEnabled,
                 onToggleContactSelection = onToggleContactSelection,
                 onToggleEntrySelection = onToggleEntrySelection,
                 onPrivacyBannerMoreDetails = onPrivacyBannerMoreDetails,

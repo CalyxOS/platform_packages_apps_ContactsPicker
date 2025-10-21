@@ -67,7 +67,7 @@ class ContactsPickerNavHostTest {
     @Test
     fun fromContactsPickerScreen_clickingMoreDetails_navigatesToPrivacyScreen() {
         setupNavHostInitialState(
-            mutableStateOf(ContactsUiState.Success(emptyList(), longObjectMapOf()))
+            mutableStateOf(ContactsUiState.Success(emptyList(), longObjectMapOf(), false))
         )
         val moreDetailsButton =
             composeTestRule.onNodeWithText(context.getString(R.string.privacy_banner_more_details))
@@ -79,7 +79,7 @@ class ContactsPickerNavHostTest {
     @Test
     fun fromPrivacyScreen_clickingBack_navigatesToContactsPickerScreen() {
         setupNavHostInitialState(
-            mutableStateOf(ContactsUiState.Success(emptyList(), longObjectMapOf()))
+            mutableStateOf(ContactsUiState.Success(emptyList(), longObjectMapOf(), false))
         )
         // Navigate to the privacy details screen
         composeTestRule

@@ -15,7 +15,10 @@
  */
 package com.android.contactspicker.viewmodel
 
+import android.content.Intent
+import android.os.Bundle
 import android.util.Log
+import androidx.collection.LongObjectMap
 import androidx.collection.buildLongObjectMap
 import androidx.collection.longObjectMapOf
 import androidx.lifecycle.ViewModel
@@ -34,6 +37,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+private const val TAG = "ContactsViewModel"
+
 /**
  * ViewModel for the Contacts Picker screen.
  *
@@ -43,37 +48,43 @@ import kotlinx.coroutines.launch
 class ContactsViewModel @Inject constructor(private val contactsRepository: ContactsRepository) :
     ViewModel() {
 
-    companion object {
-        private const val TAG = "ContactsViewModel"
-    }
-
     private val _uiState = MutableStateFlow<ContactsUiState>(ContactsUiState.Loading)
 
     val uiState: StateFlow<ContactsUiState> = _uiState.asStateFlow()
 
     /**
-     * Toggles the selection state for an entire contact, triggered by tapping the avatar.
-     * - For DisplayNameContact, it toggles its single selection state.
-     * - For contacts with entries, it selects all entries if not all are already selected, or
-     *   deselects all if they are.
+     * Toggles the selection state for an entire contact.
+     *
+     * If [uiState.isMultiSelectEnabled()] is true, this toggles all entries for the contact. In
+     * single-select mode, this selects or deselects the contact, replacing any existing selection.
+     * An attempt to select a multi-entry contact in single-select will select only its first entry.
      */
     fun toggleContactSelection(contact: Contact) {
         _uiState.update { currentState ->
             if (currentState !is ContactsUiState.Success) return@update currentState
 
             val existingEntryIds = currentState.selectedContacts[contact.id] ?: emptySet()
+            val isAlreadyFullySelected = contact.isFullySelected(existingEntryIds)
+
             val newContacts = buildLongObjectMap {
-                putAll(currentState.selectedContacts)
-                if (contact.isFullySelected(existingEntryIds)) {
-                    remove(contact.id)
+                if (currentState.isMultiSelectEnabled) {
+                    putAll(currentState.selectedContacts)
+                    if (isAlreadyFullySelected) {
+                        remove(contact.id)
+                    } else {
+                        put(
+                            contact.id,
+                            contact.getEntryIdsForSelection(isMultiSelectEnabled = true),
+                        )
+                    }
                 } else {
-                    val allEntryIds =
-                        when (contact) {
-                            is DisplayNameContact -> setOf(contact.id)
-                            is EmailContact -> contact.emails.map { it.id }.toSet()
-                            is PhoneContact -> contact.phones.map { it.id }.toSet()
-                        }
-                    put(contact.id, allEntryIds)
+                    if (!isAlreadyFullySelected) {
+                        put(
+                            contact.id,
+                            contact.getEntryIdsForSelection(isMultiSelectEnabled = false),
+                        )
+                    }
+                    // deselecting in single-select, leave an empty map
                 }
             }
 
@@ -86,35 +97,79 @@ class ContactsViewModel @Inject constructor(private val contactsRepository: Cont
      * Toggles the selection state for a single contact entry (e.g., one email or one phone number).
      *
      * If the entry is already selected, it will be deselected. If it is not selected, it will be
-     * added to the selection. If this action results in no entries being selected for a contact,
-     * the contact's ID is completely removed from the selection map.
+     * added to the selection. In single-select mode it will replace any previously selected contact
+     * or entry and become the sole selected entry.
+     *
+     * If this action results in no entries being selected for a contact, the contact's ID is
+     * completely removed from the selection map.
      */
     fun toggleEntrySelection(contactId: Long, entryId: Long) {
         _uiState.update { currentState ->
             if (currentState !is ContactsUiState.Success) return@update currentState
 
-            val alreadySelectedEntries = currentState.selectedContacts[contactId] ?: emptySet()
+            val alreadySelectedEntriesForCurrentContact =
+                currentState.selectedContacts[contactId] ?: emptySet()
+            val isEntryAlreadySelected = entryId in alreadySelectedEntriesForCurrentContact
 
-            // Toggle the presence of the entryId in the set
-            val newEntryIds =
-                if (entryId in alreadySelectedEntries) {
-                    alreadySelectedEntries - entryId
+            val newSelection =
+                if (currentState.isMultiSelectEnabled) {
+                    handleMultiSelectEntryToggle(
+                        currentState.selectedContacts,
+                        contactId,
+                        entryId,
+                        alreadySelectedEntriesForCurrentContact,
+                        isEntryAlreadySelected,
+                    )
                 } else {
-                    alreadySelectedEntries + entryId
+                    handleSingleSelectEntryToggle(contactId, entryId, isEntryAlreadySelected)
                 }
-
-            // If the resulting set is empty, remove the contact's entry from the map.
-            // Otherwise, update the map with the new set of entry IDs.
-            val newSelection = buildLongObjectMap {
-                putAll(currentState.selectedContacts)
-                if (newEntryIds.isEmpty()) {
-                    remove(contactId)
-                } else {
-                    put(contactId, newEntryIds)
-                }
-            }
+            // Return a copy of the state object to trigger UI recomposition.
             currentState.copy(selectedContacts = newSelection)
         }
+    }
+
+    /**
+     * Handles toggling a single entry in multi-select mode.
+     *
+     * Update the [contactId] mapping to either add or remove [entryId] (if remove, if no entries
+     * remain for [contactId], remove the mapping). Add all other contact mappings to the result map
+     */
+    private fun handleMultiSelectEntryToggle(
+        currentSelection: LongObjectMap<Set<Long>>,
+        contactId: Long,
+        entryId: Long,
+        alreadySelectedEntriesForCurrentContact: Set<Long>,
+        isCurrentEntryAlreadySelected: Boolean,
+    ): LongObjectMap<Set<Long>> = buildLongObjectMap {
+        putAll(currentSelection)
+        if (!isCurrentEntryAlreadySelected) {
+            val newEntryIds = alreadySelectedEntriesForCurrentContact + entryId
+            put(contactId, newEntryIds)
+        } else {
+            val newEntryIds = alreadySelectedEntriesForCurrentContact - entryId
+            if (newEntryIds.isEmpty()) {
+                remove(contactId)
+            } else {
+                put(contactId, newEntryIds)
+            }
+        }
+    }
+
+    /**
+     * Handles toggling a single entry in single-select mode.
+     *
+     * Selecting an entry makes it the *only* selected item. Deselecting an entry results in an
+     * empty selection.
+     */
+    private fun handleSingleSelectEntryToggle(
+        contactId: Long,
+        entryId: Long,
+        isEntryAlreadySelected: Boolean,
+    ): LongObjectMap<Set<Long>> = buildLongObjectMap {
+        if (!isEntryAlreadySelected) {
+            put(contactId, setOf(entryId))
+        }
+        // Deselecting, return an empty map.
     }
 
     /** Clears all currently selected contacts. */
@@ -129,12 +184,15 @@ class ContactsViewModel @Inject constructor(private val contactsRepository: Cont
      * Determines the display mode based on the intent. Should only be called from the Activity to
      * trigger the ViewModel's logic, as it changes the [ContactsUiState].
      */
-    fun processIntent(intentAction: String?, intentType: String?) {
+    fun processIntent(intentAction: String?, intentType: String?, intentExtras: Bundle?) {
         viewModelScope.launch {
             try {
                 val contacts = contactsRepository.getContactsForIntent(intentAction, intentType)
+                val isMultiSelectEnabled =
+                    intentExtras?.getBoolean(Intent.EXTRA_ALLOW_MULTIPLE, false) ?: false
                 // TODO(b/444459883): check and handle empty list
-                _uiState.value = ContactsUiState.Success(contacts, longObjectMapOf())
+                _uiState.value =
+                    ContactsUiState.Success(contacts, longObjectMapOf(), isMultiSelectEnabled)
             } catch (e: IllegalArgumentException) {
                 Log.e(TAG, "An invalid intent was passed.", e)
                 // TODO(b/444459883): iterate on error handling and error messages
@@ -142,6 +200,45 @@ class ContactsViewModel @Inject constructor(private val contactsRepository: Cont
             } catch (e: Exception) {
                 Log.e(TAG, "An unexpected error occurred.", e)
                 _uiState.value = ContactsUiState.Error("An unexpected error occurred.")
+            }
+        }
+    }
+}
+
+/**
+ * Helper extension function to get the IDs for given contact and the selection mode. If called in
+ * single selection mode for contacts with multiple emails or phones it will return only first
+ * element and log a warning.
+ */
+private fun Contact.getEntryIdsForSelection(isMultiSelectEnabled: Boolean): Set<Long> {
+    return when (this) {
+        is DisplayNameContact -> setOf(id)
+        is EmailContact -> {
+            if (isMultiSelectEnabled) {
+                emails.map { it.id }.toSet()
+            } else {
+                if (emails.size > 1) {
+                    Log.w(
+                        TAG,
+                        "toggleContactSelection called on multi-email contact in " +
+                            "single-select mode. Selecting first email.",
+                    )
+                }
+                setOf(emails.first().id)
+            }
+        }
+        is PhoneContact -> {
+            if (isMultiSelectEnabled) {
+                phones.map { it.id }.toSet()
+            } else {
+                if (phones.size > 1) {
+                    Log.w(
+                        TAG,
+                        "toggleContactSelection called on multi-phone contact in " +
+                            "single-select mode. Selecting first phone.",
+                    )
+                }
+                setOf(phones.first().id)
             }
         }
     }

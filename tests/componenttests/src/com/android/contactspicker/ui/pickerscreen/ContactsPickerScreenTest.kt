@@ -163,7 +163,14 @@ class ContactsPickerScreenTest {
 
         composeTestRule.setContent {
             ContactsPickerScreen(
-                uiState = mutableStateOf(ContactsUiState.Success(emptyList(), longObjectMapOf())),
+                uiState =
+                    mutableStateOf(
+                        ContactsUiState.Success(
+                            availableContacts = emptyList(),
+                            selectedContacts = longObjectMapOf(),
+                            isMultiSelectEnabled = false,
+                        )
+                    ),
                 onMoreDetails = {},
                 onExpandRequest = mockOnExpandRequest,
                 onToggleContactSelection = {},
@@ -191,7 +198,13 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState =
-                    mutableStateOf(ContactsUiState.Success(listOf(testContact), longObjectMapOf())),
+                    mutableStateOf(
+                        ContactsUiState.Success(
+                            availableContacts = listOf(testContact),
+                            selectedContacts = longObjectMapOf(),
+                            isMultiSelectEnabled = false,
+                        )
+                    ),
                 onMoreDetails = {},
                 onExpandRequest = { mutableStateOf(false).value = true },
                 onToggleContactSelection = {},
@@ -216,7 +229,13 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState =
-                    mutableStateOf(ContactsUiState.Success(listOf(testContact), longObjectMapOf())),
+                    mutableStateOf(
+                        ContactsUiState.Success(
+                            availableContacts = listOf(testContact),
+                            selectedContacts = longObjectMapOf(),
+                            isMultiSelectEnabled = false,
+                        )
+                    ),
                 onMoreDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},

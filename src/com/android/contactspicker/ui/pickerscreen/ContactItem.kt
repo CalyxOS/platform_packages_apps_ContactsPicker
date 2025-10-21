@@ -76,6 +76,7 @@ private val ICON_TEXT_SPACING = 8.dp
  *
  * @param contact The contact to display.
  * @param selectedEntries The list of currently selected entries for the contact, keyed by IDs.
+ * @param isMultiSelectEnabled True if multiple selections are allowed.
  * @param onToggleContactSelection A callback invoked when the avatar is clicked to select/deselect
  *   the whole contact.
  * @param onToggleEntrySelection A callback invoked when a single entry (e.g. an email) is selected
@@ -85,6 +86,7 @@ private val ICON_TEXT_SPACING = 8.dp
 fun ContactItem(
     contact: Contact,
     selectedEntries: Set<Long>?,
+    isMultiSelectEnabled: Boolean,
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (contactId: Long, entryId: Long) -> Unit,
 ) {
@@ -99,6 +101,16 @@ fun ContactItem(
 
     // The background highlights if any entry is selected.
     val isAnyEntrySelected = selectedEntries?.isNotEmpty() == true
+
+    val onAvatarClick: () -> Unit = {
+        if (isMultiSelectEnabled || !isExpandable) {
+            // In multi-select, or for simple contacts, the avatar toggles selection.
+            onToggleContactSelection(contact)
+        } else {
+            // In single-select for expandable contacts, the avatar toggles expansion.
+            expanded = !expanded
+        }
+    }
     Surface(
         color =
             if (isAnyEntrySelected) MaterialTheme.colorScheme.surfaceDim
@@ -120,7 +132,7 @@ fun ContactItem(
                 SelectableAvatar(
                     contact = contact,
                     isSelected = isFullySelected,
-                    onClick = { onToggleContactSelection(contact) },
+                    onClick = { onAvatarClick() },
                 )
                 Column(modifier = Modifier.weight(1f)) {
                     Text(

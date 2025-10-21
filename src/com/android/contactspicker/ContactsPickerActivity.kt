@@ -108,7 +108,7 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
 
     // Processes the intent which will trigger querying CP2 for contacts and sets up the UI.
     private fun processIntentAndSetupUi(intent: Intent) {
-        contactsViewModel.processIntent(intent.action, intent.type)
+        contactsViewModel.processIntent(intent.action, intent.type, intent.extras)
         setupComposeUi()
     }
 

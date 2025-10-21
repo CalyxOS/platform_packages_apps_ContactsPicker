@@ -76,7 +76,13 @@ class ContactsPickerContentTest {
         composeTestRule.setContent {
             ContactsPickerContent(
                 uiState =
-                    mutableStateOf(ContactsUiState.Success(listOf(testContact), longObjectMapOf())),
+                    mutableStateOf(
+                        ContactsUiState.Success(
+                            availableContacts = listOf(testContact),
+                            selectedContacts = longObjectMapOf(),
+                            isMultiSelectEnabled = false,
+                        )
+                    ),
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
                 onToggleContactSelection = {},
