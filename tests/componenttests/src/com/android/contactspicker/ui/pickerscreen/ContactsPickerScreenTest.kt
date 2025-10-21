@@ -86,31 +86,13 @@ class ContactsPickerScreenTest {
 
     @Test
     fun whenStateIsSuccess_showsContact() {
-        composeTestRule.setContent {
-            ContactsPickerScreen(
-                uiState =
-                    mutableStateOf(ContactsUiState.Success(listOf(testContact), longObjectMapOf())),
-                onMoreDetails = {},
-                onExpandRequest = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-            )
-        }
+        setContentWithDefaultSuccessState()
         composeTestRule.onNodeWithText(testContact.displayName).assertIsDisplayed()
     }
 
     @Test
     fun whenStateIsSuccess_showsSearchBox() {
-        composeTestRule.setContent {
-            ContactsPickerScreen(
-                uiState =
-                    mutableStateOf(ContactsUiState.Success(listOf(testContact), longObjectMapOf())),
-                onMoreDetails = {},
-                onExpandRequest = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-            )
-        }
+        setContentWithDefaultSuccessState()
         composeTestRule
             .onNodeWithText(
                 context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
@@ -120,16 +102,7 @@ class ContactsPickerScreenTest {
 
     @Test
     fun whenStateIsSuccess_showsProfileSelector() {
-        composeTestRule.setContent {
-            ContactsPickerScreen(
-                uiState =
-                    mutableStateOf(ContactsUiState.Success(listOf(testContact), longObjectMapOf())),
-                onMoreDetails = {},
-                onExpandRequest = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-            )
-        }
+        setContentWithDefaultSuccessState()
 
         composeTestRule
             .onNodeWithContentDescription(
@@ -140,16 +113,7 @@ class ContactsPickerScreenTest {
 
     @Test
     fun whenStateIsSuccess_showsPrivacyButton() {
-        composeTestRule.setContent {
-            ContactsPickerScreen(
-                uiState =
-                    mutableStateOf(ContactsUiState.Success(listOf(testContact), longObjectMapOf())),
-                onMoreDetails = {},
-                onExpandRequest = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-            )
-        }
+        setContentWithDefaultSuccessState()
         composeTestRule
             .onNodeWithTag(CONTACTS_PICKER_TOP_BAR_PRIVACY_ICON_TEST_TAG)
             .assertIsDisplayed()
@@ -173,5 +137,18 @@ class ContactsPickerScreenTest {
         composeTestRule.onNodeWithText(searchHint).performClick()
 
         verify(mockOnExpandRequest).invoke()
+    }
+
+    private fun setContentWithDefaultSuccessState() {
+        composeTestRule.setContent {
+            ContactsPickerScreen(
+                uiState =
+                    mutableStateOf(ContactsUiState.Success(listOf(testContact), longObjectMapOf())),
+                onMoreDetails = {},
+                onExpandRequest = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
+            )
+        }
     }
 }
