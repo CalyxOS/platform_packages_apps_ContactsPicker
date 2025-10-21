@@ -16,12 +16,14 @@
 
 package com.android.contactspicker.viewmodel
 
+import android.content.ContentUris
 import android.content.Intent
 import android.content.flags.Flags
 import android.os.Bundle
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.data.model.Contact
@@ -316,6 +318,98 @@ class ContactsViewModelTest {
 
         selection = viewModel.currentSuccessState.selectedContacts
         assertThat(selection.isEmpty()).isTrue()
+    }
+
+    @Test
+    fun prepareSelectionResult_withNoSelection_returnsEmptyList() {
+        loadViewModelWithInitialContacts(listOf(displayNameContact))
+
+        val uris = viewModel.prepareSelectionResult()
+
+        assertThat(uris).isEmpty()
+    }
+
+    @Test
+    fun prepareSelectionResult_withDisplayNameContact_returnsContactLookupUri() {
+        loadViewModelWithInitialContacts(listOf(displayNameContact))
+        viewModel.toggleContactSelection(displayNameContact)
+
+        val uris = viewModel.prepareSelectionResult()
+
+        val expectedUri =
+            ContactsContract.Contacts.getLookupUri(
+                displayNameContact.id,
+                displayNameContact.lookupKey,
+            )
+        assertThat(uris).containsExactly(expectedUri)
+    }
+
+    @Test
+    fun prepareSelectionResult_withSingleEmailEntry_returnsDataUri() {
+        loadViewModelWithInitialContacts(listOf(singleEmailContact))
+        val entry = singleEmailContact.emails.first()
+        viewModel.toggleEntrySelection(singleEmailContact.id, entry.id)
+
+        val uris = viewModel.prepareSelectionResult()
+
+        val expectedUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, entry.id)
+        assertThat(uris).containsExactly(expectedUri)
+    }
+
+    @Test
+    fun prepareSelectionResult_withMultiplePhoneEntries_returnsDataUris() {
+        // Must be in multi-select mode
+        loadViewModelWithInitialContacts(listOf(multiPhoneContact), buildIntentExtras(true))
+        viewModel.toggleContactSelection(multiPhoneContact) // Selects all entries
+
+        val uris = viewModel.prepareSelectionResult()
+
+        val expectedUri1 = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, 30L)
+        val expectedUri2 = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, 31L)
+        assertThat(uris).containsExactly(expectedUri1, expectedUri2)
+    }
+
+    @Test
+    fun prepareSelectionResult_withMixedSelection_returnsAllUris() {
+        // Must be in multi-select mode
+        loadViewModelWithInitialContacts(
+            listOf(displayNameContact, multiPhoneContact),
+            buildIntentExtras(true),
+        )
+
+        // Select the DisplayNameContact
+        viewModel.toggleContactSelection(displayNameContact)
+        // Select the first phone entry from the MultiPhoneContact
+        val entry = multiPhoneContact.phones.first()
+        viewModel.toggleEntrySelection(multiPhoneContact.id, entry.id)
+
+        val uris = viewModel.prepareSelectionResult()
+
+        val expectedDisplayNameUri =
+            ContactsContract.Contacts.getLookupUri(
+                displayNameContact.id,
+                displayNameContact.lookupKey,
+            )
+        val expectedPhoneUri =
+            ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, entry.id)
+
+        assertThat(uris).containsExactly(expectedDisplayNameUri, expectedPhoneUri)
+    }
+
+    @Test
+    fun prepareSelectionResult_inSingleSelect_withMultipleEntriesSelected_returnsOnlyOneUri() {
+        // This simulates the defensive logic in toggleContactSelection
+        loadViewModelWithInitialContacts(listOf(multiPhoneContact), buildIntentExtras(false))
+        viewModel.toggleContactSelection(
+            multiPhoneContact
+        ) // This should only select the first entry
+
+        val uris = viewModel.prepareSelectionResult()
+        val firstEntry = multiPhoneContact.phones.first()
+        val expectedUri =
+            ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, firstEntry.id)
+
+        assertThat(uris).containsExactly(expectedUri)
     }
 
     /**

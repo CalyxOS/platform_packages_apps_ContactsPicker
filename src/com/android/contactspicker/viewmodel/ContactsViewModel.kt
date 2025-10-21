@@ -15,9 +15,13 @@
  */
 package com.android.contactspicker.viewmodel
 
+import android.content.ContentUris
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.util.Log
+import androidx.annotation.OpenForTesting
 import androidx.collection.LongObjectMap
 import androidx.collection.buildLongObjectMap
 import androidx.collection.longObjectMapOf
@@ -44,13 +48,15 @@ private const val TAG = "ContactsViewModel"
  *
  * This class is responsible for loading and preparing the contacts data to be displayed by the UI.
  */
+@OpenForTesting
 @HiltViewModel
-class ContactsViewModel @Inject constructor(private val contactsRepository: ContactsRepository) :
-    ViewModel() {
+open class ContactsViewModel
+@Inject
+constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
 
     private val _uiState = MutableStateFlow<ContactsUiState>(ContactsUiState.Loading)
 
-    val uiState: StateFlow<ContactsUiState> = _uiState.asStateFlow()
+    open val uiState: StateFlow<ContactsUiState> = _uiState.asStateFlow()
 
     /**
      * Toggles the selection state for an entire contact.
@@ -169,7 +175,6 @@ class ContactsViewModel @Inject constructor(private val contactsRepository: Cont
         if (!isEntryAlreadySelected) {
             put(contactId, setOf(entryId))
         }
-        // Deselecting, return an empty map.
     }
 
     /** Clears all currently selected contacts. */
@@ -184,7 +189,8 @@ class ContactsViewModel @Inject constructor(private val contactsRepository: Cont
      * Determines the display mode based on the intent. Should only be called from the Activity to
      * trigger the ViewModel's logic, as it changes the [ContactsUiState].
      */
-    fun processIntent(intentAction: String?, intentType: String?, intentExtras: Bundle?) {
+    @OpenForTesting
+    open fun processIntent(intentAction: String?, intentType: String?, intentExtras: Bundle?) {
         viewModelScope.launch {
             try {
                 val contacts = contactsRepository.getContactsForIntent(intentAction, intentType)
@@ -201,6 +207,61 @@ class ContactsViewModel @Inject constructor(private val contactsRepository: Cont
                 Log.e(TAG, "An unexpected error occurred.", e)
                 _uiState.value = ContactsUiState.Error("An unexpected error occurred.")
             }
+        }
+    }
+
+    /**
+     * Converts the current selection map into a final list of content URIs.
+     *
+     * @return A list of [Uri]s for the selected items, or an empty list.
+     */
+    @OpenForTesting
+    open fun prepareSelectionResult(): List<Uri> {
+        val currentState = _uiState.value
+        if (currentState !is ContactsUiState.Success) {
+            Log.w(TAG, "prepareSelectionResult called while not in Success state.")
+            return emptyList()
+        }
+
+        try {
+            val finalUris = mutableListOf<Uri>()
+            val contactsById = currentState.availableContacts.associateBy { it.id }
+
+            currentState.selectedContacts.forEach { contactId, entryIds ->
+                val contact = contactsById[contactId]
+                if (contact == null) {
+                    Log.w(TAG, "Selected contact with ID $contactId not found in available list.")
+                    return@forEach
+                }
+
+                when (contact) {
+                    is DisplayNameContact -> {
+                        finalUris.add(
+                            ContactsContract.Contacts.getLookupUri(contact.id, contact.lookupKey)
+                        )
+                    }
+                    is EmailContact,
+                    is PhoneContact -> {
+                        entryIds.forEach { entryId ->
+                            finalUris.add(
+                                ContentUris.withAppendedId(
+                                    ContactsContract.Data.CONTENT_URI,
+                                    entryId,
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+            return finalUris
+        } catch (e: Exception) {
+            Log.e(TAG, "Error preparing selection result", e)
+            _uiState.update {
+                if (it is ContactsUiState.Success) {
+                    ContactsUiState.Error(message = "Error preparing result: ${e.message}")
+                } else it
+            }
+            return emptyList()
         }
     }
 }

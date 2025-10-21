@@ -124,9 +124,31 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
                     onToggleContactSelection = contactsViewModel::toggleContactSelection,
                     onToggleEntrySelection = contactsViewModel::toggleEntrySelection,
                     onClearSelection = contactsViewModel::clearSelection,
+                    onDoneClicked = ::handleDoneClicked,
                 )
             }
         }
+    }
+
+    /** Prepares the result intent and finishes the activity. */
+    private fun handleDoneClicked() {
+        val uris = contactsViewModel.prepareSelectionResult()
+        if (uris.isEmpty()) {
+            setResult(RESULT_CANCELED)
+            finish()
+            return
+        }
+
+        // TODO(b/452020367): Pass calling uid when we support ACTION_PICK_CONTACTS
+        val resultIntent =
+            if ((contactsViewModel.uiState.value as ContactsUiState.Success).isMultiSelectEnabled) {
+                createMultiSelectionResult(this, intent, uris, -1)
+            } else {
+                createSingleSelectionResult(this, intent, uris.first(), -1)
+            }
+
+        setResult(RESULT_OK, resultIntent)
+        finish()
     }
 
     private fun forwardToOtherActionPickHandlersWithChooser() {

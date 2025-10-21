@@ -165,6 +165,7 @@ class ContactsPickerBottomSheetTest {
                     onToggleEntrySelection = { _, _ -> },
                     onToggleContactSelection = {},
                     onClearSelection = {},
+                    onDoneClicked = {},
                 )
             }
         }
@@ -203,6 +204,7 @@ class ContactsPickerBottomSheetTest {
                     onToggleEntrySelection = { _, _ -> },
                     onToggleContactSelection = {},
                     onClearSelection = {},
+                    onDoneClicked = {},
                 )
             }
         }
@@ -234,6 +236,7 @@ class ContactsPickerBottomSheetTest {
                     onToggleEntrySelection = { _, _ -> },
                     onToggleContactSelection = {},
                     onClearSelection = {},
+                    onDoneClicked = {},
                 )
             }
         }
