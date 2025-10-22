@@ -39,6 +39,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.android.contactspicker.inject.ActivityModule
 import com.android.contactspicker.inject.AppModule
 import com.android.contactspicker.provider.CallingPackageProvider
@@ -51,7 +52,6 @@ import dagger.hilt.android.testing.UninstallModules
 import org.junit.After
 import org.junit.Assert.assertThrows
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -86,6 +86,12 @@ class ContactsPickerActivityTest {
         hiltRule.inject()
 
         testPackageName = context.packageName
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        instrumentation.targetContext.packageName
+        instrumentation.uiAutomation.grantRuntimePermission(
+            instrumentation.targetContext.packageName,
+            "android.permission.READ_CONTACTS",
+        )
         val appInfo = ApplicationInfo().apply { targetSdkVersion = 37 }
         whenever(mockPackageManager.getApplicationInfo(testPackageName, 0)).doReturn(appInfo)
         whenever(mockCallingPackageProvider.get()).doReturn(testPackageName)
@@ -109,7 +115,6 @@ class ContactsPickerActivityTest {
         }
     }
 
-    @Ignore("b/452618303") // TODO(452618303): Re-enable once fixed.
     @Test
     @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
     fun topBarSearchText_isDisplayed() {
@@ -167,7 +172,6 @@ class ContactsPickerActivityTest {
         assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
     }
 
-    @Ignore("b/452618303") // TODO(452618303): Re-enable once fixed.
     @Test
     @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
     fun packageManagerThrowsException_handlesInternally() {

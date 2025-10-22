@@ -44,6 +44,7 @@ import com.google.common.truth.Truth.assertThat
 import java.util.UUID
 import kotlinx.coroutines.test.runTest
 import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -65,6 +66,16 @@ class ContactsRepositoryIntegrationTest {
         private const val TEST_CONTACT_EMAIL_2 = "pickertest2@example.com"
         private const val TEST_CONTACT_PHONE_1 = "1234567890"
         private const val TEST_CONTACT_PHONE_2 = "0987654321"
+    }
+
+    @Before
+    fun setUp() {
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        instrumentation.targetContext.packageName
+        instrumentation.uiAutomation.grantRuntimePermission(
+            instrumentation.targetContext.packageName,
+            "android.permission.READ_CONTACTS",
+        )
     }
 
     @After
