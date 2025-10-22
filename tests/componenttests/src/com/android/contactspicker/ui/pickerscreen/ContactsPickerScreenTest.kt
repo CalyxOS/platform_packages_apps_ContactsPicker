@@ -101,6 +101,44 @@ class ContactsPickerScreenTest {
     }
 
     @Test
+    fun whenStateIsError_showsSearchBox() {
+        val errorMessage = "Failed to load contacts."
+
+        composeTestRule.setContent {
+            ContactsPickerScreen(
+                uiState = mutableStateOf(ContactsUiState.Error(errorMessage)),
+                onMoreDetails = {},
+                onExpandRequest = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
+            )
+        }
+        composeTestRule
+            .onNodeWithText(
+                context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
+            )
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun whenStateIsLoading_showsSearchBox() {
+        composeTestRule.setContent {
+            ContactsPickerScreen(
+                uiState = mutableStateOf(ContactsUiState.Loading),
+                onMoreDetails = {},
+                onExpandRequest = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
+            )
+        }
+        composeTestRule
+            .onNodeWithText(
+                context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
+            )
+            .assertIsDisplayed()
+    }
+
+    @Test
     fun whenStateIsSuccess_showsProfileSelector() {
         setContentWithDefaultSuccessState()
 
@@ -137,6 +175,41 @@ class ContactsPickerScreenTest {
         composeTestRule.onNodeWithText(searchHint).performClick()
 
         verify(mockOnExpandRequest).invoke()
+    }
+
+    @Test
+    fun pickerScreen_initialState_showsContactsList() {
+        setContentWithDefaultSuccessState()
+
+        // Initially, the contact list should be visible
+        composeTestRule.onNodeWithTag(CONTACTS_LIST_TEST_TAG).assertIsDisplayed()
+        composeTestRule.onNodeWithText(testContact.displayName).assertIsDisplayed()
+    }
+
+    @Test
+    fun pickerScreen_clickSearch_hidesContactsList() {
+        composeTestRule.setContent {
+            ContactsPickerScreen(
+                uiState =
+                    mutableStateOf(ContactsUiState.Success(listOf(testContact), longObjectMapOf())),
+                onMoreDetails = {},
+                onExpandRequest = { mutableStateOf(false).value = true },
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
+            )
+        }
+
+        // Initially, the contact list should be visible
+        composeTestRule.onNodeWithTag(CONTACTS_LIST_TEST_TAG).assertIsDisplayed()
+        composeTestRule.onNodeWithText(testContact.displayName).assertIsDisplayed()
+
+        // Click the search bar to expand
+        val searchHint = context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
+        composeTestRule.onNodeWithText(searchHint).performClick()
+
+        // The list should now be hidden
+        composeTestRule.onNodeWithTag(CONTACTS_LIST_TEST_TAG).assertDoesNotExist()
+        composeTestRule.onNodeWithText(testContact.displayName).assertDoesNotExist()
     }
 
     private fun setContentWithDefaultSuccessState() {
