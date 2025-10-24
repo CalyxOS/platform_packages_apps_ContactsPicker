@@ -76,6 +76,7 @@ fun ContactsPickerBottomSheet(
             initialValue = SheetValue.PartiallyExpanded,
             skipHiddenState = false,
         ),
+    onDoneClicked: () -> Unit,
 ) {
     val peekHeight = LocalConfiguration.current.screenHeightDp.dp * BOTTOM_SHEET_PEEK_HEIGHT_RATIO
     val navController = rememberNavController()
@@ -133,6 +134,7 @@ fun ContactsPickerBottomSheet(
                         currentRoute == ContactsPickerRoute.route,
                 selectedContactsCount = uiStateValue.selectedContacts.totalElementsSize(),
                 onClearSelection = onClearSelection,
+                onDoneClicked = onDoneClicked,
                 modifier = Modifier.align(Alignment.BottomCenter),
             )
         }
@@ -144,6 +146,7 @@ private fun AnimatedSelectionBottomBar(
     visible: Boolean,
     selectedContactsCount: Int,
     onClearSelection: () -> Unit,
+    onDoneClicked: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -159,10 +162,7 @@ private fun AnimatedSelectionBottomBar(
                 // TODO(b/441480198): Navigate to the preview screen
                 Toast.makeText(context, "Preview clicked", Toast.LENGTH_SHORT).show()
             },
-            onDoneClick = {
-                // TODO(b/452020365): Pass the selected contacts to the caller
-                Toast.makeText(context, "Done clicked", Toast.LENGTH_SHORT).show()
-            },
+            onDoneClick = { onDoneClicked() },
             onClearSelection = onClearSelection,
         )
     }

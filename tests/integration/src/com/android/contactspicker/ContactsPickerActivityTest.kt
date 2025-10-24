@@ -22,15 +22,18 @@ import android.content.Intent
 import android.content.flags.Flags
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.platform.test.annotations.RequiresFlagsDisabled
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import android.provider.ContactsContract
+import androidx.collection.longObjectMapOf
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
 import androidx.lifecycle.Lifecycle
@@ -40,15 +43,19 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.inject.ActivityModule
 import com.android.contactspicker.inject.AppModule
 import com.android.contactspicker.provider.CallingPackageProvider
 import com.android.contactspicker.ui.components.BOTTOM_SHEET_TEST_TAG
+import com.android.contactspicker.viewmodel.ContactsViewModel
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertThrows
 import org.junit.Before
@@ -57,6 +64,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.doNothing
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
@@ -78,7 +87,14 @@ class ContactsPickerActivityTest {
 
     @BindValue @JvmField val mockCallingPackageProvider: CallingPackageProvider = mock()
 
+    @BindValue val mockViewModel: ContactsViewModel = mock()
+
     private lateinit var testPackageName: String
+
+    private val testUri = Uri.parse("content://contacts/1")
+    private val testUri2 = Uri.parse("content://data/10")
+    private val testContact =
+        DisplayNameContact(id = 1, displayName = "Test", lookupKey = "test_lookup")
 
     @Before
     fun setUp() {
@@ -100,6 +116,12 @@ class ContactsPickerActivityTest {
                 action = Intent.ACTION_PICK
                 type = ContactsContract.Contacts.CONTENT_TYPE
             }
+        val successState =
+            MutableStateFlow<ContactsUiState>(
+                ContactsUiState.Success(emptyList(), longObjectMapOf(), false)
+            )
+        whenever(mockViewModel.uiState).thenReturn(successState)
+        doNothing().whenever(mockViewModel).processIntent(anyOrNull(), anyOrNull(), anyOrNull())
     }
 
     @After
@@ -199,5 +221,105 @@ class ContactsPickerActivityTest {
 
         assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
         assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_CANCELED)
+    }
+
+    @Test
+    fun handleDoneClicked_withSingleSelection_setsResultOkAndFinishes() = runTest {
+        val successStateSingleSelect =
+            MutableStateFlow<ContactsUiState>(
+                ContactsUiState.Success(
+                    availableContacts = listOf(testContact),
+                    selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
+                    isMultiSelectEnabled = false,
+                )
+            )
+        whenever(mockViewModel.uiState).thenReturn(successStateSingleSelect)
+        whenever(mockViewModel.prepareSelectionResult()).thenReturn(listOf(testUri))
+
+        val scenario = ActivityScenario.launchActivityForResult<ContactsPickerActivity>(baseIntent)
+
+        composeTestRule.onNodeWithText("Done").performClick()
+
+        composeTestRule.awaitIdle()
+
+        val result = scenario.result
+        assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+
+        val resultIntent = result.resultData
+        assertThat(resultIntent).isNotNull()
+        assertThat(resultIntent.data).isEqualTo(testUri)
+        assertThat(resultIntent.clipData).isNull()
+        assertThat(resultIntent.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION).isEqualTo(1)
+
+        scenario.onActivity { activity ->
+            if (activity != null) {
+                assertThat(activity.isFinishing).isTrue()
+            }
+        }
+    }
+
+    @Test
+    fun handleDoneClicked_withMultiSelection_setsResultOkWithClipData() {
+        val successStateMultiSelect =
+            MutableStateFlow<ContactsUiState>(
+                ContactsUiState.Success(
+                    availableContacts = listOf(testContact),
+                    selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
+                    isMultiSelectEnabled = true,
+                )
+            )
+        whenever(mockViewModel.uiState).thenReturn(successStateMultiSelect)
+        // Set up ViewModel to return multiple URIs
+        whenever(mockViewModel.prepareSelectionResult()).thenReturn(listOf(testUri, testUri2))
+
+        val scenario = ActivityScenario.launchActivityForResult<ContactsPickerActivity>(baseIntent)
+
+        // ACT
+        composeTestRule.onNodeWithText("Done").performClick()
+
+        // ASSERT
+        val result = scenario.result
+        assertThat(result.resultCode).isEqualTo(Activity.RESULT_OK)
+
+        val resultIntent = result.resultData as Intent
+
+        assertThat(resultIntent).isNotNull()
+        assertThat(resultIntent.data).isNull()
+        assertThat(resultIntent.clipData).isNotNull()
+        assertThat(resultIntent.clipData!!.itemCount).isEqualTo(2)
+        assertThat(resultIntent.clipData!!.getItemAt(0).uri).isEqualTo(testUri)
+        assertThat(resultIntent.clipData!!.getItemAt(1).uri).isEqualTo(testUri2)
+        assertThat(resultIntent.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION).isEqualTo(1)
+        scenario.onActivity { activity ->
+            if (activity != null) {
+                assertThat(activity.isFinishing).isTrue()
+            }
+        }
+    }
+
+    @Test
+    fun handleDoneClicked_withNoSelection_setsResultCanceled() {
+        val successStateSingleSelect =
+            MutableStateFlow<ContactsUiState>(
+                ContactsUiState.Success(
+                    availableContacts = listOf(testContact),
+                    selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
+                    isMultiSelectEnabled = false,
+                )
+            )
+        whenever(mockViewModel.uiState).thenReturn(successStateSingleSelect)
+        whenever(mockViewModel.prepareSelectionResult()).thenReturn(emptyList())
+
+        val scenario = ActivityScenario.launchActivityForResult<ContactsPickerActivity>(baseIntent)
+
+        composeTestRule.onNodeWithText("Done").performClick()
+
+        val result = scenario.result
+        assertThat(result.resultCode).isEqualTo(Activity.RESULT_CANCELED)
+        scenario.onActivity { activity ->
+            if (activity != null) {
+                assertThat(activity.isFinishing).isTrue()
+            }
+        }
     }
 }
