@@ -50,6 +50,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.navigation.ContactsPickerNavHost
@@ -127,7 +128,7 @@ fun ContactsPickerBottomSheet(
         ) { /* Empty content of the screen that appears behind the bottom sheet. */
         }
 
-        if (uiStateValue is ContactsUiState.Success) {
+        if (uiStateValue is ContactsListState.Success) {
             AnimatedSelectionBottomBar(
                 visible =
                     uiStateValue.selectedContacts.isNotEmpty() &&

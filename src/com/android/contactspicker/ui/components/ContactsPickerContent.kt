@@ -28,7 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsUiState
+import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.ui.pickerscreen.CONTACTS_PICKER_SCREEN_LOADING_INDICATOR_TEST_TAG
 import com.android.contactspicker.ui.pickerscreen.ContactsPickerBody
@@ -48,32 +50,58 @@ fun ContactsPickerContent(
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (contactId: Long, entryId: Long) -> Unit,
 ) {
-    when (val uiStateValue = uiState.value) {
-        is ContactsUiState.Loading -> {
+    val uiStateValue = uiState.value
+    when (uiStateValue) {
+        is ContactsListState ->
+            ContactsListContent(
+                uiState = uiStateValue,
+                onPrivacyBannerMoreDetails = onPrivacyBannerMoreDetails,
+                onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
+                onToggleContactSelection = onToggleContactSelection,
+                onToggleEntrySelection = onToggleEntrySelection,
+            )
+
+        is SearchState -> {
+            // TODO(b/443023416): Implement search states UI
+        }
+    }
+}
+
+@Composable
+private fun ContactsListContent(
+    uiState: ContactsListState,
+    onPrivacyBannerMoreDetails: () -> Unit,
+    onPrivacyBannerDismissRequest: () -> Unit,
+    onToggleContactSelection: (Contact) -> Unit,
+    onToggleEntrySelection: (contactId: Long, entryId: Long) -> Unit,
+) {
+    when (uiState) {
+        is ContactsListState.Loading -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(
                     modifier = Modifier.testTag(CONTACTS_PICKER_SCREEN_LOADING_INDICATOR_TEST_TAG)
                 )
             }
         }
-        is ContactsUiState.Error -> {
+
+        is ContactsListState.Error -> {
             Box(
                 modifier = Modifier.fillMaxSize().padding(16.dp),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = uiStateValue.message,
+                    text = uiState.message,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.error,
                 )
             }
         }
-        is ContactsUiState.Success -> {
 
+        is ContactsListState.Success -> {
             ContactsPickerBody(
-                contacts = uiStateValue.availableContacts,
-                selectedContacts = uiStateValue.selectedContacts,
-                isMultiSelectEnabled = uiStateValue.isMultiSelectEnabled,
+                contacts = uiState.availableContacts,
+                selectedContacts = uiState.selectedContacts,
+                isMultiSelectEnabled = uiState.isMultiSelectEnabled,
                 onToggleContactSelection = onToggleContactSelection,
                 onToggleEntrySelection = onToggleEntrySelection,
                 onPrivacyBannerMoreDetails = onPrivacyBannerMoreDetails,

@@ -117,9 +117,7 @@ class ContactsPickerActivityTest {
                 type = ContactsContract.Contacts.CONTENT_TYPE
             }
         val successState =
-            MutableStateFlow<ContactsUiState>(
-                ContactsUiState.Success(emptyList(), longObjectMapOf(), false)
-            )
+            MutableStateFlow(ContactsListState.Success(emptyList(), longObjectMapOf(), false))
         whenever(mockViewModel.uiState).thenReturn(successState)
         doNothing().whenever(mockViewModel).processIntent(anyOrNull(), anyOrNull(), anyOrNull())
     }
@@ -226,8 +224,8 @@ class ContactsPickerActivityTest {
     @Test
     fun handleDoneClicked_withSingleSelection_setsResultOkAndFinishes() = runTest {
         val successStateSingleSelect =
-            MutableStateFlow<ContactsUiState>(
-                ContactsUiState.Success(
+            MutableStateFlow(
+                ContactsListState.Success(
                     availableContacts = listOf(testContact),
                     selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = false,
@@ -261,8 +259,8 @@ class ContactsPickerActivityTest {
     @Test
     fun handleDoneClicked_withMultiSelection_setsResultOkWithClipData() {
         val successStateMultiSelect =
-            MutableStateFlow<ContactsUiState>(
-                ContactsUiState.Success(
+            MutableStateFlow(
+                ContactsListState.Success(
                     availableContacts = listOf(testContact),
                     selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = true,
@@ -300,8 +298,8 @@ class ContactsPickerActivityTest {
     @Test
     fun handleDoneClicked_withNoSelection_setsResultCanceled() {
         val successStateSingleSelect =
-            MutableStateFlow<ContactsUiState>(
-                ContactsUiState.Success(
+            MutableStateFlow(
+                ContactsListState.Success(
                     availableContacts = listOf(testContact),
                     selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = false,

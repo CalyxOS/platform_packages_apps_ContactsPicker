@@ -141,7 +141,9 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
 
         // TODO(b/452020367): Pass calling uid when we support ACTION_PICK_CONTACTS
         val resultIntent =
-            if ((contactsViewModel.uiState.value as ContactsUiState.Success).isMultiSelectEnabled) {
+            if (
+                (contactsViewModel.uiState.value as ContactsListState.Success).isMultiSelectEnabled
+            ) {
                 createMultiSelectionResult(this, intent, uris, -1)
             } else {
                 createSingleSelectionResult(this, intent, uris.first(), -1)

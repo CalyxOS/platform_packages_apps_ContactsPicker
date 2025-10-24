@@ -25,6 +25,7 @@ import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Phone
+import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.DisplayNameContact
@@ -103,8 +104,8 @@ class ContactsViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertThat(collectedStates).hasSize(2)
-        assertThat(collectedStates[0] is ContactsUiState.Loading).isTrue()
-        assertThat(collectedStates[1] is ContactsUiState.Success).isTrue()
+        assertThat(collectedStates[0] is ContactsListState.Loading).isTrue()
+        assertThat(collectedStates[1] is ContactsListState.Success).isTrue()
 
         job.cancel()
     }
@@ -113,7 +114,7 @@ class ContactsViewModelTest {
     fun processIntent_whenRepositorySucceeds_setsSuccessState() = runTest {
         loadViewModelWithInitialContacts(listOf(displayNameContact))
 
-        val successState = viewModel.currentSuccessState
+        val successState = viewModel.uiState.value as ContactsListState.Success
         assertThat(successState.availableContacts).containsExactly(displayNameContact)
         assertThat(successState.selectedContacts.isEmpty()).isTrue()
     }
@@ -130,7 +131,7 @@ class ContactsViewModelTest {
         )
         testDispatcher.scheduler.advanceUntilIdle()
 
-        val errorState = viewModel.uiState.value as ContactsUiState.Error
+        val errorState = viewModel.uiState.value as ContactsListState.Error
         assertThat(errorState.message).isEqualTo("Unsupported action")
     }
 
@@ -439,10 +440,10 @@ class ContactsViewModelTest {
      * A helper property to safely access the `Success` state for assertions. Fails the test if the
      * current state is not `Success`.
      */
-    private val ContactsViewModel.currentSuccessState: ContactsUiState.Success
+    private val ContactsViewModel.currentSuccessState: ContactsListState.Success
         get() {
             val state = this.uiState.value
-            assertThat(state).isInstanceOf(ContactsUiState.Success::class.java)
-            return state as ContactsUiState.Success
+            assertThat(state).isInstanceOf(ContactsListState.Success::class.java)
+            return state as ContactsListState.Success
         }
 }
