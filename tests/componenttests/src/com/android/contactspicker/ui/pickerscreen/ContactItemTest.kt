@@ -55,16 +55,7 @@ class ContactItemTest {
     @Test
     fun contactItem_withDisplayNameContact_showsNameOnly() {
         val testDisplayNameContact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
-
-        composeTestRule.setContent {
-            ContactItem(
-                contact = testDisplayNameContact,
-                selectedEntries = emptySet(),
-                isMultiSelectEnabled = true,
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-            )
-        }
+        createContactItemWithEmptySelection(testDisplayNameContact)
 
         composeTestRule.onNodeWithText(testDisplayNameContact.displayName).assertIsDisplayed()
         composeTestRule
@@ -77,15 +68,7 @@ class ContactItemTest {
     @Test
     fun contactItem_withSingleEmail_showsNameAndEmail() {
         val testSingleEmailContact = ContactTestDataFactory.GENERIC_EMAIL_CONTACT
-        composeTestRule.setContent {
-            ContactItem(
-                contact = testSingleEmailContact,
-                selectedEntries = emptySet(),
-                isMultiSelectEnabled = true,
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-            )
-        }
+        createContactItemWithEmptySelection(testSingleEmailContact)
 
         composeTestRule.onNodeWithText(testSingleEmailContact.displayName).assertIsDisplayed()
         composeTestRule
@@ -101,15 +84,7 @@ class ContactItemTest {
     @Test
     fun contactItem_withSinglePhone_showsNameAndPhoneNumber() {
         val testSinglePhoneContact = ContactTestDataFactory.GENERIC_PHONE_CONTACT
-        composeTestRule.setContent {
-            ContactItem(
-                contact = testSinglePhoneContact,
-                selectedEntries = emptySet(),
-                isMultiSelectEnabled = true,
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-            )
-        }
+        createContactItemWithEmptySelection(testSinglePhoneContact)
 
         composeTestRule.onNodeWithText(testSinglePhoneContact.displayName).assertIsDisplayed()
         composeTestRule
@@ -126,15 +101,8 @@ class ContactItemTest {
     @Test
     fun contactItem_withMultipleEmails_showsEmailCountAndIsExpandable() {
         val testMultiEmailContact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT
-        composeTestRule.setContent {
-            ContactItem(
-                contact = testMultiEmailContact,
-                selectedEntries = emptySet(),
-                isMultiSelectEnabled = true,
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-            )
-        }
+        createContactItemWithEmptySelection(testMultiEmailContact)
+
         composeTestRule.onNodeWithText(testMultiEmailContact.displayName).assertIsDisplayed()
         composeTestRule
             .onNodeWithText(
@@ -161,15 +129,7 @@ class ContactItemTest {
     @Test
     fun contactItem_withMultiplePhones_showsPhoneCountAndIsExpandable() {
         val testMultiPhoneContact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT
-        composeTestRule.setContent {
-            ContactItem(
-                contact = testMultiPhoneContact,
-                selectedEntries = emptySet(),
-                isMultiSelectEnabled = true,
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-            )
-        }
+        createContactItemWithEmptySelection(testMultiPhoneContact)
 
         composeTestRule.onNodeWithText(testMultiPhoneContact.displayName).assertIsDisplayed()
         composeTestRule
@@ -197,15 +157,7 @@ class ContactItemTest {
     @Test
     fun contactItem_withMultipleEmails_expandsAndCollapsesOnClick() {
         val testMultiEmailContact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT
-        composeTestRule.setContent {
-            ContactItem(
-                contact = testMultiEmailContact,
-                selectedEntries = emptySet(),
-                isMultiSelectEnabled = true,
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-            )
-        }
+        createContactItemWithEmptySelection(testMultiEmailContact)
 
         // Expand
         composeTestRule
@@ -239,15 +191,7 @@ class ContactItemTest {
     @Test
     fun contactItem_withMultiplePhones_expandsAndCollapsesOnClick() {
         val testMultiPhoneContact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT
-        composeTestRule.setContent {
-            ContactItem(
-                contact = testMultiPhoneContact,
-                selectedEntries = emptySet(),
-                isMultiSelectEnabled = true,
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-            )
-        }
+        createContactItemWithEmptySelection(testMultiPhoneContact)
 
         // Expand
         composeTestRule.onNodeWithText(testMultiPhoneContact.displayName).performClick()
@@ -280,15 +224,7 @@ class ContactItemTest {
     fun selectableAvatar_showsCheckmark_whenFullySelected() {
         val testMultiEmailContact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT
         val selectedEntries = testMultiEmailContact.emails.map { it.id }.toSet()
-        composeTestRule.setContent {
-            ContactItem(
-                contact = testMultiEmailContact,
-                selectedEntries = selectedEntries,
-                isMultiSelectEnabled = true,
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-            )
-        }
+        createContactItem(testMultiEmailContact, selectedEntries)
 
         composeTestRule
             .onNodeWithContentDescription(
@@ -305,15 +241,7 @@ class ContactItemTest {
         val testMultiEmailContact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT
         // Select only the first email
         val selectedEntries = setOf(testMultiEmailContact.emails.first().id)
-        composeTestRule.setContent {
-            ContactItem(
-                contact = testMultiEmailContact,
-                selectedEntries = selectedEntries,
-                isMultiSelectEnabled = true,
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-            )
-        }
+        createContactItem(testMultiEmailContact, selectedEntries)
 
         // Checkmark should NOT be displayed
         composeTestRule
@@ -448,6 +376,7 @@ class ContactItemTest {
             ContactItem(
                 contact = contact,
                 selectedEntries = emptySet(),
+                position = ItemPosition.ONLY,
                 isMultiSelectEnabled = isMultiSelectEnabled,
                 onToggleContactSelection = { onToggleContactCalled = true },
                 onToggleEntrySelection = { _, _ -> onToggleEntryCalled = true },
@@ -472,6 +401,71 @@ class ContactItemTest {
                 is DisplayNameContact ->
                     throw AssertionError("DisplayNameContact should not be expandable")
             }
+        }
+    }
+
+    @Test
+    fun calculateShape_middlePosition() {
+        val shape = calculateShape(ItemPosition.MIDDLE, false)
+        assertThat(shape).isEqualTo(MIDDLE_ITEM_SHAPE)
+    }
+
+    @Test
+    fun calculateShape_middlePositionWithSelectedEntries() {
+        val shape = calculateShape(ItemPosition.MIDDLE, true)
+        assertThat(shape).isEqualTo(SINGLE_ITEM_SHAPE)
+    }
+
+    @Test
+    fun calculateShape_firstPosition() {
+        val shape = calculateShape(ItemPosition.FIRST, false)
+        assertThat(shape).isEqualTo(TOP_ITEM_SHAPE)
+    }
+
+    @Test
+    fun calculateShape_firstPositionWithSelectedEntries() {
+        val shape = calculateShape(ItemPosition.FIRST, true)
+        assertThat(shape).isEqualTo(SINGLE_ITEM_SHAPE)
+    }
+
+    @Test
+    fun calculateShape_lastPosition() {
+        val shape = calculateShape(ItemPosition.LAST, false)
+        assertThat(shape).isEqualTo(BOTTOM_ITEM_SHAPE)
+    }
+
+    @Test
+    fun calculateShape_lastPositionWithSelectedEntries() {
+        val shape = calculateShape(ItemPosition.LAST, true)
+        assertThat(shape).isEqualTo(SINGLE_ITEM_SHAPE)
+    }
+
+    @Test
+    fun calculateShape_onlyPosition() {
+        val shape = calculateShape(ItemPosition.ONLY, false)
+        assertThat(shape).isEqualTo(SINGLE_ITEM_SHAPE)
+    }
+
+    @Test
+    fun calculateShape_onlyPositionWithSelectedEntries() {
+        val shape = calculateShape(ItemPosition.ONLY, true)
+        assertThat(shape).isEqualTo(SINGLE_ITEM_SHAPE)
+    }
+
+    private fun createContactItemWithEmptySelection(contact: Contact) {
+        createContactItem(contact, emptySet())
+    }
+
+    private fun createContactItem(contact: Contact, selectedEntries: Set<Long>) {
+        composeTestRule.setContent {
+            ContactItem(
+                contact = contact,
+                position = ItemPosition.ONLY,
+                selectedEntries = selectedEntries,
+                isMultiSelectEnabled = true,
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
+            )
         }
     }
 }
