@@ -15,23 +15,34 @@
  */
 package com.android.contactspicker
 
+import androidx.collection.LongObjectMap
 import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.DisplayNameContact
 
-/** Defines the possible states for the Contacts Picker screen. */
+/** Represents the different states for the Contacts Picker screen. */
 sealed interface ContactsUiState {
-    /** The screen is currently loading data. */
-    object Loading : ContactsUiState
-
-    /** An error occurred. */
-    data class Error(val message: String) : ContactsUiState
+    /** The state indicating that data is being loaded. */
+    data object Loading : ContactsUiState
 
     /**
-     * The data was loaded successfully.
+     * The state representing a successful fetch of contacts.
      *
-     * The UI should inspect the type of contacts in this list (e.g., BasicContact, PhoneContact) to
-     * determine how to render them.
-     *
-     * @param contacts The list of contacts to display.
+     * @param availableContacts The complete list of all contacts to be displayed.
+     * @param selectedContacts A map representing the current selection, where the key is the
+     *   contact ID and the value is a set of selected entry IDs. For a [DisplayNameContact] that
+     *   has no entries, its own contact.id is used.
+     * @param isMultiSelectEnabled True if multiple contacts can be selected, false otherwise.
      */
-    data class Success(val contacts: List<Contact>) : ContactsUiState
+    data class Success(
+        val availableContacts: List<Contact>,
+        val selectedContacts: LongObjectMap<Set<Long>>,
+        val isMultiSelectEnabled: Boolean,
+    ) : ContactsUiState
+
+    /**
+     * The state representing an error that occurred while loading contacts.
+     *
+     * @param message A description of the error.
+     */
+    data class Error(val message: String) : ContactsUiState
 }

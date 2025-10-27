@@ -20,6 +20,9 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.collection.longObjectMapOf
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -63,7 +66,9 @@ class ContactsPickerNavHostTest {
 
     @Test
     fun fromContactsPickerScreen_clickingMoreDetails_navigatesToPrivacyScreen() {
-        setupNavHostInitialState(ContactsUiState.Success(emptyList()))
+        setupNavHostInitialState(
+            mutableStateOf(ContactsUiState.Success(emptyList(), longObjectMapOf(), false))
+        )
         val moreDetailsButton =
             composeTestRule.onNodeWithText(context.getString(R.string.privacy_banner_more_details))
         moreDetailsButton.assertIsDisplayed()
@@ -73,7 +78,9 @@ class ContactsPickerNavHostTest {
 
     @Test
     fun fromPrivacyScreen_clickingBack_navigatesToContactsPickerScreen() {
-        setupNavHostInitialState(ContactsUiState.Success(emptyList()))
+        setupNavHostInitialState(
+            mutableStateOf(ContactsUiState.Success(emptyList(), longObjectMapOf(), false))
+        )
         // Navigate to the privacy details screen
         composeTestRule
             .onNodeWithText(context.getString(R.string.privacy_banner_more_details))
@@ -91,7 +98,7 @@ class ContactsPickerNavHostTest {
     }
 
     private fun setupNavHostInitialState(
-        initialUiState: ContactsUiState = ContactsUiState.Loading
+        initialUiState: State<ContactsUiState> = mutableStateOf(ContactsUiState.Loading)
     ) {
         composeTestRule.setContent {
             ContactsPickerAppTheme {
@@ -99,6 +106,8 @@ class ContactsPickerNavHostTest {
                     navController = navController,
                     uiState = initialUiState,
                     onExpandRequest = {},
+                    onToggleContactSelection = {},
+                    onToggleEntrySelection = { _, _ -> },
                 )
             }
         }

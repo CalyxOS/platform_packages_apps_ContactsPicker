@@ -18,6 +18,7 @@ package com.android.contactspicker.data.model
 import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.google.common.truth.Truth.assertThat
 import java.lang.IllegalArgumentException
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,12 +33,20 @@ class ContactTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun createDisplayNameContact_withBlankDisplayName_throwsException() {
-        DisplayNameContact(id = 1, displayName = " ")
+        DisplayNameContact(id = 1, displayName = " ", lookupKey = "lookup1")
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun createDisplayNameContact_withBlankLookupKey_throwsException() {
+        DisplayNameContact(id = 1, displayName = "John Doe", lookupKey = " ")
     }
 
     @Test
-    fun createDisplayNameContact_withValidDisplayName_succeeds() {
-        DisplayNameContact(id = 1, displayName = "John Doe")
+    fun createDisplayNameContact_withValidData_succeeds() {
+        val contact = DisplayNameContact(id = 1, displayName = "John Doe", lookupKey = "lookup1")
+        assertThat(contact.id).isEqualTo(1)
+        assertThat(contact.displayName).isEqualTo("John Doe")
+        assertThat(contact.lookupKey).isEqualTo("lookup1")
     }
 
     @Test(expected = IllegalArgumentException::class)
@@ -52,17 +61,23 @@ class ContactTest {
 
     @Test
     fun createPhoneContact_withValidData_succeeds() {
-        PhoneContact(id = 1, displayName = "John Doe", phones = listOf(testPhoneEntry))
+        val contact =
+            PhoneContact(id = 1, displayName = "John Doe", phones = listOf(testPhoneEntry))
+        assertThat(contact.id).isEqualTo(1)
+        assertThat(contact.displayName).isEqualTo("John Doe")
+        assertThat(contact.phones).containsExactly(testPhoneEntry)
     }
 
     @Test
     fun createPhoneContact_withMultiplePhones_succeeds() {
         val anotherPhoneEntry = PhoneEntry(id = 3L, number = "098-765-4321", label = "Work")
-        PhoneContact(
-            id = 1,
-            displayName = "John Doe",
-            phones = listOf(testPhoneEntry, anotherPhoneEntry),
-        )
+        val contact =
+            PhoneContact(
+                id = 1,
+                displayName = "John Doe",
+                phones = listOf(testPhoneEntry, anotherPhoneEntry),
+            )
+        assertThat(contact.phones).hasSize(2)
     }
 
     @Test(expected = IllegalArgumentException::class)
@@ -77,16 +92,80 @@ class ContactTest {
 
     @Test
     fun createEmailContact_withValidData_succeeds() {
-        EmailContact(id = 1, displayName = "John Doe", emails = listOf(testEmailEntry))
+        val contact =
+            EmailContact(id = 1, displayName = "John Doe", emails = listOf(testEmailEntry))
+        assertThat(contact.id).isEqualTo(1)
+        assertThat(contact.displayName).isEqualTo("John Doe")
+        assertThat(contact.emails).containsExactly(testEmailEntry)
     }
 
     @Test
     fun createEmailContact_withMultipleEmails_succeeds() {
         val anotherEmailEntry = EmailEntry(id = 4L, address = "j.doe@work.com", label = "Work")
-        EmailContact(
-            id = 1,
-            displayName = "John Doe",
-            emails = listOf(testEmailEntry, anotherEmailEntry),
-        )
+        val contact =
+            EmailContact(
+                id = 1,
+                displayName = "John Doe",
+                emails = listOf(testEmailEntry, anotherEmailEntry),
+            )
+        assertThat(contact.emails).hasSize(2)
+    }
+
+    @Test
+    fun isFullySelected_withNullOrEmptySelectedEntries_returnsFalse() {
+        val displayNameContact =
+            DisplayNameContact(id = 1, displayName = "John Doe", lookupKey = "lookup1")
+        val phoneContact =
+            PhoneContact(id = 1, displayName = "John Doe", phones = listOf(testPhoneEntry))
+        val emailContact =
+            EmailContact(id = 1, displayName = "John Doe", emails = listOf(testEmailEntry))
+
+        // Test with null set
+        assertThat(displayNameContact.isFullySelected(null)).isFalse()
+        assertThat(phoneContact.isFullySelected(null)).isFalse()
+        assertThat(emailContact.isFullySelected(null)).isFalse()
+
+        // Test with empty set
+        assertThat(displayNameContact.isFullySelected(emptySet())).isFalse()
+        assertThat(phoneContact.isFullySelected(emptySet())).isFalse()
+        assertThat(emailContact.isFullySelected(emptySet())).isFalse()
+    }
+
+    @Test
+    fun isFullySelected_forDisplayNameContact_withNonEmptySelectedEntries_returnsTrue() {
+        val contact = DisplayNameContact(id = 1, displayName = "John Doe", lookupKey = "lookup1")
+        assertThat(contact.isFullySelected(setOf(1L))).isTrue()
+    }
+
+    @Test
+    fun isFullySelected_forPhoneContact_withPartialAndFullSelection() {
+        val anotherPhoneEntry = PhoneEntry(id = 3L, number = "098-765-4321", label = "Work")
+        val contact =
+            PhoneContact(
+                id = 1,
+                displayName = "John Doe",
+                phones = listOf(testPhoneEntry, anotherPhoneEntry),
+            )
+        // A single phone contact is not fully selected
+        assertThat(contact.isFullySelected(setOf(testPhoneEntry.id))).isFalse()
+        // All phone contacts are selected
+        assertThat(contact.isFullySelected(setOf(testPhoneEntry.id, anotherPhoneEntry.id))).isTrue()
+    }
+
+    @Test
+    fun isFullySelected_forEmailContact_withPartialAndFullSelection() {
+        val anotherEmailEntry = EmailEntry(id = 4L, address = "j.doe@work.com", label = "Work")
+        val contact =
+            EmailContact(
+                id = 1,
+                displayName = "John Doe",
+                emails = listOf(testEmailEntry, anotherEmailEntry),
+            )
+
+        // A single email contact is not fully selected
+        assertThat(contact.isFullySelected(setOf(testEmailEntry.id))).isFalse()
+
+        // All email contacts are selected
+        assertThat(contact.isFullySelected(setOf(testEmailEntry.id, anotherEmailEntry.id))).isTrue()
     }
 }

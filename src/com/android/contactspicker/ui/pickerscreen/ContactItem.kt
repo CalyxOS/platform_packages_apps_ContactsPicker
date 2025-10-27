@@ -17,15 +17,21 @@ package com.android.contactspicker.ui.pickerscreen
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Phone
@@ -41,6 +47,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -49,7 +56,9 @@ import com.android.contactspicker.R
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
+import com.android.contactspicker.data.model.EmailEntry
 import com.android.contactspicker.data.model.PhoneContact
+import com.android.contactspicker.data.model.PhoneEntry
 import com.android.contactspicker.ui.components.Avatar
 
 private val CONTACT_ITEM_PADDING = 16.dp
@@ -62,19 +71,52 @@ private val ICON_TEXT_SPACING = 8.dp
 /**
  * A composable that displays a single contact item.
  *
- * The details shown (e.g., phone or email) are determined by the type of the [Contact] object
+ * The entries shown (e.g., phone or email) are determined by the type of the [Contact] object
  * provided. If a contact has multiple phone numbers or emails, it will be expandable.
  *
- * @param contact The contact to display, which must be one of the [Contact] sealed subtypes.
+ * @param contact The contact to display.
+ * @param selectedEntries The list of currently selected entries for the contact, keyed by IDs.
+ * @param isMultiSelectEnabled True if multiple selections are allowed.
+ * @param onToggleContactSelection A callback invoked when the avatar is clicked to select/deselect
+ *   the whole contact.
+ * @param onToggleEntrySelection A callback invoked when a single entry (e.g. an email) is selected
+ *   from an expanded list.
  */
 @Composable
-fun ContactItem(contact: Contact) {
+fun ContactItem(
+    contact: Contact,
+    selectedEntries: Set<Long>?,
+    isMultiSelectEnabled: Boolean,
+    onToggleContactSelection: (Contact) -> Unit,
+    onToggleEntrySelection: (contactId: Long, entryId: Long) -> Unit,
+) {
     var expanded by remember { mutableStateOf(false) }
     val isExpandable =
         (contact is PhoneContact && contact.phones.size > 1) ||
             (contact is EmailContact && contact.emails.size > 1)
 
-    Surface(color = MaterialTheme.colorScheme.surfaceBright, shape = RoundedCornerShape(20.dp)) {
+    // A contact is considered "fully selected" for the avatar checkmark only when all of its
+    // entries are selected.
+    val isFullySelected = contact.isFullySelected(selectedEntries)
+
+    // The background highlights if any entry is selected.
+    val isAnyEntrySelected = selectedEntries?.isNotEmpty() == true
+
+    val onAvatarClick: () -> Unit = {
+        if (isMultiSelectEnabled || !isExpandable) {
+            // In multi-select, or for simple contacts, the avatar toggles selection.
+            onToggleContactSelection(contact)
+        } else {
+            // In single-select for expandable contacts, the avatar toggles expansion.
+            expanded = !expanded
+        }
+    }
+    Surface(
+        color =
+            if (isAnyEntrySelected) MaterialTheme.colorScheme.surfaceDim
+            else MaterialTheme.colorScheme.surfaceBright,
+        shape = RoundedCornerShape(20.dp),
+    ) {
         Column(modifier = Modifier.animateContentSize()) {
             val rowModifier =
                 if (isExpandable) {
@@ -87,14 +129,18 @@ fun ContactItem(contact: Contact) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(AVATAR_TEXT_SPACING),
             ) {
-                Avatar(displayName = contact.displayName)
+                SelectableAvatar(
+                    contact = contact,
+                    isSelected = isFullySelected,
+                    onClick = { onAvatarClick() },
+                )
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = contact.displayName,
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Medium,
                     )
-                    // Secondary text changes based on the type and count of contact details
+                    // Secondary text changes based on the type and count of contact entries
                     contact.secondaryText()?.let { secondaryText ->
                         Text(
                             text = secondaryText,
@@ -123,18 +169,23 @@ fun ContactItem(contact: Contact) {
             }
 
             if (expanded) {
-                when (contact) {
-                    is PhoneContact -> ExpandedPhoneContactEntry(contact)
-                    is EmailContact -> ExpandedEmailContactEntry(contact)
-                    is DisplayNameContact -> {
-                        /* Not expandable, do nothing */
-                    }
-                }
+                ExpandedContact(
+                    contact = contact,
+                    selectedEntries = selectedEntries ?: emptySet(),
+                    onToggleEntry = onToggleEntrySelection,
+                )
             }
         }
     }
 }
 
+/**
+ * Determines the secondary text to display below the contact's name.
+ *
+ * Returns the phone number or email if there is only one. If there are multiple, it returns a
+ * formatted count string (e.g., "2 phone numbers"). Returns null if the contact has no entries
+ * (i.e., it's a [DisplayNameContact]).
+ */
 @Composable
 private fun Contact.secondaryText(): String? =
     when (this) {
@@ -148,49 +199,118 @@ private fun Contact.secondaryText(): String? =
     }
 
 @Composable
-private fun ExpandedPhoneContactEntry(contact: PhoneContact) {
-    contact.phones.forEach { phone ->
-        ExpandedContactEntry(
-            text = phone.number,
-            label = phone.label,
-            icon = {
+private fun SelectableAvatar(contact: Contact, isSelected: Boolean, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier.size(40.dp).clickable(onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        if (isSelected) {
+            Box(
+                modifier =
+                    Modifier.fillMaxSize()
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary),
+                contentAlignment = Alignment.Center,
+            ) {
                 Icon(
-                    imageVector = Icons.Outlined.Phone,
+                    imageVector = Icons.Default.Check,
                     contentDescription =
-                        stringResource(R.string.contact_item_phone_icon_content_description),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        stringResource(
+                            R.string.contact_item_selected_content_description,
+                            contact.displayName,
+                        ),
+                    tint = MaterialTheme.colorScheme.onPrimary,
                 )
-            },
+            }
+        } else {
+            Avatar(displayName = contact.displayName)
+        }
+    }
+}
+
+@Composable
+private fun ExpandedContact(
+    contact: Contact,
+    selectedEntries: Set<Long>,
+    onToggleEntry: (contactId: Long, entryId: Long) -> Unit,
+) {
+    when (contact) {
+        is PhoneContact ->
+            contact.phones.forEach { phoneEntry ->
+                ExpandedPhoneEntry(
+                    phoneEntry = phoneEntry,
+                    isChecked = selectedEntries.contains(phoneEntry.id),
+                    onCheckedChange = { onToggleEntry(contact.id, phoneEntry.id) },
+                )
+            }
+        is EmailContact ->
+            contact.emails.forEach { emailEntry ->
+                ExpandedEmailEntry(
+                    emailEntry = emailEntry,
+                    isChecked = selectedEntries.contains(emailEntry.id),
+                    onCheckedChange = { onToggleEntry(contact.id, emailEntry.id) },
+                )
+            }
+        is DisplayNameContact -> {
+            /* Not expandable, do nothing */
+        }
+    }
+}
+
+@Composable
+private fun ExpandedPhoneEntry(
+    phoneEntry: PhoneEntry,
+    isChecked: Boolean,
+    onCheckedChange: () -> Unit,
+) {
+    ExpandedContactEntry(
+        text = phoneEntry.number,
+        label = phoneEntry.label,
+        isChecked = isChecked,
+        onCheckedChange = onCheckedChange,
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.Phone,
+            contentDescription =
+                stringResource(R.string.contact_item_phone_icon_content_description),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
 
 @Composable
-private fun ExpandedEmailContactEntry(contact: EmailContact) {
-    contact.emails.forEach { email ->
-        ExpandedContactEntry(
-            text = email.address,
-            label = email.label,
-            icon = {
-                Icon(
-                    imageVector = Icons.Outlined.Email,
-                    contentDescription =
-                        stringResource(R.string.contact_item_email_icon_content_description),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            },
+private fun ExpandedEmailEntry(
+    emailEntry: EmailEntry,
+    isChecked: Boolean,
+    onCheckedChange: () -> Unit,
+) {
+    ExpandedContactEntry(
+        text = emailEntry.address,
+        label = emailEntry.label,
+        isChecked = isChecked,
+        onCheckedChange = onCheckedChange,
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.Email,
+            contentDescription =
+                stringResource(R.string.contact_item_email_icon_content_description),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
 
 @Composable
-private fun ExpandedContactEntry(text: String, label: String?, icon: @Composable () -> Unit) {
-    // TODO(b/436818961): move state to the ContactsList to hold all selected rows
-    var checked by remember { mutableStateOf(false) }
+private fun ExpandedContactEntry(
+    text: String,
+    label: String?,
+    isChecked: Boolean,
+    onCheckedChange: () -> Unit,
+    icon: @Composable () -> Unit,
+) {
     Row(
         modifier =
             Modifier.fillMaxWidth()
-                .clickable { checked = !checked }
+                .clickable { onCheckedChange() }
                 .padding(
                     start = EXPANDED_CONTACT_ITEM_START_PADDING,
                     end = EXPANDED_CONTACT_ITEM_END_PADDING,
@@ -212,6 +332,6 @@ private fun ExpandedContactEntry(text: String, label: String?, icon: @Composable
                 )
             }
         }
-        Checkbox(checked = checked, onCheckedChange = { checked = it })
+        Checkbox(checked = isChecked, onCheckedChange = { onCheckedChange() })
     }
 }

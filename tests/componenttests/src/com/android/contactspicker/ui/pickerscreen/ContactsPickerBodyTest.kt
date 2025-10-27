@@ -20,6 +20,7 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.collection.longObjectMapOf
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasAnyDescendant
 import androidx.compose.ui.test.hasTestTag
@@ -45,16 +46,20 @@ class ContactsPickerBodyTest {
     fun contactsList_displaysHeadersAndContacts() {
         val contacts =
             listOf(
-                DisplayNameContact(id = 1L, displayName = "Alpha"),
-                DisplayNameContact(id = 3L, displayName = "Beta"),
-                DisplayNameContact(id = 2L, displayName = "Gamma"),
+                DisplayNameContact(id = 1L, displayName = "Alpha", lookupKey = "alpha_lookup"),
+                DisplayNameContact(id = 3L, displayName = "Beta", lookupKey = "beta_lookup"),
+                DisplayNameContact(id = 2L, displayName = "Gamma", lookupKey = "gamma_lookup"),
             )
 
         composeTestRule.setContent {
             ContactsPickerBody(
                 contacts = contacts,
+                selectedContacts = longObjectMapOf(),
+                isMultiSelectEnabled = false,
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
             )
         }
 
@@ -73,13 +78,22 @@ class ContactsPickerBodyTest {
         composeTestRule.onNodeWithText("Gamma").assertIsDisplayed()
 
         composeTestRule
-            .onNode(hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("A")))
+            .onNode(
+                hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("A")),
+                useUnmergedTree = true,
+            )
             .assertIsDisplayed()
         composeTestRule
-            .onNode(hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("B")))
+            .onNode(
+                hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("B")),
+                useUnmergedTree = true,
+            )
             .assertIsDisplayed()
         composeTestRule
-            .onNode(hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("G")))
+            .onNode(
+                hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("G")),
+                useUnmergedTree = true,
+            )
             .assertIsDisplayed()
     }
 
@@ -87,9 +101,20 @@ class ContactsPickerBodyTest {
     fun privacyBanner_isDisplayed() {
         composeTestRule.setContent {
             ContactsPickerBody(
-                contacts = listOf(DisplayNameContact(id = 1L, displayName = "Alpha")),
+                contacts =
+                    listOf(
+                        DisplayNameContact(
+                            id = 1L,
+                            displayName = "Alpha",
+                            lookupKey = "alpha_lookup",
+                        )
+                    ),
+                selectedContacts = longObjectMapOf(),
+                isMultiSelectEnabled = false,
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
             )
         }
         composeTestRule.onNode(hasTestTag(PRIVACY_BANNER_TEST_TAG)).assertIsDisplayed()
@@ -98,13 +123,23 @@ class ContactsPickerBodyTest {
     @Test
     fun privacyBanner_isNotDisplayed_afterScrollingTheContactList() {
         val contacts =
-            List(30) { i -> DisplayNameContact(id = i.toLong(), displayName = "Contact $i") }
+            List(30) { i ->
+                DisplayNameContact(
+                    id = i.toLong(),
+                    displayName = "Contact $i",
+                    lookupKey = "contact${i}_lookup",
+                )
+            }
 
         composeTestRule.setContent {
             ContactsPickerBody(
                 contacts = contacts,
+                selectedContacts = longObjectMapOf(),
+                isMultiSelectEnabled = false,
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
             )
         }
 

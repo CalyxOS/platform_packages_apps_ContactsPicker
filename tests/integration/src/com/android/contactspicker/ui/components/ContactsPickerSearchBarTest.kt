@@ -32,6 +32,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.platform.app.InstrumentationRegistry
 import com.android.contactspicker.ContactsPickerActivity
 import com.android.contactspicker.R
 import com.android.contactspicker.inject.ActivityModule
@@ -43,14 +44,12 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import org.junit.After
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
-@Ignore("b/452618303") // TODO(452618303): Re-enable once fixed.
 @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
 @UninstallModules(AppModule::class, ActivityModule::class)
 @HiltAndroidTest
@@ -71,10 +70,17 @@ class ContactsPickerSearchBarTest {
 
     @Before
     fun setUp() {
-        val testPackageName = context.packageName
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        instrumentation.targetContext.packageName
+        instrumentation.uiAutomation.grantRuntimePermission(
+            instrumentation.targetContext.packageName,
+            "android.permission.READ_CONTACTS",
+        )
+
+        val clientAppPackageName = context.packageName
         val appInfo = ApplicationInfo().apply { targetSdkVersion = 37 }
-        whenever(mockPackageManager.getApplicationInfo(testPackageName, 0)).doReturn(appInfo)
-        whenever(mockCallingPackageProvider.get()).doReturn(testPackageName)
+        whenever(mockPackageManager.getApplicationInfo(clientAppPackageName, 0)).doReturn(appInfo)
+        whenever(mockCallingPackageProvider.get()).doReturn(clientAppPackageName)
         val intent =
             Intent(context, ContactsPickerActivity::class.java).apply {
                 action = Intent.ACTION_PICK
