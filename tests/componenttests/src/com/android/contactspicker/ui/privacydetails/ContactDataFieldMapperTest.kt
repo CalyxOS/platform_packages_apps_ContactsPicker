@@ -30,7 +30,7 @@ class ContactDataFieldMapperTest {
         val unorderedDataFields =
             listOf(
                 ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
-                ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE,
+                ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE,
                 ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
             )
 
@@ -40,9 +40,9 @@ class ContactDataFieldMapperTest {
 
         assertThat(resultHeaderIds)
             .containsExactly(
-                R.string.privacy_details_data_field_name_header,
-                R.string.privacy_details_data_field_phone_header,
                 R.string.privacy_details_data_field_email_header,
+                R.string.privacy_details_data_field_phone_header,
+                R.string.privacy_details_data_field_nickname_header,
             )
             .inOrder()
     }
@@ -95,16 +95,16 @@ class ContactDataFieldMapperTest {
         assertThat(resultHeaderIds)
             .containsExactly(
                 R.string.privacy_details_data_field_name_header,
-                R.string.privacy_details_data_field_phone_header,
                 R.string.privacy_details_data_field_email_header,
+                R.string.privacy_details_data_field_phone_header,
                 R.string.privacy_details_data_field_address_header,
                 R.string.privacy_details_data_field_organization_header,
                 R.string.privacy_details_data_field_related_people_header,
                 R.string.privacy_details_data_field_birthday_header,
                 R.string.privacy_details_data_field_photo_header,
                 R.string.privacy_details_data_field_group_header,
-                R.string.privacy_details_data_field_website_header,
                 R.string.privacy_details_data_field_nickname_header,
+                R.string.privacy_details_data_field_website_header,
             )
             .inOrder()
     }

@@ -36,16 +36,16 @@ object ContactDataFieldMapper {
     private val sortOrder =
         listOf(
             ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE,
-            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
             ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
+            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
             ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
             ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE,
             ContactsContract.CommonDataKinds.Relation.CONTENT_ITEM_TYPE,
             ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE,
             ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE,
             ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE,
-            ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE,
             ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE,
+            ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE,
         )
 
     /**
