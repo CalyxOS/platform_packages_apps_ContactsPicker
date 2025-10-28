@@ -46,9 +46,24 @@ class ContactsPickerBodyTest {
     fun contactsList_displaysHeadersAndContacts() {
         val contacts =
             listOf(
-                DisplayNameContact(id = 1L, displayName = "Alpha", lookupKey = "alpha_lookup"),
-                DisplayNameContact(id = 3L, displayName = "Beta", lookupKey = "beta_lookup"),
-                DisplayNameContact(id = 2L, displayName = "Gamma", lookupKey = "gamma_lookup"),
+                DisplayNameContact(
+                    id = 1L,
+                    displayName = "Alpha",
+                    profilePictureUri = null,
+                    lookupKey = "alpha_lookup",
+                ),
+                DisplayNameContact(
+                    id = 3L,
+                    displayName = "Beta",
+                    profilePictureUri = null,
+                    lookupKey = "beta_lookup",
+                ),
+                DisplayNameContact(
+                    id = 2L,
+                    displayName = "Gamma",
+                    profilePictureUri = null,
+                    lookupKey = "gamma_lookup",
+                ),
             )
 
         composeTestRule.setContent {
@@ -106,6 +121,7 @@ class ContactsPickerBodyTest {
                         DisplayNameContact(
                             id = 1L,
                             displayName = "Alpha",
+                            profilePictureUri = null,
                             lookupKey = "alpha_lookup",
                         )
                     ),
@@ -127,6 +143,7 @@ class ContactsPickerBodyTest {
                 DisplayNameContact(
                     id = i.toLong(),
                     displayName = "Contact $i",
+                    profilePictureUri = null,
                     lookupKey = "contact${i}_lookup",
                 )
             }

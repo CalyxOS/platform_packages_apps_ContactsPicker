@@ -52,12 +52,18 @@ class ContactItemTest {
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
     private val testDisplayNameContact =
-        DisplayNameContact(id = 1, displayName = "Alice Wonderland", lookupKey = "alice_lookup")
+        DisplayNameContact(
+            id = 1,
+            displayName = "Alice Wonderland",
+            profilePictureUri = null,
+            lookupKey = "alice_lookup",
+        )
 
     private val testSinglePhoneContact =
         PhoneContact(
             id = 2,
             displayName = "Alice Wonderland",
+            profilePictureUri = null,
             phones = listOf(PhoneEntry(id = 10L, number = "111-222-3333", label = "Mobile")),
         )
 
@@ -65,6 +71,7 @@ class ContactItemTest {
         EmailContact(
             id = 3,
             displayName = "Alice Wonderland",
+            profilePictureUri = null,
             emails = listOf(EmailEntry(id = 11L, address = "alice@wonderland.org", label = "Home")),
         )
 
@@ -72,6 +79,7 @@ class ContactItemTest {
         PhoneContact(
             id = 4,
             displayName = "Bob The Builder",
+            profilePictureUri = null,
             phones =
                 listOf(
                     PhoneEntry(id = 12L, number = "111-222-3333", label = "Mobile"),
@@ -83,6 +91,7 @@ class ContactItemTest {
         EmailContact(
             id = 5,
             displayName = "Charlie Chaplin",
+            profilePictureUri = null,
             emails =
                 listOf(
                     EmailEntry(id = 14L, address = "charlie@chaplin.org", label = "Home"),

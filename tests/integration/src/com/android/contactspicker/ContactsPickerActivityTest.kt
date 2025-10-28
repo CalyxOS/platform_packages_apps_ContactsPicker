@@ -94,7 +94,12 @@ class ContactsPickerActivityTest {
     private val testUri = Uri.parse("content://contacts/1")
     private val testUri2 = Uri.parse("content://data/10")
     private val testContact =
-        DisplayNameContact(id = 1, displayName = "Test", lookupKey = "test_lookup")
+        DisplayNameContact(
+            id = 1,
+            displayName = "Test",
+            profilePictureUri = null,
+            lookupKey = "test_lookup",
+        )
 
     @Before
     fun setUp() {

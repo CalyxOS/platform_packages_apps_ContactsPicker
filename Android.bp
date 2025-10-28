@@ -45,6 +45,12 @@ android_library {
         "androidx.compose.runtime_runtime",
         "androidx.compose.ui_ui",
         "androidx.hilt_hilt-navigation-compose",
+        "androidx.exifinterface_exifinterface",
+        "glide-prebuilt",
+        "glide-ktx-prebuilt",
+        "glide-gifdecoder-prebuilt",
+        "glide-disklrucache-prebuilt",
+        "glide-compose-prebuilt",
         "hilt_android",
     ],
     flags_packages: [

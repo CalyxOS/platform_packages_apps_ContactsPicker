@@ -66,6 +66,7 @@ class ContactsPickerBottomSheetTest {
         DisplayNameContact(
             id = 1,
             displayName = "Contacty Contact",
+            profilePictureUri = null,
             lookupKey = "contacty_contact_lookup",
         )
     private val testSuccessState =

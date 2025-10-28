@@ -38,7 +38,12 @@ class ContactsPickerContentTest {
     @get:Rule val composeTestRule = createComposeRule()
 
     private val testContact =
-        DisplayNameContact(id = 1L, displayName = "Test Contact", lookupKey = "test_lookup_key")
+        DisplayNameContact(
+            id = 1L,
+            displayName = "Test Contact",
+            profilePictureUri = null,
+            lookupKey = "test_lookup_key",
+        )
 
     @Test
     fun pickerContent_loadingState_showsLoadingIndicator() {

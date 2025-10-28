@@ -59,16 +59,23 @@ class ContactsViewModelTest {
 
     // Test Data
     private val displayNameContact =
-        DisplayNameContact(id = 1, displayName = "Just Name", lookupKey = "just_name_lookup")
+        DisplayNameContact(
+            id = 1,
+            displayName = "Just Name",
+            profilePictureUri = null,
+            lookupKey = "just_name_lookup",
+        )
     private val singleEmailContact =
         EmailContact(
             id = 2,
             displayName = "Single Email",
+            profilePictureUri = null,
             emails = listOf(EmailEntry(id = 20, address = "one@email.com", label = "Home")),
         )
     private val multiPhoneContact =
         PhoneContact(
             id = 3,
+            profilePictureUri = null,
             displayName = "Multi Phone",
             phones =
                 listOf(
