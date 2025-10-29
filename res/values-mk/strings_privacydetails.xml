@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * Copyright (C) 2025 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+  -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"Назад"</string>
+    <string name="privacy_details_top_bar_header" msgid="316976841297378409">"Повеќе детали"</string>
+    <string name="privacy_details_description" msgid="4299567306628059441">"Кога ќе изберете контакт, %1$s ќе има пристап до следниве податоци од контактите на вашиот уред.\n\nАко извршите промени во податоците за контакт, %1$s нема да има пристап до промените."</string>
+    <string name="privacy_details_contact_data_fields_list_header" msgid="6278952758241087272">"Податоците за контакт може да опфаќаат:"</string>
+    <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Име"</string>
+    <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"Име"</string>
+    <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Телефонски броеви"</string>
+    <string name="privacy_details_data_field_phone_content_description" msgid="7843235752923563779">"Телефонски броеви"</string>
+    <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"Адреси на е-пошта"</string>
+    <string name="privacy_details_data_field_email_content_description" msgid="5002819855544687265">"Адреси на е-пошта"</string>
+    <string name="privacy_details_data_field_address_header" msgid="8063949263754924922">"Адреси"</string>
+    <string name="privacy_details_data_field_address_content_description" msgid="2723907988123079718">"Адреси"</string>
+    <string name="privacy_details_data_field_organization_header" msgid="5452268926445159613">"Компанија"</string>
+    <string name="privacy_details_data_field_organization_content_description" msgid="2435135718533739414">"Компанија"</string>
+    <string name="privacy_details_data_field_related_people_header" msgid="3252437046458903319">"Поврзани луѓе"</string>
+    <string name="privacy_details_data_field_related_people_content_description" msgid="8100743003973095458">"Поврзани луѓе"</string>
+    <string name="privacy_details_data_field_birthday_header" msgid="2191861462895006673">"Роденден"</string>
+    <string name="privacy_details_data_field_birthday_content_description" msgid="2538948189452868325">"Роденден"</string>
+    <string name="privacy_details_data_field_website_header" msgid="5699958653736095218">"Вебсајт"</string>
+    <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"Вебсајт"</string>
+    <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"Прекар"</string>
+    <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"Прекар"</string>
+    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
+    <skip />
+    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
+    <skip />
+    <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Група со контакти"</string>
+    <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Група со контакти"</string>
+</resources>
