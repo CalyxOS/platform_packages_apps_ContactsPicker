@@ -16,6 +16,7 @@
 package com.android.contactspicker.inject
 
 import android.app.Application
+import android.app.ApplicationPackageManager
 import android.content.pm.PackageManager
 import dagger.Module
 import dagger.Provides
@@ -35,11 +36,11 @@ object AppModule {
      * Provides a singleton instance of the application's [PackageManager].
      *
      * @param app The application instance, automatically provided by Hilt.
-     * @return The application's [PackageManager].
+     * @return [ApplicationPackageManager] impl of application's [PackageManager].
      */
     @Provides
     @Singleton
-    fun providePackageManager(app: Application): PackageManager {
-        return app.packageManager
+    fun providePackageManager(app: Application): ApplicationPackageManager {
+        return app.packageManager as ApplicationPackageManager
     }
 }
