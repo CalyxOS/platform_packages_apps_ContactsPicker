@@ -15,10 +15,12 @@
  */
 package com.android.contactspicker
 
+import android.app.ApplicationPackageManager
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Intent
 import android.content.Intent.EXTRA_EXCLUDE_COMPONENTS
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -51,7 +53,7 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
         private const val ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD = 37
     }
 
-    @Inject lateinit var appPackageManager: PackageManager
+    @Inject lateinit var appPackageManager: ApplicationPackageManager
 
     @Inject lateinit var callingPackageProvider: CallingPackageProvider
 
@@ -98,12 +100,53 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
                     TAG,
                     "Forwarding ACTION_PICK for $callingPackage (targetSDK=${appInfo.targetSdkVersion}) to system.",
                 )
-                forwardToOtherActionPickHandlersWithChooser()
+                val targetIntent =
+                    Intent(intent).apply {
+                        component = null // Ensure it's implicit
+                    }
+                // First forward to a preferred handler if set
+                if (forwardToPreferredActionPickHandler(targetIntent)) {
+                    return
+                }
+                // Otherwise forward to *all* handlers (except this app). Chooser Activity will be
+                // started in case more than one handler (except this app) is present.
+                forwardToOtherActionPickHandlersWithChooser(targetIntent)
             }
         } catch (e: PackageManager.NameNotFoundException) {
             Log.e(TAG, "Calling package not found: $callingPackage", e)
             processIntentAndSetupUi(intent)
         }
+    }
+
+    /**
+     * Forwards the intent to a preselected preferred handler, if present.
+     *
+     * @return `true` if the intent was forwarded, `false` otherwise.
+     */
+    private fun forwardToPreferredActionPickHandler(targetIntent: Intent): Boolean {
+        val filters = mutableListOf<IntentFilter>()
+        val activities = mutableListOf<ComponentName>()
+        appPackageManager.getPreferredActivities(filters, activities, null)
+
+        val preferredActivity =
+            filters.zip(activities).find { (filter, _) ->
+                // Only match preferred activities within the current user's context, as reading
+                // cross-profile contacts data will anyways fail, even if the user selects a
+                // cross-profile app, due to CP2 limitation.
+                filter.match(contentResolver, targetIntent, false, TAG) > 0
+            }
+
+        if (preferredActivity != null) {
+            val (_, component) = preferredActivity
+            Log.d(TAG, "Starting Preferred activity. Component: $component")
+            val preferredActivityIntent = Intent(intent).apply { this.component = component }
+            startActivity(preferredActivityIntent)
+            finish()
+            return true
+        }
+
+        Log.d(TAG, "No PreferredActivity Found")
+        return false
     }
 
     // Processes the intent which will trigger querying CP2 for contacts and sets up the UI.
@@ -151,15 +194,8 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
         finish()
     }
 
-    private fun forwardToOtherActionPickHandlersWithChooser() {
-        val originalIntent = intent
-        val targetIntent =
-            Intent(originalIntent).apply {
-                component = null // Ensure it's implicit
-            }
-
+    private fun forwardToOtherActionPickHandlersWithChooser(targetIntent: Intent) {
         val excludedComponents = arrayOf(ComponentName(this, ContactsPickerActivity::class.java))
-
         val chooserIntent =
             Intent.createChooser(
                     targetIntent,
@@ -170,10 +206,10 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
 
                     addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
 
-                    if (originalIntent.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION != 0) {
+                    if (targetIntent.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION != 0) {
                         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     }
-                    if (originalIntent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION != 0) {
+                    if (targetIntent.flags and Intent.FLAG_GRANT_WRITE_URI_PERMISSION != 0) {
                         addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                     }
                 }

@@ -16,11 +16,11 @@
 
 package com.android.contactspicker.ui.components
 
+import android.app.ApplicationPackageManager
 import android.content.Context
 import android.content.Intent
 import android.content.flags.Flags
 import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
@@ -64,7 +64,7 @@ class ContactsPickerSearchBarTest {
 
     private lateinit var scenario: ActivityScenario<ContactsPickerActivity>
 
-    @BindValue @JvmField val mockPackageManager: PackageManager = mock()
+    @BindValue @JvmField val mockPackageManager: ApplicationPackageManager = mock()
 
     @BindValue @JvmField val mockCallingPackageProvider: CallingPackageProvider = mock()
 

@@ -21,7 +21,7 @@ package {
 android_test {
     name: "ContactsPickerIntegrationTests",
     certificate: "platform",
-    sdk_version: "test_current",
+    platform_apis: true,
     srcs: [
         "src/**/*.kt",
     ],
