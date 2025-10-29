@@ -224,7 +224,8 @@ class ContactsPickerActivityTest {
     }
 
     @Test
-    fun handleDoneClicked_withSingleSelection_setsResultOkAndFinishes() = runTest {
+    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
+   fun handleDoneClicked_withSingleSelection_setsResultOkAndFinishes() = runTest {
         val successStateSingleSelect =
             MutableStateFlow<ContactsUiState>(
                 ContactsUiState.Success(
@@ -259,6 +260,7 @@ class ContactsPickerActivityTest {
     }
 
     @Test
+    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
     fun handleDoneClicked_withMultiSelection_setsResultOkWithClipData() {
         val successStateMultiSelect =
             MutableStateFlow<ContactsUiState>(
@@ -298,6 +300,7 @@ class ContactsPickerActivityTest {
     }
 
     @Test
+    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
     fun handleDoneClicked_withNoSelection_setsResultCanceled() {
         val successStateSingleSelect =
             MutableStateFlow<ContactsUiState>(
