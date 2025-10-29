@@ -39,6 +39,7 @@ import androidx.compose.ui.test.swipeUp
 import androidx.compose.ui.unit.height
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
 import com.android.contactspicker.data.model.DisplayNameContact
@@ -68,8 +69,8 @@ class ContactsPickerBottomSheetTest {
             lookupKey = "contacty_contact_lookup",
         )
     private val testSuccessState =
-        ContactsUiState.Success(
-            availableContacts = listOf(testContact),
+        ContactsListState.Success(
+            listOf(testContact),
             selectedContacts = selectedContacts,
             isMultiSelectEnabled = false,
         )
@@ -156,7 +157,7 @@ class ContactsPickerBottomSheetTest {
                     onDismissRequest = {},
                     uiState =
                         mutableStateOf(
-                            ContactsUiState.Success(
+                            ContactsListState.Success(
                                 availableContacts = listOf(testContact),
                                 selectedContacts = selectedContacts,
                                 isMultiSelectEnabled = false,
@@ -195,7 +196,7 @@ class ContactsPickerBottomSheetTest {
                     onDismissRequest = {},
                     uiState =
                         mutableStateOf(
-                            ContactsUiState.Success(
+                            ContactsListState.Success(
                                 availableContacts = listOf(testContact),
                                 selectedContacts = selectedContacts,
                                 isMultiSelectEnabled = false,
@@ -226,7 +227,7 @@ class ContactsPickerBottomSheetTest {
 
     private fun setupBottomSheet(
         onDismissRequest: () -> Unit = {},
-        uiState: ContactsUiState = ContactsUiState.Loading,
+        uiState: ContactsUiState = ContactsListState.Loading,
     ) {
         composeTestRule.setContent {
             ContactsPickerAppTheme {

@@ -23,7 +23,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.contactspicker.ContactsUiState
+import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.ui.pickerscreen.CONTACTS_LIST_TEST_TAG
 import com.android.contactspicker.ui.pickerscreen.CONTACTS_PICKER_SCREEN_LOADING_INDICATOR_TEST_TAG
@@ -44,7 +44,7 @@ class ContactsPickerContentTest {
     fun pickerContent_loadingState_showsLoadingIndicator() {
         composeTestRule.setContent {
             ContactsPickerContent(
-                uiState = mutableStateOf(ContactsUiState.Loading),
+                uiState = mutableStateOf(ContactsListState.Loading),
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
                 onToggleContactSelection = {},
@@ -61,7 +61,7 @@ class ContactsPickerContentTest {
         val errorMessage = "Test Error Message"
         composeTestRule.setContent {
             ContactsPickerContent(
-                uiState = mutableStateOf(ContactsUiState.Error(errorMessage)),
+                uiState = mutableStateOf(ContactsListState.Error(errorMessage)),
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
                 onToggleContactSelection = {},
@@ -77,7 +77,7 @@ class ContactsPickerContentTest {
             ContactsPickerContent(
                 uiState =
                     mutableStateOf(
-                        ContactsUiState.Success(
+                        ContactsListState.Success(
                             availableContacts = listOf(testContact),
                             selectedContacts = longObjectMapOf(),
                             isMultiSelectEnabled = false,

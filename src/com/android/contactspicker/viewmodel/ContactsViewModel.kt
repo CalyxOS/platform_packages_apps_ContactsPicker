@@ -27,7 +27,9 @@ import androidx.collection.buildLongObjectMap
 import androidx.collection.longObjectMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsUiState
+import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
@@ -54,9 +56,11 @@ open class ContactsViewModel
 @Inject
 constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<ContactsUiState>(ContactsUiState.Loading)
-
+    private val _uiState = MutableStateFlow<ContactsUiState>(ContactsListState.Loading)
     open val uiState: StateFlow<ContactsUiState> = _uiState.asStateFlow()
+
+    private var initialContacts: List<Contact> = emptyList()
+    private var isMultiSelectEnabled: Boolean = false
 
     /**
      * Toggles the selection state for an entire contact.
@@ -67,14 +71,20 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
      */
     fun toggleContactSelection(contact: Contact) {
         _uiState.update { currentState ->
-            if (currentState !is ContactsUiState.Success) return@update currentState
+            val selectedContacts =
+                when (currentState) {
+                    is ContactsListState.Success -> currentState.selectedContacts
+                    is SearchState.Success -> currentState.selectedContacts
+                    else ->
+                        return@update currentState // Not in a state where selection can be toggled
+                }
 
-            val existingEntryIds = currentState.selectedContacts[contact.id] ?: emptySet()
+            val existingEntryIds = selectedContacts[contact.id] ?: emptySet()
             val isAlreadyFullySelected = contact.isFullySelected(existingEntryIds)
 
-            val newContacts = buildLongObjectMap {
-                if (currentState.isMultiSelectEnabled) {
-                    putAll(currentState.selectedContacts)
+            val newSelection = buildLongObjectMap {
+                if (isMultiSelectEnabled) {
+                    putAll(selectedContacts)
                     if (isAlreadyFullySelected) {
                         remove(contact.id)
                     } else {
@@ -95,7 +105,12 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
             }
 
             // Return a copy of the state object to trigger UI recomposition.
-            currentState.copy(selectedContacts = newContacts)
+            when (currentState) {
+                is ContactsListState.Success -> currentState.copy(selectedContacts = newSelection)
+                is SearchState.Success -> currentState.copy(selectedContacts = newSelection)
+                else ->
+                    throw IllegalStateException("Cannot toggle selection in state $currentState")
+            }
         }
     }
 
@@ -111,16 +126,20 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
      */
     fun toggleEntrySelection(contactId: Long, entryId: Long) {
         _uiState.update { currentState ->
-            if (currentState !is ContactsUiState.Success) return@update currentState
+            val selectedContacts =
+                when (currentState) {
+                    is ContactsListState.Success -> currentState.selectedContacts
+                    is SearchState.Success -> currentState.selectedContacts
+                    else -> return@update currentState
+                }
 
-            val alreadySelectedEntriesForCurrentContact =
-                currentState.selectedContacts[contactId] ?: emptySet()
+            val alreadySelectedEntriesForCurrentContact = selectedContacts[contactId] ?: emptySet()
             val isEntryAlreadySelected = entryId in alreadySelectedEntriesForCurrentContact
 
             val newSelection =
-                if (currentState.isMultiSelectEnabled) {
+                if (isMultiSelectEnabled) {
                     handleMultiSelectEntryToggle(
-                        currentState.selectedContacts,
+                        selectedContacts,
                         contactId,
                         entryId,
                         alreadySelectedEntriesForCurrentContact,
@@ -130,7 +149,14 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
                     handleSingleSelectEntryToggle(contactId, entryId, isEntryAlreadySelected)
                 }
             // Return a copy of the state object to trigger UI recomposition.
-            currentState.copy(selectedContacts = newSelection)
+            when (currentState) {
+                is ContactsListState.Success -> currentState.copy(selectedContacts = newSelection)
+                is SearchState.Success -> currentState.copy(selectedContacts = newSelection)
+                else ->
+                    throw IllegalStateException(
+                        "Cannot toggle entry selection in state $currentState"
+                    )
+            }
         }
     }
 
@@ -180,8 +206,12 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
     /** Clears all currently selected contacts. */
     fun clearSelection() {
         _uiState.update { currentState ->
-            if (currentState !is ContactsUiState.Success) return@update currentState
-            currentState.copy(selectedContacts = longObjectMapOf())
+            when (currentState) {
+                is ContactsListState.Success ->
+                    currentState.copy(selectedContacts = longObjectMapOf())
+                is SearchState.Success -> currentState.copy(selectedContacts = longObjectMapOf())
+                else -> currentState
+            }
         }
     }
 
@@ -193,19 +223,23 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
     open fun processIntent(intentAction: String?, intentType: String?, intentExtras: Bundle?) {
         viewModelScope.launch {
             try {
-                val contacts = contactsRepository.getContactsForIntent(intentAction, intentType)
-                val isMultiSelectEnabled =
+                initialContacts = contactsRepository.getContactsForIntent(intentAction, intentType)
+                isMultiSelectEnabled =
                     intentExtras?.getBoolean(Intent.EXTRA_ALLOW_MULTIPLE, false) ?: false
                 // TODO(b/444459883): check and handle empty list
                 _uiState.value =
-                    ContactsUiState.Success(contacts, longObjectMapOf(), isMultiSelectEnabled)
+                    ContactsListState.Success(
+                        availableContacts = initialContacts,
+                        selectedContacts = longObjectMapOf(),
+                        isMultiSelectEnabled = isMultiSelectEnabled,
+                    )
             } catch (e: IllegalArgumentException) {
                 Log.e(TAG, "An invalid intent was passed.", e)
                 // TODO(b/444459883): iterate on error handling and error messages
-                _uiState.value = ContactsUiState.Error(e.message ?: "Invalid intent.")
+                _uiState.value = ContactsListState.Error(e.message ?: "Invalid intent.")
             } catch (e: Exception) {
                 Log.e(TAG, "An unexpected error occurred.", e)
-                _uiState.value = ContactsUiState.Error("An unexpected error occurred.")
+                _uiState.value = ContactsListState.Error("An unexpected error occurred.")
             }
         }
     }
@@ -218,16 +252,23 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
     @OpenForTesting
     open fun prepareSelectionResult(): List<Uri> {
         val currentState = _uiState.value
-        if (currentState !is ContactsUiState.Success) {
-            Log.w(TAG, "prepareSelectionResult called while not in Success state.")
-            return emptyList()
-        }
+        val (contacts, selectedContacts) =
+            when (currentState) {
+                is ContactsListState.Success ->
+                    Pair(currentState.availableContacts, currentState.selectedContacts)
+                is SearchState.Success ->
+                    Pair(currentState.searchResults, currentState.selectedContacts)
+                else -> {
+                    Log.w(TAG, "prepareSelectionResult called while not in a Success state.")
+                    return emptyList()
+                }
+            }
 
         try {
             val finalUris = mutableListOf<Uri>()
-            val contactsById = currentState.availableContacts.associateBy { it.id }
+            val contactsById = contacts.associateBy { it.id }
 
-            currentState.selectedContacts.forEach { contactId, entryIds ->
+            selectedContacts.forEach { contactId, entryIds ->
                 val contact = contactsById[contactId]
                 if (contact == null) {
                     Log.w(TAG, "Selected contact with ID $contactId not found in available list.")
@@ -256,11 +297,7 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
             return finalUris
         } catch (e: Exception) {
             Log.e(TAG, "Error preparing selection result", e)
-            _uiState.update {
-                if (it is ContactsUiState.Success) {
-                    ContactsUiState.Error(message = "Error preparing result: ${e.message}")
-                } else it
-            }
+            _uiState.value = ContactsListState.Error("Error preparing result: ${e.message}")
             return emptyList()
         }
     }
