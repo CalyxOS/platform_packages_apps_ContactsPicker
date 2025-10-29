@@ -23,6 +23,7 @@ import androidx.compose.material.icons.outlined.Cake
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.material.icons.outlined.Link
+import androidx.compose.material.icons.outlined.ManageAccounts
 import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Phone
@@ -30,12 +31,27 @@ import com.android.contactspicker.R
 import com.android.contactspicker.ui.utils.IconResource
 
 /** Maps raw contact data field types to a sorted list of UI-ready [ContactDataFieldItem]s. */
-object ContactDataFieldMapper {
+object ContactDataFieldProvider {
+
+    private val NAME_DATA_FIELD_ITEM =
+        ContactDataFieldItem(
+            icon = IconResource.Vector(Icons.Outlined.Person),
+            headerTextResId = R.string.privacy_details_data_field_name_header,
+            contentDescriptionResId = R.string.privacy_details_data_field_name_content_description,
+        )
+
+    private val PREFERENCES_DATA_FIELD_ITEM =
+        ContactDataFieldItem(
+            icon = IconResource.Vector(Icons.Outlined.ManageAccounts),
+            headerTextResId = R.string.privacy_details_data_field_preferences_header,
+            descriptionTextResId = R.string.privacy_details_data_field_preferences_description,
+            contentDescriptionResId =
+                R.string.privacy_details_data_field_preferences_content_description,
+        )
 
     // Defines the custom sort order for the data fields.
     private val sortOrder =
         listOf(
-            ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE,
             ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
             ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
             ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
@@ -55,42 +71,41 @@ object ContactDataFieldMapper {
     private val dataFieldToPriority: Map<String, Int> =
         sortOrder.withIndex().associate { (index, dataField) -> dataField to index }
 
-    // TODO(b/446667017): Handle ContactsContract.Contacts.CONTENT_TYPE input and default enrichment
-    // of name and contact preferences
-    /*
-     * Creates a sorted list of [ContactDataFieldItem] from a list of contact data field types.
+    /**
+     * Creates a sorted list of [ContactDataFieldItem] from a list of contact data field types, with
+     * preferences and name items included.
      *
-     * @param Currently dataFields A list of MIME type strings from `ContactsContract.CommonDataKinds`.
+     * @param dataFields A list of MIME type strings from `ContactsContract.CommonDataKinds`.
      * @return A sorted list of [ContactDataFieldItem].
      */
-    fun mapToSortedItems(dataFields: List<String>): List<ContactDataFieldItem> {
-        return dataFields
-            // 1. Map each dataField string to a Pair of its UI model and priority.
-            .mapNotNull { dataField ->
-                val item = mapSingleField(dataField)
-                val priority = dataFieldToPriority[dataField]
+    // TODO(b/456152464) : Check error handling for empty dataFields in getContactDataFieldItems
+    fun getContactDataFieldItems(dataFields: List<String>): List<ContactDataFieldItem> {
+        val mappedItems =
+            dataFields
+                // 1. Map each dataField string to a Pair of its UI model and priority.
+                .mapNotNull { dataField ->
+                    val item = mapSingleField(dataField)
+                    val priority = dataFieldToPriority[dataField]
 
-                if (item != null && priority != null) {
-                    item to priority
-                } else {
-                    null
+                    if (item != null && priority != null) {
+                        item to priority
+                    } else {
+                        null
+                    }
                 }
-            }
-            .sortedBy { it.second }
-            .map { it.first }
+                .sortedBy { it.second }
+                .map { it.first }
+
+        return buildList {
+            add(NAME_DATA_FIELD_ITEM)
+            addAll(mappedItems)
+            add(PREFERENCES_DATA_FIELD_ITEM)
+        }
     }
 
     /** Maps a single data field to a [ContactDataFieldItem], returning null for unknown types. */
     private fun mapSingleField(dataField: String): ContactDataFieldItem? {
         return when (dataField) {
-            ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE ->
-                ContactDataFieldItem(
-                    icon = IconResource.Vector(Icons.Outlined.Person),
-                    headerTextResId = R.string.privacy_details_data_field_name_header,
-                    contentDescriptionResId =
-                        R.string.privacy_details_data_field_name_content_description,
-                )
-
             ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE ->
                 ContactDataFieldItem(
                     icon = IconResource.Vector(Icons.Outlined.Phone),

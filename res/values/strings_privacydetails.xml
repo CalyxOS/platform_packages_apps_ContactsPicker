@@ -35,7 +35,7 @@
     <!--
       Header text for the list of contact data fields on the privacy details screen.
     -->
-    <string name="privacy_details_contact_data_fields_list_header">Contact info can include:</string>
+    <string name="privacy_details_contact_data_fields_list_header">Contact info can include details such as:</string>
 
     <!--
       Header text for the "Name" contact data field on the privacy details screen.
@@ -136,5 +136,18 @@
       Content description for the "Contact group" contact data field on the privacy details screen.
     -->
     <string name="privacy_details_data_field_group_content_description">Contact group</string>
+
+    <!--
+      Header text for the "Contact preferences" contact data field on the privacy details screen.
+    -->
+    <string name="privacy_details_data_field_preferences_header">Some contact preferences</string>
+    <!--
+      Content description for the "Contact preferences" contact data field on the privacy details screen.
+    -->
+    <string name="privacy_details_data_field_preferences_content_description">Some contact preferences</string>
+    <!--
+      Description for the "Contact preferences" contact data field on the privacy details screen.
+    -->
+    <string name="privacy_details_data_field_preferences_description">Includes a contact’s favorite status and whether they’re sent to voicemail</string>
 
 </resources>
