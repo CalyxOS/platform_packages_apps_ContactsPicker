@@ -24,7 +24,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsListState
-import com.android.contactspicker.data.model.DisplayNameContact
+import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.ui.pickerscreen.CONTACTS_LIST_TEST_TAG
 import com.android.contactspicker.ui.pickerscreen.CONTACTS_PICKER_SCREEN_LOADING_INDICATOR_TEST_TAG
 import com.android.contactspicker.ui.pickerscreen.PRIVACY_BANNER_TEST_TAG
@@ -36,14 +36,6 @@ import org.junit.runner.RunWith
 class ContactsPickerContentTest {
 
     @get:Rule val composeTestRule = createComposeRule()
-
-    private val testContact =
-        DisplayNameContact(
-            id = 1L,
-            displayName = "Test Contact",
-            profilePictureUri = null,
-            lookupKey = "test_lookup_key",
-        )
 
     @Test
     fun pickerContent_loadingState_showsLoadingIndicator() {
@@ -78,6 +70,7 @@ class ContactsPickerContentTest {
 
     @Test
     fun pickerContent_successState_showsListAndBanner() {
+        val testContact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
         composeTestRule.setContent {
             ContactsPickerContent(
                 uiState =

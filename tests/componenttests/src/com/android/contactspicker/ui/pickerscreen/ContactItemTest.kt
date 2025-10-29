@@ -35,9 +35,8 @@ import com.android.contactspicker.R
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
-import com.android.contactspicker.data.model.EmailEntry
 import com.android.contactspicker.data.model.PhoneContact
-import com.android.contactspicker.data.model.PhoneEntry
+import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.ui.components.AVATAR_TEST_TAG
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
@@ -51,58 +50,12 @@ class ContactItemTest {
     @get:Rule val composeTestRule = createComposeRule()
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
-    private val testDisplayNameContact =
-        DisplayNameContact(
-            id = 1,
-            displayName = "Alice Wonderland",
-            profilePictureUri = null,
-            lookupKey = "alice_lookup",
-        )
-
-    private val testSinglePhoneContact =
-        PhoneContact(
-            id = 2,
-            displayName = "Alice Wonderland",
-            profilePictureUri = null,
-            phones = listOf(PhoneEntry(id = 10L, number = "111-222-3333", label = "Mobile")),
-        )
-
-    private val testSingleEmailContact =
-        EmailContact(
-            id = 3,
-            displayName = "Alice Wonderland",
-            profilePictureUri = null,
-            emails = listOf(EmailEntry(id = 11L, address = "alice@wonderland.org", label = "Home")),
-        )
-
-    private val testMultiPhoneContact =
-        PhoneContact(
-            id = 4,
-            displayName = "Bob The Builder",
-            profilePictureUri = null,
-            phones =
-                listOf(
-                    PhoneEntry(id = 12L, number = "111-222-3333", label = "Mobile"),
-                    PhoneEntry(id = 13L, number = "444-555-6666", label = "Work"),
-                ),
-        )
-
-    private val testMultiEmailContact =
-        EmailContact(
-            id = 5,
-            displayName = "Charlie Chaplin",
-            profilePictureUri = null,
-            emails =
-                listOf(
-                    EmailEntry(id = 14L, address = "charlie@chaplin.org", label = "Home"),
-                    EmailEntry(id = 15L, address = "cc@hollywood.com", label = "Work"),
-                ),
-        )
-
     private val context: Context = ApplicationProvider.getApplicationContext()
 
     @Test
     fun contactItem_withDisplayNameContact_showsNameOnly() {
+        val testDisplayNameContact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
+
         composeTestRule.setContent {
             ContactItem(
                 contact = testDisplayNameContact,
@@ -123,6 +76,7 @@ class ContactItemTest {
 
     @Test
     fun contactItem_withSingleEmail_showsNameAndEmail() {
+        val testSingleEmailContact = ContactTestDataFactory.GENERIC_EMAIL_CONTACT
         composeTestRule.setContent {
             ContactItem(
                 contact = testSingleEmailContact,
@@ -146,6 +100,7 @@ class ContactItemTest {
 
     @Test
     fun contactItem_withSinglePhone_showsNameAndPhoneNumber() {
+        val testSinglePhoneContact = ContactTestDataFactory.GENERIC_PHONE_CONTACT
         composeTestRule.setContent {
             ContactItem(
                 contact = testSinglePhoneContact,
@@ -170,6 +125,7 @@ class ContactItemTest {
 
     @Test
     fun contactItem_withMultipleEmails_showsEmailCountAndIsExpandable() {
+        val testMultiEmailContact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT
         composeTestRule.setContent {
             ContactItem(
                 contact = testMultiEmailContact,
@@ -204,6 +160,7 @@ class ContactItemTest {
 
     @Test
     fun contactItem_withMultiplePhones_showsPhoneCountAndIsExpandable() {
+        val testMultiPhoneContact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT
         composeTestRule.setContent {
             ContactItem(
                 contact = testMultiPhoneContact,
@@ -239,6 +196,7 @@ class ContactItemTest {
 
     @Test
     fun contactItem_withMultipleEmails_expandsAndCollapsesOnClick() {
+        val testMultiEmailContact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT
         composeTestRule.setContent {
             ContactItem(
                 contact = testMultiEmailContact,
@@ -280,6 +238,7 @@ class ContactItemTest {
 
     @Test
     fun contactItem_withMultiplePhones_expandsAndCollapsesOnClick() {
+        val testMultiPhoneContact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT
         composeTestRule.setContent {
             ContactItem(
                 contact = testMultiPhoneContact,
@@ -319,6 +278,7 @@ class ContactItemTest {
 
     @Test
     fun selectableAvatar_showsCheckmark_whenFullySelected() {
+        val testMultiEmailContact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT
         val selectedEntries = testMultiEmailContact.emails.map { it.id }.toSet()
         composeTestRule.setContent {
             ContactItem(
@@ -342,6 +302,7 @@ class ContactItemTest {
 
     @Test
     fun selectableAvatar_showsInitial_whenPartiallySelected() {
+        val testMultiEmailContact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT
         // Select only the first email
         val selectedEntries = setOf(testMultiEmailContact.emails.first().id)
         composeTestRule.setContent {
@@ -365,9 +326,10 @@ class ContactItemTest {
             .assertDoesNotExist()
 
         // Avatar with initial should be displayed instead
+        val initial = testMultiEmailContact.displayName.first()
         composeTestRule
             .onNode(
-                hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("C")),
+                hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText(initial.toString())),
                 useUnmergedTree = true,
             )
             .assertIsDisplayed()
@@ -376,7 +338,7 @@ class ContactItemTest {
     @Test
     fun selectableAvatarClick_withDisplayNameContactInMultiSelectMode_callsOnToggleContactSelection() {
         assertAvatarClickBehavior(
-            contact = testDisplayNameContact,
+            contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT,
             isMultiSelectEnabled = true,
             expectToggleContactCalled = true,
             expectItemExpanded = false,
@@ -386,7 +348,7 @@ class ContactItemTest {
     @Test
     fun selectableAvatarClick_withSingleEmailContactInMultiSelectMode_callsOnToggleContactSelection() {
         assertAvatarClickBehavior(
-            contact = testSingleEmailContact,
+            contact = ContactTestDataFactory.GENERIC_EMAIL_CONTACT,
             isMultiSelectEnabled = true,
             expectToggleContactCalled = true,
             expectItemExpanded = false,
@@ -396,7 +358,7 @@ class ContactItemTest {
     @Test
     fun selectableAvatar_withMultiEmailContactInMultiSelectMode_callsOnToggleContactSelection() {
         assertAvatarClickBehavior(
-            contact = testMultiPhoneContact,
+            contact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT,
             isMultiSelectEnabled = true,
             expectToggleContactCalled = true,
             expectItemExpanded = false,
@@ -406,7 +368,7 @@ class ContactItemTest {
     @Test
     fun selectableAvatarClick_withSinglePhoneContactInMultiSelectMode_callsOnToggleContactSelection() {
         assertAvatarClickBehavior(
-            contact = testSinglePhoneContact,
+            contact = ContactTestDataFactory.GENERIC_PHONE_CONTACT,
             isMultiSelectEnabled = true,
             expectToggleContactCalled = true,
             expectItemExpanded = false,
@@ -416,7 +378,7 @@ class ContactItemTest {
     @Test
     fun selectableAvatar_withMultiPhoneContactInMultiSelectMode_callsOnToggleContactSelection() {
         assertAvatarClickBehavior(
-            contact = testMultiPhoneContact,
+            contact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT,
             isMultiSelectEnabled = true,
             expectToggleContactCalled = true,
             expectItemExpanded = false,
@@ -426,7 +388,7 @@ class ContactItemTest {
     @Test
     fun selectableAvatarClick_withDisplayNameContactInSingleSelectMode_callsOnToggleContactSelection() {
         assertAvatarClickBehavior(
-            contact = testDisplayNameContact,
+            contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT,
             isMultiSelectEnabled = false,
             expectToggleContactCalled = true,
             expectItemExpanded = false,
@@ -436,7 +398,7 @@ class ContactItemTest {
     @Test
     fun selectableAvatarClick_withSingleEmailContactInSingleSelectMode_callsOnToggleContactSelection() {
         assertAvatarClickBehavior(
-            contact = testSingleEmailContact,
+            contact = ContactTestDataFactory.GENERIC_EMAIL_CONTACT,
             isMultiSelectEnabled = false,
             expectToggleContactCalled = true,
             expectItemExpanded = false,
@@ -446,7 +408,7 @@ class ContactItemTest {
     @Test
     fun selectableAvatar_withMultiEmailContactInSingleSelectMode_expandsItem() {
         assertAvatarClickBehavior(
-            contact = testMultiPhoneContact,
+            contact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT,
             isMultiSelectEnabled = false,
             expectToggleContactCalled = false,
             expectItemExpanded = true,
@@ -456,7 +418,7 @@ class ContactItemTest {
     @Test
     fun selectableAvatarClick_withSinglePhoneContactInSingleSelectMode_callsOnToggleContactSelection() {
         assertAvatarClickBehavior(
-            contact = testSinglePhoneContact,
+            contact = ContactTestDataFactory.GENERIC_PHONE_CONTACT,
             isMultiSelectEnabled = false,
             expectToggleContactCalled = true,
             expectItemExpanded = false,
@@ -466,7 +428,7 @@ class ContactItemTest {
     @Test
     fun selectableAvatar_withMultiPhoneContactInSingleSelectMode_expandsItem() {
         assertAvatarClickBehavior(
-            contact = testMultiPhoneContact,
+            contact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT,
             isMultiSelectEnabled = false,
             expectToggleContactCalled = false,
             expectItemExpanded = true,

@@ -42,7 +42,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
-import com.android.contactspicker.data.model.DisplayNameContact
+import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
@@ -62,13 +62,7 @@ class ContactsPickerBottomSheetTest {
 
     private var selectedContacts by mutableStateOf<LongObjectMap<Set<Long>>>(longObjectMapOf())
 
-    private val testContact =
-        DisplayNameContact(
-            id = 1,
-            displayName = "Contacty Contact",
-            profilePictureUri = null,
-            lookupKey = "contacty_contact_lookup",
-        )
+    private val testContact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
     private val testSuccessState =
         ContactsListState.Success(
             listOf(testContact),

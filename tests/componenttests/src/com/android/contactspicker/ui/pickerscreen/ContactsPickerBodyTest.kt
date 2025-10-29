@@ -29,7 +29,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.contactspicker.data.model.DisplayNameContact
+import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.ui.components.AVATAR_TEST_TAG
 import org.junit.Rule
 import org.junit.Test
@@ -44,27 +44,7 @@ class ContactsPickerBodyTest {
 
     @Test
     fun contactsList_displaysHeadersAndContacts() {
-        val contacts =
-            listOf(
-                DisplayNameContact(
-                    id = 1L,
-                    displayName = "Alpha",
-                    profilePictureUri = null,
-                    lookupKey = "alpha_lookup",
-                ),
-                DisplayNameContact(
-                    id = 3L,
-                    displayName = "Beta",
-                    profilePictureUri = null,
-                    lookupKey = "beta_lookup",
-                ),
-                DisplayNameContact(
-                    id = 2L,
-                    displayName = "Gamma",
-                    profilePictureUri = null,
-                    lookupKey = "gamma_lookup",
-                ),
-            )
+        val contacts = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST
 
         composeTestRule.setContent {
             ContactsPickerBody(
@@ -78,53 +58,29 @@ class ContactsPickerBodyTest {
             )
         }
 
-        composeTestRule
-            .onNode(hasTestTag(CONTACTS_LIST_SECTION_HEADER_TEST_TAG) and hasText("A"))
-            .assertIsDisplayed()
-        composeTestRule
-            .onNode(hasTestTag(CONTACTS_LIST_SECTION_HEADER_TEST_TAG) and hasText("B"))
-            .assertIsDisplayed()
-        composeTestRule
-            .onNode(hasTestTag(CONTACTS_LIST_SECTION_HEADER_TEST_TAG) and hasText("G"))
-            .assertIsDisplayed()
+        contacts.forEach { contact ->
+            val displayName = contact.displayName
+            val initial = displayName.first().toString()
+            composeTestRule
+                .onNode(hasTestTag(CONTACTS_LIST_SECTION_HEADER_TEST_TAG) and hasText(initial))
+                .assertIsDisplayed()
 
-        composeTestRule.onNodeWithText("Alpha").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Beta").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Gamma").assertIsDisplayed()
+            composeTestRule.onNodeWithText(displayName).assertIsDisplayed()
 
-        composeTestRule
-            .onNode(
-                hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("A")),
-                useUnmergedTree = true,
-            )
-            .assertIsDisplayed()
-        composeTestRule
-            .onNode(
-                hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("B")),
-                useUnmergedTree = true,
-            )
-            .assertIsDisplayed()
-        composeTestRule
-            .onNode(
-                hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("G")),
-                useUnmergedTree = true,
-            )
-            .assertIsDisplayed()
+            composeTestRule
+                .onNode(
+                    hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText(initial)),
+                    useUnmergedTree = true,
+                )
+                .assertIsDisplayed()
+        }
     }
 
     @Test
     fun privacyBanner_isDisplayed() {
         composeTestRule.setContent {
             ContactsPickerBody(
-                contacts =
-                    listOf(
-                        DisplayNameContact(
-                            id = 1L,
-                            displayName = "Alpha",
-                            profilePictureUri = null,
-                            lookupKey = "alpha_lookup",
-                        )
-                    ),
+                contacts = listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT),
                 selectedContacts = longObjectMapOf(),
                 isMultiSelectEnabled = false,
                 onPrivacyBannerMoreDetails = {},
@@ -138,15 +94,7 @@ class ContactsPickerBodyTest {
 
     @Test
     fun privacyBanner_isNotDisplayed_afterScrollingTheContactList() {
-        val contacts =
-            List(30) { i ->
-                DisplayNameContact(
-                    id = i.toLong(),
-                    displayName = "Contact $i",
-                    profilePictureUri = null,
-                    lookupKey = "contact${i}_lookup",
-                )
-            }
+        val contacts = ContactTestDataFactory.createContactList(30)
 
         composeTestRule.setContent {
             ContactsPickerBody(

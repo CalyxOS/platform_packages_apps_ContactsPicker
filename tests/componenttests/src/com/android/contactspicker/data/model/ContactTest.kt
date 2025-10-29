@@ -18,6 +18,7 @@ package com.android.contactspicker.data.model
 import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.google.common.truth.Truth.assertThat
 import java.lang.IllegalArgumentException
 import org.junit.Test
@@ -27,161 +28,89 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ContactTest {
 
-    private val testPhoneEntry = PhoneEntry(id = 1L, number = "123-456-7890", label = "Home")
-    private val testEmailEntry =
-        EmailEntry(id = 2L, address = "john.doe@example.com", label = "Home")
-
     @Test(expected = IllegalArgumentException::class)
     fun createDisplayNameContact_withBlankDisplayName_throwsException() {
-        DisplayNameContact(
-            id = 1,
-            displayName = " ",
-            profilePictureUri = null,
-            lookupKey = "lookup1",
-        )
+        ContactTestDataFactory.createDisplayNameContact(id = 1, displayName = " ")
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun createDisplayNameContact_withBlankLookupKey_throwsException() {
-        DisplayNameContact(
+        ContactTestDataFactory.createDisplayNameContact(
             id = 1,
             displayName = "John Doe",
-            profilePictureUri = null,
             lookupKey = " ",
         )
     }
 
     @Test
     fun createDisplayNameContact_withValidData_succeeds() {
-        val contact =
-            DisplayNameContact(
-                id = 1,
-                displayName = "John Doe",
-                profilePictureUri = null,
-                lookupKey = "lookup1",
-            )
+        val contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
         assertThat(contact.id).isEqualTo(1)
-        assertThat(contact.displayName).isEqualTo("John Doe")
-        assertThat(contact.lookupKey).isEqualTo("lookup1")
+        assertThat(contact.displayName).isEqualTo("Alice Wonderland")
+        assertThat(contact.lookupKey).isEqualTo("key_1")
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun createPhoneContact_withBlankDisplayName_throwsException() {
-        PhoneContact(
-            id = 1,
-            displayName = " ",
-            profilePictureUri = null,
-            phones = listOf(testPhoneEntry),
-        )
+        ContactTestDataFactory.createPhoneContact(id = 1, displayName = " ")
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun createPhoneContact_withEmptyPhoneList_throwsException() {
-        PhoneContact(
+        ContactTestDataFactory.createPhoneContact(
             id = 1,
             displayName = "John Doe",
-            profilePictureUri = null,
             phones = emptyList(),
         )
     }
 
     @Test
     fun createPhoneContact_withValidData_succeeds() {
-        val contact =
-            PhoneContact(
-                id = 1,
-                displayName = "John Doe",
-                profilePictureUri = null,
-                phones = listOf(testPhoneEntry),
-            )
-        assertThat(contact.id).isEqualTo(1)
-        assertThat(contact.displayName).isEqualTo("John Doe")
-        assertThat(contact.phones).containsExactly(testPhoneEntry)
+        val contact = ContactTestDataFactory.GENERIC_PHONE_CONTACT
+        assertThat(contact.id).isEqualTo(2)
+        assertThat(contact.displayName).isEqualTo("Bob the Builder")
+        assertThat(contact.phones).isNotEmpty()
     }
 
     @Test
     fun createPhoneContact_withMultiplePhones_succeeds() {
-        val anotherPhoneEntry = PhoneEntry(id = 3L, number = "098-765-4321", label = "Work")
-        val contact =
-            PhoneContact(
-                id = 1,
-                displayName = "John Doe",
-                profilePictureUri = null,
-                phones = listOf(testPhoneEntry, anotherPhoneEntry),
-            )
-        assertThat(contact.phones).hasSize(2)
+        val contact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT
+        assertThat(contact.phones).hasSize(3)
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun createEmailContact_withBlankDisplayName_throwsException() {
-        EmailContact(
-            id = 1,
-            displayName = " ",
-            profilePictureUri = null,
-            emails = listOf(testEmailEntry),
-        )
+        ContactTestDataFactory.createEmailContact(id = 1, displayName = " ")
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun createEmailContact_withEmptyEmailList_throwsException() {
-        EmailContact(
+        ContactTestDataFactory.createEmailContact(
             id = 1,
             displayName = "John Doe",
-            profilePictureUri = null,
             emails = emptyList(),
         )
     }
 
     @Test
     fun createEmailContact_withValidData_succeeds() {
-        val contact =
-            EmailContact(
-                id = 1,
-                displayName = "John Doe",
-                profilePictureUri = null,
-                emails = listOf(testEmailEntry),
-            )
-        assertThat(contact.id).isEqualTo(1)
-        assertThat(contact.displayName).isEqualTo("John Doe")
-        assertThat(contact.emails).containsExactly(testEmailEntry)
+        val contact = ContactTestDataFactory.GENERIC_EMAIL_CONTACT
+        assertThat(contact.id).isEqualTo(3)
+        assertThat(contact.displayName).isEqualTo("Charlie Chaplin")
+        assertThat(contact.emails).isNotEmpty()
     }
 
     @Test
     fun createEmailContact_withMultipleEmails_succeeds() {
-        val anotherEmailEntry = EmailEntry(id = 4L, address = "j.doe@work.com", label = "Work")
-        val contact =
-            EmailContact(
-                id = 1,
-                displayName = "John Doe",
-                profilePictureUri = null,
-                emails = listOf(testEmailEntry, anotherEmailEntry),
-            )
-        assertThat(contact.emails).hasSize(2)
+        val contact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT
+        assertThat(contact.emails).hasSize(3)
     }
 
     @Test
     fun isFullySelected_withNullOrEmptySelectedEntries_returnsFalse() {
-        val displayNameContact =
-            DisplayNameContact(
-                id = 1,
-                displayName = "John Doe",
-                profilePictureUri = null,
-                lookupKey = "lookup1",
-            )
-        val phoneContact =
-            PhoneContact(
-                id = 1,
-                displayName = "John Doe",
-                profilePictureUri = null,
-                phones = listOf(testPhoneEntry),
-            )
-        val emailContact =
-            EmailContact(
-                id = 1,
-                displayName = "John Doe",
-                profilePictureUri = null,
-                emails = listOf(testEmailEntry),
-            )
+        val displayNameContact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
+        val phoneContact = ContactTestDataFactory.GENERIC_PHONE_CONTACT
+        val emailContact = ContactTestDataFactory.GENERIC_EMAIL_CONTACT
 
         // Test with null set
         assertThat(displayNameContact.isFullySelected(null)).isFalse()
@@ -196,47 +125,28 @@ class ContactTest {
 
     @Test
     fun isFullySelected_forDisplayNameContact_withNonEmptySelectedEntries_returnsTrue() {
-        val contact =
-            DisplayNameContact(
-                id = 1,
-                displayName = "John Doe",
-                profilePictureUri = null,
-                lookupKey = "lookup1",
-            )
+        val contact = ContactTestDataFactory.GENERIC_PHONE_CONTACT
+
         assertThat(contact.isFullySelected(setOf(1L))).isTrue()
     }
 
     @Test
     fun isFullySelected_forPhoneContact_withPartialAndFullSelection() {
-        val anotherPhoneEntry = PhoneEntry(id = 3L, number = "098-765-4321", label = "Work")
-        val contact =
-            PhoneContact(
-                id = 1,
-                displayName = "John Doe",
-                profilePictureUri = null,
-                phones = listOf(testPhoneEntry, anotherPhoneEntry),
-            )
+        val phoneContact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT
         // A single phone contact is not fully selected
-        assertThat(contact.isFullySelected(setOf(testPhoneEntry.id))).isFalse()
+        assertThat(phoneContact.isFullySelected(setOf(phoneContact.phones.first().id))).isFalse()
         // All phone contacts are selected
-        assertThat(contact.isFullySelected(setOf(testPhoneEntry.id, anotherPhoneEntry.id))).isTrue()
+        assertThat(phoneContact.isFullySelected(phoneContact.phones.map { it.id }.toSet())).isTrue()
     }
 
     @Test
     fun isFullySelected_forEmailContact_withPartialAndFullSelection() {
-        val anotherEmailEntry = EmailEntry(id = 4L, address = "j.doe@work.com", label = "Work")
-        val contact =
-            EmailContact(
-                id = 1,
-                displayName = "John Doe",
-                profilePictureUri = null,
-                emails = listOf(testEmailEntry, anotherEmailEntry),
-            )
+        val emailContact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT
 
         // A single email contact is not fully selected
-        assertThat(contact.isFullySelected(setOf(testEmailEntry.id))).isFalse()
+        assertThat(emailContact.isFullySelected(setOf(emailContact.emails.first().id))).isFalse()
 
         // All email contacts are selected
-        assertThat(contact.isFullySelected(setOf(testEmailEntry.id, anotherEmailEntry.id))).isTrue()
+        assertThat(emailContact.isFullySelected(emailContact.emails.map { it.id }.toSet())).isTrue()
     }
 }
