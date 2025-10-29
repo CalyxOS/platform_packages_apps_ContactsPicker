@@ -33,9 +33,9 @@ internal const val CONTACTS_LIST_SECTION_HEADER_TEST_TAG = "contacts_list_sectio
  * @param letter The character to display as the header.
  */
 @Composable
-fun SectionHeader(letter: Char) {
+fun SectionHeader(text: String) {
     Text(
-        text = letter.toString(),
+        text = text,
         modifier =
             Modifier.fillMaxWidth()
                 .background(MaterialTheme.colorScheme.surfaceContainer)

@@ -131,6 +131,7 @@ class ContactsRepositoryImplTest(
                                 arrayOf(
                                     Email.CONTACT_ID,
                                     Email.DISPLAY_NAME_PRIMARY,
+                                    Email.STARRED,
                                     Email.PHOTO_THUMBNAIL_URI,
                                     Email.ADDRESS,
                                     Email._ID,
@@ -147,6 +148,7 @@ class ContactsRepositoryImplTest(
                                 arrayOf(
                                     Phone.CONTACT_ID,
                                     Phone.DISPLAY_NAME_PRIMARY,
+                                    Phone.STARRED,
                                     Phone.PHOTO_THUMBNAIL_URI,
                                     Phone.NUMBER,
                                     Phone._ID,
@@ -163,6 +165,7 @@ class ContactsRepositoryImplTest(
                                 arrayOf(
                                     Contacts._ID,
                                     Contacts.DISPLAY_NAME_PRIMARY,
+                                    Contacts.STARRED,
                                     Contacts.PHOTO_THUMBNAIL_URI,
                                     Contacts.LOOKUP_KEY,
                                 )
@@ -178,6 +181,7 @@ class ContactsRepositoryImplTest(
                         arrayOf<Any?>(
                             1L,
                             "Test Contact",
+                            0,
                             null,
                             "test@example.com",
                             101L,
@@ -191,6 +195,7 @@ class ContactsRepositoryImplTest(
                         arrayOf<Any?>(
                             1L,
                             "Test Contact",
+                            0,
                             null,
                             "555-0123",
                             101L,
@@ -200,7 +205,7 @@ class ContactsRepositoryImplTest(
                     )
                 Contacts.CONTENT_TYPE,
                 Contacts.CONTENT_ITEM_TYPE ->
-                    cursor.addRow(arrayOf<Any?>(1L, "Test Contact", null, "contact_lookup_key"))
+                    cursor.addRow(arrayOf<Any?>(1L, "Test Contact", 0, null, "contact_lookup_key"))
             }
 
             fakeContentProvider.setCursorForUri(uriToExpect, cursor)
@@ -220,6 +225,7 @@ class ContactsRepositoryImplTest(
                     arrayOf(
                         Phone.CONTACT_ID,
                         Phone.DISPLAY_NAME_PRIMARY,
+                        Phone.STARRED,
                         Phone.PHOTO_THUMBNAIL_URI,
                         Phone.NUMBER,
                         Phone._ID,
@@ -228,10 +234,10 @@ class ContactsRepositoryImplTest(
                     )
                 )
             cursor.addRow(
-                arrayOf<Any?>(1L, "Test Contact", null, "555-0123", 101L, Phone.TYPE_HOME, null)
+                arrayOf<Any?>(1L, "Test Contact", 0, null, "555-0123", 101L, Phone.TYPE_HOME, null)
             )
             cursor.addRow(
-                arrayOf<Any?>(1L, "Test Contact2", null, "555-0124", 102L, Phone.TYPE_WORK, null)
+                arrayOf<Any?>(1L, "Test Contact2", 0, null, "555-0124", 102L, Phone.TYPE_WORK, null)
             )
 
             fakeContentProvider.setCursorForUri(Phone.CONTENT_URI, cursor)
@@ -257,6 +263,7 @@ class ContactsRepositoryImplTest(
                         Phone.CONTACT_ID,
                         Phone.DISPLAY_NAME_PRIMARY,
                         Phone.PHOTO_THUMBNAIL_URI,
+                        Phone.STARRED,
                         Phone.NUMBER,
                         Phone._ID,
                         Phone.TYPE,
@@ -265,10 +272,19 @@ class ContactsRepositoryImplTest(
                 )
             val fakeUri = "content://fake/uri/123"
             cursor.addRow(
-                arrayOf<Any?>(1L, "Test Contact", null, "555-0123", 101L, Phone.TYPE_HOME, null)
+                arrayOf<Any?>(1L, "Test Contact", null, 0, "555-0123", 101L, Phone.TYPE_HOME, null)
             )
             cursor.addRow(
-                arrayOf<Any?>(2L, "Test Contact2", fakeUri, "555-0124", 102L, Phone.TYPE_WORK, null)
+                arrayOf<Any?>(
+                    2L,
+                    "Test Contact2",
+                    fakeUri,
+                    0,
+                    "555-0124",
+                    102L,
+                    Phone.TYPE_WORK,
+                    null,
+                )
             )
 
             fakeContentProvider.setCursorForUri(Phone.CONTENT_URI, cursor)

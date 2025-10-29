@@ -57,12 +57,14 @@ object ContactTestDataFactory {
     fun createDisplayNameContact(
         id: Long,
         displayName: String,
+        isFavorite: Boolean = false,
         lookupKey: String = "key_$id",
         profilePictureUri: String? = null,
     ): DisplayNameContact {
         return DisplayNameContact(
             id = id,
             displayName = displayName,
+            isFavorite = isFavorite,
             profilePictureUri = profilePictureUri,
             lookupKey = lookupKey,
         )
@@ -72,12 +74,14 @@ object ContactTestDataFactory {
     fun createPhoneContact(
         id: Long,
         displayName: String,
+        isFavorite: Boolean = false,
         phones: List<PhoneEntry>,
         profilePictureUri: String? = null,
     ): PhoneContact {
         return PhoneContact(
             id = id,
             displayName = displayName,
+            isFavorite = isFavorite,
             phones = phones,
             profilePictureUri = profilePictureUri,
         )
@@ -87,12 +91,14 @@ object ContactTestDataFactory {
     fun createEmailContact(
         id: Long,
         displayName: String,
+        isFavorite: Boolean = false,
         emails: List<EmailEntry>,
         profilePictureUri: String? = null,
     ): EmailContact {
         return EmailContact(
             id = id,
             displayName = displayName,
+            isFavorite = isFavorite,
             emails = emails,
             profilePictureUri = profilePictureUri,
         )
@@ -110,7 +116,7 @@ object ContactTestDataFactory {
                 val dataId = (id * 10) + it
                 PhoneEntry(dataId, "555-${1000 + dataId}", if (it == 1) "Home" else "Work$it")
             }
-        return PhoneContact(
+        return createPhoneContact(
             id = id,
             displayName = displayName,
             phones = phones,
@@ -133,7 +139,7 @@ object ContactTestDataFactory {
                     else "${displayName.replace(" ", "")}_$it@work.com"
                 EmailEntry(dataId, address, if (it == 1) "Home" else "Work$it")
             }
-        return EmailContact(
+        return createEmailContact(
             id = id,
             displayName = displayName,
             emails = emails,

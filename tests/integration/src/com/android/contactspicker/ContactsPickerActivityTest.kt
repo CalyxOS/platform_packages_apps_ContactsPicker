@@ -102,6 +102,7 @@ class ContactsPickerActivityTest {
         DisplayNameContact(
             id = 1,
             displayName = "Test",
+            isFavorite = false,
             profilePictureUri = null,
             lookupKey = "test_lookup",
         )
@@ -228,7 +229,7 @@ class ContactsPickerActivityTest {
 
     @Test
     @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
-   fun handleDoneClicked_withSingleSelection_setsResultOkAndFinishes() = runTest {
+    fun handleDoneClicked_withSingleSelection_setsResultOkAndFinishes() = runTest {
         val successStateSingleSelect =
             MutableStateFlow(
                 ContactsListState.Success(
