@@ -20,7 +20,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -79,13 +79,32 @@ fun ContactsPickerBody(
         }
         groupedContacts.forEach { (letter, contactsInGroup) ->
             stickyHeader(key = "header_$letter") { SectionHeader(letter = letter) }
-            items(items = contactsInGroup, key = { contact -> contact.id }) { contact ->
+            val groupSize = contactsInGroup.size
+            itemsIndexed(items = contactsInGroup, key = { _, contact -> contact.id }) {
+                index,
+                contact ->
+                val position =
+                    when {
+                        groupSize == 1 -> ItemPosition.ONLY
+                        index == 0 -> ItemPosition.FIRST
+                        index == groupSize - 1 -> ItemPosition.LAST
+                        else -> ItemPosition.MIDDLE
+                    }
+
+                val bottomPadding =
+                    if (position == ItemPosition.LAST || position == ItemPosition.ONLY) 8.dp
+                    else 1.dp
+
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = bottomPadding),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     ContactItem(
                         contact = contact,
+                        position = position,
                         selectedEntries = selectedContacts[contact.id],
                         isMultiSelectEnabled = isMultiSelectEnabled,
                         onToggleContactSelection = onToggleContactSelection,

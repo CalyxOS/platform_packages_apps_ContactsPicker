@@ -15,6 +15,7 @@
  */
 package com.android.contactspicker.ui.pickerscreen
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -48,6 +49,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -61,12 +63,42 @@ import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.model.PhoneEntry
 import com.android.contactspicker.ui.components.Avatar
 
+// TODO(b/450842541): move constants to a separate file
 private val CONTACT_ITEM_PADDING = 16.dp
 private val EXPANDED_CONTACT_ITEM_START_PADDING = 32.dp
 private val EXPANDED_CONTACT_ITEM_END_PADDING = 16.dp
 private val EXPANDED_CONTACT_ITEM_VERTICAL_PADDING = 8.dp
 private val AVATAR_TEXT_SPACING = 16.dp
 private val ICON_TEXT_SPACING = 8.dp
+private val CARD_OUTER_CORNER_RADIUS = 32.dp
+private val CARD_INNER_CORNER_RADIUS = 4.dp
+
+internal val TOP_ITEM_SHAPE =
+    RoundedCornerShape(
+        topStart = CARD_OUTER_CORNER_RADIUS,
+        topEnd = CARD_OUTER_CORNER_RADIUS,
+        bottomStart = CARD_INNER_CORNER_RADIUS,
+        bottomEnd = CARD_INNER_CORNER_RADIUS,
+    )
+
+internal val BOTTOM_ITEM_SHAPE =
+    RoundedCornerShape(
+        topStart = CARD_INNER_CORNER_RADIUS,
+        topEnd = CARD_INNER_CORNER_RADIUS,
+        bottomStart = CARD_OUTER_CORNER_RADIUS,
+        bottomEnd = CARD_OUTER_CORNER_RADIUS,
+    )
+
+internal val SINGLE_ITEM_SHAPE = RoundedCornerShape(CARD_OUTER_CORNER_RADIUS)
+
+internal val MIDDLE_ITEM_SHAPE = RoundedCornerShape(CARD_INNER_CORNER_RADIUS)
+
+enum class ItemPosition {
+    FIRST,
+    MIDDLE,
+    LAST,
+    ONLY,
+}
 
 /**
  * A composable that displays a single contact item.
@@ -81,10 +113,12 @@ private val ICON_TEXT_SPACING = 8.dp
  *   the whole contact.
  * @param onToggleEntrySelection A callback invoked when a single entry (e.g. an email) is selected
  *   from an expanded list.
+ * @param position The item's position in its group, used to determine shape.
  */
 @Composable
 fun ContactItem(
     contact: Contact,
+    position: ItemPosition,
     selectedEntries: Set<Long>?,
     isMultiSelectEnabled: Boolean,
     onToggleContactSelection: (Contact) -> Unit,
@@ -111,11 +145,12 @@ fun ContactItem(
             expanded = !expanded
         }
     }
+
     Surface(
         color =
             if (isAnyEntrySelected) MaterialTheme.colorScheme.surfaceDim
             else MaterialTheme.colorScheme.surfaceBright,
-        shape = RoundedCornerShape(20.dp),
+        shape = calculateShape(position, isAnyEntrySelected),
     ) {
         Column(modifier = Modifier.animateContentSize()) {
             val rowModifier =
@@ -335,3 +370,22 @@ private fun ExpandedContactEntry(
         Checkbox(checked = isChecked, onCheckedChange = { onCheckedChange() })
     }
 }
+
+// Calculates the shape of the ContactItem based on its position and selection state:
+// - any selected or partially selected item has all corners rounded
+// - only the first item has rounded top corners
+// - only last item has rounded
+@VisibleForTesting
+internal fun calculateShape(position: ItemPosition, isAnyEntrySelected: Boolean): Shape =
+    if (isAnyEntrySelected) {
+        SINGLE_ITEM_SHAPE
+    } else {
+        when (position) {
+            ItemPosition.ONLY -> SINGLE_ITEM_SHAPE
+            ItemPosition.FIRST -> TOP_ITEM_SHAPE
+
+            ItemPosition.LAST -> BOTTOM_ITEM_SHAPE
+
+            ItemPosition.MIDDLE -> MIDDLE_ITEM_SHAPE
+        }
+    }
