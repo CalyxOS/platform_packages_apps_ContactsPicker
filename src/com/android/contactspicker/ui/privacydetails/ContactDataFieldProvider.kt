@@ -30,7 +30,9 @@ import androidx.compose.material.icons.outlined.Phone
 import com.android.contactspicker.R
 import com.android.contactspicker.ui.utils.IconResource
 
-/** Maps raw contact data field types to a sorted list of UI-ready [ContactDataFieldItem]s. */
+/**
+ * Takes raw contact data field types and provides sorted list of UI-ready [ContactDataFieldItem]s.
+ */
 object ContactDataFieldProvider {
 
     private val NAME_DATA_FIELD_ITEM =
@@ -73,7 +75,8 @@ object ContactDataFieldProvider {
 
     /**
      * Creates a sorted list of [ContactDataFieldItem] from a list of contact data field types, with
-     * preferences and name items included.
+     * preferences and name items included. Name is always added as first item, and preferences is
+     * always added as last item.
      *
      * @param dataFields A list of MIME type strings from `ContactsContract.CommonDataKinds`.
      * @return A sorted list of [ContactDataFieldItem].
