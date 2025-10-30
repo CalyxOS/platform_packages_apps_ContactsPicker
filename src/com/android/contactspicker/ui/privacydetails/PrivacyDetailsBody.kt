@@ -18,6 +18,7 @@ package com.android.contactspicker.ui.privacydetails
 import android.provider.ContactsContract
 import androidx.annotation.OpenForTesting
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
@@ -111,7 +112,7 @@ fun LazyListScope.contactDataFieldList(
     requestedDataFields: List<String>,
     modifier: Modifier = Modifier,
 ) {
-    val dataFieldItems = ContactDataFieldMapper.mapToSortedItems(requestedDataFields)
+    val dataFieldItems = ContactDataFieldProvider.getContactDataFieldItems(requestedDataFields)
     val dataFieldItemsSize = dataFieldItems.size
 
     itemsIndexed(items = dataFieldItems) { index, item ->
@@ -160,12 +161,20 @@ fun ContactDataFieldRow(
                     )
                 }
             }
-            Text(
-                text = stringResource(id = data.headerTextResId),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.weight(1.0f),
-            )
+            Column(modifier = Modifier.weight(1.0f)) {
+                Text(
+                    text = stringResource(id = data.headerTextResId),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                data.descriptionTextResId?.let { descriptionResId ->
+                    Text(
+                        text = stringResource(id = descriptionResId),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
         }
     }
 }
