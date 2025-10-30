@@ -76,8 +76,15 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
         routeIntent(intent)
     }
 
-    /** Determines the correct handling for the intent based on the calling package target SDK. */
+    /**
+     * Determines the correct handling for the intent based on the presence of the
+     * [Intent.EXTRA_USE_SYSTEM_CONTACTS_PICKER] extra and the calling package target SDK.
+     */
     private fun routeIntent(intent: Intent) {
+        if (intent.getBooleanExtra(Intent.EXTRA_USE_SYSTEM_CONTACTS_PICKER, false)) {
+            processIntentAndSetupUi(intent)
+            return
+        }
         val callingPackage = callingPackageProvider.get()
         if (callingPackage == null) {
             Log.e(TAG, "Cannot get calling package. Finishing with RESULT_CANCELED.")

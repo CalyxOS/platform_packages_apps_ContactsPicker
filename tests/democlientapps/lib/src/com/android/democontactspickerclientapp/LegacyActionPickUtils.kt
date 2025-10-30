@@ -21,9 +21,14 @@ import android.net.Uri
 import android.provider.ContactsContract
 import androidx.activity.result.ActivityResult
 
-fun buildLegacyPickerIntent(config: LegacyDemoConfigState, allowMultiple: Boolean): Intent {
+fun buildLegacyPickerIntent(
+    config: LegacyDemoConfigState,
+    allowMultiple: Boolean,
+    useSystemPicker: Boolean = false,
+): Intent {
     val intent = Intent(Intent.ACTION_PICK)
     intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, allowMultiple)
+    intent.putExtra(Intent.EXTRA_USE_SYSTEM_CONTACTS_PICKER, useSystemPicker)
     intent.type =
         when (config.legacyPickerType) {
             LegacyPickerType.EMAIL -> ContactsContract.CommonDataKinds.Email.CONTENT_TYPE

@@ -33,6 +33,7 @@ android_app {
         "src/**/*.kt",
     ],
     static_libs: [
+        "android.content.flags-aconfig-java",
         "androidx.appcompat_appcompat",
         "androidx.compose.foundation_foundation",
         "androidx.compose.ui_ui",
