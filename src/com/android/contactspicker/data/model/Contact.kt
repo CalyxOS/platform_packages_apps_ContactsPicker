@@ -30,6 +30,9 @@ sealed class Contact {
     /** The name of the contact, suitable for display. */
     abstract val displayName: String
 
+    /** The URI for the contact's profile picture thumbnail, or null if one doesn't exist. */
+    abstract val profilePictureUri: String?
+
     /**
      * Returns true if all entries of the [Contact] are present in the [selectedEntries] set.
      *
@@ -52,12 +55,14 @@ sealed class Contact {
  *
  * @param id A unique identifier for the contact.
  * @param displayName The name of the contact. Must not be blank.
+ * @param profilePictureUri The URI for the contact's profile picture thumbnail.
  * @param lookupKey A unique, stable identifier for the contact.
  * @throws IllegalArgumentException if [displayName] is blank.
  */
 data class DisplayNameContact(
     override val id: Long,
     override val displayName: String,
+    override val profilePictureUri: String?,
     val lookupKey: String,
 ) : Contact() {
     init {
@@ -71,12 +76,14 @@ data class DisplayNameContact(
  *
  * @param id A unique identifier for the contact.
  * @param displayName The name of the contact. Must not be blank.
+ * @param profilePictureUri The URI for the contact's profile picture thumbnail.
  * @param phones The non-empty list of phone entries.
  * @throws IllegalArgumentException if [displayName] is blank or [phones] is empty.
  */
 data class PhoneContact(
     override val id: Long,
     override val displayName: String,
+    override val profilePictureUri: String?,
     val phones: List<PhoneEntry>,
 ) : Contact() {
     init {
@@ -94,12 +101,14 @@ data class PhoneContact(
  *
  * @param id A unique identifier for the contact.
  * @param displayName The name of the contact. Must not be blank.
+ * @param profilePictureUri The URI for the contact's profile picture thumbnail.
  * @param emails The non-empty list of email entries.
  * @throws IllegalArgumentException if [displayName] is blank or [emails] is empty.
  */
 data class EmailContact(
     override val id: Long,
     override val displayName: String,
+    override val profilePictureUri: String?,
     val emails: List<EmailEntry>,
 ) : Contact() {
     init {

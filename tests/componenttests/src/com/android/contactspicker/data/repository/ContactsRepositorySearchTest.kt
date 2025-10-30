@@ -68,9 +68,15 @@ class ContactsRepositorySearchTest {
     fun searchContacts_inEmailMode_returnsEmailContacts() = runTest {
         val cursor =
             MatrixCursor(
-                arrayOf(Email.CONTACT_ID, Email.DISPLAY_NAME_PRIMARY, Email.ADDRESS, Email._ID)
+                arrayOf(
+                    Email.CONTACT_ID,
+                    Email.DISPLAY_NAME_PRIMARY,
+                    Email.PHOTO_THUMBNAIL_URI,
+                    Email.ADDRESS,
+                    Email._ID,
+                )
             )
-        cursor.addRow(arrayOf<Any>(1L, "John Doe", "john.doe@example.com", 101L))
+        cursor.addRow(arrayOf<Any?>(1L, "John Doe", null, "john.doe@example.com", 101L))
         val query = "john"
         val filterUri = Email.CONTENT_FILTER_URI.buildUpon().appendPath(query).build()
         fakeContentProvider.setCursorForUri(filterUri, cursor)
@@ -92,9 +98,15 @@ class ContactsRepositorySearchTest {
     fun searchContacts_inPhoneMode_returnsPhoneContacts() = runTest {
         val cursor =
             MatrixCursor(
-                arrayOf(Phone.CONTACT_ID, Phone.DISPLAY_NAME_PRIMARY, Phone.NUMBER, Phone._ID)
+                arrayOf(
+                    Phone.CONTACT_ID,
+                    Phone.DISPLAY_NAME_PRIMARY,
+                    Phone.PHOTO_THUMBNAIL_URI,
+                    Phone.NUMBER,
+                    Phone._ID,
+                )
             )
-        cursor.addRow(arrayOf<Any>(2L, "Jane Doe", "123-456-7890", 102L))
+        cursor.addRow(arrayOf<Any?>(2L, "Jane Doe", null, "123-456-7890", 102L))
         val query = "jane"
         val filterUri = Phone.CONTENT_FILTER_URI.buildUpon().appendPath(query).build()
         fakeContentProvider.setCursorForUri(filterUri, cursor)
@@ -119,10 +131,11 @@ class ContactsRepositorySearchTest {
                 arrayOf(
                     ContactsContract.Contacts._ID,
                     ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
+                    ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
                     ContactsContract.Contacts.LOOKUP_KEY,
                 )
             )
-        cursor.addRow(arrayOf<Any?>(3L, "Alice Smith", "lookupKeyAlice"))
+        cursor.addRow(arrayOf<Any?>(3L, "Alice Smith", null, "lookupKeyAlice"))
         val query = "alice"
         val filterUri =
             ContactsContract.Contacts.CONTENT_FILTER_URI.buildUpon().appendPath(query).build()

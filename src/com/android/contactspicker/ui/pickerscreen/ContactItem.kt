@@ -223,7 +223,7 @@ private fun SelectableAvatar(contact: Contact, isSelected: Boolean, onClick: () 
                 )
             }
         } else {
-            Avatar(displayName = contact.displayName)
+            Avatar(displayName = contact.displayName, profilePictureUri = contact.profilePictureUri)
         }
     }
 }

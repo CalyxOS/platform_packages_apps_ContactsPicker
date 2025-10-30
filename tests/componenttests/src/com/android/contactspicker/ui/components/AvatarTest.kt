@@ -16,14 +16,17 @@
 
 package com.android.contactspicker.ui.components
 
+import android.content.Context
 import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.contactspicker.R
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,12 +38,43 @@ class AvatarTest {
     @get:Rule val composeTestRule = createComposeRule()
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
+    private val context: Context = ApplicationProvider.getApplicationContext()
+    private val profilePicContentDesc =
+        context.getString(R.string.contact_avatar_profile_picture_content_description)
+    private val initialsContentDesc =
+        context.getString(R.string.contact_avatar_initial_content_description)
+
     @Test
-    fun initial_isDisplayed() {
-        val displayName = "Alice Wonderland"
+    fun avatar_whenProfilePictureUriIsNull_showsInitials() {
+        composeTestRule.setContent {
+            Avatar(displayName = "Alice Wonderland", profilePictureUri = null)
+        }
 
-        composeTestRule.setContent { Avatar(displayName = displayName) }
+        composeTestRule.onNodeWithContentDescription(initialsContentDesc).assertExists()
+        composeTestRule.onNodeWithText("A").assertExists()
+        composeTestRule.onNodeWithContentDescription(profilePicContentDesc).assertDoesNotExist()
+    }
 
-        composeTestRule.onNodeWithText("A").assertIsDisplayed()
+    @Test
+    fun avatar_whenProfilePictureUriIsBlank_showsInitials() {
+        composeTestRule.setContent {
+            Avatar(displayName = "Alice Wonderland", profilePictureUri = "")
+        }
+
+        composeTestRule.onNodeWithContentDescription(initialsContentDesc).assertExists()
+        composeTestRule.onNodeWithText("A").assertExists()
+        composeTestRule.onNodeWithContentDescription(profilePicContentDesc).assertDoesNotExist()
+    }
+
+    @Test
+    fun avatar_whenProfilePictureUriExists_showsImageComposable() {
+        val fakeUri = "content://fake/uri/123"
+        composeTestRule.setContent {
+            Avatar(displayName = "Alice Wonderland", profilePictureUri = fakeUri)
+        }
+
+        // Assert that the composable that would host the image is present.
+        composeTestRule.onNodeWithContentDescription(profilePicContentDesc).assertExists()
+        composeTestRule.onNodeWithContentDescription(initialsContentDesc).assertDoesNotExist()
     }
 }

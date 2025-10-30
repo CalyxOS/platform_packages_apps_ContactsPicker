@@ -32,7 +32,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.R
-import com.android.contactspicker.data.model.DisplayNameContact
+import com.android.contactspicker.testdata.ContactTestDataFactory
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,8 +47,7 @@ class ContactsPickerScreenTest {
 
     private val context: Context = ApplicationProvider.getApplicationContext()
 
-    private val testContact =
-        DisplayNameContact(id = 1, displayName = "Jon Snow", lookupKey = "jon_snow_lookup")
+    private val testContact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
 
     @Test
     fun whenStateIsLoading_showsLoadingIndicator() {
