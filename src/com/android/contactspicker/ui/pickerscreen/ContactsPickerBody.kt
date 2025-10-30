@@ -15,18 +15,22 @@
  */
 package com.android.contactspicker.ui.pickerscreen
 
+import androidx.annotation.VisibleForTesting
 import androidx.collection.LongObjectMap
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Mood
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -63,16 +67,16 @@ fun ContactsPickerBody(
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (contactId: Long, entryId: Long) -> Unit,
 ) {
+    val emojiHeaderContentDesc = stringResource(R.string.emoji_header_icon_content_description)
     val groupedContacts =
         remember(contacts) {
             // TODO(b/436818961): consider moving the grouping logic to the view models
             contacts.groupBy {
                 val firstChar = it.displayName.firstOrNull()
                 if (firstChar?.isLetter() == true) {
-                    firstChar.uppercaseChar()
+                    SectionKey.LetterKey(firstChar.uppercaseChar())
                 } else {
-                    // TODO(b/442808599): make fallback for the grouping an emoji as per mocks
-                    '#'
+                    SectionKey.IconKey(Icons.Default.Mood, emojiHeaderContentDesc)
                 }
             }
         }
@@ -96,8 +100,14 @@ fun ContactsPickerBody(
             onToggleEntrySelection = onToggleEntrySelection,
         )
 
-        groupedContacts.forEach { (letter, contactsInGroup) ->
-            stickyHeader(key = "header_$letter") { SectionHeader(text = letter.toString()) }
+        groupedContacts.forEach { (sectionKey, contactsInGroup) ->
+            stickyHeader(key = "header_$sectionKey") {
+                when (sectionKey) {
+                    is SectionKey.LetterKey -> SectionHeader(sectionKey.letter)
+                    is SectionKey.IconKey ->
+                        SectionHeader(sectionKey.icon, sectionKey.contentDescription)
+                }
+            }
             val groupSize = contactsInGroup.size
             itemsIndexed(items = contactsInGroup, key = { _, contact -> contact.id }) {
                 index,
@@ -148,8 +158,12 @@ private fun LazyListScope.favoritesSection(
 ) {
     if (favoriteContacts.isNotEmpty()) {
         stickyHeader(key = "header_favorites") {
-            val headerText = stringResource(R.string.contacts_picker_favorites_header)
-            SectionHeader(text = "★   $headerText")
+            SectionHeader(
+                imageVector = Icons.Filled.Star,
+                iconContentDescription =
+                    stringResource(R.string.favorites_header_icon_content_description),
+                text = stringResource(R.string.contacts_picker_favorites_header),
+            )
         }
         itemsIndexed(items = favoriteContacts, key = { _, contact -> "fav-${contact.id}" }) {
             index,
@@ -173,6 +187,28 @@ private fun LazyListScope.favoritesSection(
                     onToggleContactSelection = onToggleContactSelection,
                     onToggleEntrySelection = onToggleEntrySelection,
                 )
+            }
+        }
+    }
+}
+
+// A sealed class to represent the key for each section.
+// It implements Comparable to define a custom sorting order.
+@VisibleForTesting
+internal sealed class SectionKey : Comparable<SectionKey> {
+    data class IconKey(val icon: ImageVector, val contentDescription: String) : SectionKey() {
+        // Icon section should always come first.
+        override fun compareTo(other: SectionKey): Int {
+            // note: this is assuming only one ImageVector in the list so the order is undefined
+            return if (other is IconKey) 0 else -1
+        }
+    }
+
+    data class LetterKey(val letter: Char) : SectionKey() {
+        override fun compareTo(other: SectionKey): Int {
+            return when (other) {
+                is IconKey -> 1 // Letter sections come after icon sections.
+                is LetterKey -> letter.compareTo(other.letter)
             }
         }
     }

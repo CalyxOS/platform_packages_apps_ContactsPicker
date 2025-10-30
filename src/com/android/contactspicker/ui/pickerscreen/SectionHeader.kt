@@ -16,16 +16,26 @@
 package com.android.contactspicker.ui.pickerscreen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 
 internal const val CONTACTS_LIST_SECTION_HEADER_TEST_TAG = "contacts_list_section_header"
+private val SECTION_HEADER_PADDING_VALUES = PaddingValues(horizontal = 24.dp, vertical = 8.dp)
 
 /**
  * A composable that displays a section header with a single character.
@@ -33,15 +43,52 @@ internal const val CONTACTS_LIST_SECTION_HEADER_TEST_TAG = "contacts_list_sectio
  * @param letter The character to display as the header.
  */
 @Composable
-fun SectionHeader(text: String) {
+fun SectionHeader(letter: Char) {
     Text(
-        text = text,
+        text = letter.toString(),
         modifier =
             Modifier.fillMaxWidth()
                 .background(MaterialTheme.colorScheme.surfaceContainer)
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(SECTION_HEADER_PADDING_VALUES)
                 .testTag(CONTACTS_LIST_SECTION_HEADER_TEST_TAG),
         style = MaterialTheme.typography.labelLarge,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
+}
+
+/**
+ * A composable that displays a section header with an icon or an icon followed by a text.
+ *
+ * @param imageVector ImageVector to display as an icon in the header.
+ * @param iconContentDescription Content description for the icon.
+ * @param text Optional text. If present it will be displayed in the same line after the icon.
+ */
+@Composable
+fun SectionHeader(imageVector: ImageVector, iconContentDescription: String, text: String? = null) {
+    Row(
+        modifier =
+            Modifier.fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .padding(SECTION_HEADER_PADDING_VALUES)
+                .testTag(CONTACTS_LIST_SECTION_HEADER_TEST_TAG),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        val iconSize =
+            with(LocalDensity.current) { MaterialTheme.typography.labelLarge.fontSize.toDp() }
+        Icon(
+            imageVector = imageVector,
+            contentDescription = iconContentDescription,
+            modifier = Modifier.size(iconSize),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+
+        if (text != null) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
 }

@@ -22,6 +22,8 @@ import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.collection.longObjectMapOf
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Mood
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasAnyDescendant
@@ -29,13 +31,16 @@ import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.R
+import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.ui.components.AVATAR_TEST_TAG
+import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -105,18 +110,7 @@ class ContactsPickerBodyTest {
     fun privacyBanner_isNotDisplayed_afterScrollingTheContactList() {
         val contacts = ContactTestDataFactory.createContactList(30)
 
-        composeTestRule.setContent {
-            ContactsPickerBody(
-                contacts = contacts,
-                selectedContacts = longObjectMapOf(),
-                isMultiSelectEnabled = false,
-                onPrivacyBannerMoreDetails = {},
-                onPrivacyBannerDismissRequest = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-                callingAppName = null,
-            )
-        }
+        setContentWithContactsPickerBody(contacts)
 
         composeTestRule.onNode(hasTestTag(PRIVACY_BANNER_TEST_TAG)).assertIsDisplayed()
 
@@ -136,8 +130,76 @@ class ContactsPickerBodyTest {
                 displayName = "Best friend",
                 isFavorite = true,
             )
-        val contacts = listOf(favContact, nonFavContact)
 
+        setContentWithContactsPickerBody(listOf(favContact, nonFavContact))
+
+        val favoritesHeader = context.getString(R.string.contacts_picker_favorites_header)
+        composeTestRule.onNodeWithText(favoritesHeader, substring = true).assertExists()
+
+        // favorite contact should appear twice, non-fav only once
+        composeTestRule.onAllNodesWithText(favContact.displayName).assertCountEquals(2)
+        composeTestRule.onAllNodesWithText(nonFavContact.displayName).assertCountEquals(1)
+    }
+
+    @Test
+    fun favoritesSection_doesNotExist_whenNoFavoritesExist() {
+        setContentWithContactsPickerBody(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST)
+
+        val favoritesHeader = context.getString(R.string.contacts_picker_favorites_header)
+        composeTestRule.onNodeWithText(favoritesHeader).assertDoesNotExist()
+    }
+
+    @Test
+    fun contactsPickerBody_withSpecialCharacterDisplayName_displaysEmojiHeader() {
+        val regularContact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
+        val contacts =
+            listOf(
+                // Contacts that should be under an icon
+                ContactTestDataFactory.createDisplayNameContact(
+                    id = 111,
+                    displayName = "#Favorite Contact",
+                ),
+                // Emoji ":D" for the display name
+                ContactTestDataFactory.createDisplayNameContact(
+                    id = 123,
+                    displayName = "\uD83D\uDE00",
+                ),
+
+                // Contact that should be under letters
+                regularContact,
+            )
+
+        setContentWithContactsPickerBody(contacts)
+
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.emoji_header_icon_content_description),
+                useUnmergedTree = true,
+            )
+            .assertIsDisplayed()
+        composeTestRule
+            .onNode(
+                hasTestTag(CONTACTS_LIST_SECTION_HEADER_TEST_TAG) and
+                    hasText(regularContact.displayName.first().toString())
+            )
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun contactsPickerBody_noSpecialCharacterDisplayName_doesNotDisplayEmojiHeader() {
+        setContentWithContactsPickerBody(
+            listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT)
+        )
+
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.emoji_header_icon_content_description),
+                useUnmergedTree = true,
+            )
+            .assertDoesNotExist()
+    }
+
+    private fun setContentWithContactsPickerBody(contacts: List<Contact>) {
         composeTestRule.setContent {
             ContactsPickerBody(
                 contacts = contacts,
@@ -150,31 +212,19 @@ class ContactsPickerBodyTest {
                 callingAppName = null,
             )
         }
-
-        val favoritesHeader = context.getString(R.string.contacts_picker_favorites_header)
-        composeTestRule.onNodeWithText(favoritesHeader, substring = true).assertExists()
-
-        // favorite contact should appear twice, non-fav only once
-        composeTestRule.onAllNodesWithText(favContact.displayName).assertCountEquals(2)
-        composeTestRule.onAllNodesWithText(nonFavContact.displayName).assertCountEquals(1)
     }
 
     @Test
-    fun favoritesSection_doesNotExist_whenNoFavoritesExist() {
-        composeTestRule.setContent {
-            ContactsPickerBody(
-                contacts = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
-                onPrivacyBannerMoreDetails = {},
-                onPrivacyBannerDismissRequest = {},
-                selectedContacts = longObjectMapOf(),
-                isMultiSelectEnabled = false,
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-                callingAppName = null,
-            )
-        }
+    fun sectionKey_iconKey_isLessThan_letterKey() {
+        val iconKey = SectionKey.IconKey(Icons.Default.Mood, "Content Description")
+        val letterKey = SectionKey.LetterKey('A')
+        assertThat(iconKey < letterKey).isTrue()
+    }
 
-        val favoritesHeader = context.getString(R.string.contacts_picker_favorites_header)
-        composeTestRule.onNodeWithText(favoritesHeader).assertDoesNotExist()
+    @Test
+    fun sectionKey_letterKeys_areSorted_alphabetically() {
+        val letterKey1 = SectionKey.LetterKey('A')
+        val letterKey2 = SectionKey.LetterKey('B')
+        assertThat(letterKey1 < letterKey2).isTrue()
     }
 }
