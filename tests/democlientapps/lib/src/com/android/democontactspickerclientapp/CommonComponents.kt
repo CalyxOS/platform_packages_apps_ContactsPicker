@@ -49,7 +49,7 @@ fun SectionTitle(title: String) {
 
 @Composable
 fun CommonOptions(allowMultiple: Boolean, onAllowMultipleChange: (Boolean) -> Unit) {
-    SectionTitle("Common Options")
+    SectionTitle("Options")
     Row(
         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,

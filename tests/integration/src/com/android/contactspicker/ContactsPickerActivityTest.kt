@@ -355,4 +355,25 @@ class ContactsPickerActivityTest {
         Intents.intended(hasComponent(preferredComponent))
         assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
     }
+
+    @Test
+    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
+    fun extraUseSystemContactsPickerAndLowSdk_handlesInternally() {
+        val appInfo = ApplicationInfo().apply { targetSdkVersion = 36 }
+        whenever(mockPackageManager.getApplicationInfo(testPackageName, 0)).doReturn(appInfo)
+        whenever(mockPackageManager.getPreferredActivities(any(), any(), any())).thenAnswer { 0 }
+
+        val intentWithExtra =
+            Intent(baseIntent).apply { putExtra(Intent.EXTRA_USE_SYSTEM_CONTACTS_PICKER, true) }
+        val scenario = ActivityScenario.launch<ContactsPickerActivity>(intentWithExtra)
+
+        composeTestRule
+            .onNodeWithText(
+                context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
+            )
+            .assertIsDisplayed()
+
+        scenario.onActivity { activity -> assertThat(activity.isFinishing).isFalse() }
+        assertThat(Intents.getIntents().filter { it.action == Intent.ACTION_CHOOSER }).isEmpty()
+    }
 }

@@ -23,16 +23,21 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,6 +69,7 @@ class MainActivitySdk36 : ComponentActivity() {
 private fun Sdk36Screen(targetSdk: Int) {
     var legacyConfig by remember { mutableStateOf(LegacyDemoConfigState()) }
     var allowMultiple by remember { mutableStateOf(false) }
+    var useSystemPicker by remember { mutableStateOf(true) }
     val context = LocalContext.current
 
     val pickerLauncher =
@@ -85,10 +91,23 @@ private fun Sdk36Screen(targetSdk: Int) {
             Spacer(modifier = Modifier.height(20.dp))
 
             CommonOptions(allowMultiple) { allowMultiple = it }
+            if (android.content.flags.Flags.enableSystemContactsPicker()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Column(modifier = Modifier.weight(1f).padding(end = 16.dp)) {
+                        Text("Use System Picker", style = MaterialTheme.typography.bodyLarge)
+                    }
+                    Switch(checked = useSystemPicker, onCheckedChange = { useSystemPicker = it })
+                }
+            }
+
             Spacer(modifier = Modifier.height(24.dp))
 
             LaunchPickerButton {
-                val intent = buildLegacyPickerIntent(legacyConfig, allowMultiple)
+                val intent = buildLegacyPickerIntent(legacyConfig, allowMultiple, useSystemPicker)
                 try {
                     pickerLauncher.launch(intent)
                 } catch (_: ActivityNotFoundException) {
