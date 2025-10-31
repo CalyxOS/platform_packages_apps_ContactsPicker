@@ -17,7 +17,6 @@
 package com.android.contactspicker.ui.components
 
 import androidx.collection.longObjectMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -33,15 +32,15 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class ContactsPickerContentTest {
+class ContactsListContentTest {
 
     @get:Rule val composeTestRule = createComposeRule()
 
     @Test
     fun pickerContent_loadingState_showsLoadingIndicator() {
         composeTestRule.setContent {
-            ContactsPickerContent(
-                uiState = mutableStateOf(ContactsListState.Loading),
+            ContactsListContent(
+                uiState = ContactsListState.Loading,
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
                 onToggleContactSelection = {},
@@ -57,8 +56,8 @@ class ContactsPickerContentTest {
     fun pickerContent_errorState_showsErrorMessage() {
         val errorMessage = "Test Error Message"
         composeTestRule.setContent {
-            ContactsPickerContent(
-                uiState = mutableStateOf(ContactsListState.Error(errorMessage)),
+            ContactsListContent(
+                uiState = ContactsListState.Error(errorMessage),
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
                 onToggleContactSelection = {},
@@ -72,16 +71,14 @@ class ContactsPickerContentTest {
     fun pickerContent_successState_showsListAndBanner() {
         val testContact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
         composeTestRule.setContent {
-            ContactsPickerContent(
+            ContactsListContent(
                 uiState =
-                    mutableStateOf(
-                        ContactsListState.Success(
-                            availableContacts = listOf(testContact),
-                            selectedContacts = longObjectMapOf(),
-                            isMultiSelectEnabled = false,
-                            callingAppName = null,
-                            requestedMimeTypes = emptyList(),
-                        )
+                    ContactsListState.Success(
+                        availableContacts = listOf(testContact),
+                        selectedContacts = longObjectMapOf(),
+                        isMultiSelectEnabled = false,
+                        callingAppName = null,
+                        requestedMimeTypes = emptyList(),
                     ),
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},

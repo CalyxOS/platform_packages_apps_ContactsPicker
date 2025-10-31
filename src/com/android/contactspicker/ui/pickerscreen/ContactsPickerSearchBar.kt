@@ -17,8 +17,14 @@ package com.android.contactspicker.ui.pickerscreen
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
@@ -32,14 +38,23 @@ import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
+import com.android.contactspicker.SearchState
+import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.EmailContact
+import com.android.contactspicker.data.model.PhoneContact
 
 private val CollapsedSearchBarPaddingValues =
     PaddingValues(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 16.dp)
@@ -49,10 +64,16 @@ private val CollapsedSearchBarPaddingValues =
 fun ContactsPickerSearchBar(
     modifier: Modifier,
     expanded: Boolean,
+    uiState: State<ContactsUiState>,
     onExpandedChange: (Boolean) -> Unit,
+    onQueryChange: (String) -> Unit,
+    onToggleContactSelection: (Contact) -> Unit,
+    onToggleEntrySelection: (Long, Long) -> Unit,
+    onExitSearch: () -> Unit,
 ) {
 
     var query by remember { mutableStateOf("") }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     SearchBar(
         modifier =
@@ -61,8 +82,11 @@ fun ContactsPickerSearchBar(
         inputField = {
             SearchBarDefaults.InputField(
                 query = query,
-                onQueryChange = { query = it },
-                onSearch = { onExpandedChange(false) },
+                onQueryChange = {
+                    query = it
+                    onQueryChange(it)
+                },
+                onSearch = { keyboardController?.hide() },
                 expanded = expanded,
                 onExpandedChange = onExpandedChange,
                 placeholder = {
@@ -71,8 +95,10 @@ fun ContactsPickerSearchBar(
                 leadingIcon = {
                     SearchBarLeadingIcon(
                         expanded = expanded,
-                        onExpanded = onExpandedChange,
-                        onSearchQueryChanged = { query = it },
+                        onExitSearch = {
+                            query = ""
+                            onExitSearch()
+                        },
                     )
                 },
                 trailingIcon = {
@@ -114,25 +140,76 @@ fun ContactsPickerSearchBar(
         // BackHandler is used to close the search bar when the back button is pressed or back
         // gesture detected.
         BackHandler(enabled = expanded) {
-            onExpandedChange(false)
             query = ""
+            onExitSearch()
+        }
+
+        val uiStateValue = uiState.value
+        if (expanded && uiStateValue is SearchState.Success) {
+            SearchResultsList(
+                searchState = uiStateValue,
+                onToggleContactSelection = onToggleContactSelection,
+                onToggleEntrySelection = onToggleEntrySelection,
+            )
         }
     }
 }
 
 @Composable
-private fun SearchBarLeadingIcon(
-    expanded: Boolean,
-    onExpanded: (Boolean) -> Unit,
-    onSearchQueryChanged: (String) -> Unit,
+private fun SearchResultsList(
+    searchState: SearchState.Success,
+    onToggleContactSelection: (Contact) -> Unit,
+    onToggleEntrySelection: (Long, Long) -> Unit,
 ) {
-    if (expanded) {
-        IconButton(
-            onClick = {
-                onExpanded(false)
-                onSearchQueryChanged("")
+    val listState = rememberLazyListState()
+    LaunchedEffect(searchState.query) {
+        // Whenever the query changes, scroll to the top
+        listState.scrollToItem(0)
+    }
+    LazyColumn(modifier = Modifier.fillMaxWidth().imePadding(), state = listState) {
+        val searchResults = searchState.searchResults
+        itemsIndexed(
+            items = searchResults,
+            key = { index, contact ->
+                when (contact) {
+                    is EmailContact -> "search-email-${contact.emails.firstOrNull()?.id}"
+                    is PhoneContact -> "search-phone-${contact.phones.firstOrNull()?.id}"
+                    else -> "search-aggregate-${contact.id}"
+                }
+            },
+        ) { index, contact ->
+            val position =
+                when {
+                    searchResults.size == 1 -> ItemPosition.ONLY
+                    index == 0 -> ItemPosition.FIRST
+                    index == searchResults.size - 1 -> ItemPosition.LAST
+                    else -> ItemPosition.MIDDLE
+                }
+            val bottomPadding =
+                if (position == ItemPosition.LAST || position == ItemPosition.ONLY) 8.dp else 1.dp
+            val topPadding = if (position == ItemPosition.FIRST) 8.dp else 0.dp
+            Row(
+                modifier =
+                    Modifier.fillMaxWidth().padding(bottom = bottomPadding, top = topPadding),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                ContactItem(
+                    contact = contact,
+                    position = position,
+                    selectedEntries = searchState.selectedContacts[contact.id],
+                    isMultiSelectEnabled = false, // Not relevant in search state
+                    onToggleContactSelection = onToggleContactSelection,
+                    onToggleEntrySelection = onToggleEntrySelection,
+                )
             }
-        ) {
+        }
+    }
+}
+
+@Composable
+private fun SearchBarLeadingIcon(expanded: Boolean, onExitSearch: () -> Unit) {
+    if (expanded) {
+        IconButton(onClick = { onExitSearch() }) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription =

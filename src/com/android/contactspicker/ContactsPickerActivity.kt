@@ -175,6 +175,8 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
                     onToggleEntrySelection = contactsViewModel::toggleEntrySelection,
                     onClearSelection = contactsViewModel::clearSelection,
                     onDoneClicked = ::handleDoneClicked,
+                    onQueryChange = contactsViewModel::onSearchQueryChanged,
+                    onExitSearch = contactsViewModel::exitSearch,
                 )
             }
         }

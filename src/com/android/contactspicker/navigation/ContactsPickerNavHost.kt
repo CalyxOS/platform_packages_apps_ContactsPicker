@@ -34,6 +34,8 @@ fun ContactsPickerNavHost(
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (Long, Long) -> Unit,
     onExpandRequest: () -> Unit,
+    onQueryChange: (String) -> Unit,
+    onExitSearch: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -50,6 +52,8 @@ fun ContactsPickerNavHost(
                     navController.navigateToAndPopUpToStart(PrivacyDetailsRoute.route)
                 },
                 onExpandRequest = onExpandRequest,
+                onQueryChange = onQueryChange,
+                onExitSearch = onExitSearch,
             )
         }
 

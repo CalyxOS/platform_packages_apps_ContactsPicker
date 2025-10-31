@@ -78,6 +78,8 @@ fun ContactsPickerBottomSheet(
             skipHiddenState = false,
         ),
     onDoneClicked: () -> Unit,
+    onQueryChange: (String) -> Unit,
+    onExitSearch: () -> Unit,
 ) {
     val peekHeight = LocalConfiguration.current.screenHeightDp.dp * BOTTOM_SHEET_PEEK_HEIGHT_RATIO
     val navController = rememberNavController()
@@ -123,6 +125,8 @@ fun ContactsPickerBottomSheet(
                     onToggleEntrySelection = onToggleEntrySelection,
                     onExpandRequest = { scope.launch { bottomSheetState.expand() } },
                     modifier = Modifier.testTag(BOTTOM_SHEET_TEST_TAG),
+                    onQueryChange = onQueryChange,
+                    onExitSearch = onExitSearch,
                 )
             },
         ) { /* Empty content of the screen that appears behind the bottom sheet. */

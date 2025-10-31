@@ -38,6 +38,8 @@ import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.repository.ContactsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,6 +47,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 private const val TAG = "ContactsViewModel"
+internal const val SEARCH_DEBOUNCE_MS = 300L
 
 /**
  * ViewModel for the Contacts Picker screen.
@@ -62,6 +65,10 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
 
     private var initialContacts: List<Contact> = emptyList()
     private var isMultiSelectEnabled: Boolean = false
+    private var intentAction: String? = null
+    private var intentType: String? = null
+    private var callingAppName: String? = null
+    private var searchJob: Job? = null
 
     private var requestedMimeTypes: List<String> = emptyList()
 
@@ -231,6 +238,9 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
+                this@ContactsViewModel.intentAction = intentAction
+                this@ContactsViewModel.intentType = intentType
+                this@ContactsViewModel.callingAppName = callingAppName
                 initialContacts = contactsRepository.getContactsForIntent(intentAction, intentType)
                 isMultiSelectEnabled =
                     intentExtras?.getBoolean(Intent.EXTRA_ALLOW_MULTIPLE, false) ?: false
@@ -324,6 +334,94 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
             Log.e(TAG, "Error preparing selection result", e)
             _uiState.value = ContactsListState.Error("Error preparing result: ${e.message}")
             return emptyList()
+        }
+    }
+
+    /**
+     * Handles changes in the search query by updating the searchQuery flow.
+     *
+     * @param query The search query.
+     */
+    fun onSearchQueryChanged(query: String) {
+        searchJob?.cancel()
+
+        if (query.isBlank()) {
+            // If the user clears the search, go to empty search state
+            _uiState.update { currentState ->
+                val selectedContacts =
+                    when (currentState) {
+                        is ContactsListState.Success -> currentState.selectedContacts
+                        is SearchState.Success -> currentState.selectedContacts
+                        else -> longObjectMapOf()
+                    }
+                SearchState.Success(
+                    query = "",
+                    searchResults = emptyList(),
+                    selectedContacts = selectedContacts,
+                )
+            }
+            return
+        }
+
+        // Debounce for non-blank queries
+        searchJob =
+            viewModelScope.launch {
+                delay(SEARCH_DEBOUNCE_MS)
+                performSearch(query)
+            }
+    }
+
+    /** Executes the search against the repository and updates the UI state. */
+    private suspend fun performSearch(query: String) {
+        try {
+            val results = contactsRepository.searchContacts(query, intentAction, intentType)
+            _uiState.update { currentState ->
+                val selectedContacts =
+                    when (currentState) {
+                        is ContactsListState.Success -> currentState.selectedContacts
+                        is SearchState.Success -> currentState.selectedContacts
+                        else -> longObjectMapOf()
+                    }
+                SearchState.Success(
+                    query = query,
+                    searchResults = results,
+                    selectedContacts = selectedContacts,
+                )
+            }
+        } catch (e: IllegalArgumentException) {
+            Log.e(TAG, "An invalid intent was passed during search.", e)
+            _uiState.value = SearchState.Error(e.message ?: "Invalid intent for search.")
+        } catch (e: Exception) {
+            if (e is kotlinx.coroutines.CancellationException) {
+                return
+            }
+            Log.e(TAG, "An unexpected error occurred during search.", e)
+            _uiState.value = SearchState.Error("An unexpected error occurred during search.")
+        }
+    }
+
+    /**
+     * Reverts the UI state from SearchState back to ContactsListState.Success, preserving the
+     * current selection.
+     */
+    fun exitSearch() {
+        _uiState.update { currentState ->
+            if (currentState is SearchState) {
+                val selectedContacts =
+                    when (currentState) {
+                        is SearchState.Success -> currentState.selectedContacts
+                        else -> longObjectMapOf() // Should not happen if exiting from Success
+                    }
+                ContactsListState.Success(
+                    availableContacts = initialContacts,
+                    selectedContacts = selectedContacts,
+                    isMultiSelectEnabled = isMultiSelectEnabled,
+                    callingAppName = callingAppName,
+                    requestedMimeTypes = requestedMimeTypes,
+                )
+            } else {
+                currentState
+            }
         }
     }
 }

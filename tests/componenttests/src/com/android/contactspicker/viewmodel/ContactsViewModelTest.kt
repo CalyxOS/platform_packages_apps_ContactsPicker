@@ -25,8 +25,10 @@ import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Phone
+import androidx.collection.longObjectMapOf
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsUiState
+import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.fakes.FakeContactsRepository
 import com.android.contactspicker.testdata.ContactTestDataFactory
@@ -36,6 +38,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -437,6 +440,237 @@ class ContactsViewModelTest {
             ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, firstEntry.id)
 
         assertThat(uris).containsExactly(expectedUri)
+    }
+
+    @Test
+    fun onSearchQueryChanged_debouncesSearch() = runTest {
+        val searchQuery = "test"
+        val searchResult =
+            listOf(ContactTestDataFactory.createDisplayNameContact(10L, "Test Result 1"))
+
+        fakeRepository.setSearchResults(searchQuery, searchResult)
+        loadViewModelWithInitialContacts(emptyList())
+
+        val collectedStates = mutableListOf<ContactsUiState>()
+        val job = launch { viewModel.uiState.toList(collectedStates) }
+
+        viewModel.onSearchQueryChanged(searchQuery)
+        testDispatcher.scheduler.advanceTimeBy(SEARCH_DEBOUNCE_MS - 100)
+        // Repository search for searchQuery should not have been called yet
+        assertThat(fakeRepository.searchInvocationsCountForQuery(searchQuery)).isEqualTo(0)
+
+        testDispatcher.scheduler.advanceTimeBy(SEARCH_DEBOUNCE_MS)
+        // Repository search for searchQuery should have been called now
+        assertThat(fakeRepository.searchInvocationsCountForQuery(searchQuery)).isEqualTo(1)
+        assertThat(collectedStates.last())
+            .isEqualTo(SearchState.Success(searchQuery, searchResult, longObjectMapOf()))
+        job.cancel()
+    }
+
+    @Test
+    fun onSearchQueryChanged_searchError_setsErrorState() = runTest {
+        val searchQuery = "error"
+        val exception = RuntimeException("An unexpected error occurred during search.")
+        fakeRepository.setSearchException(searchQuery, exception)
+
+        loadViewModelWithInitialContacts(emptyList())
+
+        viewModel.onSearchQueryChanged(searchQuery)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val errorState = viewModel.uiState.value as SearchState.Error
+        assertThat(errorState.message).isEqualTo("An unexpected error occurred during search.")
+    }
+
+    @Test
+    fun onSearchQueryChanged_transitionsFromListSuccessToSearchSuccess() = runTest {
+        val searchQuery = "query"
+        val searchResults =
+            listOf(ContactTestDataFactory.createDisplayNameContact(10L, "Query Result"))
+        loadViewModelWithInitialContacts(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST)
+        fakeRepository.setSearchResults(searchQuery, searchResults)
+
+        // Collect states in a list
+        val collectedStates = mutableListOf<ContactsUiState>()
+        val collectJob = launch(testDispatcher) { viewModel.uiState.toList(collectedStates) }
+
+        // Trigger the search
+        viewModel.onSearchQueryChanged(searchQuery)
+        testDispatcher.scheduler.advanceUntilIdle() // Let the Loading state be set
+
+        // Advance past the debounce
+        testDispatcher.scheduler.advanceTimeBy(SEARCH_DEBOUNCE_MS)
+        testDispatcher.scheduler.advanceUntilIdle() // Let the search complete
+
+        collectJob.cancel()
+
+        // Assert the states
+        assertThat(collectedStates)
+            .containsExactly(
+                ContactsListState.Success(
+                    ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
+                    longObjectMapOf(),
+                    false,
+                    callingAppName = null,
+                    requestedMimeTypes = listOf(Phone.CONTENT_TYPE),
+                ), // Initial state after processIntent
+                SearchState.Success(
+                    searchQuery,
+                    searchResults,
+                    longObjectMapOf(),
+                ), // State after search completes
+            )
+            .inOrder()
+    }
+
+    @Test
+    fun onSearchQueryChanged_emptySearchResults_setsSuccessWithEmptyList() = runTest {
+        val searchQuery = "no_match"
+
+        fakeRepository.setSearchResults(searchQuery, emptyList())
+
+        loadViewModelWithInitialContacts(emptyList())
+
+        viewModel.onSearchQueryChanged(searchQuery)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(viewModel.uiState.value)
+            .isEqualTo(SearchState.Success(searchQuery, emptyList(), longObjectMapOf()))
+    }
+
+    @Test
+    fun onSearchQueryChanged_blankQuery_transitionsToEmptySearchState() = runTest {
+        loadViewModelWithInitialContacts(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST)
+
+        // Start with a non-blank search
+        viewModel.onSearchQueryChanged("test")
+        testDispatcher.scheduler.advanceUntilIdle()
+        assertThat(viewModel.uiState.value).isInstanceOf(SearchState.Success::class.java)
+
+        // Call with blank query
+        viewModel.onSearchQueryChanged("")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertThat(state).isInstanceOf(SearchState.Success::class.java)
+        val searchState = state as SearchState.Success
+        assertThat(searchState.query).isEmpty()
+        assertThat(searchState.searchResults).isEmpty()
+        assertThat(searchState.selectedContacts.isEmpty()).isTrue()
+    }
+
+    @Test
+    fun onSearchQueryChanged_nonBlankQuery_transitionsToSearchStateSuccess() = runTest {
+        val searchQuery = "query"
+        val searchResults =
+            listOf(ContactTestDataFactory.createDisplayNameContact(10L, "Query Result"))
+
+        loadViewModelWithInitialContacts(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST)
+
+        fakeRepository.setSearchResults(searchQuery, searchResults)
+
+        viewModel.onSearchQueryChanged(searchQuery)
+        testDispatcher.scheduler.advanceTimeBy(SEARCH_DEBOUNCE_MS)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(viewModel.uiState.value)
+            .isEqualTo(SearchState.Success(searchQuery, searchResults, longObjectMapOf()))
+    }
+
+    @Test
+    fun onSearchQueryChanged_selectionPreservedAcrossSearches() = runTest {
+        val query1 = "test"
+        val results1 = listOf(ContactTestDataFactory.createDisplayNameContact(1L, "Test Contact"))
+        val query2 = "another"
+        val results2 =
+            listOf(ContactTestDataFactory.createDisplayNameContact(2L, "Another Contact"))
+
+        fakeRepository.setSearchResults(query1, results1)
+        fakeRepository.setSearchResults(query2, results2)
+
+        loadViewModelWithInitialContacts(emptyList())
+
+        // First search and select
+        viewModel.onSearchQueryChanged(query1)
+        testDispatcher.scheduler.advanceTimeBy(SEARCH_DEBOUNCE_MS)
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.toggleContactSelection(results1[0])
+        val selection1 = (viewModel.uiState.value as SearchState.Success).selectedContacts
+        assertThat(selection1.containsKey(1L)).isTrue()
+
+        // Second search
+        viewModel.onSearchQueryChanged(query2)
+        testDispatcher.scheduler.advanceTimeBy(SEARCH_DEBOUNCE_MS)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state2 = viewModel.uiState.value as SearchState.Success
+        assertThat(state2.query).isEqualTo(query2)
+        assertThat(state2.searchResults).isEqualTo(results2)
+        // Selection should be preserved
+        assertThat(state2.selectedContacts).isEqualTo(selection1)
+        assertThat(state2.selectedContacts.containsKey(1L)).isTrue()
+    }
+
+    @Test
+    fun onSearchQueryChanged_preservesSelectionFromContactsListState() = runTest {
+        val initialContacts = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST
+        val contactToSelect = initialContacts[0]
+
+        loadViewModelWithInitialContacts(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST)
+
+        viewModel.toggleContactSelection(contactToSelect)
+        val initialSelection =
+            (viewModel.uiState.value as ContactsListState.Success).selectedContacts
+        assertThat(initialSelection.containsKey(contactToSelect.id)).isTrue()
+
+        // Perform a search
+        val searchQuery = "query"
+        val searchResults = listOf(initialContacts[1])
+        fakeRepository.setSearchResults(searchQuery, searchResults)
+        viewModel.onSearchQueryChanged(searchQuery)
+        testDispatcher.scheduler.advanceTimeBy(SEARCH_DEBOUNCE_MS)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Verify selection is still present in SearchState
+        val searchState = viewModel.uiState.value as SearchState.Success
+        assertThat(searchState.selectedContacts).isEqualTo(initialSelection)
+        assertThat(searchState.selectedContacts.containsKey(contactToSelect.id)).isTrue()
+    }
+
+    @Test
+    fun exitSearch_revertsToContactsListState_withSelectionPreserved() = runTest {
+        val initialContacts = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST
+        val searchQuery = "a"
+        val searchResults = listOf(initialContacts[0], initialContacts[1])
+        fakeRepository.setSearchResults(searchQuery, searchResults)
+
+        loadViewModelWithInitialContacts(initialContacts)
+
+        // Perform a search
+        viewModel.onSearchQueryChanged(searchQuery)
+        testDispatcher.scheduler.advanceUntilIdle()
+        assertThat(viewModel.uiState.value).isInstanceOf(SearchState.Success::class.java)
+
+        // Select an item in search results
+        val contactToSelect = searchResults[0]
+        viewModel.toggleContactSelection(contactToSelect)
+        val selectionAfterSearch = (viewModel.uiState.value as SearchState.Success).selectedContacts
+        assertThat(selectionAfterSearch.containsKey(contactToSelect.id)).isTrue()
+
+        // Exit search
+        viewModel.exitSearch()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Verify state reverted to ContactsListState.Success
+        assertThat(viewModel.uiState.value).isInstanceOf(ContactsListState.Success::class.java)
+        val finalListState = viewModel.uiState.value as ContactsListState.Success
+
+        // Verify contacts list is the initial list
+        assertThat(finalListState.availableContacts).isEqualTo(initialContacts)
+
+        // Verify selection is preserved
+        assertThat(finalListState.selectedContacts).isEqualTo(selectionAfterSearch)
+        assertThat(finalListState.selectedContacts.containsKey(contactToSelect.id)).isTrue()
     }
 
     /**
