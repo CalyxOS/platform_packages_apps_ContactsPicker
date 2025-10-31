@@ -68,16 +68,18 @@ private val POSSIBLE_INTENT_EXTRA_DATA_FIELDS =
         ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE,
     )
 
-// TODO(b/446667703) : Implement logic to dynamically fetch the name of the calling application.
 @Composable
 fun PrivacyDetailsBody(
     modifier: Modifier = Modifier,
-    appName: String = "Sample_App",
+    callingAppName: String?,
     requestedDataFields: List<String> = POSSIBLE_INTENT_EXTRA_DATA_FIELDS,
 ) {
     LazyColumn(modifier = modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 64.dp)) {
         item {
-            PrivacyDescription(appName, modifier = Modifier.padding(PADDING_PRIVACY_DESCRIPTION))
+            PrivacyDescription(
+                callingAppName ?: stringResource(R.string.default_calling_app_name),
+                modifier = Modifier.padding(PADDING_PRIVACY_DESCRIPTION),
+            )
         }
         item {
             ContactDataFieldsListHeader(

@@ -100,6 +100,7 @@ private fun ContactsListContent(
         is ContactsListState.Success -> {
             ContactsPickerBody(
                 contacts = uiState.availableContacts,
+                callingAppName = uiState.callingAppName,
                 selectedContacts = uiState.selectedContacts,
                 isMultiSelectEnabled = uiState.isMultiSelectEnabled,
                 onToggleContactSelection = onToggleContactSelection,

@@ -20,9 +20,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.android.contactspicker.ContactsListState
+import com.android.contactspicker.ContactsUiState
 
 // TODO(b/446118849) : Move constants to xml files
 private val TOPBAR_PADDING = PaddingValues(horizontal = 24.dp, vertical = 8.dp)
@@ -32,8 +35,10 @@ internal const val PRIVACY_DETAILS_SCREEN_TOP_BAR_TEST_TAG = "privacy_details_sc
 
 internal const val PRIVACY_DETAILS_SCREEN_BODY_TEST_TAG = "privacy_details_screen_body"
 
+// TODO(b/455591386) : Revisit Error handling in PrivacyDetailsScreen in ContactsPicker
 @Composable
-fun PrivacyDetailsScreen(onBackPressed: () -> Unit) {
+fun PrivacyDetailsScreen(onBackPressed: () -> Unit, uiState: State<ContactsUiState>) {
+    val callingAppName = (uiState.value as? ContactsListState.Success)?.callingAppName
     Column(modifier = Modifier.fillMaxSize()) {
         PrivacyDetailsTopBar(
             onBackPressed = onBackPressed,
@@ -44,7 +49,8 @@ fun PrivacyDetailsScreen(onBackPressed: () -> Unit) {
         PrivacyDetailsBody(
             modifier =
                 Modifier.padding(PRIVACY_DETAILS_BODY_PADDING)
-                    .testTag(PRIVACY_DETAILS_SCREEN_BODY_TEST_TAG)
+                    .testTag(PRIVACY_DETAILS_SCREEN_BODY_TEST_TAG),
+            callingAppName = callingAppName,
         )
     }
 }

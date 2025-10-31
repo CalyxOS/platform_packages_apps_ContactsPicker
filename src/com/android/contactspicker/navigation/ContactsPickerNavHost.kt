@@ -46,7 +46,7 @@ fun ContactsPickerNavHost(
                 uiState = uiState,
                 onToggleContactSelection = onToggleContactSelection,
                 onToggleEntrySelection = onToggleEntrySelection,
-                onMoreDetails = {
+                onPrivacyBannerMoreDetails = {
                     navController.navigateToAndPopUpToStart(PrivacyDetailsRoute.route)
                 },
                 onExpandRequest = onExpandRequest,
@@ -54,7 +54,10 @@ fun ContactsPickerNavHost(
         }
 
         composable(PrivacyDetailsRoute.route) {
-            PrivacyDetailsScreen(onBackPressed = { navController.popBackStack() })
+            PrivacyDetailsScreen(
+                onBackPressed = { navController.popBackStack() },
+                uiState = uiState,
+            )
         }
     }
 }

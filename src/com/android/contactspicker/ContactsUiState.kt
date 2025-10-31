@@ -41,6 +41,7 @@ sealed interface ContactsListState : ContactsUiState {
         val availableContacts: List<Contact>,
         val selectedContacts: LongObjectMap<Set<Long>>,
         val isMultiSelectEnabled: Boolean,
+        val callingAppName: String?,
     ) : ContactsListState
 
     /**

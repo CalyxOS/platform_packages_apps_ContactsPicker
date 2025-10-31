@@ -41,7 +41,7 @@ fun ContactsPickerScreen(
     uiState: State<ContactsUiState>,
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (Long, Long) -> Unit,
-    onMoreDetails: () -> Unit,
+    onPrivacyBannerMoreDetails: () -> Unit,
     onExpandRequest: () -> Unit,
 ) {
     var isSearchBarExpanded by rememberSaveable { mutableStateOf(false) }
@@ -65,7 +65,7 @@ fun ContactsPickerScreen(
         if (!isSearchBarExpanded) {
             ContactsPickerContent(
                 uiState = uiState,
-                onPrivacyBannerMoreDetails = onMoreDetails,
+                onPrivacyBannerMoreDetails = onPrivacyBannerMoreDetails,
                 onPrivacyBannerDismissRequest = {},
                 onToggleContactSelection = onToggleContactSelection,
                 onToggleEntrySelection = onToggleEntrySelection,

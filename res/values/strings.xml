@@ -87,4 +87,7 @@
     <string name="privacy_banner_more_details">"More Details"</string>
     <!-- Text for the "Dismiss" button on the privacy banner. -->
     <string name="privacy_banner_dismiss">"Dismiss"</string>
+
+    <!-- The default fallback name to use for the calling application. -->
+    <string name="default_calling_app_name">This app</string>
 </resources>

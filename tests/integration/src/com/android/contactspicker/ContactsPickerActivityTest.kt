@@ -131,9 +131,18 @@ class ContactsPickerActivityTest {
                 type = ContactsContract.Contacts.CONTENT_TYPE
             }
         val successState =
-            MutableStateFlow(ContactsListState.Success(emptyList(), longObjectMapOf(), false))
+            MutableStateFlow(
+                ContactsListState.Success(
+                    emptyList(),
+                    longObjectMapOf(),
+                    isMultiSelectEnabled = false,
+                    callingAppName = null,
+                )
+            )
         whenever(mockViewModel.uiState).thenReturn(successState)
-        doNothing().whenever(mockViewModel).processIntent(anyOrNull(), anyOrNull(), anyOrNull())
+        doNothing()
+            .whenever(mockViewModel)
+            .processIntent(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull())
     }
 
     @After
@@ -245,6 +254,7 @@ class ContactsPickerActivityTest {
                     availableContacts = listOf(testContact),
                     selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = false,
+                    callingAppName = null,
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successStateSingleSelect)
@@ -281,6 +291,7 @@ class ContactsPickerActivityTest {
                     availableContacts = listOf(testContact),
                     selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = true,
+                    callingAppName = null,
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successStateMultiSelect)
@@ -321,6 +332,7 @@ class ContactsPickerActivityTest {
                     availableContacts = listOf(testContact),
                     selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = false,
+                    callingAppName = null,
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successStateSingleSelect)
@@ -384,5 +396,69 @@ class ContactsPickerActivityTest {
 
         scenario.onActivity { activity -> assertThat(activity.isFinishing).isFalse() }
         assertThat(Intents.getIntents().filter { it.action == Intent.ACTION_CHOOSER }).isEmpty()
+    }
+
+    @Test
+    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
+    fun privacyBanner_showsAppName_andRetainsOnRotation() = runTest {
+        val testAppName = "Test App"
+        val successState =
+            MutableStateFlow(
+                ContactsListState.Success(
+                    availableContacts = emptyList(),
+                    selectedContacts = longObjectMapOf(),
+                    isMultiSelectEnabled = false,
+                    callingAppName = testAppName,
+                )
+            )
+        whenever(mockViewModel.uiState).thenReturn(successState)
+
+        val scenario = ActivityScenario.launch<ContactsPickerActivity>(baseIntent)
+
+        composeTestRule.awaitIdle()
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.privacy_banner_description, testAppName))
+            .assertIsDisplayed()
+
+        scenario.recreate()
+
+        composeTestRule.awaitIdle()
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.privacy_banner_description, testAppName))
+            .assertIsDisplayed()
+    }
+
+    @Test
+    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
+    fun privacyDetails_page_showsAppName_andRetainsOnRotation() = runTest {
+        val testAppName = "Test App"
+        val successState =
+            MutableStateFlow(
+                ContactsListState.Success(
+                    availableContacts = emptyList(),
+                    selectedContacts = longObjectMapOf(),
+                    isMultiSelectEnabled = false,
+                    callingAppName = testAppName,
+                )
+            )
+        whenever(mockViewModel.uiState).thenReturn(successState)
+
+        val scenario = ActivityScenario.launch<ContactsPickerActivity>(baseIntent)
+
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.privacy_banner_more_details))
+            .performClick()
+
+        composeTestRule.awaitIdle()
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.privacy_details_description, testAppName))
+            .assertIsDisplayed()
+
+        scenario.recreate()
+
+        composeTestRule.awaitIdle()
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.privacy_details_description, testAppName))
+            .assertIsDisplayed()
     }
 }

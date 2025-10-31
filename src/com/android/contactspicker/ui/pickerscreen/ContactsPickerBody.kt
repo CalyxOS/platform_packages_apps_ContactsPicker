@@ -55,6 +55,7 @@ const val CONTACTS_LIST_TEST_TAG = "contacts_list"
 @Composable
 fun ContactsPickerBody(
     contacts: List<Contact>,
+    callingAppName: String?,
     onPrivacyBannerMoreDetails: () -> Unit,
     onPrivacyBannerDismissRequest: () -> Unit,
     selectedContacts: LongObjectMap<Set<Long>>,
@@ -81,6 +82,7 @@ fun ContactsPickerBody(
     LazyColumn(modifier = Modifier.fillMaxWidth().testTag(CONTACTS_LIST_TEST_TAG)) {
         item(key = "privacy_banner") {
             PrivacyBanner(
+                callingAppName = callingAppName,
                 onMoreDetails = onPrivacyBannerMoreDetails,
                 onDismissRequest = onPrivacyBannerDismissRequest,
             )

@@ -62,6 +62,7 @@ class ContactsPickerBodyTest {
                 onPrivacyBannerDismissRequest = {},
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
+                callingAppName = null,
             )
         }
 
@@ -94,6 +95,7 @@ class ContactsPickerBodyTest {
                 onPrivacyBannerDismissRequest = {},
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
+                callingAppName = null,
             )
         }
         composeTestRule.onNode(hasTestTag(PRIVACY_BANNER_TEST_TAG)).assertIsDisplayed()
@@ -112,6 +114,7 @@ class ContactsPickerBodyTest {
                 onPrivacyBannerDismissRequest = {},
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
+                callingAppName = null,
             )
         }
 
@@ -144,6 +147,7 @@ class ContactsPickerBodyTest {
                 isMultiSelectEnabled = false,
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
+                callingAppName = null,
             )
         }
 
@@ -166,6 +170,7 @@ class ContactsPickerBodyTest {
                 isMultiSelectEnabled = false,
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
+                callingAppName = null,
             )
         }
 

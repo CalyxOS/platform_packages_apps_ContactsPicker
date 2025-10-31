@@ -76,6 +76,7 @@ class ContactsViewModelTest {
             intentAction = Intent.ACTION_PICK,
             intentType = Phone.CONTENT_TYPE,
             intentExtras = null,
+            callingAppName = null,
         )
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -105,6 +106,7 @@ class ContactsViewModelTest {
             intentAction = "INVALID_ACTION",
             intentType = null,
             intentExtras = null,
+            callingAppName = null,
         )
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -427,6 +429,7 @@ class ContactsViewModelTest {
             intentAction = Intent.ACTION_PICK,
             intentType = null,
             intentExtras = intentExtras,
+            callingAppName = null,
         )
         testDispatcher.scheduler.advanceUntilIdle()
     }

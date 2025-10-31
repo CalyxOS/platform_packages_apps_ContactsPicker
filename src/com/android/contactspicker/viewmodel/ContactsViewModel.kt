@@ -220,7 +220,12 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
      * trigger the ViewModel's logic, as it changes the [ContactsUiState].
      */
     @OpenForTesting
-    open fun processIntent(intentAction: String?, intentType: String?, intentExtras: Bundle?) {
+    open fun processIntent(
+        intentAction: String?,
+        intentType: String?,
+        intentExtras: Bundle?,
+        callingAppName: String?,
+    ) {
         viewModelScope.launch {
             try {
                 initialContacts = contactsRepository.getContactsForIntent(intentAction, intentType)
@@ -232,6 +237,7 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
                         availableContacts = initialContacts,
                         selectedContacts = longObjectMapOf(),
                         isMultiSelectEnabled = isMultiSelectEnabled,
+                        callingAppName = callingAppName,
                     )
             } catch (e: IllegalArgumentException) {
                 Log.e(TAG, "An invalid intent was passed.", e)
