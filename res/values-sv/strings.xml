@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * Copyright (C) 2025 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+  -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="contacts_picker_app_label" msgid="843637349782778381">"Kontaktväljare"</string>
+    <string name="contacts_picker_chooser_activity_title" msgid="2187765291094588596">"Kontaktväljare"</string>
+    <string name="contacts_picker_chooser_activity_no_app_can_handle_action" msgid="5179706900892295633">"Ingen app kan hantera den här åtgärden."</string>
+    <string name="contacts_picker_top_bar_search_placeholder_hint" msgid="327380354282823462">"Sök"</string>
+    <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"Sök"</string>
+    <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"Rensa söktexten"</string>
+    <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"Stäng sökrutan"</string>
+    <string name="profile_switcher_content_description" msgid="4180951376809274279">"Byt profil"</string>
+    <string name="privacy_info_content_description" msgid="1633879608858355544">"Integritetsinformation"</string>
+    <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"Utöka"</string>
+    <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Komprimera"</string>
+    <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefon"</string>
+    <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"E-post"</string>
+    <string name="contact_item_emails_count" msgid="4742575236201305612">"%d e-postmeddelanden"</string>
+    <string name="contact_item_phones_count" msgid="6713112060821558464">"%d telefonnummer"</string>
+    <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s har valts"</string>
+    <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Rensa val"</string>
+    <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"Förhandsgranska"</string>
+    <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"Klar"</string>
+    <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s får endast åtkomst till information från kontakterna du väljer"</string>
+    <string name="privacy_banner_more_details" msgid="1028945565826552764">"Mer information"</string>
+    <string name="privacy_banner_dismiss" msgid="3453400533805574139">"Stäng"</string>
+</resources>
