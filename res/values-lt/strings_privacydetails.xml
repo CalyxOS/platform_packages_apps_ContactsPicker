@@ -41,8 +41,10 @@
     <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"Svetainė"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"Slapyvardis"</string>
     <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"Slapyvardis"</string>
-    <string name="privacy_details_data_field_photo_header" msgid="6720480775683578976">"Nuotrauka"</string>
-    <string name="privacy_details_data_field_photo_content_description" msgid="4302768617428969630">"Nuotrauka"</string>
+    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
+    <skip />
+    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
+    <skip />
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Kontaktų grupė"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Kontaktų grupė"</string>
 </resources>
