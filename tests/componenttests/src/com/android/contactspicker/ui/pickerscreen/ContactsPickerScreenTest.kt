@@ -30,9 +30,9 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.contactspicker.ContactsUiState
+import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.R
-import com.android.contactspicker.data.model.DisplayNameContact
+import com.android.contactspicker.testdata.ContactTestDataFactory
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,15 +47,14 @@ class ContactsPickerScreenTest {
 
     private val context: Context = ApplicationProvider.getApplicationContext()
 
-    private val testContact =
-        DisplayNameContact(id = 1, displayName = "Jon Snow", lookupKey = "jon_snow_lookup")
+    private val testContact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
 
     @Test
     fun whenStateIsLoading_showsLoadingIndicator() {
 
         composeTestRule.setContent {
             ContactsPickerScreen(
-                uiState = mutableStateOf(ContactsUiState.Loading),
+                uiState = mutableStateOf(ContactsListState.Loading),
                 onMoreDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -73,7 +72,7 @@ class ContactsPickerScreenTest {
 
         composeTestRule.setContent {
             ContactsPickerScreen(
-                uiState = mutableStateOf(ContactsUiState.Error(errorMessage)),
+                uiState = mutableStateOf(ContactsListState.Error(errorMessage)),
                 onMoreDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -106,7 +105,7 @@ class ContactsPickerScreenTest {
 
         composeTestRule.setContent {
             ContactsPickerScreen(
-                uiState = mutableStateOf(ContactsUiState.Error(errorMessage)),
+                uiState = mutableStateOf(ContactsListState.Error(errorMessage)),
                 onMoreDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -124,7 +123,7 @@ class ContactsPickerScreenTest {
     fun whenStateIsLoading_showsSearchBox() {
         composeTestRule.setContent {
             ContactsPickerScreen(
-                uiState = mutableStateOf(ContactsUiState.Loading),
+                uiState = mutableStateOf(ContactsListState.Loading),
                 onMoreDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -165,7 +164,7 @@ class ContactsPickerScreenTest {
             ContactsPickerScreen(
                 uiState =
                     mutableStateOf(
-                        ContactsUiState.Success(
+                        ContactsListState.Success(
                             availableContacts = emptyList(),
                             selectedContacts = longObjectMapOf(),
                             isMultiSelectEnabled = false,
@@ -199,7 +198,7 @@ class ContactsPickerScreenTest {
             ContactsPickerScreen(
                 uiState =
                     mutableStateOf(
-                        ContactsUiState.Success(
+                        ContactsListState.Success(
                             availableContacts = listOf(testContact),
                             selectedContacts = longObjectMapOf(),
                             isMultiSelectEnabled = false,
@@ -230,7 +229,7 @@ class ContactsPickerScreenTest {
             ContactsPickerScreen(
                 uiState =
                     mutableStateOf(
-                        ContactsUiState.Success(
+                        ContactsListState.Success(
                             availableContacts = listOf(testContact),
                             selectedContacts = longObjectMapOf(),
                             isMultiSelectEnabled = false,

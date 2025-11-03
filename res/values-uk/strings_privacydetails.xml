@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * Copyright (C) 2025 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+  -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"Назад"</string>
+    <string name="privacy_details_top_bar_header" msgid="316976841297378409">"Докладніше"</string>
+    <string name="privacy_details_description" msgid="4299567306628059441">"Якщо ви виберете контакт, %1$s матиме доступ до наведеної нижче інформації з контактів на вашому пристрої.\n\nЯкщо ви оновите контактну інформацію, %1$s не матиме доступу до цих змін."</string>
+    <string name="privacy_details_contact_data_fields_list_header" msgid="6278952758241087272">"Контактна інформація може містити такі дані:"</string>
+    <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Ім’я"</string>
+    <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"Ім’я"</string>
+    <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Номери телефонів"</string>
+    <string name="privacy_details_data_field_phone_content_description" msgid="7843235752923563779">"Номери телефонів"</string>
+    <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"Електронні адреси"</string>
+    <string name="privacy_details_data_field_email_content_description" msgid="5002819855544687265">"Електронні адреси"</string>
+    <string name="privacy_details_data_field_address_header" msgid="8063949263754924922">"Адреси"</string>
+    <string name="privacy_details_data_field_address_content_description" msgid="2723907988123079718">"Адреси"</string>
+    <string name="privacy_details_data_field_organization_header" msgid="5452268926445159613">"Компанія"</string>
+    <string name="privacy_details_data_field_organization_content_description" msgid="2435135718533739414">"Компанія"</string>
+    <string name="privacy_details_data_field_related_people_header" msgid="3252437046458903319">"Пов’язані люди"</string>
+    <string name="privacy_details_data_field_related_people_content_description" msgid="8100743003973095458">"Пов’язані люди"</string>
+    <string name="privacy_details_data_field_birthday_header" msgid="2191861462895006673">"Дата народження"</string>
+    <string name="privacy_details_data_field_birthday_content_description" msgid="2538948189452868325">"Дата народження"</string>
+    <string name="privacy_details_data_field_website_header" msgid="5699958653736095218">"Вебсайт"</string>
+    <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"Вебсайт"</string>
+    <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"Псевдонім"</string>
+    <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"Псевдонім"</string>
+    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
+    <skip />
+    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
+    <skip />
+    <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Група контактів"</string>
+    <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Група контактів"</string>
+</resources>

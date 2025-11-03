@@ -36,12 +36,19 @@
     <!--Content description for the back arrow icon button in the expanded search bar. Tapping it
         closes the search field. [CHAR LIMIT=NONE] -->
     <string name="contacts_picker_top_bar_search_arrow_back_content_description">Close search</string>
+    <!-- The title of the "Favorites" section in the contacts list. -->
+    <string name="contacts_picker_favorites_header">Favorites</string>
     <!--Content description for the profile switcher icon button in the top bar. Tapping it
         expands the profile switcher. [CHAR LIMIT=NONE] -->
     <string name="profile_switcher_content_description">Switch profile</string>
     <!--Content description for the privacy icon button in the top bar. Tapping it opens the privacy
         information banner. [CHAR LIMIT=NONE] -->
     <string name="privacy_info_content_description">Privacy information</string>
+    <!-- Content description for the avatar profile picture of the contact. [CHAR LIMIT=NONE] -->
+    <string name="contact_avatar_profile_picture_content_description">Contact profile picture</string>
+    <!-- Content description for the avatar initial of the contact when profile picture does not
+        exist. [CHAR LIMIT=NONE] -->
+    <string name="contact_avatar_initial_content_description">Contact initial</string>
     <!-- Content description for the drop down button to expand contacts with multiple email
         addresses or phone numbers. [CHAR LIMIT=NONE] -->
     <string name="contact_item_expand_button_content_description">Expand</string>

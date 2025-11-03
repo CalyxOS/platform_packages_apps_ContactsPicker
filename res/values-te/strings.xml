@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * Copyright (C) 2025 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+  -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="contacts_picker_app_label" msgid="843637349782778381">"కాంటాక్ట్‌ల సెలెక్టర్"</string>
+    <string name="contacts_picker_chooser_activity_title" msgid="2187765291094588596">"కాంటాక్ట్‌ల సెలెక్టర్"</string>
+    <string name="contacts_picker_chooser_activity_no_app_can_handle_action" msgid="5179706900892295633">"ఈ చర్యను ఏ అప్లికేషన్ హ్యాండిల్ చేయలేదు."</string>
+    <string name="contacts_picker_top_bar_search_placeholder_hint" msgid="327380354282823462">"సెర్చ్ చేయండి"</string>
+    <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"సెర్చ్ చేయండి"</string>
+    <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"సెర్చ్ టెక్స్ట్‌ను క్లియర్ చేయండి"</string>
+    <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"సెర్చ్‌ను మూసివేయండి"</string>
+    <string name="profile_switcher_content_description" msgid="4180951376809274279">"ప్రొఫైల్‌ను మార్చండి"</string>
+    <string name="privacy_info_content_description" msgid="1633879608858355544">"గోప్యతా సమాచారం"</string>
+    <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"విస్తరించండి"</string>
+    <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"కుదించండి"</string>
+    <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ఫోన్"</string>
+    <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"ఈమెయిల్"</string>
+    <string name="contact_item_emails_count" msgid="4742575236201305612">"%d ఈమెయిల్స్"</string>
+    <string name="contact_item_phones_count" msgid="6713112060821558464">"%d ఫోన్ నంబర్‌లు"</string>
+    <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s‌ను ఎంచుకున్నారు"</string>
+    <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"ఎంపికను క్లియర్ చేయండి"</string>
+    <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"ప్రివ్యూ"</string>
+    <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"పూర్తయింది"</string>
+    <string name="privacy_banner_description" msgid="8397685763338639247">"మీరు ఎంచుకున్న కాంటాక్ట్‌లకు సంబంధించిన సమాచారానికి %1$s‌కు మాత్రమే యాక్సెస్ ఉంటుంది"</string>
+    <string name="privacy_banner_more_details" msgid="1028945565826552764">"మరిన్ని వివరాలు"</string>
+    <string name="privacy_banner_dismiss" msgid="3453400533805574139">"విస్మరించండి"</string>
+</resources>

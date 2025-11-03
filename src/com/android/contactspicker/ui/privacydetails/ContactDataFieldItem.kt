@@ -23,4 +23,5 @@ data class ContactDataFieldItem(
     val icon: IconResource,
     @get:StringRes val headerTextResId: Int,
     @get:StringRes val contentDescriptionResId: Int,
+    @get:StringRes val descriptionTextResId: Int? = null,
 )

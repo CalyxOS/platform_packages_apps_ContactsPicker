@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/**
+ * Copyright (C) 2025 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+  -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"ថយក្រោយ"</string>
+    <string name="privacy_details_top_bar_header" msgid="316976841297378409">"ព័ត៌មាន​លម្អិត​បន្ថែម"</string>
+    <string name="privacy_details_description" msgid="4299567306628059441">"នៅពេលអ្នក​ជ្រើសរើស​ទំនាក់ទំនង %1$s នឹងមាន​សិទ្ធិចូលប្រើ​ព័ត៌មាន​ខាងក្រោមពី​ទំនាក់ទំនង​នៅក្នុង​ឧបករណ៍​របស់អ្នក។\n\nប្រសិនបើអ្នក​ធ្វើការផ្លាស់ប្ដូរ​ចំពោះ​ព័ត៌មាន​ទំនាក់ទំនង %1$s នឹង​មិនមាន​សិទ្ធិ​មើលឃើញ​ការផ្លាស់ប្ដូរ​ទាំងនោះទេ។"</string>
+    <string name="privacy_details_contact_data_fields_list_header" msgid="6278952758241087272">"ព័ត៌មាន​ទំនាក់ទំនង​អាច​រួមបញ្ចូល៖"</string>
+    <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"ឈ្មោះ"</string>
+    <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"ឈ្មោះ"</string>
+    <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"លេខទូរសព្ទ"</string>
+    <string name="privacy_details_data_field_phone_content_description" msgid="7843235752923563779">"លេខទូរសព្ទ"</string>
+    <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"អាសយដ្ឋាន​អ៊ីមែល"</string>
+    <string name="privacy_details_data_field_email_content_description" msgid="5002819855544687265">"អាសយដ្ឋាន​អ៊ីមែល"</string>
+    <string name="privacy_details_data_field_address_header" msgid="8063949263754924922">"អាសយដ្ឋាន"</string>
+    <string name="privacy_details_data_field_address_content_description" msgid="2723907988123079718">"អាសយដ្ឋាន"</string>
+    <string name="privacy_details_data_field_organization_header" msgid="5452268926445159613">"ក្រុមហ៊ុន"</string>
+    <string name="privacy_details_data_field_organization_content_description" msgid="2435135718533739414">"ក្រុមហ៊ុន"</string>
+    <string name="privacy_details_data_field_related_people_header" msgid="3252437046458903319">"មនុស្ស​ដែលពាក់ព័ន្ធ"</string>
+    <string name="privacy_details_data_field_related_people_content_description" msgid="8100743003973095458">"មនុស្ស​ដែលពាក់ព័ន្ធ"</string>
+    <string name="privacy_details_data_field_birthday_header" msgid="2191861462895006673">"ថ្ងៃកំណើត"</string>
+    <string name="privacy_details_data_field_birthday_content_description" msgid="2538948189452868325">"ថ្ងៃកំណើត"</string>
+    <string name="privacy_details_data_field_website_header" msgid="5699958653736095218">"គេហទំព័រ"</string>
+    <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"គេហទំព័រ"</string>
+    <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"ឈ្មោះ​ហៅ​ក្រៅ"</string>
+    <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"ឈ្មោះ​ហៅ​ក្រៅ"</string>
+    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
+    <skip />
+    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
+    <skip />
+    <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"ក្រុម​ទំនាក់ទំនង"</string>
+    <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"ក្រុម​ទំនាក់ទំនង"</string>
+</resources>

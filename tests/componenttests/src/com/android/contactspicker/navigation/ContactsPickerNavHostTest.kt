@@ -33,6 +33,7 @@ import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
 import com.android.contactspicker.ui.pickerscreen.CONTACTS_PICKER_SCREEN_TEST_TAG
@@ -67,7 +68,13 @@ class ContactsPickerNavHostTest {
     @Test
     fun fromContactsPickerScreen_clickingMoreDetails_navigatesToPrivacyScreen() {
         setupNavHostInitialState(
-            mutableStateOf(ContactsUiState.Success(emptyList(), longObjectMapOf(), false))
+            mutableStateOf(
+                ContactsListState.Success(
+                    availableContacts = emptyList(),
+                    selectedContacts = longObjectMapOf(),
+                    isMultiSelectEnabled = false,
+                )
+            )
         )
         val moreDetailsButton =
             composeTestRule.onNodeWithText(context.getString(R.string.privacy_banner_more_details))
@@ -79,7 +86,13 @@ class ContactsPickerNavHostTest {
     @Test
     fun fromPrivacyScreen_clickingBack_navigatesToContactsPickerScreen() {
         setupNavHostInitialState(
-            mutableStateOf(ContactsUiState.Success(emptyList(), longObjectMapOf(), false))
+            mutableStateOf(
+                ContactsListState.Success(
+                    availableContacts = emptyList(),
+                    selectedContacts = longObjectMapOf(),
+                    isMultiSelectEnabled = false,
+                )
+            )
         )
         // Navigate to the privacy details screen
         composeTestRule
@@ -98,7 +111,7 @@ class ContactsPickerNavHostTest {
     }
 
     private fun setupNavHostInitialState(
-        initialUiState: State<ContactsUiState> = mutableStateOf(ContactsUiState.Loading)
+        initialUiState: State<ContactsUiState> = mutableStateOf(ContactsListState.Loading)
     ) {
         composeTestRule.setContent {
             ContactsPickerAppTheme {

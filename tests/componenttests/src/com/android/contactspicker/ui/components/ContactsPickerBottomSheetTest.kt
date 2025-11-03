@@ -39,9 +39,10 @@ import androidx.compose.ui.test.swipeUp
 import androidx.compose.ui.unit.height
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
-import com.android.contactspicker.data.model.DisplayNameContact
+import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
@@ -61,15 +62,10 @@ class ContactsPickerBottomSheetTest {
 
     private var selectedContacts by mutableStateOf<LongObjectMap<Set<Long>>>(longObjectMapOf())
 
-    private val testContact =
-        DisplayNameContact(
-            id = 1,
-            displayName = "Contacty Contact",
-            lookupKey = "contacty_contact_lookup",
-        )
+    private val testContact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
     private val testSuccessState =
-        ContactsUiState.Success(
-            availableContacts = listOf(testContact),
+        ContactsListState.Success(
+            listOf(testContact),
             selectedContacts = selectedContacts,
             isMultiSelectEnabled = false,
         )
@@ -156,7 +152,7 @@ class ContactsPickerBottomSheetTest {
                     onDismissRequest = {},
                     uiState =
                         mutableStateOf(
-                            ContactsUiState.Success(
+                            ContactsListState.Success(
                                 availableContacts = listOf(testContact),
                                 selectedContacts = selectedContacts,
                                 isMultiSelectEnabled = false,
@@ -195,7 +191,7 @@ class ContactsPickerBottomSheetTest {
                     onDismissRequest = {},
                     uiState =
                         mutableStateOf(
-                            ContactsUiState.Success(
+                            ContactsListState.Success(
                                 availableContacts = listOf(testContact),
                                 selectedContacts = selectedContacts,
                                 isMultiSelectEnabled = false,
@@ -226,7 +222,7 @@ class ContactsPickerBottomSheetTest {
 
     private fun setupBottomSheet(
         onDismissRequest: () -> Unit = {},
-        uiState: ContactsUiState = ContactsUiState.Loading,
+        uiState: ContactsUiState = ContactsListState.Loading,
     ) {
         composeTestRule.setContent {
             ContactsPickerAppTheme {

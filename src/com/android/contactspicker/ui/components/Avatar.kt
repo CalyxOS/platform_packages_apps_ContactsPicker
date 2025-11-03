@@ -15,8 +15,10 @@
  */
 package com.android.contactspicker.ui.components
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -25,10 +27,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.android.contactspicker.R
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 
 const val AVATAR_TEST_TAG = "contact_avatar"
 
@@ -36,24 +45,45 @@ const val AVATAR_TEST_TAG = "contact_avatar"
  * A composable that displays a circular avatar with the first initial of a display name.
  *
  * @param displayName The display name to use for the avatar's initial.
+ * @param profilePictureUri The string URI for the contact's profile picture thumbnail.
  */
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun Avatar(displayName: String) {
-    // TODO(b/441479489): implement avatar logic
-    val initial = displayName.firstOrNull()?.uppercase() ?: ""
+fun Avatar(displayName: String, profilePictureUri: String?) {
     Box(
         modifier =
             Modifier.size(40.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                .clip(CircleShape) // Clip the whole container
                 .testTag(AVATAR_TEST_TAG),
         contentAlignment = Alignment.Center,
     ) {
-        Text(
-            text = initial,
-            color = MaterialTheme.colorScheme.onPrimaryContainer,
-            fontSize = 18.sp,
-            textAlign = TextAlign.Center,
-        )
+        if (!profilePictureUri.isNullOrBlank()) {
+            GlideImage(
+                model = Uri.parse(profilePictureUri),
+                contentDescription =
+                    stringResource(R.string.contact_avatar_profile_picture_content_description),
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+            )
+        } else {
+            // Fallback to initials
+            val initialContentDescription =
+                stringResource(R.string.contact_avatar_initial_content_description)
+            Box(
+                modifier =
+                    Modifier.fillMaxSize()
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .semantics { contentDescription = initialContentDescription },
+                contentAlignment = Alignment.Center,
+            ) {
+                val initial = displayName.firstOrNull()?.uppercase() ?: ""
+                Text(
+                    text = initial,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
     }
 }

@@ -17,8 +17,12 @@
 package com.android.contactspicker
 
 import android.app.Activity
+import android.app.ApplicationPackageManager
+import android.app.Instrumentation
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.flags.Flags
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
@@ -41,6 +45,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.contactspicker.data.model.DisplayNameContact
@@ -64,6 +69,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doNothing
 import org.mockito.kotlin.doReturn
@@ -83,7 +89,7 @@ class ContactsPickerActivityTest {
     private val context: Context = ApplicationProvider.getApplicationContext()
     private lateinit var baseIntent: Intent
 
-    @BindValue @JvmField val mockPackageManager: PackageManager = mock()
+    @BindValue @JvmField val mockPackageManager: ApplicationPackageManager = mock()
 
     @BindValue @JvmField val mockCallingPackageProvider: CallingPackageProvider = mock()
 
@@ -94,7 +100,13 @@ class ContactsPickerActivityTest {
     private val testUri = Uri.parse("content://contacts/1")
     private val testUri2 = Uri.parse("content://data/10")
     private val testContact =
-        DisplayNameContact(id = 1, displayName = "Test", lookupKey = "test_lookup")
+        DisplayNameContact(
+            id = 1,
+            displayName = "Test",
+            isFavorite = false,
+            profilePictureUri = null,
+            lookupKey = "test_lookup",
+        )
 
     @Before
     fun setUp() {
@@ -102,6 +114,8 @@ class ContactsPickerActivityTest {
         hiltRule.inject()
 
         testPackageName = context.packageName
+        // TODO(b/456756675): remove grantRuntimePermission once the pregrant permission issue is
+        // solved.
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         instrumentation.targetContext.packageName
         instrumentation.uiAutomation.grantRuntimePermission(
@@ -117,9 +131,7 @@ class ContactsPickerActivityTest {
                 type = ContactsContract.Contacts.CONTENT_TYPE
             }
         val successState =
-            MutableStateFlow<ContactsUiState>(
-                ContactsUiState.Success(emptyList(), longObjectMapOf(), false)
-            )
+            MutableStateFlow(ContactsListState.Success(emptyList(), longObjectMapOf(), false))
         whenever(mockViewModel.uiState).thenReturn(successState)
         doNothing().whenever(mockViewModel).processIntent(anyOrNull(), anyOrNull(), anyOrNull())
     }
@@ -187,6 +199,7 @@ class ContactsPickerActivityTest {
     fun lowTargetSdk_forwardsToChooser() {
         val appInfo = ApplicationInfo().apply { targetSdkVersion = 36 }
         whenever(mockPackageManager.getApplicationInfo(testPackageName, 0)).doReturn(appInfo)
+        whenever(mockPackageManager.getPreferredActivities(any(), any(), any())).thenAnswer { 0 }
 
         val scenario = ActivityScenario.launch<ContactsPickerActivity>(baseIntent)
 
@@ -224,10 +237,11 @@ class ContactsPickerActivityTest {
     }
 
     @Test
+    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
     fun handleDoneClicked_withSingleSelection_setsResultOkAndFinishes() = runTest {
         val successStateSingleSelect =
-            MutableStateFlow<ContactsUiState>(
-                ContactsUiState.Success(
+            MutableStateFlow(
+                ContactsListState.Success(
                     availableContacts = listOf(testContact),
                     selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = false,
@@ -259,10 +273,11 @@ class ContactsPickerActivityTest {
     }
 
     @Test
+    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
     fun handleDoneClicked_withMultiSelection_setsResultOkWithClipData() {
         val successStateMultiSelect =
-            MutableStateFlow<ContactsUiState>(
-                ContactsUiState.Success(
+            MutableStateFlow(
+                ContactsListState.Success(
                     availableContacts = listOf(testContact),
                     selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = true,
@@ -298,10 +313,11 @@ class ContactsPickerActivityTest {
     }
 
     @Test
+    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
     fun handleDoneClicked_withNoSelection_setsResultCanceled() {
         val successStateSingleSelect =
-            MutableStateFlow<ContactsUiState>(
-                ContactsUiState.Success(
+            MutableStateFlow(
+                ContactsListState.Success(
                     availableContacts = listOf(testContact),
                     selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = false,
@@ -321,5 +337,52 @@ class ContactsPickerActivityTest {
                 assertThat(activity.isFinishing).isTrue()
             }
         }
+    }
+
+    @Test
+    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
+    fun lowTargetSdk_withPreferredActivity_startsPreferredActivity() {
+        val appInfo = ApplicationInfo().apply { targetSdkVersion = 36 }
+        whenever(mockPackageManager.getApplicationInfo(testPackageName, 0)).doReturn(appInfo)
+        val preferredComponent =
+            ComponentName("com.preferred.app", "com.preferred.app.PickerActivity")
+        Intents.intending(hasComponent(preferredComponent))
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        whenever(mockPackageManager.getPreferredActivities(any(), any(), anyOrNull())).thenAnswer {
+            val filters = it.getArgument<MutableList<IntentFilter>>(0)
+            val activities = it.getArgument<MutableList<ComponentName>>(1)
+            val filter = IntentFilter(Intent.ACTION_PICK)
+            filter.addCategory(Intent.CATEGORY_DEFAULT)
+            filter.addDataType(ContactsContract.Contacts.CONTENT_TYPE)
+            filters.add(filter)
+            activities.add(preferredComponent)
+            1
+        }
+
+        val scenario = ActivityScenario.launch<ContactsPickerActivity>(baseIntent)
+
+        Intents.intended(hasComponent(preferredComponent))
+        assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
+    }
+
+    @Test
+    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
+    fun extraUseSystemContactsPickerAndLowSdk_handlesInternally() {
+        val appInfo = ApplicationInfo().apply { targetSdkVersion = 36 }
+        whenever(mockPackageManager.getApplicationInfo(testPackageName, 0)).doReturn(appInfo)
+        whenever(mockPackageManager.getPreferredActivities(any(), any(), any())).thenAnswer { 0 }
+
+        val intentWithExtra =
+            Intent(baseIntent).apply { putExtra(Intent.EXTRA_USE_SYSTEM_CONTACTS_PICKER, true) }
+        val scenario = ActivityScenario.launch<ContactsPickerActivity>(intentWithExtra)
+
+        composeTestRule
+            .onNodeWithText(
+                context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
+            )
+            .assertIsDisplayed()
+
+        scenario.onActivity { activity -> assertThat(activity.isFinishing).isFalse() }
+        assertThat(Intents.getIntents().filter { it.action == Intent.ACTION_CHOOSER }).isEmpty()
     }
 }

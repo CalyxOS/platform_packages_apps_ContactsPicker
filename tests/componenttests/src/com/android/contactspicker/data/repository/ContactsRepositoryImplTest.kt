@@ -131,6 +131,8 @@ class ContactsRepositoryImplTest(
                                 arrayOf(
                                     Email.CONTACT_ID,
                                     Email.DISPLAY_NAME_PRIMARY,
+                                    Email.STARRED,
+                                    Email.PHOTO_THUMBNAIL_URI,
                                     Email.ADDRESS,
                                     Email._ID,
                                     Email.TYPE,
@@ -146,6 +148,8 @@ class ContactsRepositoryImplTest(
                                 arrayOf(
                                     Phone.CONTACT_ID,
                                     Phone.DISPLAY_NAME_PRIMARY,
+                                    Phone.STARRED,
+                                    Phone.PHOTO_THUMBNAIL_URI,
                                     Phone.NUMBER,
                                     Phone._ID,
                                     Phone.TYPE,
@@ -161,6 +165,8 @@ class ContactsRepositoryImplTest(
                                 arrayOf(
                                     Contacts._ID,
                                     Contacts.DISPLAY_NAME_PRIMARY,
+                                    Contacts.STARRED,
+                                    Contacts.PHOTO_THUMBNAIL_URI,
                                     Contacts.LOOKUP_KEY,
                                 )
                             ),
@@ -175,6 +181,8 @@ class ContactsRepositoryImplTest(
                         arrayOf<Any?>(
                             1L,
                             "Test Contact",
+                            0,
+                            null,
                             "test@example.com",
                             101L,
                             Email.TYPE_HOME,
@@ -184,11 +192,20 @@ class ContactsRepositoryImplTest(
                 Phone.CONTENT_TYPE,
                 Phone.CONTENT_ITEM_TYPE ->
                     cursor.addRow(
-                        arrayOf<Any?>(1L, "Test Contact", "555-0123", 101L, Phone.TYPE_HOME, null)
+                        arrayOf<Any?>(
+                            1L,
+                            "Test Contact",
+                            0,
+                            null,
+                            "555-0123",
+                            101L,
+                            Phone.TYPE_HOME,
+                            null,
+                        )
                     )
                 Contacts.CONTENT_TYPE,
                 Contacts.CONTENT_ITEM_TYPE ->
-                    cursor.addRow(arrayOf<Any>(1L, "Test Contact", "contact_lookup_key"))
+                    cursor.addRow(arrayOf<Any?>(1L, "Test Contact", 0, null, "contact_lookup_key"))
             }
 
             fakeContentProvider.setCursorForUri(uriToExpect, cursor)
@@ -208,6 +225,8 @@ class ContactsRepositoryImplTest(
                     arrayOf(
                         Phone.CONTACT_ID,
                         Phone.DISPLAY_NAME_PRIMARY,
+                        Phone.STARRED,
+                        Phone.PHOTO_THUMBNAIL_URI,
                         Phone.NUMBER,
                         Phone._ID,
                         Phone.TYPE,
@@ -215,10 +234,10 @@ class ContactsRepositoryImplTest(
                     )
                 )
             cursor.addRow(
-                arrayOf<Any?>(1L, "Test Contact", "555-0123", 101L, Phone.TYPE_HOME, null)
+                arrayOf<Any?>(1L, "Test Contact", 0, null, "555-0123", 101L, Phone.TYPE_HOME, null)
             )
             cursor.addRow(
-                arrayOf<Any?>(1L, "Test Contact2", "555-0124", 102L, Phone.TYPE_WORK, null)
+                arrayOf<Any?>(1L, "Test Contact2", 0, null, "555-0124", 102L, Phone.TYPE_WORK, null)
             )
 
             fakeContentProvider.setCursorForUri(Phone.CONTENT_URI, cursor)
@@ -232,6 +251,49 @@ class ContactsRepositoryImplTest(
             assertThat(phoneContact.phones[0].label).isEqualTo("Home")
             assertThat(phoneContact.phones[1].number).isEqualTo("555-0124")
             assertThat(phoneContact.phones[1].label).isEqualTo("Work")
+        }
+    }
+
+    @Test
+    fun getContactsForIntent_passesUriValueCorrectly() = runTest {
+        if (intentType == Phone.CONTENT_TYPE) {
+            val cursor =
+                MatrixCursor(
+                    arrayOf(
+                        Phone.CONTACT_ID,
+                        Phone.DISPLAY_NAME_PRIMARY,
+                        Phone.PHOTO_THUMBNAIL_URI,
+                        Phone.STARRED,
+                        Phone.NUMBER,
+                        Phone._ID,
+                        Phone.TYPE,
+                        Phone.LABEL,
+                    )
+                )
+            val fakeUri = "content://fake/uri/123"
+            cursor.addRow(
+                arrayOf<Any?>(1L, "Test Contact", null, 0, "555-0123", 101L, Phone.TYPE_HOME, null)
+            )
+            cursor.addRow(
+                arrayOf<Any?>(
+                    2L,
+                    "Test Contact2",
+                    fakeUri,
+                    0,
+                    "555-0124",
+                    102L,
+                    Phone.TYPE_WORK,
+                    null,
+                )
+            )
+
+            fakeContentProvider.setCursorForUri(Phone.CONTENT_URI, cursor)
+
+            val contacts = repository.getContactsForIntent(intentAction, intentType)
+
+            assertThat(contacts).hasSize(2)
+            assertThat((contacts[0] as PhoneContact).profilePictureUri).isNull()
+            assertThat((contacts[1] as PhoneContact).profilePictureUri).isEqualTo(fakeUri)
         }
     }
 }

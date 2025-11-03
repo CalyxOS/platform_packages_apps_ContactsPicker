@@ -16,20 +16,25 @@
 
 package com.android.contactspicker.ui.pickerscreen
 
+import android.content.Context
 import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.collection.longObjectMapOf
+import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasAnyDescendant
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToIndex
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.contactspicker.data.model.DisplayNameContact
+import com.android.contactspicker.R
+import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.ui.components.AVATAR_TEST_TAG
 import org.junit.Rule
 import org.junit.Test
@@ -42,14 +47,11 @@ class ContactsPickerBodyTest {
     @get:Rule val composeTestRule = createComposeRule()
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
+    private val context: Context = ApplicationProvider.getApplicationContext()
+
     @Test
     fun contactsList_displaysHeadersAndContacts() {
-        val contacts =
-            listOf(
-                DisplayNameContact(id = 1L, displayName = "Alpha", lookupKey = "alpha_lookup"),
-                DisplayNameContact(id = 3L, displayName = "Beta", lookupKey = "beta_lookup"),
-                DisplayNameContact(id = 2L, displayName = "Gamma", lookupKey = "gamma_lookup"),
-            )
+        val contacts = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST
 
         composeTestRule.setContent {
             ContactsPickerBody(
@@ -63,52 +65,29 @@ class ContactsPickerBodyTest {
             )
         }
 
-        composeTestRule
-            .onNode(hasTestTag(CONTACTS_LIST_SECTION_HEADER_TEST_TAG) and hasText("A"))
-            .assertIsDisplayed()
-        composeTestRule
-            .onNode(hasTestTag(CONTACTS_LIST_SECTION_HEADER_TEST_TAG) and hasText("B"))
-            .assertIsDisplayed()
-        composeTestRule
-            .onNode(hasTestTag(CONTACTS_LIST_SECTION_HEADER_TEST_TAG) and hasText("G"))
-            .assertIsDisplayed()
+        contacts.forEach { contact ->
+            val displayName = contact.displayName
+            val initial = displayName.first().toString()
+            composeTestRule
+                .onNode(hasTestTag(CONTACTS_LIST_SECTION_HEADER_TEST_TAG) and hasText(initial))
+                .assertIsDisplayed()
 
-        composeTestRule.onNodeWithText("Alpha").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Beta").assertIsDisplayed()
-        composeTestRule.onNodeWithText("Gamma").assertIsDisplayed()
+            composeTestRule.onNodeWithText(displayName).assertIsDisplayed()
 
-        composeTestRule
-            .onNode(
-                hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("A")),
-                useUnmergedTree = true,
-            )
-            .assertIsDisplayed()
-        composeTestRule
-            .onNode(
-                hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("B")),
-                useUnmergedTree = true,
-            )
-            .assertIsDisplayed()
-        composeTestRule
-            .onNode(
-                hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText("G")),
-                useUnmergedTree = true,
-            )
-            .assertIsDisplayed()
+            composeTestRule
+                .onNode(
+                    hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText(initial)),
+                    useUnmergedTree = true,
+                )
+                .assertIsDisplayed()
+        }
     }
 
     @Test
     fun privacyBanner_isDisplayed() {
         composeTestRule.setContent {
             ContactsPickerBody(
-                contacts =
-                    listOf(
-                        DisplayNameContact(
-                            id = 1L,
-                            displayName = "Alpha",
-                            lookupKey = "alpha_lookup",
-                        )
-                    ),
+                contacts = listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT),
                 selectedContacts = longObjectMapOf(),
                 isMultiSelectEnabled = false,
                 onPrivacyBannerMoreDetails = {},
@@ -122,14 +101,7 @@ class ContactsPickerBodyTest {
 
     @Test
     fun privacyBanner_isNotDisplayed_afterScrollingTheContactList() {
-        val contacts =
-            List(30) { i ->
-                DisplayNameContact(
-                    id = i.toLong(),
-                    displayName = "Contact $i",
-                    lookupKey = "contact${i}_lookup",
-                )
-            }
+        val contacts = ContactTestDataFactory.createContactList(30)
 
         composeTestRule.setContent {
             ContactsPickerBody(
@@ -150,5 +122,54 @@ class ContactsPickerBodyTest {
             .performScrollToIndex(contacts.size - 1)
 
         composeTestRule.onNode(hasTestTag(PRIVACY_BANNER_TEST_TAG)).assertDoesNotExist()
+    }
+
+    @Test
+    fun favoritesSection_appears_whenFavoritesExist() {
+        val nonFavContact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
+        val favContact =
+            ContactTestDataFactory.createDisplayNameContact(
+                id = 111,
+                displayName = "Best friend",
+                isFavorite = true,
+            )
+        val contacts = listOf(favContact, nonFavContact)
+
+        composeTestRule.setContent {
+            ContactsPickerBody(
+                contacts = contacts,
+                onPrivacyBannerMoreDetails = {},
+                onPrivacyBannerDismissRequest = {},
+                selectedContacts = longObjectMapOf(),
+                isMultiSelectEnabled = false,
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
+            )
+        }
+
+        val favoritesHeader = context.getString(R.string.contacts_picker_favorites_header)
+        composeTestRule.onNodeWithText(favoritesHeader, substring = true).assertExists()
+
+        // favorite contact should appear twice, non-fav only once
+        composeTestRule.onAllNodesWithText(favContact.displayName).assertCountEquals(2)
+        composeTestRule.onAllNodesWithText(nonFavContact.displayName).assertCountEquals(1)
+    }
+
+    @Test
+    fun favoritesSection_doesNotExist_whenNoFavoritesExist() {
+        composeTestRule.setContent {
+            ContactsPickerBody(
+                contacts = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
+                onPrivacyBannerMoreDetails = {},
+                onPrivacyBannerDismissRequest = {},
+                selectedContacts = longObjectMapOf(),
+                isMultiSelectEnabled = false,
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
+            )
+        }
+
+        val favoritesHeader = context.getString(R.string.contacts_picker_favorites_header)
+        composeTestRule.onNodeWithText(favoritesHeader).assertDoesNotExist()
     }
 }
