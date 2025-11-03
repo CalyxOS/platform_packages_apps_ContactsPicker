@@ -22,7 +22,8 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"Vissza"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"További részletek"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Amikor kiválaszt egy névjegyet, a(z) %1$s hozzáfér a következő információkhoz az eszköz névjegyeiből.\n\nHa módosítja a kapcsolatfelvételi adatokat, a(z) %1$s nem fog hozzáférni a módosításokhoz."</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="6278952758241087272">"A kapcsolatfelvételi adatok a következőket tartalmazhatják:"</string>
+    <!-- no translation found for privacy_details_contact_data_fields_list_header (4492206191032534831) -->
+    <skip />
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Név"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"Név"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Telefonszámok"</string>
@@ -41,10 +42,14 @@
     <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"Webhely"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"Becenév"</string>
     <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"Becenév"</string>
-    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
-    <skip />
+    <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"Profilkép"</string>
+    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"Profilkép"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Névjegyek egy csoportja"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Névjegyek egy csoportja"</string>
+    <!-- no translation found for privacy_details_data_field_preferences_header (6216739370754927166) -->
+    <skip />
+    <!-- no translation found for privacy_details_data_field_preferences_content_description (3107688495414679200) -->
+    <skip />
+    <!-- no translation found for privacy_details_data_field_preferences_description (3897674838925821716) -->
+    <skip />
 </resources>

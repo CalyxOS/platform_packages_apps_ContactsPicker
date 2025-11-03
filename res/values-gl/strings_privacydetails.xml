@@ -22,7 +22,8 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"Volver"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"Máis detalles"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Se seleccionas un contacto, %1$s terá acceso á seguinte información dos contactos do teu dispositivo.\n\nSe modificas dalgunha forma a información de contacto, %1$s non poderá ver os cambios."</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="6278952758241087272">"A información de contacto pode incluír o seguinte:"</string>
+    <!-- no translation found for privacy_details_contact_data_fields_list_header (4492206191032534831) -->
+    <skip />
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Nome"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"Nome"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Números de teléfono"</string>
@@ -47,4 +48,10 @@
     <skip />
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Grupo de contactos"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Grupo de contactos"</string>
+    <!-- no translation found for privacy_details_data_field_preferences_header (6216739370754927166) -->
+    <skip />
+    <!-- no translation found for privacy_details_data_field_preferences_content_description (3107688495414679200) -->
+    <skip />
+    <!-- no translation found for privacy_details_data_field_preferences_description (3897674838925821716) -->
+    <skip />
 </resources>

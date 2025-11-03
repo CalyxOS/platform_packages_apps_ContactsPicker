@@ -22,7 +22,8 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"Назад"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"Дадатковая інфармацыя"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Калі вы выбераце кантакт, у праграмы \"%1$s\" будзе доступ да пералічанай інфармацыі з вашых кантактаў з прылады.\n\nКалі вы зменіце кантактную інфармацыю, у праграмы \"%1$s\" не будзе доступу да ўнесеных змяненняў."</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="6278952758241087272">"Кантактная інфармацыя можа ўключаць наступныя звесткі:"</string>
+    <!-- no translation found for privacy_details_contact_data_fields_list_header (4492206191032534831) -->
+    <skip />
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Імя"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"Імя"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Нумары тэлефонаў"</string>
@@ -47,4 +48,10 @@
     <skip />
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Група кантактаў"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Група кантактаў"</string>
+    <!-- no translation found for privacy_details_data_field_preferences_header (6216739370754927166) -->
+    <skip />
+    <!-- no translation found for privacy_details_data_field_preferences_content_description (3107688495414679200) -->
+    <skip />
+    <!-- no translation found for privacy_details_data_field_preferences_description (3897674838925821716) -->
+    <skip />
 </resources>
