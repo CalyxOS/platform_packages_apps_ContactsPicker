@@ -26,8 +26,14 @@
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"సెర్చ్ చేయండి"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"సెర్చ్ టెక్స్ట్‌ను క్లియర్ చేయండి"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"సెర్చ్‌ను మూసివేయండి"</string>
+    <!-- no translation found for contacts_picker_favorites_header (8832599911501712849) -->
+    <skip />
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"ప్రొఫైల్‌ను మార్చండి"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"గోప్యతా సమాచారం"</string>
+    <!-- no translation found for contact_avatar_profile_picture_content_description (4077599609642932184) -->
+    <skip />
+    <!-- no translation found for contact_avatar_initial_content_description (8441303818086750337) -->
+    <skip />
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"విస్తరించండి"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"కుదించండి"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ఫోన్"</string>
