@@ -22,7 +22,8 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"પાછળ"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"વધુ વિગતો"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"જ્યારે તમે કોઈ સંપર્ક પસંદ કરો, ત્યારે %1$s પાસે તમારા ડિવાઇસમાં સાચવેલા સંપર્કોની નીચેની માહિતીનો ઍક્સેસ રહેશે.\n\nજો તમે સંપર્ક માહિતીમાં કોઈ અપડેટ કરો, તો %1$s પાસે ફેરફારોનો ઍક્સેસ રહેશે નહીં."</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="6278952758241087272">"સંપર્ક માહિતીમાં આ શામેલ હોઈ શકે છે:"</string>
+    <!-- no translation found for privacy_details_contact_data_fields_list_header (4492206191032534831) -->
+    <skip />
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"નામ"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"નામ"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"ફોન નંબર"</string>
@@ -41,10 +42,14 @@
     <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"વેબસાઇટ"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"ઉપનામ"</string>
     <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"ઉપનામ"</string>
-    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
-    <skip />
+    <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"પ્રોફાઇલ ફોટો"</string>
+    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"પ્રોફાઇલ ફોટો"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"સંપર્કનું ગ્રૂપ"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"સંપર્કનું ગ્રૂપ"</string>
+    <!-- no translation found for privacy_details_data_field_preferences_header (6216739370754927166) -->
+    <skip />
+    <!-- no translation found for privacy_details_data_field_preferences_content_description (3107688495414679200) -->
+    <skip />
+    <!-- no translation found for privacy_details_data_field_preferences_description (3897674838925821716) -->
+    <skip />
 </resources>

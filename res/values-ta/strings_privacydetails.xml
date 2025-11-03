@@ -22,7 +22,8 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"முந்தையது"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"கூடுதல் விவரங்கள்"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"நீங்கள் ஒரு தொடர்பைத் தேர்ந்தெடுக்கும்போது, உங்கள் சாதனத் தொடர்புகளில் உள்ள பின்வரும் தகவல்களுக்கான அணுகல் %1$s ஆப்ஸுக்குக் கிடைக்கும்.\n\nதொடர்புத் தகவலில் நீங்கள் ஏதேனும் மாற்றங்களைச் செய்தால், அந்த மாற்றங்களுக்கான அணுகல் %1$s ஆப்ஸுக்குக் கிடைக்காது."</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="6278952758241087272">"தொடர்புத் தகவலில் இவை இருக்கலாம்:"</string>
+    <!-- no translation found for privacy_details_contact_data_fields_list_header (4492206191032534831) -->
+    <skip />
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"பெயர்"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"பெயர்"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"ஃபோன் எண்கள்"</string>
@@ -41,10 +42,14 @@
     <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"இணையதளம்"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"புனைப்பெயர்"</string>
     <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"புனைப்பெயர்"</string>
-    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
-    <skip />
+    <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"சுயவிவரப் படம்"</string>
+    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"சுயவிவரப் படம்"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"தொடர்புக் குழு"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"தொடர்புக் குழு"</string>
+    <!-- no translation found for privacy_details_data_field_preferences_header (6216739370754927166) -->
+    <skip />
+    <!-- no translation found for privacy_details_data_field_preferences_content_description (3107688495414679200) -->
+    <skip />
+    <!-- no translation found for privacy_details_data_field_preferences_description (3897674838925821716) -->
+    <skip />
 </resources>
