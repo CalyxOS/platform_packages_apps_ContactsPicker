@@ -19,6 +19,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.android.contactspicker.room.converter.MimeTypeConverter
 
 /**
  * Represents a Room entity that stores whether the privacy banner has been shown for a specific app
@@ -34,12 +35,15 @@ import androidx.room.PrimaryKey
  *
  * @property id The unique identifier for the database record.
  * @property appUid The unique identifier of the application for which the banner was shown.
- * @property mimeTypes An integer bitmask representing the set of contact data MIME types for which
- *   the banner was shown. This is managed by [MimeTypeConverter].
+ * @property mimeTypes list contact data MIME types for which the banner was shown. mimeTypes are
+ *   mapped by [MimeTypeConverter] into bitMask before persisting in db
  */
-@Entity(tableName = "privacy_banner_shown", indices = [Index(value = ["app_uid"])])
+@Entity(
+    tableName = "privacy_banner_shown",
+    indices = [Index(value = ["app_uid", "mime_types"], unique = true)],
+)
 data class PrivacyBannerShown(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "_id") val id: Int = 0,
     @ColumnInfo(name = "app_uid") val appUid: String,
-    @ColumnInfo(name = "mime_types") val mimeTypes: Int,
+    @ColumnInfo(name = "mime_types") val mimeTypes: List<String>,
 )
