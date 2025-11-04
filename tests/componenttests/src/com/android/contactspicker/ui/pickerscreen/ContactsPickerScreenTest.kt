@@ -169,6 +169,7 @@ class ContactsPickerScreenTest {
                             selectedContacts = longObjectMapOf(),
                             isMultiSelectEnabled = false,
                             callingAppName = null,
+                            requestedMimeTypes = emptyList(),
                         )
                     ),
                 onPrivacyBannerMoreDetails = {},
@@ -204,6 +205,7 @@ class ContactsPickerScreenTest {
                             selectedContacts = longObjectMapOf(),
                             isMultiSelectEnabled = false,
                             callingAppName = null,
+                            requestedMimeTypes = emptyList(),
                         )
                     ),
                 onPrivacyBannerMoreDetails = {},
@@ -236,6 +238,7 @@ class ContactsPickerScreenTest {
                             selectedContacts = longObjectMapOf(),
                             isMultiSelectEnabled = false,
                             callingAppName = null,
+                            requestedMimeTypes = emptyList(),
                         )
                     ),
                 onPrivacyBannerMoreDetails = {},

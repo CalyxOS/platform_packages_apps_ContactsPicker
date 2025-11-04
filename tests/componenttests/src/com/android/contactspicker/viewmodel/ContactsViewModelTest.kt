@@ -142,6 +142,28 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun getRequestedMimeTypesForIntent_actionPickWithValidType_returnsTypeList() {
+        val intentAction = Intent.ACTION_PICK
+        val intentType = Phone.CONTENT_TYPE
+        val result = viewModel.getRequestedMimeTypesForIntent(intentAction, intentType)
+        assertThat(result).containsExactly(intentType)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun getRequestedMimeTypesForIntent_actionPickWithNullType_throwsException() {
+        val intentAction = Intent.ACTION_PICK
+        val intentType: String? = null
+        viewModel.getRequestedMimeTypesForIntent(intentAction, intentType)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun getRequestedMimeTypesForIntent_unsupportedAction_throwsException() {
+        val intentAction = Intent.ACTION_VIEW
+        val intentType = Phone.CONTENT_TYPE
+        viewModel.getRequestedMimeTypesForIntent(intentAction, intentType)
+    }
+
+    @Test
     fun toggleContactSelection_selectsDisplayNameContact() {
         val displayNameContact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
         loadViewModelWithInitialContacts(listOf(displayNameContact))
@@ -427,7 +449,7 @@ class ContactsViewModelTest {
         fakeRepository.setInitialContacts(contacts)
         viewModel.processIntent(
             intentAction = Intent.ACTION_PICK,
-            intentType = null,
+            intentType = Phone.CONTENT_TYPE,
             intentExtras = intentExtras,
             callingAppName = null,
         )

@@ -137,6 +137,7 @@ class ContactsPickerActivityTest {
                     longObjectMapOf(),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
+                    requestedMimeTypes = emptyList(),
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successState)
@@ -255,6 +256,7 @@ class ContactsPickerActivityTest {
                     selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
+                    requestedMimeTypes = emptyList(),
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successStateSingleSelect)
@@ -292,6 +294,7 @@ class ContactsPickerActivityTest {
                     selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = true,
                     callingAppName = null,
+                    requestedMimeTypes = emptyList(),
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successStateMultiSelect)
@@ -333,6 +336,7 @@ class ContactsPickerActivityTest {
                     selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
+                    requestedMimeTypes = emptyList(),
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successStateSingleSelect)
@@ -409,6 +413,7 @@ class ContactsPickerActivityTest {
                     selectedContacts = longObjectMapOf(),
                     isMultiSelectEnabled = false,
                     callingAppName = testAppName,
+                    requestedMimeTypes = emptyList(),
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successState)
@@ -439,6 +444,7 @@ class ContactsPickerActivityTest {
                     selectedContacts = longObjectMapOf(),
                     isMultiSelectEnabled = false,
                     callingAppName = testAppName,
+                    requestedMimeTypes = emptyList(),
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successState)

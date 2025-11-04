@@ -80,6 +80,7 @@ class ContactsPickerContentTest {
                             selectedContacts = longObjectMapOf(),
                             isMultiSelectEnabled = false,
                             callingAppName = null,
+                            requestedMimeTypes = emptyList(),
                         )
                     ),
                 onPrivacyBannerMoreDetails = {},

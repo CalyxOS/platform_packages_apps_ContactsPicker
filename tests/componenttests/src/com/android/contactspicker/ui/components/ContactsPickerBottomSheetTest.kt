@@ -69,6 +69,7 @@ class ContactsPickerBottomSheetTest {
             selectedContacts = selectedContacts,
             isMultiSelectEnabled = false,
             callingAppName = null,
+            requestedMimeTypes = emptyList(),
         )
 
     private val context: Context = ApplicationProvider.getApplicationContext()
@@ -158,6 +159,7 @@ class ContactsPickerBottomSheetTest {
                                 selectedContacts = selectedContacts,
                                 isMultiSelectEnabled = false,
                                 callingAppName = null,
+                                requestedMimeTypes = emptyList(),
                             )
                         ),
                     onToggleEntrySelection = { _, _ -> },
@@ -198,6 +200,7 @@ class ContactsPickerBottomSheetTest {
                                 selectedContacts = selectedContacts,
                                 isMultiSelectEnabled = false,
                                 callingAppName = null,
+                                requestedMimeTypes = emptyList(),
                             )
                         ),
                     onToggleEntrySelection = { _, _ -> },
