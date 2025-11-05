@@ -72,6 +72,12 @@
         [CHAR LIMIT=NONE] -->
     <string name="contact_item_phones_count">%d phone numbers</string>
 
+    <!-- Message shown in to the user when trying to select contacts above the limit. [CHAR LIMIT=40] -->
+    <string name="contacts_selection_limit_reached_message">
+        {count, plural,
+        =1 {Can share only # contact at a time}
+        other {Can share only # contacts at a time}}
+    </string>
     <!-- Content description for the checkmark icon that replaces the avatar when a contact is
         selected. The parameter is the contact's name. [CHAR LIMIT=NONE] -->
     <string name="contact_item_selected_content_description">%1$s selected</string>

@@ -20,6 +20,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.provider.ContactsPickerSessionContract
 import android.util.Log
 import androidx.annotation.OpenForTesting
 import androidx.annotation.VisibleForTesting
@@ -36,18 +37,35 @@ import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.repository.ContactsRepository
+import com.android.contactspicker.util.totalElementCount
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 private const val TAG = "ContactsViewModel"
 internal const val SEARCH_DEBOUNCE_MS = 300L
+
+// The default selection limit when multi select is enabled. Can be overridden by passing the
+// [ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_SELECTION_LIMIT] extra in the client intent.
+internal const val DEFAULT_SELECTION_LIMIT = 50
+// Maximum allowed selection limit. If the value passed by the calling app in the
+// [ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_SELECTION_LIMIT] intent extra is higher an
+// exception is thrown.
+internal const val MAX_ALLOWED_SELECTION_LIMIT = 100
+
+/** Events sent from the ViewModel to the UI to show a Snackbar. */
+sealed interface SnackbarEvent {
+    data class ShowSelectionLimitReached(val limit: Int) : SnackbarEvent
+}
 
 /**
  * ViewModel for the Contacts Picker screen.
@@ -63,8 +81,12 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
     private val _uiState = MutableStateFlow<ContactsUiState>(ContactsListState.Loading)
     open val uiState: StateFlow<ContactsUiState> = _uiState.asStateFlow()
 
+    private val _snackbarEvents = MutableSharedFlow<SnackbarEvent>()
+    open val snackbarEvents: Flow<SnackbarEvent> = _snackbarEvents.asSharedFlow()
+
     private var initialContacts: List<Contact> = emptyList()
     private var isMultiSelectEnabled: Boolean = false
+    private var maxSelectionLimit: Int = DEFAULT_SELECTION_LIMIT
     private var intentAction: String? = null
     private var intentType: String? = null
     private var callingAppName: String? = null
@@ -91,6 +113,20 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
 
             val existingEntryIds = selectedContacts[contact.id] ?: emptySet()
             val isAlreadyFullySelected = contact.isFullySelected(existingEntryIds)
+
+            // check for the selection limit
+            val currentSelectionCount = selectedContacts.totalElementCount()
+            if (!isAlreadyFullySelected && isMultiSelectEnabled) {
+                val newEntryIds = contact.getEntryIdsForSelection(isMultiSelectEnabled = true)
+                val newEntriesToAdd = newEntryIds.subtract(existingEntryIds).size
+                if (
+                    newEntriesToAdd > 0 &&
+                        (currentSelectionCount + newEntriesToAdd) > maxSelectionLimit
+                ) {
+                    emitSnackbarSelectionLimitReachedEvent()
+                    return@update currentState
+                }
+            }
 
             val newSelection = buildLongObjectMap {
                 if (isMultiSelectEnabled) {
@@ -145,6 +181,17 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
 
             val alreadySelectedEntriesForCurrentContact = selectedContacts[contactId] ?: emptySet()
             val isEntryAlreadySelected = entryId in alreadySelectedEntriesForCurrentContact
+
+            // check for the selection limit
+            val currentSelectionCount = selectedContacts.totalElementCount()
+            if (
+                !isEntryAlreadySelected &&
+                    isMultiSelectEnabled &&
+                    currentSelectionCount >= maxSelectionLimit
+            ) {
+                emitSnackbarSelectionLimitReachedEvent()
+                return@update currentState
+            }
 
             val newSelection =
                 if (isMultiSelectEnabled) {
@@ -225,6 +272,12 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
         }
     }
 
+    private fun emitSnackbarSelectionLimitReachedEvent() {
+        viewModelScope.launch {
+            _snackbarEvents.emit(SnackbarEvent.ShowSelectionLimitReached(maxSelectionLimit))
+        }
+    }
+
     /**
      * Determines the display mode based on the intent. Should only be called from the Activity to
      * trigger the ViewModel's logic, as it changes the [ContactsUiState].
@@ -245,7 +298,33 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
                 isMultiSelectEnabled =
                     intentExtras?.getBoolean(Intent.EXTRA_ALLOW_MULTIPLE, false) ?: false
                 requestedMimeTypes = getRequestedMimeTypesForIntent(intentAction, intentType)
-
+                maxSelectionLimit =
+                    if (
+                        isMultiSelectEnabled &&
+                            intentExtras?.containsKey(
+                                ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_SELECTION_LIMIT
+                            ) == true
+                    ) {
+                        val limit =
+                            intentExtras.getInt(
+                                ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_SELECTION_LIMIT,
+                                DEFAULT_SELECTION_LIMIT,
+                            )
+                        if (limit <= 0) {
+                            throw IllegalArgumentException(
+                                "Selection limit must be a positive number. Received $limit."
+                            )
+                        }
+                        if (limit > MAX_ALLOWED_SELECTION_LIMIT) {
+                            throw IllegalArgumentException(
+                                "Selection limit cannot exceed $MAX_ALLOWED_SELECTION_LIMIT. " +
+                                    "Received $limit."
+                            )
+                        }
+                        limit
+                    } else {
+                        DEFAULT_SELECTION_LIMIT
+                    }
                 // TODO(b/444459883): check and handle empty list
                 _uiState.value =
                     ContactsListState.Success(
