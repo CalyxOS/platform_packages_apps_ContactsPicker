@@ -26,14 +26,11 @@
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"Bilatu"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"Garbitu bilaketa-eremua"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"Itxi bilaketa"</string>
-    <!-- no translation found for contacts_picker_favorites_header (8832599911501712849) -->
-    <skip />
+    <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"Gogokoak"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"Aldatu profila"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"Pribatutasun-informazioa"</string>
-    <!-- no translation found for contact_avatar_profile_picture_content_description (4077599609642932184) -->
-    <skip />
-    <!-- no translation found for contact_avatar_initial_content_description (8441303818086750337) -->
-    <skip />
+    <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Kontaktuaren profileko argazkia"</string>
+    <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"Kontaktuaren iniziala"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"Zabaldu"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Tolestu"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefono-zenbakia"</string>
@@ -47,4 +44,6 @@
     <string name="privacy_banner_description" msgid="8397685763338639247">"Hautatzen dituzun kontaktuen informazioa soilik erabili ahalko du %1$s aplikazioak"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"Xehetasun gehiago"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"Baztertu"</string>
+    <!-- no translation found for default_calling_app_name (5345125341557406609) -->
+    <skip />
 </resources>
