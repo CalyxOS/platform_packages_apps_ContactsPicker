@@ -22,8 +22,7 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"နောက်သို့"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"နောက်ထပ်အသေးစိတ်"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"အဆက်အသွယ်ကို ရွေးသောအခါ %1$s သည် သင့်စက်ထဲရှိ အဆက်အသွယ်များမှ အောက်ပါအချက်အလက်ကို သုံးခွင့်ရှိမည်။\n\nဆက်သွယ်ရန် အချက်အလက်ကို အပ်ဒိတ်လုပ်ပါက %1$s သည် ပြောင်းလဲမှုများကို သုံးခွင့်ရှိမည်မဟုတ်ပါ။"</string>
-    <!-- no translation found for privacy_details_contact_data_fields_list_header (4492206191032534831) -->
-    <skip />
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"ဆက်သွယ်ရန် အချက်အလက်တွင် အောက်ပါတို့ကဲ့သို့သော အသေးစိတ်အချက်များ ပါဝင်နိုင်သည်-"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"အမည်"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"အမည်"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"ဖုန်းနံပါတ်များ"</string>
@@ -42,16 +41,11 @@
     <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"ဝဘ်ဆိုက်"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"နာမည်ပြောင်"</string>
     <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"နာမည်ပြောင်"</string>
-    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
-    <skip />
+    <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"ပရိုဖိုင်ပုံ"</string>
+    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"ပရိုဖိုင်ပုံ"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"ဆက်သွယ်ရန် အဖွဲ့"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"ဆက်သွယ်ရန် အဖွဲ့"</string>
-    <!-- no translation found for privacy_details_data_field_preferences_header (6216739370754927166) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_preferences_content_description (3107688495414679200) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_preferences_description (3897674838925821716) -->
-    <skip />
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"အဆက်အသွယ် သတ်မှတ်ချက်အချို့"</string>
+    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"အဆက်အသွယ် သတ်မှတ်ချက်အချို့"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"အဆက်အသွယ်၏ အကြိုက်ဆုံးအခြေအနေနှင့် ၎င်းကို အသံမေးလ်သို့ ပို့ခြင်းရှိမရှိတို့ ပါဝင်သည်"</string>
 </resources>

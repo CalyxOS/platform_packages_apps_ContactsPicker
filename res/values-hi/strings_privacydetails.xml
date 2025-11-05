@@ -22,8 +22,7 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"वापस जाएं"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"ज़्यादा जानकारी"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"कोई संपर्क चुनने पर, %1$s के पास आपके डिवाइस में सेव किए गए संपर्कों की यह जानकारी ऐक्सेस करने की अनुमति होगी.\n\nअगर संपर्क जानकारी में आपसे कोई बदलाव किया जाता है, तो %1$s के पास उन बदलावों को ऐक्सेस करने की अनुमति नहीं होगी."</string>
-    <!-- no translation found for privacy_details_contact_data_fields_list_header (4492206191032534831) -->
-    <skip />
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"संपर्क की जानकारी में ये चीज़ें शामिल हो सकती हैं:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"नाम"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"नाम"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"फ़ोन नंबर"</string>
@@ -42,16 +41,11 @@
     <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"वेबसाइट"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"निकनेम"</string>
     <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"निकनेम"</string>
-    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
-    <skip />
+    <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"प्रोफ़ाइल फ़ोटो"</string>
+    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"प्रोफ़ाइल फ़ोटो"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"संपर्क ग्रुप"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"संपर्क ग्रुप"</string>
-    <!-- no translation found for privacy_details_data_field_preferences_header (6216739370754927166) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_preferences_content_description (3107688495414679200) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_preferences_description (3897674838925821716) -->
-    <skip />
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"संपर्क की कुछ प्राथमिकताएं"</string>
+    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"संपर्क की कुछ प्राथमिकताएं"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"इसमें संपर्क का पसंदीदा स्टेटस और यह जानकारी शामिल होती है कि उनके कॉल वॉइसमेल पर भेजे जाएंगे या नहीं"</string>
 </resources>

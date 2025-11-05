@@ -22,8 +22,7 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"返回"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"詳細資料"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"選取聯絡人後，「%1$s」將能存取裝置中儲存的以下聯絡資訊。\n\n如果你更新聯絡資訊，「%1$s」無法存取異動內容。"</string>
-    <!-- no translation found for privacy_details_contact_data_fields_list_header (4492206191032534831) -->
-    <skip />
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"聯絡資訊可能包括下列詳細資料："</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"姓名"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"姓名"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"電話號碼"</string>
@@ -42,16 +41,11 @@
     <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"網站"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"暱稱"</string>
     <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"暱稱"</string>
-    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
-    <skip />
+    <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"個人資料相片"</string>
+    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"個人資料相片"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"聯絡人群組"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"聯絡人群組"</string>
-    <!-- no translation found for privacy_details_data_field_preferences_header (6216739370754927166) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_preferences_content_description (3107688495414679200) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_preferences_description (3897674838925821716) -->
-    <skip />
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"部分聯絡人偏好設定"</string>
+    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"部分聯絡人偏好設定"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"包括聯絡人的「常用聯絡人」狀態，以及是否轉到語音信箱"</string>
 </resources>
