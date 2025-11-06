@@ -22,8 +22,7 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"返回"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"更多详细信息"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"您选择联系人后，%1$s将有权访问您设备上存储的以下联系信息。\n\n如果您更新了联系信息，%1$s将无法访问这些更改。"</string>
-    <!-- no translation found for privacy_details_contact_data_fields_list_header (4492206191032534831) -->
-    <skip />
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"联系信息可能包括以下详细信息："</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"名称"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"名称"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"电话号码"</string>
@@ -46,10 +45,7 @@
     <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"个人资料照片"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"联系人群组"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"联系人群组"</string>
-    <!-- no translation found for privacy_details_data_field_preferences_header (6216739370754927166) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_preferences_content_description (3107688495414679200) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_preferences_description (3897674838925821716) -->
-    <skip />
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"部分联系人偏好设置"</string>
+    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"部分联系人的偏好设置"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"包括联系人的“常用联系人”状态及是否将其转入语音信箱"</string>
 </resources>

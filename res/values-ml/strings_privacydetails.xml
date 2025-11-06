@@ -22,8 +22,7 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"മടങ്ങുക"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"കൂടുതൽ വിശദാംശങ്ങൾ"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"നിങ്ങൾ ഒരു കോൺടാക്റ്റ് തിരഞ്ഞെടുക്കുമ്പോൾ, നിങ്ങളുടെ ഉപകരണത്തിലെ കോൺടാക്റ്റുകളിൽ നിന്നുള്ള ഇനിപ്പറയുന്ന വിവരങ്ങളിലേക്ക് %1$s എന്നതിന് ആക്‌സസ് ഉണ്ടായിരിക്കും.\n\nകോൺടാക്റ്റ് വിവരങ്ങളിൽ നിങ്ങൾ എന്തെങ്കിലും അപ്‌ഡേറ്റുകൾ വരുത്തുകയാണെങ്കിൽ, %1$s എന്നതിന് മാറ്റങ്ങളിലേക്ക് ആക്‌സസ് ഉണ്ടാകില്ല."</string>
-    <!-- no translation found for privacy_details_contact_data_fields_list_header (4492206191032534831) -->
-    <skip />
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"കോൺടാക്റ്റ് വിവരങ്ങളിൽ ഇനിപ്പറയുന്നത് പോലുള്ള വിശദാംശങ്ങൾ ഉൾപ്പെടാം:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"പേര്"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"പേര്"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"ഫോൺ നമ്പറുകൾ"</string>
@@ -46,10 +45,7 @@
     <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"പ്രൊഫൈൽ ചിത്രം"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"കോൺടാക്റ്റ് ഗ്രൂപ്പ്"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"കോൺടാക്റ്റ് ഗ്രൂപ്പ്"</string>
-    <!-- no translation found for privacy_details_data_field_preferences_header (6216739370754927166) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_preferences_content_description (3107688495414679200) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_preferences_description (3897674838925821716) -->
-    <skip />
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"ചില കോൺടാക്റ്റ് മുൻഗണനകൾ"</string>
+    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"ചില കോൺടാക്റ്റ് മുൻഗണനകൾ"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"ഒരു കോൺടാക്റ്റിന്റെ \'പ്രിയപ്പെട്ടത്\' നിലയും അവരെ വോയ്‌സ്‌മെയിലിലേക്ക് അയച്ചിട്ടുണ്ടോ എന്നതും ഉൾപ്പെടുന്നു"</string>
 </resources>

@@ -22,8 +22,7 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"Буцах"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"Нэмэлт дэлгэрэнгүй"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Таныг харилцагч сонгоход %1$s таны төхөөрөмжийн харилцагчдын дараах мэдээлэлд хандах эрхтэй болно.\n\nХэрэв та холбоо барих мэдээллийг шинэчилбэл %1$s өөрчлөлтөд хандах эрхгүй болно."</string>
-    <!-- no translation found for privacy_details_contact_data_fields_list_header (4492206191032534831) -->
-    <skip />
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Холбоо барих мэдээлэлд дараах дэлгэрэнгүй мэдээлэл багтаж болно:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Нэр"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"Нэр"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Утасны дугаар"</string>
@@ -46,10 +45,7 @@
     <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"Профайл зураг"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Харилцагчийн бүлэг"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Харилцагчийн бүлэг"</string>
-    <!-- no translation found for privacy_details_data_field_preferences_header (6216739370754927166) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_preferences_content_description (3107688495414679200) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_preferences_description (3897674838925821716) -->
-    <skip />
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"Харилцагчийн зарим сонголт"</string>
+    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"Харилцагчийн зарим сонголт"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Харилцагчийн дуртай төлөв болон түүнийг дуут шуудан руу илгээдэг эсэх багтана"</string>
 </resources>
