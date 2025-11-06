@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
 import androidx.annotation.OpenForTesting
+import androidx.annotation.VisibleForTesting
 import androidx.collection.LongObjectMap
 import androidx.collection.buildLongObjectMap
 import androidx.collection.longObjectMapOf
@@ -61,6 +62,8 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
 
     private var initialContacts: List<Contact> = emptyList()
     private var isMultiSelectEnabled: Boolean = false
+
+    private var requestedMimeTypes: List<String> = emptyList()
 
     /**
      * Toggles the selection state for an entire contact.
@@ -231,6 +234,8 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
                 initialContacts = contactsRepository.getContactsForIntent(intentAction, intentType)
                 isMultiSelectEnabled =
                     intentExtras?.getBoolean(Intent.EXTRA_ALLOW_MULTIPLE, false) ?: false
+                requestedMimeTypes = getRequestedMimeTypesForIntent(intentAction, intentType)
+
                 // TODO(b/444459883): check and handle empty list
                 _uiState.value =
                     ContactsListState.Success(
@@ -238,6 +243,7 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
                         selectedContacts = longObjectMapOf(),
                         isMultiSelectEnabled = isMultiSelectEnabled,
                         callingAppName = callingAppName,
+                        requestedMimeTypes = requestedMimeTypes,
                     )
             } catch (e: IllegalArgumentException) {
                 Log.e(TAG, "An invalid intent was passed.", e)
@@ -247,6 +253,19 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
                 Log.e(TAG, "An unexpected error occurred.", e)
                 _uiState.value = ContactsListState.Error("An unexpected error occurred.")
             }
+        }
+    }
+
+    @VisibleForTesting
+    internal fun getRequestedMimeTypesForIntent(
+        intentAction: String?,
+        intentType: String?,
+    ): List<String> {
+        return when (intentAction) {
+            Intent.ACTION_PICK ->
+                if (intentType != null) listOf(intentType)
+                else throw IllegalArgumentException("Unsupported intent type: $intentType")
+            else -> throw IllegalArgumentException("Unsupported intent action: $intentAction")
         }
     }
 

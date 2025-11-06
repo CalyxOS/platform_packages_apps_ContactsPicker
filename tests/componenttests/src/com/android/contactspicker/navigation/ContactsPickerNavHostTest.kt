@@ -74,6 +74,7 @@ class ContactsPickerNavHostTest {
                     selectedContacts = longObjectMapOf(),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
+                    requestedMimeTypes = emptyList(),
                 )
             )
         )
@@ -93,6 +94,7 @@ class ContactsPickerNavHostTest {
                     selectedContacts = longObjectMapOf(),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
+                    requestedMimeTypes = emptyList(),
                 )
             )
         )
