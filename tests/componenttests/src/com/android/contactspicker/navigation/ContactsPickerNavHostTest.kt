@@ -127,6 +127,7 @@ class ContactsPickerNavHostTest {
                     onToggleEntrySelection = { _, _ -> },
                     onQueryChange = {},
                     onExitSearch = {},
+                    onBackFromPreview = {},
                 )
             }
         }

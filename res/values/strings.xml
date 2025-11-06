@@ -87,6 +87,9 @@
     <!-- Label for the button in the selection bar that allows the user to preview their selected
         contacts. [CHAR LIMIT=20] -->
     <string name="selection_bottom_bar_preview_button_label">Preview</string>
+    <!-- Label for the button in the selection bar that allows the user to go back from the preview
+        page. [CHAR LIMIT=20] -->
+    <string name="selection_bottom_bar_back_button_label">Back</string>
     <!-- Label for the button in the selection bar that confirms the user's selection and closes the picker.
         [CHAR LIMIT=20] -->
     <string name="selection_bottom_bar_done_button_label">Done</string>
@@ -100,6 +103,9 @@
 
     <!-- Content description for the back button in the privacy details top bar -->
     <string name="title_top_bar_back_button_content_description">Back</string>
+
+    <!-- Preview screen title at the top of the page. [CHAR LIMIT=20] -->
+    <string name="preview_screen_title">Preview</string>
 
     <!-- The default fallback name to use for the calling application. -->
     <string name="default_calling_app_name">This app</string>

@@ -20,6 +20,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.provider.ContactsContract.CommonDataKinds.Email
+import android.provider.ContactsContract.CommonDataKinds.Phone
+import android.provider.ContactsContract.Contacts
 import android.provider.ContactsPickerSessionContract
 import android.util.Log
 import androidx.annotation.OpenForTesting
@@ -30,6 +33,7 @@ import androidx.collection.longObjectMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.contactspicker.ContactsListState
+import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
@@ -40,6 +44,7 @@ import com.android.contactspicker.data.repository.ContactsRepository
 import com.android.contactspicker.util.totalElementCount
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlin.collections.set
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -91,6 +96,7 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
     private var intentType: String? = null
     private var callingAppName: String? = null
     private var searchJob: Job? = null
+    private var cachedStateBeforePreview: ContactsUiState? = null
 
     private var requestedMimeTypes: List<String> = emptyList()
 
@@ -266,6 +272,7 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
             when (currentState) {
                 is ContactsListState.Success ->
                     currentState.copy(selectedContacts = longObjectMapOf())
+
                 is SearchState.Success -> currentState.copy(selectedContacts = longObjectMapOf())
                 else -> currentState
             }
@@ -354,6 +361,7 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
             Intent.ACTION_PICK ->
                 if (intentType != null) listOf(intentType)
                 else throw IllegalArgumentException("Unsupported intent type: $intentType")
+
             else -> throw IllegalArgumentException("Unsupported intent action: $intentAction")
         }
     }
@@ -503,6 +511,54 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
             }
         }
     }
+
+    fun onPreviewClicked() {
+        val currentState = _uiState.value
+        require(currentState is ContactsListState.Success || currentState is SearchState.Success) {
+            "onPreviewClicked called from unexpected state: $currentState"
+        }
+
+        cachedStateBeforePreview = currentState
+
+        val (availableContacts, selectedIds, isMultiSelectEnabled) =
+            when (currentState) {
+                is ContactsListState.Success ->
+                    Triple(
+                        currentState.availableContacts,
+                        currentState.selectedContacts,
+                        currentState.isMultiSelectEnabled,
+                    )
+
+                is SearchState.Success -> {
+                    val aggregatedContacts = currentState.getAggregatedContacts(intentType)
+                    Triple(
+                        aggregatedContacts,
+                        currentState.selectedContacts,
+                        this.isMultiSelectEnabled,
+                    )
+                }
+                else -> return
+            }
+
+        val previewList =
+            availableContacts.filter { contact -> selectedIds.containsKey(contact.id) }
+
+        _uiState.value =
+            ContactsPreviewState(
+                contactsToDisplay = previewList,
+                selectedContacts = selectedIds,
+                isMultiSelectEnabled = isMultiSelectEnabled,
+            )
+    }
+
+    fun onBackFromPreview() {
+        val currentState = _uiState.value
+        require(currentState is ContactsPreviewState && cachedStateBeforePreview != null) {
+            "onBackFromPreview called from unexpected state: $currentState, or no previous state found"
+        }
+        _uiState.value = cachedStateBeforePreview!!
+        cachedStateBeforePreview = null
+    }
 }
 
 /**
@@ -541,5 +597,38 @@ private fun Contact.getEntryIdsForSelection(isMultiSelectEnabled: Boolean): Set<
                 setOf(phones.first().id)
             }
         }
+    }
+}
+
+/** Aggregates search results into a list of unique contacts, grouping entries by contact ID. */
+private fun SearchState.Success.getAggregatedContacts(intentType: String?): List<Contact> {
+    return when (intentType) {
+        Email.CONTENT_ITEM_TYPE,
+        Email.CONTENT_TYPE -> {
+            val emailContacts = searchResults as List<EmailContact>
+            emailContacts
+                .groupBy { it.id }
+                .values
+                .map { contacts ->
+                    contacts
+                        .first()
+                        .copy(emails = contacts.flatMap { it.emails }.distinctBy { it.id })
+                }
+        }
+        Phone.CONTENT_ITEM_TYPE,
+        Phone.CONTENT_TYPE -> {
+            val phoneContacts = searchResults as List<PhoneContact>
+            phoneContacts
+                .groupBy { it.id }
+                .values
+                .map { contacts ->
+                    contacts
+                        .first()
+                        .copy(phones = contacts.flatMap { it.phones }.distinctBy { it.id })
+                }
+        }
+        Contacts.CONTENT_TYPE,
+        Contacts.CONTENT_ITEM_TYPE -> searchResults
+        else -> throw IllegalArgumentException("Unsupported intent type: $intentType")
     }
 }

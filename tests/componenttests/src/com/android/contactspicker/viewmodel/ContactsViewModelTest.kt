@@ -28,6 +28,7 @@ import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsPickerSessionContract
 import androidx.collection.longObjectMapOf
 import com.android.contactspicker.ContactsListState
+import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
@@ -929,4 +930,43 @@ class ContactsViewModelTest {
             assertThat(state).isInstanceOf(ContactsListState.Success::class.java)
             return state as ContactsListState.Success
         }
+
+    @Test
+    fun onPreviewClicked_updatesStateToPreview() = runTest {
+        val contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
+        processIntentWithInitialContacts(listOf(contact))
+        viewModel.toggleContactSelection(contact)
+        val currentSelection = viewModel.currentSuccessState.selectedContacts
+
+        viewModel.onPreviewClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertThat(state).isInstanceOf(ContactsPreviewState::class.java)
+        val previewState = state as ContactsPreviewState
+        assertThat(previewState.contactsToDisplay).containsExactly(contact)
+        assertThat(previewState.selectedContacts).isEqualTo(currentSelection)
+        assertThat(previewState.isMultiSelectEnabled).isFalse()
+    }
+
+    @Test
+    fun onBackFromPreview_updatesStateToList() = runTest {
+        val contact = ContactTestDataFactory.GENERIC_EMAIL_CONTACT
+        processIntentWithInitialContacts(listOf(contact))
+        viewModel.toggleContactSelection(contact)
+        val selection = viewModel.currentSuccessState.selectedContacts
+
+        viewModel.onPreviewClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+        assertThat(viewModel.uiState.value).isInstanceOf(ContactsPreviewState::class.java)
+
+        viewModel.onBackFromPreview()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertThat(state).isInstanceOf(ContactsListState.Success::class.java)
+        val listState = state as ContactsListState.Success
+        assertThat(listState.availableContacts).containsExactly(contact)
+        assertThat(listState.selectedContacts).isEqualTo(selection)
+    }
 }
