@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.contactspicker.ui.privacydetails
+
+package com.android.contactspicker.ui.components
 
 import android.content.Context
 import android.content.flags.Flags
@@ -35,7 +36,7 @@ import org.junit.runner.RunWith
 
 @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
 @RunWith(AndroidJUnit4::class)
-class PrivacyDetailsTopBarTest {
+class TitleTopBarTest {
     @get:Rule val composeTestRule = createComposeRule()
 
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
@@ -43,21 +44,19 @@ class PrivacyDetailsTopBarTest {
 
     @Test
     fun topBar_displaysHeaderText() {
-        composeTestRule.setContent { PrivacyDetailsTopBar(onBackPressed = {}) }
+        composeTestRule.setContent { TitleTopBar(onBackPressed = {}, "Title test") }
 
-        composeTestRule
-            .onNodeWithText(context.getString(R.string.privacy_details_top_bar_header))
-            .assertIsDisplayed()
+        composeTestRule.onNodeWithText("Title test").assertIsDisplayed()
     }
 
     @Test
     fun topBar_backButton_isDisplayedAndClickable() {
         var backPressed = false
-        composeTestRule.setContent { PrivacyDetailsTopBar(onBackPressed = { backPressed = true }) }
+        composeTestRule.setContent { TitleTopBar(onBackPressed = { backPressed = true }, "") }
 
         composeTestRule
             .onNodeWithContentDescription(
-                context.getString(R.string.privacy_details_top_bar_back_button_content_description)
+                context.getString(R.string.title_top_bar_back_button_content_description)
             )
             .assertIsDisplayed()
             .performClick()
