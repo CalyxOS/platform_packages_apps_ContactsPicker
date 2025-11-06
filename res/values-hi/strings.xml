@@ -26,14 +26,11 @@
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"खोजें"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"खोज के लिए डाला गया टेक्स्ट मिटाएं"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"खोज बंद करें"</string>
-    <!-- no translation found for contacts_picker_favorites_header (8832599911501712849) -->
-    <skip />
+    <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"पसंदीदा"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"प्रोफ़ाइल बदलें"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"निजता के बारे में जानकारी"</string>
-    <!-- no translation found for contact_avatar_profile_picture_content_description (4077599609642932184) -->
-    <skip />
-    <!-- no translation found for contact_avatar_initial_content_description (8441303818086750337) -->
-    <skip />
+    <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"संपर्क की प्रोफ़ाइल फ़ोटो"</string>
+    <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"संपर्क के नाम का पहला अक्षर"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"बड़ा करें"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"छोटा करें"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"फ़ोन"</string>
@@ -47,4 +44,6 @@
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s के पास सिर्फ़ उन संपर्कों की जानकारी का ऐक्सेस होगा जिन्हें आपने चुना है"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"ज़्यादा जानकारी"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"खारिज करें"</string>
+    <!-- no translation found for default_calling_app_name (5345125341557406609) -->
+    <skip />
 </resources>

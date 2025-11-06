@@ -30,10 +30,8 @@
     <skip />
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"ပရိုဖိုင်ပြောင်းရန်"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"ကိုယ်ရေးအချက်အလက် လုံခြုံမှုအချက်အလက်"</string>
-    <!-- no translation found for contact_avatar_profile_picture_content_description (4077599609642932184) -->
-    <skip />
-    <!-- no translation found for contact_avatar_initial_content_description (8441303818086750337) -->
-    <skip />
+    <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"အဆက်အသွယ် ပရိုဖိုင်ပုံ"</string>
+    <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"အဆက်အသွယ် အမည်အတိုကောက်"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"ပိုပြပါ"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"လျှော့ပြပါ"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ဖုန်း"</string>
@@ -47,4 +45,6 @@
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s သည် သင်ရွေးထားသော အဆက်အသွယ်များထံမှ အချက်အလက်ကိုသာ သုံးခွင့်ရှိမည်"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"နောက်ထပ်အသေးစိတ်"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"ပယ်ရန်"</string>
+    <!-- no translation found for default_calling_app_name (5345125341557406609) -->
+    <skip />
 </resources>
