@@ -49,7 +49,7 @@ fun ContactsPickerNavHost(
                 uiState = uiState,
                 onToggleContactSelection = onToggleContactSelection,
                 onToggleEntrySelection = onToggleEntrySelection,
-                onPrivacyBannerMoreDetails = {
+                onNavigateToPrivacyDetails = {
                     navController.navigateToAndPopUpToStart(PrivacyDetailsRoute.route)
                 },
                 onExpandRequest = onExpandRequest,

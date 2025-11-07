@@ -16,29 +16,39 @@
 package com.android.contactspicker.ui.pickerscreen
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.ui.components.PrivacyShieldIcon
 
-const val CONTACTS_PICKER_TOP_BAR_PRIVACY_ICON_TEST_TAG = "contacts_picker_top_bar_privacy_icon"
+const val CONTACTS_PICKER_TOP_BAR_MORE_VERTICAL_ICON_TEST_TAG =
+    "contacts_picker_top_bar_more_vertical_icon"
 
 @Composable
 fun ContactsPickerTopBar(
@@ -48,6 +58,7 @@ fun ContactsPickerTopBar(
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (Long, Long) -> Unit,
     onExitSearch: () -> Unit,
+    onShowPrivacyDetailsClick: () -> Unit,
 ) {
     val isSearchExpanded by remember { derivedStateOf { uiState.value is SearchState } }
     Row(
@@ -67,11 +78,38 @@ fun ContactsPickerTopBar(
         )
         if (!isSearchExpanded) {
             ProfileSwitcher()
+            OverflowMenu(onClickPrivacyDetailsMenuItem = onShowPrivacyDetailsClick)
+        }
+    }
+}
+
+@Composable
+private fun OverflowMenu(onClickPrivacyDetailsMenuItem: () -> Unit) {
+    var showOverflowMenu by rememberSaveable { mutableStateOf(false) }
+
+    Box {
+        // TODO(b/460366127): To improve accessibility, wrap the IconButton in a TooltipBox
+        IconButton(
+            onClick = { showOverflowMenu = true },
+            modifier = Modifier.testTag(CONTACTS_PICKER_TOP_BAR_MORE_VERTICAL_ICON_TEST_TAG),
+        ) {
             Icon(
-                painter = painterResource(id = R.drawable.android_security_privacy),
-                contentDescription = stringResource(R.string.privacy_info_content_description),
-                tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.testTag(CONTACTS_PICKER_TOP_BAR_PRIVACY_ICON_TEST_TAG),
+                imageVector = Icons.Default.MoreVert,
+                contentDescription =
+                    stringResource(
+                        R.string.contacts_picker_top_bar_more_options_content_description
+                    ),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        DropdownMenu(expanded = showOverflowMenu, onDismissRequest = { showOverflowMenu = false }) {
+            DropdownMenuItem(
+                onClick = {
+                    showOverflowMenu = false
+                    onClickPrivacyDetailsMenuItem()
+                },
+                text = { Text(stringResource(R.string.privacy_details_menu_label)) },
+                leadingIcon = { PrivacyShieldIcon() },
             )
         }
     }
