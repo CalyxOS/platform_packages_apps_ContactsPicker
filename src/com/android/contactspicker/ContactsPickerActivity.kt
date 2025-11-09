@@ -94,7 +94,8 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
             val callingAppName = appPackageManager.getApplicationLabel(appInfo)?.toString()
             if (
                 intent.getBooleanExtra(Intent.EXTRA_USE_SYSTEM_CONTACTS_PICKER, false) ||
-                    appInfo.targetSdkVersion >= ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD
+                    appInfo.targetSdkVersion >= ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD ||
+                    Flags.enableActionPickTakeoverInDroidfood()
             ) {
                 // It's safe to handle internally. Process the data and show the UI.
                 Log.d(
