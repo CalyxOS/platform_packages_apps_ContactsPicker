@@ -22,7 +22,7 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"Kembali"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"Detail selengkapnya"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Jika Anda memilih kontak, %1$s akan memiliki akses ke info berikut dari kontak di perangkat Anda.\n\nJika Anda memperbarui info kontak, %1$s tidak akan memiliki akses ke perubahan tersebut."</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="6278952758241087272">"Info kontak dapat mencakup:"</string>
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Info kontak dapat mencakup detail seperti:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Nama"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"Nama"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Nomor telepon"</string>
@@ -41,10 +41,11 @@
     <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"Situs"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"Nama panggilan"</string>
     <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"Nama panggilan"</string>
-    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
-    <skip />
+    <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"Foto profil"</string>
+    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"Foto profil"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Grup kontak"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Grup kontak"</string>
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"Beberapa preferensi kontak"</string>
+    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"Beberapa preferensi kontak"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Termasuk status favorit kontak dan apakah mereka dikirim ke pesan suara"</string>
 </resources>

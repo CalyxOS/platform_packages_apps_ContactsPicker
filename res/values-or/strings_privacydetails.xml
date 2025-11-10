@@ -22,7 +22,7 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"ପଛକୁ ଫେରନ୍ତୁ"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"ଅଧିକ ବିବରଣୀ"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"ଆପଣ ଏକ କଣ୍ଟାକ୍ଟ ଚୟନ କଲେ, %1$s ପାଖରେ ଆପଣଙ୍କ ଡିଭାଇସ କଣ୍ଟାକ୍ଟଗୁଡ଼ିକରୁ ନିମ୍ନୋକ୍ତ ସୂଚନାକୁ ଆକ୍ସେସ ରହିବ।\n\nଯଦି ଆପଣ କଣ୍ଟାକ୍ଟ ସୂଚନାରେ କୌଣସି ଅପଡେଟ କରନ୍ତି, ତେବେ %1$s ପାଖରେ ପରିବର୍ତ୍ତନଗୁଡ଼ିକୁ ଆକ୍ସେସ ରହିବ ନାହିଁ।"</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="6278952758241087272">"କଣ୍ଟାକ୍ଟ ସୂଚନାରେ ଏସବୁ ଅନ୍ତର୍ଭୁକ୍ତ ହୋଇପାରେ:"</string>
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"କଣ୍ଟାକ୍ଟ ସୂଚନାରେ ଏସବୁ ପରି ବିବରଣୀ ଅନ୍ତର୍ଭୁକ୍ତ ହୋଇପାରେ:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"ନାମ"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"ନାମ"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"ଫୋନ ନମ୍ଵର"</string>
@@ -41,10 +41,11 @@
     <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"ୱେବସାଇଟ"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"ଡାକନାମ"</string>
     <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"ଡାକନାମ"</string>
-    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
-    <skip />
+    <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"ପ୍ରୋଫାଇଲ ଛବି"</string>
+    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"ପ୍ରୋଫାଇଲ ଛବି"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"କଣ୍ଟାକ୍ଟ ଗ୍ରୁପ"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"କଣ୍ଟାକ୍ଟ ଗ୍ରୁପ"</string>
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"କିଛି କଣ୍ଟାକ୍ଟ ପସନ୍ଦ"</string>
+    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"କିଛି କଣ୍ଟାକ୍ଟ ପସନ୍ଦ"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"ଏକ କଣ୍ଟାକ୍ଟର ପସନ୍ଦର ସ୍ଥିତି ଏବଂ ତାକୁ ଭଏସମେଲକୁ ପଠାଯାଇଛି ନା ନାହିଁ ତାହା ଅନ୍ତର୍ଭୁକ୍ତ କରେ"</string>
 </resources>

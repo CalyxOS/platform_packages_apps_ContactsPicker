@@ -34,6 +34,8 @@ fun ContactsPickerNavHost(
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (Long, Long) -> Unit,
     onExpandRequest: () -> Unit,
+    onQueryChange: (String) -> Unit,
+    onExitSearch: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -46,15 +48,20 @@ fun ContactsPickerNavHost(
                 uiState = uiState,
                 onToggleContactSelection = onToggleContactSelection,
                 onToggleEntrySelection = onToggleEntrySelection,
-                onMoreDetails = {
+                onPrivacyBannerMoreDetails = {
                     navController.navigateToAndPopUpToStart(PrivacyDetailsRoute.route)
                 },
                 onExpandRequest = onExpandRequest,
+                onQueryChange = onQueryChange,
+                onExitSearch = onExitSearch,
             )
         }
 
         composable(PrivacyDetailsRoute.route) {
-            PrivacyDetailsScreen(onBackPressed = { navController.popBackStack() })
+            PrivacyDetailsScreen(
+                onBackPressed = { navController.popBackStack() },
+                uiState = uiState,
+            )
         }
     }
 }

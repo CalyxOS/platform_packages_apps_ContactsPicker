@@ -22,7 +22,7 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"Indietro"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"Altri dettagli"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Se selezioni un contatto, %1$s avrà accesso alle seguenti informazioni dai contatti sul tuo dispositivo.\n\nSe apporti aggiornamenti ai dati di contatto, %1$s non avrà accesso alle modifiche."</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="6278952758241087272">"I dati di contatto possono includere:"</string>
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"I dati di contatto possono includere dettagli come:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Nome"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"Nome"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Numeri di telefono"</string>
@@ -41,10 +41,11 @@
     <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"Sito web"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"Nickname"</string>
     <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"Nickname"</string>
-    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
-    <skip />
+    <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"Immagine del profilo"</string>
+    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"Immagine del profilo"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Gruppo di contatti"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Gruppo di contatti"</string>
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"Alcune preferenze di contatto"</string>
+    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"Alcune preferenze di contatto"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Questo campo include lo stato di preferito di un contatto e indica se le sue chiamate vengono inoltrate alla segreteria"</string>
 </resources>

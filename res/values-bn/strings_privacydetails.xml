@@ -22,7 +22,7 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"ফিরে যান"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"আরও বিস্তারিত বিবরণ"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"আপনি কোনও পরিচিতি বেছে নিলে, আপনার ডিভাইস পরিচিতি থেকে, %1$s নিম্নলিখিত তথ্য অ্যাক্সেস করতে পারবে।\n\nআপনি পরিচিতির তথ্যে কোনও আপডেট করলে, %1$s সেই পরিবর্তন অ্যাক্সেস করে দেখতে পারবে না।"</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="6278952758241087272">"পরিচিতির তথ্যে এগুলি থাকতে পারে:"</string>
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"পরিচিতির তথ্যে এই ধরনের বিবরণ থাকতে পারে:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"নাম"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"নাম"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"ফোন নম্বর"</string>
@@ -41,10 +41,11 @@
     <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"ওয়েবসাইট"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"ডাকনাম"</string>
     <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"ডাকনাম"</string>
-    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
-    <skip />
+    <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"প্রোফাইল ছবি"</string>
+    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"প্রোফাইল ছবি"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"পরিচিতি গ্রুপ"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"পরিচিতি গ্রুপ"</string>
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"পরিচিতি সংক্রান্ত কিছু পছন্দ"</string>
+    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"পরিচিতি সংক্রান্ত কিছু পছন্দ"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"পরিচিতির প্রিয় স্ট্যাটাস এবং সেগুলি ভয়েসমেলে পাঠানো হয়েছে কিনা তা অন্তর্ভুক্ত"</string>
 </resources>

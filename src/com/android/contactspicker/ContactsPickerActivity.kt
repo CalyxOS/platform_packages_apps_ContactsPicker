@@ -81,10 +81,6 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
      * [Intent.EXTRA_USE_SYSTEM_CONTACTS_PICKER] extra and the calling package target SDK.
      */
     private fun routeIntent(intent: Intent) {
-        if (intent.getBooleanExtra(Intent.EXTRA_USE_SYSTEM_CONTACTS_PICKER, false)) {
-            processIntentAndSetupUi(intent)
-            return
-        }
         val callingPackage = callingPackageProvider.get()
         if (callingPackage == null) {
             Log.e(TAG, "Cannot get calling package. Finishing with RESULT_CANCELED.")
@@ -95,13 +91,17 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
 
         try {
             val appInfo = appPackageManager.getApplicationInfo(callingPackage, 0)
-            if (appInfo.targetSdkVersion >= ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD) {
+            val callingAppName = appPackageManager.getApplicationLabel(appInfo)?.toString()
+            if (
+                intent.getBooleanExtra(Intent.EXTRA_USE_SYSTEM_CONTACTS_PICKER, false) ||
+                    appInfo.targetSdkVersion >= ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD
+            ) {
                 // It's safe to handle internally. Process the data and show the UI.
                 Log.d(
                     TAG,
-                    "Handling ACTION_PICK for $callingPackage (targetSDK=${appInfo.targetSdkVersion}) internally.",
+                    "Handling ${intent.action} for $callingPackage (targetSDK=${appInfo.targetSdkVersion}) internally.",
                 )
-                processIntentAndSetupUi(intent)
+                processIntentAndSetupUi(intent, callingAppName)
             } else {
                 Log.d(
                     TAG,
@@ -121,7 +121,7 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
             }
         } catch (e: PackageManager.NameNotFoundException) {
             Log.e(TAG, "Calling package not found: $callingPackage", e)
-            processIntentAndSetupUi(intent)
+            processIntentAndSetupUi(intent, null)
         }
     }
 
@@ -157,8 +157,8 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
     }
 
     // Processes the intent which will trigger querying CP2 for contacts and sets up the UI.
-    private fun processIntentAndSetupUi(intent: Intent) {
-        contactsViewModel.processIntent(intent.action, intent.type, intent.extras)
+    private fun processIntentAndSetupUi(intent: Intent, appName: String?) {
+        contactsViewModel.processIntent(intent.action, intent.type, intent.extras, appName)
         setupComposeUi()
     }
 
@@ -175,6 +175,8 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
                     onToggleEntrySelection = contactsViewModel::toggleEntrySelection,
                     onClearSelection = contactsViewModel::clearSelection,
                     onDoneClicked = ::handleDoneClicked,
+                    onQueryChange = contactsViewModel::onSearchQueryChanged,
+                    onExitSearch = contactsViewModel::exitSearch,
                 )
             }
         }

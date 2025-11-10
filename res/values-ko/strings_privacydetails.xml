@@ -22,7 +22,7 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"뒤로"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"세부정보 더보기"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"연락처를 선택하면 %1$s에서 기기 연락처의 다음 정보에 액세스할 수 있습니다.\n\n연락처 정보가 업데이트되어도 %1$s에서는 변경사항에 액세스할 수 없습니다."</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="6278952758241087272">"연락처 정보에는 다음이 포함될 수 있습니다"</string>
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"연락처 정보에는 다음과 같은 세부정보가 포함될 수 있습니다"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"이름"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"이름"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"전화번호"</string>
@@ -41,10 +41,11 @@
     <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"웹사이트"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"닉네임"</string>
     <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"닉네임"</string>
-    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
-    <skip />
+    <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"프로필 사진"</string>
+    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"프로필 사진"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"연락처 그룹"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"연락처 그룹"</string>
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"일부 연락처 환경설정"</string>
+    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"일부 연락처 환경설정"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"연락처의 즐겨찾기 상태 및 음성사서함으로 연결되는지 여부가 포함됩니다."</string>
 </resources>

@@ -26,8 +26,11 @@
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"সন্ধান কৰক"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"সন্ধান কৰা পাঠবোৰ মচক"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"সন্ধান কৰাটো বন্ধ কৰক"</string>
+    <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"প্ৰিয়"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"প্ৰ’ফাইল সলনি কৰক"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"গোপনীয়তাৰ তথ্য"</string>
+    <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"সম্পৰ্কৰ প্ৰ’ফাইল চিত্ৰ"</string>
+    <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"সম্পৰ্কৰ প্ৰাৰম্ভিক তথ্য"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"বিস্তাৰ কৰক"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"সংকোচন কৰক"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ফ’ন"</string>
@@ -41,4 +44,6 @@
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$sএ কেৱল আপুনি বাছনি কৰা সম্পৰ্কসমূহৰ তথ্যহে এক্সেছ কৰিব পাৰিব"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"অধিক সবিশেষ"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"অগ্ৰাহ্য কৰক"</string>
+    <!-- no translation found for default_calling_app_name (5345125341557406609) -->
+    <skip />
 </resources>

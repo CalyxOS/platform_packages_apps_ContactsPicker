@@ -73,6 +73,8 @@ class ContactsPickerNavHostTest {
                     availableContacts = emptyList(),
                     selectedContacts = longObjectMapOf(),
                     isMultiSelectEnabled = false,
+                    callingAppName = null,
+                    requestedMimeTypes = emptyList(),
                 )
             )
         )
@@ -91,6 +93,8 @@ class ContactsPickerNavHostTest {
                     availableContacts = emptyList(),
                     selectedContacts = longObjectMapOf(),
                     isMultiSelectEnabled = false,
+                    callingAppName = null,
+                    requestedMimeTypes = emptyList(),
                 )
             )
         )
@@ -121,6 +125,8 @@ class ContactsPickerNavHostTest {
                     onExpandRequest = {},
                     onToggleContactSelection = {},
                     onToggleEntrySelection = { _, _ -> },
+                    onQueryChange = {},
+                    onExitSearch = {},
                 )
             }
         }

@@ -31,7 +31,9 @@ import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsListState
+import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
+import com.android.contactspicker.SearchState
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import org.junit.Rule
 import org.junit.Test
@@ -55,10 +57,12 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = mutableStateOf(ContactsListState.Loading),
-                onMoreDetails = {},
+                onPrivacyBannerMoreDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
+                onQueryChange = {},
+                onExitSearch = {},
             )
         }
         composeTestRule
@@ -73,10 +77,12 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = mutableStateOf(ContactsListState.Error(errorMessage)),
-                onMoreDetails = {},
+                onPrivacyBannerMoreDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
+                onQueryChange = {},
+                onExitSearch = {},
             )
         }
 
@@ -106,10 +112,12 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = mutableStateOf(ContactsListState.Error(errorMessage)),
-                onMoreDetails = {},
+                onPrivacyBannerMoreDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
+                onQueryChange = {},
+                onExitSearch = {},
             )
         }
         composeTestRule
@@ -124,10 +132,12 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = mutableStateOf(ContactsListState.Loading),
-                onMoreDetails = {},
+                onPrivacyBannerMoreDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
+                onQueryChange = {},
+                onExitSearch = {},
             )
         }
         composeTestRule
@@ -168,12 +178,16 @@ class ContactsPickerScreenTest {
                             availableContacts = emptyList(),
                             selectedContacts = longObjectMapOf(),
                             isMultiSelectEnabled = false,
+                            callingAppName = null,
+                            requestedMimeTypes = emptyList(),
                         )
                     ),
-                onMoreDetails = {},
+                onPrivacyBannerMoreDetails = {},
                 onExpandRequest = mockOnExpandRequest,
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
+                onQueryChange = {},
+                onExitSearch = {},
             )
         }
 
@@ -194,20 +208,27 @@ class ContactsPickerScreenTest {
 
     @Test
     fun pickerScreen_clickSearch_hidesContactsList() {
+        val uiState =
+            mutableStateOf<ContactsUiState>(
+                ContactsListState.Success(
+                    availableContacts = listOf(testContact),
+                    selectedContacts = longObjectMapOf(),
+                    isMultiSelectEnabled = false,
+                    callingAppName = null,
+                    requestedMimeTypes = emptyList(),
+                )
+            )
         composeTestRule.setContent {
             ContactsPickerScreen(
-                uiState =
-                    mutableStateOf(
-                        ContactsListState.Success(
-                            availableContacts = listOf(testContact),
-                            selectedContacts = longObjectMapOf(),
-                            isMultiSelectEnabled = false,
-                        )
-                    ),
-                onMoreDetails = {},
-                onExpandRequest = { mutableStateOf(false).value = true },
+                uiState = uiState,
+                onPrivacyBannerMoreDetails = {},
+                onExpandRequest = {
+                    uiState.value = SearchState.Success("", emptyList(), longObjectMapOf())
+                },
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
+                onQueryChange = {},
+                onExitSearch = {},
             )
         }
 
@@ -233,12 +254,16 @@ class ContactsPickerScreenTest {
                             availableContacts = listOf(testContact),
                             selectedContacts = longObjectMapOf(),
                             isMultiSelectEnabled = false,
+                            callingAppName = null,
+                            requestedMimeTypes = emptyList(),
                         )
                     ),
-                onMoreDetails = {},
+                onPrivacyBannerMoreDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
+                onQueryChange = {},
+                onExitSearch = {},
             )
         }
     }

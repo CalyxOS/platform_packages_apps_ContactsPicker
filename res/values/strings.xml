@@ -38,6 +38,10 @@
     <string name="contacts_picker_top_bar_search_arrow_back_content_description">Close search</string>
     <!-- The title of the "Favorites" section in the contacts list. -->
     <string name="contacts_picker_favorites_header">Favorites</string>
+    <!--Content description for the "Favorites" section header icon. [CHAR LIMIT=NONE] -->
+    <string name="favorites_header_icon_content_description">Star icon</string>
+    <!--Content description for the emoji icon that is the section header for special characters. [CHAR LIMIT=NONE] -->
+    <string name="emoji_header_icon_content_description">Smile icon</string>
     <!--Content description for the profile switcher icon button in the top bar. Tapping it
         expands the profile switcher. [CHAR LIMIT=NONE] -->
     <string name="profile_switcher_content_description">Switch profile</string>
@@ -87,4 +91,7 @@
     <string name="privacy_banner_more_details">"More Details"</string>
     <!-- Text for the "Dismiss" button on the privacy banner. -->
     <string name="privacy_banner_dismiss">"Dismiss"</string>
+
+    <!-- The default fallback name to use for the calling application. -->
+    <string name="default_calling_app_name">This app</string>
 </resources>

@@ -26,8 +26,11 @@
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"શોધો"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"શોધ ટેક્સ્ટ સાફ કરો"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"શોધ બંધ કરો"</string>
+    <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"મનપસંદ"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"પ્રોફાઇલ સ્વિચ કરો"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"પ્રાઇવસી સંબંધિત માહિતી"</string>
+    <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"સંપર્કનો પ્રોફાઇલ ફોટો"</string>
+    <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"સંપર્કના નામનો પહેલો અક્ષર"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"મોટું કરો"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"નાનું કરો"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ફોન"</string>
@@ -41,4 +44,6 @@
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s માત્ર તમે પસંદ કરો છો તે સંપર્કોની માહિતીનો ઍક્સેસ ધરાવશે"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"વધુ વિગતો"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"છોડી દો"</string>
+    <!-- no translation found for default_calling_app_name (5345125341557406609) -->
+    <skip />
 </resources>

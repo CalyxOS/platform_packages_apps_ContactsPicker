@@ -23,6 +23,9 @@ class FakeContactsRepository : ContactsRepository {
 
     private var initialContacts: List<Contact> = emptyList()
     private var exceptionToThrow: Exception? = null
+    private val searchResultsMap = mutableMapOf<String, List<Contact>>()
+    private val searchExceptionMap = mutableMapOf<String, Exception>()
+    private val searchInvocationsCountMap = mutableMapOf<String, Int>()
 
     fun setInitialContacts(contacts: List<Contact>) {
         initialContacts = contacts
@@ -31,6 +34,21 @@ class FakeContactsRepository : ContactsRepository {
 
     fun setException(exception: Exception) {
         exceptionToThrow = exception
+    }
+
+    fun setSearchResults(query: String, results: List<Contact>) {
+        searchResultsMap[query] = results
+        searchExceptionMap.remove(query)
+    }
+
+    fun setSearchException(query: String, exception: Exception) {
+        searchExceptionMap[query] = exception
+        searchResultsMap.remove(query)
+    }
+
+    /** Returns the number of times [searchContacts] has been invoked with the provided [query]. */
+    fun searchInvocationsCountForQuery(query: String): Int {
+        return searchInvocationsCountMap.getOrDefault(query, 0)
     }
 
     override suspend fun getContactsForIntent(
@@ -46,6 +64,8 @@ class FakeContactsRepository : ContactsRepository {
         intentAction: String?,
         intentType: String?,
     ): List<Contact> {
-        return emptyList()
+        searchInvocationsCountMap[query] = searchInvocationsCountMap.getOrDefault(query, 0) + 1
+        searchExceptionMap[query]?.let { throw it }
+        return searchResultsMap[query] ?: emptyList()
     }
 }

@@ -48,10 +48,9 @@ internal const val PRIVACY_BANNER_TEST_TAG = "PrivacyBanner"
  * @param onMoreDetails Callback to be invoked when the "More details" button is clicked.
  * @param onDismissRequest Callback to be invoked when the "Dismiss" button is clicked.
  */
-// TODO(b/446667703) : Implement logic to dynamically fetch the name of the calling application
 @Composable
 fun PrivacyBanner(
-    appName: String = "SampleApp",
+    callingAppName: String?,
     onMoreDetails: () -> Unit,
     onDismissRequest: () -> Unit,
 ) {
@@ -65,7 +64,10 @@ fun PrivacyBanner(
                 )
                 .testTag(PRIVACY_BANNER_TEST_TAG)
     ) {
-        PrivacyBannerDescription(appName, modifier = Modifier.padding(16.dp))
+        PrivacyBannerDescription(
+            callingAppName ?: stringResource(R.string.default_calling_app_name),
+            modifier = Modifier.padding(16.dp),
+        )
         PrivacyBannerActions(
             onMoreDetails,
             onDismissRequest,
@@ -75,7 +77,7 @@ fun PrivacyBanner(
 }
 
 @Composable
-private fun PrivacyBannerDescription(appName: String, modifier: Modifier = Modifier) {
+private fun PrivacyBannerDescription(callingAppName: String, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -88,7 +90,7 @@ private fun PrivacyBannerDescription(appName: String, modifier: Modifier = Modif
             modifier = Modifier.padding(4.dp).size(24.dp),
         )
         Text(
-            text = stringResource(R.string.privacy_banner_description, appName),
+            text = stringResource(R.string.privacy_banner_description, callingAppName),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

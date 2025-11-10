@@ -26,8 +26,12 @@
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"Buscar"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"Borrar texto de busca"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"Pechar busca"</string>
+    <!-- no translation found for contacts_picker_favorites_header (8832599911501712849) -->
+    <skip />
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"Cambiar de perfil"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"Información acerca da privacidade"</string>
+    <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Imaxe do perfil do contacto"</string>
+    <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"Inicial do contacto"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"Despregar"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Contraer"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Teléfono"</string>
@@ -41,4 +45,6 @@
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s só terá acceso á información dos contactos que selecciones"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"Máis detalles"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"Pechar"</string>
+    <!-- no translation found for default_calling_app_name (5345125341557406609) -->
+    <skip />
 </resources>

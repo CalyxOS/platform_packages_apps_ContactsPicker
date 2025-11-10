@@ -54,7 +54,7 @@ class PrivacyDetailsBodyTest {
             )
 
         composeTestRule.setContent {
-            PrivacyDetailsBody(appName = SAMPLE_APP_NAME, requestedDataFields = dataFields)
+            PrivacyDetailsBody(callingAppName = SAMPLE_APP_NAME, requestedDataFields = dataFields)
         }
 
         val expectedDescription =
@@ -69,6 +69,34 @@ class PrivacyDetailsBodyTest {
         val expectedEmailText = context.getString(R.string.privacy_details_data_field_email_header)
         composeTestRule.onNodeWithText(expectedPhoneText).assertIsDisplayed()
         composeTestRule.onNodeWithText(expectedEmailText).assertIsDisplayed()
+    }
+
+    @Test
+    fun privacyDetailsBody_nullAppName_displaysFallbackAppName() {
+        val expectedDescription =
+            context.getString(
+                R.string.privacy_details_description,
+                context.getString(R.string.default_calling_app_name),
+            )
+
+        composeTestRule.setContent {
+            PrivacyDetailsBody(callingAppName = null, requestedDataFields = emptyList())
+        }
+
+        composeTestRule.onNodeWithText(expectedDescription).assertIsDisplayed()
+    }
+
+    @Test
+    fun privacyDetailsBody_withAppName_displaysAppName() {
+        val testAppName = "Test App"
+        val expectedDescription =
+            context.getString(R.string.privacy_details_description, testAppName)
+
+        composeTestRule.setContent {
+            PrivacyDetailsBody(callingAppName = testAppName, requestedDataFields = emptyList())
+        }
+
+        composeTestRule.onNodeWithText(expectedDescription).assertIsDisplayed()
     }
 
     @Test

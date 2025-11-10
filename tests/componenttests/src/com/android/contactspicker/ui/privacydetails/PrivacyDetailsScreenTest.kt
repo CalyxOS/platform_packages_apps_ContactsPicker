@@ -20,6 +20,7 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -27,6 +28,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.R
 import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
 import org.junit.Rule
@@ -47,7 +49,12 @@ class PrivacyDetailsScreenTest {
     @Test
     fun privacyDetailsScreen_displaysTopBarAndBody() {
         composeTestRule.setContent {
-            ContactsPickerAppTheme { PrivacyDetailsScreen(onBackPressed = {}) }
+            ContactsPickerAppTheme {
+                PrivacyDetailsScreen(
+                    onBackPressed = {},
+                    uiState = mutableStateOf(ContactsListState.Loading),
+                )
+            }
         }
 
         composeTestRule.onNodeWithTag(PRIVACY_DETAILS_SCREEN_TOP_BAR_TEST_TAG).assertIsDisplayed()
@@ -58,7 +65,12 @@ class PrivacyDetailsScreenTest {
     fun privacyDetailsScreen_invokesOnBackPressedCallback() {
         val mockOnBackPressed: () -> Unit = mock()
 
-        composeTestRule.setContent { PrivacyDetailsScreen(onBackPressed = mockOnBackPressed) }
+        composeTestRule.setContent {
+            PrivacyDetailsScreen(
+                onBackPressed = mockOnBackPressed,
+                uiState = mutableStateOf(ContactsListState.Loading),
+            )
+        }
 
         val backButtonContentDescription =
             context.getString(R.string.privacy_details_top_bar_back_button_content_description)

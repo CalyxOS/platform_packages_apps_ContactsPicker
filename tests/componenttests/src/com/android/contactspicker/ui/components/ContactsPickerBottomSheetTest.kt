@@ -33,6 +33,8 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.swipeUp
@@ -68,6 +70,8 @@ class ContactsPickerBottomSheetTest {
             listOf(testContact),
             selectedContacts = selectedContacts,
             isMultiSelectEnabled = false,
+            callingAppName = null,
+            requestedMimeTypes = emptyList(),
         )
 
     private val context: Context = ApplicationProvider.getApplicationContext()
@@ -156,12 +160,16 @@ class ContactsPickerBottomSheetTest {
                                 availableContacts = listOf(testContact),
                                 selectedContacts = selectedContacts,
                                 isMultiSelectEnabled = false,
+                                callingAppName = null,
+                                requestedMimeTypes = emptyList(),
                             )
                         ),
                     onToggleEntrySelection = { _, _ -> },
                     onToggleContactSelection = {},
                     onClearSelection = {},
                     onDoneClicked = {},
+                    onQueryChange = {},
+                    onExitSearch = {},
                 )
             }
         }
@@ -195,12 +203,16 @@ class ContactsPickerBottomSheetTest {
                                 availableContacts = listOf(testContact),
                                 selectedContacts = selectedContacts,
                                 isMultiSelectEnabled = false,
+                                callingAppName = null,
+                                requestedMimeTypes = emptyList(),
                             )
                         ),
                     onToggleEntrySelection = { _, _ -> },
                     onToggleContactSelection = {},
                     onClearSelection = {},
                     onDoneClicked = {},
+                    onQueryChange = {},
+                    onExitSearch = {},
                 )
             }
         }
@@ -220,6 +232,60 @@ class ContactsPickerBottomSheetTest {
             .assertDoesNotExist()
     }
 
+    @Test
+    fun whenSearchBarClicked_bottomSheet_expandsToFullHeight() {
+        setupBottomSheet()
+
+        val sheetNode = composeTestRule.onNodeWithTag(BOTTOM_SHEET_TEST_TAG)
+        val initialBounds = sheetNode.getUnclippedBoundsInRoot()
+
+        val searchHint = context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
+        composeTestRule.onNodeWithText(searchHint).performClick()
+
+        composeTestRule.waitForIdle()
+
+        val expandedBounds = sheetNode.getUnclippedBoundsInRoot()
+        sheetNode.assertIsDisplayed()
+        assertThat(expandedBounds.top).isLessThan(initialBounds.top)
+    }
+
+    @Test
+    fun onSearchQueryChanged_isCalled_whenQueryIsEntered() {
+        val onSearchQueryChanged: (String) -> Unit = mock()
+        composeTestRule.setContent {
+            ContactsPickerAppTheme {
+                ContactsPickerBottomSheet(
+                    onDismissRequest = {},
+                    uiState =
+                        mutableStateOf(
+                            ContactsListState.Success(
+                                availableContacts = listOf(testContact),
+                                selectedContacts = selectedContacts,
+                                false,
+                                callingAppName = null,
+                                requestedMimeTypes = emptyList(),
+                            )
+                        ),
+                    onToggleEntrySelection = { _, _ -> },
+                    onToggleContactSelection = {},
+                    onClearSelection = {},
+                    onDoneClicked = {},
+                    onQueryChange = onSearchQueryChanged,
+                    onExitSearch = {},
+                )
+            }
+        }
+
+        val searchQuery = "test"
+        composeTestRule
+            .onNodeWithText(
+                context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
+            )
+            .performTextInput(searchQuery)
+
+        verify(onSearchQueryChanged).invoke(searchQuery)
+    }
+
     private fun setupBottomSheet(
         onDismissRequest: () -> Unit = {},
         uiState: ContactsUiState = ContactsListState.Loading,
@@ -233,6 +299,8 @@ class ContactsPickerBottomSheetTest {
                     onToggleContactSelection = {},
                     onClearSelection = {},
                     onDoneClicked = {},
+                    onQueryChange = {},
+                    onExitSearch = {},
                 )
             }
         }

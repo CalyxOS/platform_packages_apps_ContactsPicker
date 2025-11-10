@@ -22,7 +22,7 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"Atrás"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"Más detalles"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Cuando selecciones un contacto, %1$s tendrá acceso a la siguiente información de los contactos de tu dispositivo.\n\nSi actualizas la información de contacto, %1$s no tendrá acceso a los cambios."</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="6278952758241087272">"La información de contacto puede incluir lo siguiente:"</string>
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"La información de contacto puede incluir detalles como los siguientes:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Nombre"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"Nombre"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Números de teléfono"</string>
@@ -41,10 +41,11 @@
     <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"Sitio web"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"Sobrenombre"</string>
     <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"Sobrenombre"</string>
-    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
-    <skip />
+    <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"Foto de perfil"</string>
+    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"Foto de perfil"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Grupo de contactos"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Grupo de contactos"</string>
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"Algunas preferencias de contacto"</string>
+    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"Algunas preferencias de contacto"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Incluye el estado de favorito de un contacto y si se envía al buzón de voz"</string>
 </resources>

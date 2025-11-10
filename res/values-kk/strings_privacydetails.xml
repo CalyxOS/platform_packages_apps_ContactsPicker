@@ -22,7 +22,7 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"Артқа"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"Қосымша мәлімет"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Контактіні таңдаған кезде, %1$s қолданбасы құрылғыда сақталған контактілерден келесі ақпаратты пайдалана алады.\n\nБайланыс ақпаратына өзгеріс енгізсеңіз, %1$s өзгерістерді пайдалана алмайды."</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="6278952758241087272">"Байланыс ақпаратына мыналар кіруі мүмкін:"</string>
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Байланыс ақпаратына мынадай мәліметтер жатуы мүмкін:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Аты"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"Аты"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Телефон нөмірлері"</string>
@@ -41,10 +41,11 @@
     <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"Веб-сайт"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"Лақап ат"</string>
     <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"Лақап ат"</string>
-    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
-    <skip />
+    <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"Профиль суреті"</string>
+    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"Профиль суреті"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Байланыс тобы"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Байланыс тобы"</string>
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"Контактінің кейбір параметрлері"</string>
+    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"Контактінің кейбір параметрлері"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Контактінің таңдаулы мәртебесі және одан келетін қоңыраулардың дауыстық поштаға жіберілгені не жіберілмегені туралы ақпаратты қамтиды."</string>
 </resources>

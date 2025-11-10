@@ -23,52 +23,23 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.ContactsListState
-import com.android.contactspicker.ContactsUiState
-import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.ui.pickerscreen.CONTACTS_PICKER_SCREEN_LOADING_INDICATOR_TEST_TAG
 import com.android.contactspicker.ui.pickerscreen.ContactsPickerBody
 
 /**
- * Displays the content of the Contacts Picker based on the current [ContactsUiState].
+ * Displays the content of the Contacts Picker based on the current [ContactsListState].
  *
- * This component is used as the main browsing screen for the contacts list and the contacts search
- * results screen, to provide a consistent way of handling loading, error, and success states before
- * displaying the core contact list.
+ * Used as the main browsing screen for the contacts list and provides a consistent way of handling
+ * loading, error, and success states before displaying the core contact list.
  */
 @Composable
-fun ContactsPickerContent(
-    uiState: State<ContactsUiState>,
-    onPrivacyBannerMoreDetails: () -> Unit,
-    onPrivacyBannerDismissRequest: () -> Unit,
-    onToggleContactSelection: (Contact) -> Unit,
-    onToggleEntrySelection: (contactId: Long, entryId: Long) -> Unit,
-) {
-    val uiStateValue = uiState.value
-    when (uiStateValue) {
-        is ContactsListState ->
-            ContactsListContent(
-                uiState = uiStateValue,
-                onPrivacyBannerMoreDetails = onPrivacyBannerMoreDetails,
-                onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
-                onToggleContactSelection = onToggleContactSelection,
-                onToggleEntrySelection = onToggleEntrySelection,
-            )
-
-        is SearchState -> {
-            // TODO(b/443023416): Implement search states UI
-        }
-    }
-}
-
-@Composable
-private fun ContactsListContent(
+fun ContactsListContent(
     uiState: ContactsListState,
     onPrivacyBannerMoreDetails: () -> Unit,
     onPrivacyBannerDismissRequest: () -> Unit,
@@ -100,6 +71,7 @@ private fun ContactsListContent(
         is ContactsListState.Success -> {
             ContactsPickerBody(
                 contacts = uiState.availableContacts,
+                callingAppName = uiState.callingAppName,
                 selectedContacts = uiState.selectedContacts,
                 isMultiSelectEnabled = uiState.isMultiSelectEnabled,
                 onToggleContactSelection = onToggleContactSelection,

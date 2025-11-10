@@ -22,7 +22,7 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"Հետ"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"Այլ մանրամասներ"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Եթե ընտրեք կոնտակտ, «%1$s» հավելվածին հասանելի կլինեն ձեր սարքի կոնտակտների հետևյալ տվյալները։\n\nԵթե կոնտակտային տվյալներում փոփոխություններ կատարեք, «%1$s» հավելվածին հասանելի չեն լինի այդ փոփոխությունները։"</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="6278952758241087272">"Կոնտակտային տվյալները կարող են ներառել՝"</string>
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Կոնտակտային տվյալները կարող են ներառել՝"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Անուն"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"Անուն"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Հեռախոսահամարներ"</string>
@@ -41,10 +41,11 @@
     <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"Կայք"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"Կեղծանուն"</string>
     <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"Կեղծանուն"</string>
-    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
-    <skip />
+    <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"Պրոֆիլի նկար"</string>
+    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"Պրոֆիլի նկար"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Կոնտակտների խումբ"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Կոնտակտների խումբ"</string>
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"Կոնտակտների որոշ կարգավորումներ"</string>
+    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"Կոնտակտների որոշ կարգավորումներ"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Ներառում է կոնտակտի՝ ընտրանիում ավելացված լինելու կարգավիճակը և այն, թե արդյոք նրա զանգերը փոխանցվում են ձայնային փոստին"</string>
 </resources>

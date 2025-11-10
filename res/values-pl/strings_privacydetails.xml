@@ -22,7 +22,7 @@
     <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"Wstecz"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"Więcej szczegółów"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Gdy wybierzesz kontakt, %1$s będzie mieć dostęp do tych informacji z kontaktów na Twoim urządzeniu:\n\nJeśli zaktualizujesz informacje kontaktowe, %1$s nie będzie mieć dostępu do tych zmian."</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="6278952758241087272">"Informacje kontaktowe mogą obejmować:"</string>
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Informacje kontaktowe mogą obejmować takie dane jak:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Imię i nazwisko"</string>
     <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"Imię i nazwisko"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Numery telefonów"</string>
@@ -41,10 +41,11 @@
     <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"Witryna"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"Pseudonim"</string>
     <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"Pseudonim"</string>
-    <!-- no translation found for privacy_details_data_field_photo_header (4627205637502914363) -->
-    <skip />
-    <!-- no translation found for privacy_details_data_field_photo_content_description (2209493479248305017) -->
-    <skip />
+    <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"Zdjęcie profilowe"</string>
+    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"Zdjęcie profilowe"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Grupa kontaktów"</string>
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Grupa kontaktów"</string>
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"Niektóre ustawienia kontaktu"</string>
+    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"Niektóre ustawienia kontaktu"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Obejmuje status ulubionego kontaktu i informację o tym, czy jest on przekierowywany do poczty głosowej"</string>
 </resources>

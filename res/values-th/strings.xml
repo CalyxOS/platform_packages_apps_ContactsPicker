@@ -26,8 +26,11 @@
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"ค้นหา"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"ล้างข้อความค้นหา"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"ปิดการค้นหา"</string>
+    <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"รายการโปรด"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"เปลี่ยนโปรไฟล์"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"ข้อมูลความเป็นส่วนตัว"</string>
+    <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"รูปโปรไฟล์ของรายชื่อติดต่อ"</string>
+    <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"ชื่อย่อของรายชื่อติดต่อ"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"ขยาย"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"ยุบ"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"โทรศัพท์"</string>
@@ -41,4 +44,6 @@
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s จะเข้าถึงได้เฉพาะข้อมูลจากรายชื่อติดต่อที่คุณเลือกเท่านั้น"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"รายละเอียดเพิ่มเติม"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"ปิด"</string>
+    <!-- no translation found for default_calling_app_name (5345125341557406609) -->
+    <skip />
 </resources>

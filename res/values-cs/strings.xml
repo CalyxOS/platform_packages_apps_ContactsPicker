@@ -26,8 +26,12 @@
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"Hledat"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"Vymazat hledaný text"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"Zavřít vyhledávání"</string>
+    <!-- no translation found for contacts_picker_favorites_header (8832599911501712849) -->
+    <skip />
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"Přepnout profil"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"Informace o ochraně soukromí"</string>
+    <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Profilový obrázek kontaktu"</string>
+    <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"Iniciály kontaktu"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"Rozbalit"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Sbalit"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefon"</string>
@@ -41,4 +45,6 @@
     <string name="privacy_banner_description" msgid="8397685763338639247">"Aplikace %1$s bude mít přístup jen k informacím o vybraných kontaktech"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"Další podrobnosti"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"Zavřít"</string>
+    <!-- no translation found for default_calling_app_name (5345125341557406609) -->
+    <skip />
 </resources>
