@@ -27,6 +27,10 @@
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"सर्च फिल्डमा हालिएको टेक्स्ट हटाउनुहोस्"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"सर्च फिल्ड बन्द गर्नुहोस्"</string>
     <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"मन पर्ने कन्ट्याक्टहरू"</string>
+    <!-- no translation found for favorites_header_icon_content_description (7094941017377292492) -->
+    <skip />
+    <!-- no translation found for emoji_header_icon_content_description (2926727446702186759) -->
+    <skip />
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"प्रोफाइल बदल्नुहोस्"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"गोपनीयतासम्बन्धी जानकारी"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"कन्ट्याक्टको प्रोफाइल फोटो"</string>
@@ -44,6 +48,5 @@
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s ले तपाईंले चयन गरेका कन्ट्याक्टहरूको जानकारी मात्र एक्सेस गर्न सक्ने छ"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"थप विवरणहरू"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"बन्द गर्नुहोस्"</string>
-    <!-- no translation found for default_calling_app_name (5345125341557406609) -->
-    <skip />
+    <string name="default_calling_app_name" msgid="5345125341557406609">"यो एप"</string>
 </resources>

@@ -27,6 +27,10 @@
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"शोध मजकूर साफ करा"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"शोध बंद करा"</string>
     <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"आवडते"</string>
+    <!-- no translation found for favorites_header_icon_content_description (7094941017377292492) -->
+    <skip />
+    <!-- no translation found for emoji_header_icon_content_description (2926727446702186759) -->
+    <skip />
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"प्रोफाइल स्विच करा"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"गोपनीयता माहिती"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"संपर्काचा प्रोफाइल फोटो"</string>
@@ -44,6 +48,5 @@
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s ला फक्त तुम्ही निवडलेल्या संपर्कांमधील माहितीचा अ‍ॅक्सेस असेल"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"आणखी तपशील"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"डिसमिस करा"</string>
-    <!-- no translation found for default_calling_app_name (5345125341557406609) -->
-    <skip />
+    <string name="default_calling_app_name" msgid="5345125341557406609">"हे अ‍ॅप"</string>
 </resources>

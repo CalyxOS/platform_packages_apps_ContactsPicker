@@ -27,6 +27,10 @@
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"I-clear ang text para sa paghahanap"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"Isara ang paghahanap"</string>
     <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"Mga Paborito"</string>
+    <!-- no translation found for favorites_header_icon_content_description (7094941017377292492) -->
+    <skip />
+    <!-- no translation found for emoji_header_icon_content_description (2926727446702186759) -->
+    <skip />
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"Lumipat ng profile"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"Impormasyon ng privacy"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Larawan sa profile ng contact"</string>
@@ -44,6 +48,5 @@
     <string name="privacy_banner_description" msgid="8397685763338639247">"Magkakaroon lang ng access ang %1$s sa impormasyon mula sa mga contact na pipiliin mo"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"Higit pang Detalye"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"I-dismiss"</string>
-    <!-- no translation found for default_calling_app_name (5345125341557406609) -->
-    <skip />
+    <string name="default_calling_app_name" msgid="5345125341557406609">"App na ito"</string>
 </resources>
