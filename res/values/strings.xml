@@ -92,6 +92,9 @@
     <!-- Text for the "Dismiss" button on the privacy banner. -->
     <string name="privacy_banner_dismiss">"Dismiss"</string>
 
+    <!-- Content description for the back button in the privacy details top bar -->
+    <string name="title_top_bar_back_button_content_description">Back</string>
+
     <!-- The default fallback name to use for the calling application. -->
     <string name="default_calling_app_name">This app</string>
 </resources>

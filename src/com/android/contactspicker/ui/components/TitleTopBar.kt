@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.contactspicker.ui.privacydetails
+package com.android.contactspicker.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,7 +37,13 @@ import androidx.compose.ui.unit.dp
 import com.android.contactspicker.R
 
 @Composable
-fun PrivacyDetailsTopBar(onBackPressed: () -> Unit, modifier: Modifier = Modifier) {
+fun TitleTopBar(
+    onBackPressed: () -> Unit,
+    title: String,
+    backIconDescription: String? =
+        stringResource(id = R.string.title_top_bar_back_button_content_description),
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -55,16 +61,13 @@ fun PrivacyDetailsTopBar(onBackPressed: () -> Unit, modifier: Modifier = Modifie
             Icon(
                 modifier = Modifier.size(24.dp),
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription =
-                    stringResource(
-                        id = R.string.privacy_details_top_bar_back_button_content_description
-                    ),
+                contentDescription = backIconDescription,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
 
         Text(
-            text = stringResource(id = R.string.privacy_details_top_bar_header),
+            text = title,
             color = MaterialTheme.colorScheme.onSurface,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,

@@ -23,9 +23,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsUiState
+import com.android.contactspicker.R
+import com.android.contactspicker.ui.components.TitleTopBar
 
 // TODO(b/446118849) : Move constants to xml files
 private val TOPBAR_PADDING = PaddingValues(horizontal = 24.dp, vertical = 8.dp)
@@ -40,8 +43,13 @@ internal const val PRIVACY_DETAILS_SCREEN_BODY_TEST_TAG = "privacy_details_scree
 fun PrivacyDetailsScreen(onBackPressed: () -> Unit, uiState: State<ContactsUiState>) {
     val callingAppName = (uiState.value as? ContactsListState.Success)?.callingAppName
     Column(modifier = Modifier.fillMaxSize()) {
-        PrivacyDetailsTopBar(
+        TitleTopBar(
             onBackPressed = onBackPressed,
+            title = stringResource(id = R.string.privacy_details_top_bar_header),
+            backIconDescription =
+                stringResource(
+                    id = R.string.privacy_details_top_bar_back_button_content_description
+                ),
             modifier =
                 Modifier.padding(TOPBAR_PADDING).testTag(PRIVACY_DETAILS_SCREEN_TOP_BAR_TEST_TAG),
         )

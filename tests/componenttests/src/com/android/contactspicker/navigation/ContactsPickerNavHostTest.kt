@@ -108,7 +108,7 @@ class ContactsPickerNavHostTest {
         // Find and click the back button on the privacy details screen
         composeTestRule
             .onNodeWithContentDescription(
-                context.getString(R.string.privacy_details_top_bar_back_button_content_description)
+                context.getString(R.string.title_top_bar_back_button_content_description)
             )
             .performClick()
         composeTestRule.onNodeWithTag(CONTACTS_PICKER_SCREEN_TEST_TAG).assertIsDisplayed()
