@@ -26,7 +26,10 @@
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"ရှာရန်"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"ရှာဖွေမှုစာသားကို ရှင်းရန်"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"ရှာဖွေမှု ပိတ်ရန်"</string>
-    <!-- no translation found for contacts_picker_favorites_header (8832599911501712849) -->
+    <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"စိတ်ကြိုက်များ"</string>
+    <!-- no translation found for favorites_header_icon_content_description (7094941017377292492) -->
+    <skip />
+    <!-- no translation found for emoji_header_icon_content_description (2926727446702186759) -->
     <skip />
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"ပရိုဖိုင်ပြောင်းရန်"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"ကိုယ်ရေးအချက်အလက် လုံခြုံမှုအချက်အလက်"</string>
@@ -45,6 +48,5 @@
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s သည် သင်ရွေးထားသော အဆက်အသွယ်များထံမှ အချက်အလက်ကိုသာ သုံးခွင့်ရှိမည်"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"နောက်ထပ်အသေးစိတ်"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"ပယ်ရန်"</string>
-    <!-- no translation found for default_calling_app_name (5345125341557406609) -->
-    <skip />
+    <string name="default_calling_app_name" msgid="5345125341557406609">"ဤအက်ပ်"</string>
 </resources>

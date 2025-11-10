@@ -27,6 +27,8 @@
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"Clear search text"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"Close search"</string>
     <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"Favorites"</string>
+    <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"Star icon"</string>
+    <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"Smile icon"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"Switch profile"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"Privacy information"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Contact profile picture"</string>
