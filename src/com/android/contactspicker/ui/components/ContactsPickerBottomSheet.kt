@@ -15,13 +15,14 @@
  */
 package com.android.contactspicker.ui.components
 
+import android.icu.text.MessageFormat
 import android.widget.Toast
-import androidx.collection.LongObjectMap
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,17 +30,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,10 +59,16 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsUiState
+import com.android.contactspicker.R
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.navigation.ContactsPickerNavHost
 import com.android.contactspicker.navigation.ContactsPickerRoute
 import com.android.contactspicker.ui.pickerscreen.SelectionBottomBar
+import com.android.contactspicker.util.totalElementCount
+import com.android.contactspicker.viewmodel.SnackbarEvent
+import java.util.Locale
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 internal const val BOTTOM_SHEET_TEST_TAG = "bottom_sheet"
@@ -69,6 +82,7 @@ private const val SCRIM_ALPHA = 0.32f
 fun ContactsPickerBottomSheet(
     onDismissRequest: () -> Unit,
     uiState: State<ContactsUiState>,
+    snackbarEvents: Flow<SnackbarEvent>,
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (Long, Long) -> Unit,
     onClearSelection: () -> Unit,
@@ -84,7 +98,9 @@ fun ContactsPickerBottomSheet(
     val peekHeight = LocalConfiguration.current.screenHeightDp.dp * BOTTOM_SHEET_PEEK_HEIGHT_RATIO
     val navController = rememberNavController()
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
+    val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -93,6 +109,25 @@ fun ContactsPickerBottomSheet(
     LaunchedEffect(bottomSheetState.currentValue) {
         if (bottomSheetState.currentValue == SheetValue.Hidden) {
             onDismissRequest()
+        }
+    }
+
+    LaunchedEffect(snackbarEvents) {
+        snackbarEvents.collectLatest { snackbarEvent ->
+            when (snackbarEvent) {
+                is SnackbarEvent.ShowSelectionLimitReached -> {
+                    val msgFormat =
+                        MessageFormat(
+                            context.getString(R.string.contacts_selection_limit_reached_message),
+                            Locale.getDefault(),
+                        )
+                    val args = mapOf(Pair("count", snackbarEvent.limit))
+
+                    scope.launch {
+                        snackbarHostState.showSnackbar(message = msgFormat.format(args))
+                    }
+                }
+            }
         }
     }
 
@@ -132,16 +167,36 @@ fun ContactsPickerBottomSheet(
         ) { /* Empty content of the screen that appears behind the bottom sheet. */
         }
 
-        if (uiStateValue is ContactsListState.Success) {
-            AnimatedSelectionBottomBar(
-                visible =
-                    uiStateValue.selectedContacts.isNotEmpty() &&
-                        currentRoute == ContactsPickerRoute.route,
-                selectedContactsCount = uiStateValue.selectedContacts.totalElementsSize(),
-                onClearSelection = onClearSelection,
-                onDoneClicked = onDoneClicked,
-                modifier = Modifier.align(Alignment.BottomCenter),
-            )
+        Column(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            SnackbarHost(hostState = snackbarHostState) { data ->
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.inverseSurface,
+                    contentColor = MaterialTheme.colorScheme.inverseOnSurface,
+                    shadowElevation = 4.dp,
+                    modifier = Modifier.padding(bottom = 8.dp),
+                ) {
+                    Text(
+                        text = data.visuals.message,
+                        modifier = Modifier.padding(vertical = 16.dp, horizontal = 22.dp),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+            }
+
+            if (uiStateValue is ContactsListState.Success) {
+                AnimatedSelectionBottomBar(
+                    visible =
+                        uiStateValue.selectedContacts.isNotEmpty() &&
+                            currentRoute == ContactsPickerRoute.route,
+                    selectedContactsCount = uiStateValue.selectedContacts.totalElementCount(),
+                    onClearSelection = onClearSelection,
+                    onDoneClicked = onDoneClicked,
+                )
+            }
         }
     }
 }
@@ -159,7 +214,7 @@ private fun AnimatedSelectionBottomBar(
         visible = visible,
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it }),
-        modifier = modifier.padding(horizontal = 16.dp, vertical = 24.dp),
+        modifier = modifier.padding(start = 16.dp, end = 16.dp, bottom = 24.dp),
     ) {
         SelectionBottomBar(
             selectedCount = selectedContactsCount,
@@ -171,11 +226,4 @@ private fun AnimatedSelectionBottomBar(
             onClearSelection = onClearSelection,
         )
     }
-}
-
-/** Calculates the total number of items across all value sets in a LongObjectMap. */
-private fun LongObjectMap<Set<Long>>.totalElementsSize(): Int {
-    var count = 0
-    this.forEachValue { value -> count += value.size }
-    return count
 }

@@ -61,6 +61,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertThrows
@@ -142,6 +143,7 @@ class ContactsPickerActivityTest {
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successState)
+        whenever(mockViewModel.snackbarEvents).thenReturn(emptyFlow())
         doNothing()
             .whenever(mockViewModel)
             .processIntent(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull())

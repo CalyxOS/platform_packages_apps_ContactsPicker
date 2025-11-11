@@ -17,6 +17,7 @@ package com.android.contactspicker.ui.components
 
 import android.content.Context
 import android.content.flags.Flags
+import android.icu.text.MessageFormat
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
@@ -46,7 +47,12 @@ import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
+import com.android.contactspicker.viewmodel.SnackbarEvent
 import com.google.common.truth.Truth.assertThat
+import java.util.Locale
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -164,8 +170,9 @@ class ContactsPickerBottomSheetTest {
                                 requestedMimeTypes = emptyList(),
                             )
                         ),
-                    onToggleEntrySelection = { _, _ -> },
+                    snackbarEvents = flowOf(),
                     onToggleContactSelection = {},
+                    onToggleEntrySelection = { _, _ -> },
                     onClearSelection = {},
                     onDoneClicked = {},
                     onQueryChange = {},
@@ -207,8 +214,9 @@ class ContactsPickerBottomSheetTest {
                                 requestedMimeTypes = emptyList(),
                             )
                         ),
-                    onToggleEntrySelection = { _, _ -> },
+                    snackbarEvents = flowOf(),
                     onToggleContactSelection = {},
+                    onToggleEntrySelection = { _, _ -> },
                     onClearSelection = {},
                     onDoneClicked = {},
                     onQueryChange = {},
@@ -266,6 +274,7 @@ class ContactsPickerBottomSheetTest {
                                 requestedMimeTypes = emptyList(),
                             )
                         ),
+                    snackbarEvents = flowOf(),
                     onToggleEntrySelection = { _, _ -> },
                     onToggleContactSelection = {},
                     onClearSelection = {},
@@ -286,6 +295,54 @@ class ContactsPickerBottomSheetTest {
         verify(onSearchQueryChanged).invoke(searchQuery)
     }
 
+    @Test
+    fun selectionLimitSnackbar_appearsWhenEventIsEmitted_andDisappearsAfterTimeout() {
+        val events = MutableSharedFlow<SnackbarEvent>()
+        val msgFormat =
+            MessageFormat(
+                context.getString(R.string.contacts_selection_limit_reached_message),
+                Locale.getDefault(),
+            )
+        val args = mapOf(Pair("count", 2))
+
+        val snackbarMessage = msgFormat.format(args)
+
+        composeTestRule.setContent {
+            ContactsPickerBottomSheet(
+                onDismissRequest = {},
+                uiState =
+                    mutableStateOf(
+                        ContactsListState.Success(
+                            availableContacts = listOf(testContact),
+                            selectedContacts =
+                                longObjectMapOf(testContact.id, setOf(testContact.id)),
+                            isMultiSelectEnabled = false,
+                            callingAppName = null,
+                            requestedMimeTypes = emptyList(),
+                        )
+                    ),
+                snackbarEvents = events,
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
+                onClearSelection = {},
+                onDoneClicked = {},
+                onQueryChange = {},
+                onExitSearch = {},
+            )
+        }
+
+        composeTestRule.onNodeWithText(snackbarMessage).assertDoesNotExist()
+
+        runBlocking { events.emit(SnackbarEvent.ShowSelectionLimitReached(2)) }
+
+        composeTestRule.onNodeWithText(snackbarMessage).assertIsDisplayed()
+
+        // Advance the clock past the Snackbar's default duration (4 seconds) + 1 to be safe
+        composeTestRule.mainClock.advanceTimeBy(5000)
+
+        composeTestRule.onNodeWithText(snackbarMessage).assertDoesNotExist()
+    }
+
     private fun setupBottomSheet(
         onDismissRequest: () -> Unit = {},
         uiState: ContactsUiState = ContactsListState.Loading,
@@ -295,8 +352,9 @@ class ContactsPickerBottomSheetTest {
                 ContactsPickerBottomSheet(
                     onDismissRequest = onDismissRequest,
                     uiState = mutableStateOf(uiState),
-                    onToggleEntrySelection = { _, _ -> },
+                    snackbarEvents = flowOf(),
                     onToggleContactSelection = {},
+                    onToggleEntrySelection = { _, _ -> },
                     onClearSelection = {},
                     onDoneClicked = {},
                     onQueryChange = {},

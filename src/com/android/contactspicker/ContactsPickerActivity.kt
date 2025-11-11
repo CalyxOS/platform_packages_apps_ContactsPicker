@@ -172,6 +172,7 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
                 ContactsPickerBottomSheet(
                     onDismissRequest = { finish() },
                     uiState = uiState,
+                    snackbarEvents = contactsViewModel.snackbarEvents,
                     onToggleContactSelection = contactsViewModel::toggleContactSelection,
                     onToggleEntrySelection = contactsViewModel::toggleEntrySelection,
                     onClearSelection = contactsViewModel::clearSelection,
