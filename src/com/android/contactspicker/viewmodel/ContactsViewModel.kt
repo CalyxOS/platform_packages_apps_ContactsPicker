@@ -96,6 +96,7 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
     private var intentType: String? = null
     private var callingAppName: String? = null
     private var searchJob: Job? = null
+    private var loadContactsJob: Job? = null
     private var cachedStateBeforePreview: ContactsUiState? = null
 
     private var requestedMimeTypes: List<String> = emptyList()
@@ -296,60 +297,79 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
         intentExtras: Bundle?,
         callingAppName: String?,
     ) {
-        viewModelScope.launch {
-            try {
-                this@ContactsViewModel.intentAction = intentAction
-                this@ContactsViewModel.intentType = intentType
-                this@ContactsViewModel.callingAppName = callingAppName
-                initialContacts = contactsRepository.getContactsForIntent(intentAction, intentType)
-                isMultiSelectEnabled =
-                    intentExtras?.getBoolean(Intent.EXTRA_ALLOW_MULTIPLE, false) ?: false
-                requestedMimeTypes = getRequestedMimeTypesForIntent(intentAction, intentType)
-                maxSelectionLimit =
-                    if (
-                        isMultiSelectEnabled &&
-                            intentExtras?.containsKey(
-                                ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_SELECTION_LIMIT
-                            ) == true
-                    ) {
-                        val limit =
-                            intentExtras.getInt(
-                                ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_SELECTION_LIMIT,
-                                DEFAULT_SELECTION_LIMIT,
-                            )
-                        if (limit <= 0) {
-                            throw IllegalArgumentException(
-                                "Selection limit must be a positive number. Received $limit."
-                            )
-                        }
-                        if (limit > MAX_ALLOWED_SELECTION_LIMIT) {
-                            throw IllegalArgumentException(
-                                "Selection limit cannot exceed $MAX_ALLOWED_SELECTION_LIMIT. " +
-                                    "Received $limit."
-                            )
-                        }
-                        limit
-                    } else {
-                        DEFAULT_SELECTION_LIMIT
-                    }
-                // TODO(b/444459883): check and handle empty list
-                _uiState.value =
-                    ContactsListState.Success(
-                        availableContacts = initialContacts,
-                        selectedContacts = longObjectMapOf(),
-                        isMultiSelectEnabled = isMultiSelectEnabled,
-                        callingAppName = callingAppName,
-                        requestedMimeTypes = requestedMimeTypes,
-                    )
-            } catch (e: IllegalArgumentException) {
-                Log.e(TAG, "An invalid intent was passed.", e)
-                // TODO(b/444459883): iterate on error handling and error messages
-                _uiState.value = ContactsListState.Error(e.message ?: "Invalid intent.")
-            } catch (e: Exception) {
-                Log.e(TAG, "An unexpected error occurred.", e)
-                _uiState.value = ContactsListState.Error("An unexpected error occurred.")
-            }
+        this.intentAction = intentAction
+        this.intentType = intentType
+        this.callingAppName = callingAppName
+        this.isMultiSelectEnabled =
+            intentExtras?.getBoolean(Intent.EXTRA_ALLOW_MULTIPLE, false) ?: false
+        try {
+            this.requestedMimeTypes = getRequestedMimeTypesForIntent(intentAction, intentType)
+        } catch (e: IllegalArgumentException) {
+            Log.e(TAG, "An invalid intent was passed.", e)
+            _uiState.value = ContactsListState.Error(e.message ?: "Invalid intent.")
+            return
         }
+        maxSelectionLimit =
+            if (
+                isMultiSelectEnabled &&
+                    intentExtras?.containsKey(
+                        ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_SELECTION_LIMIT
+                    ) == true
+            ) {
+                val limit =
+                    intentExtras.getInt(
+                        ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_SELECTION_LIMIT,
+                        DEFAULT_SELECTION_LIMIT,
+                    )
+                if (limit <= 0) {
+                    throw IllegalArgumentException(
+                        "Selection limit must be a positive number. Received $limit."
+                    )
+                }
+                if (limit > MAX_ALLOWED_SELECTION_LIMIT) {
+                    throw IllegalArgumentException(
+                        "Selection limit cannot exceed $MAX_ALLOWED_SELECTION_LIMIT. " +
+                            "Received $limit."
+                    )
+                }
+                limit
+            } else {
+                DEFAULT_SELECTION_LIMIT
+            }
+        loadContactsData()
+    }
+
+    private fun loadContactsData() {
+        loadContactsJob?.cancel()
+        loadContactsJob =
+            viewModelScope.launch {
+                _uiState.value = ContactsListState.Loading
+                try {
+                    Log.d(TAG, "Loading contacts for action: $intentAction, type: $intentType")
+                    initialContacts =
+                        contactsRepository.getContactsForIntent(intentAction, intentType)
+                    // TODO(b/444459883): check and handle empty list
+                    _uiState.value =
+                        ContactsListState.Success(
+                            availableContacts = initialContacts,
+                            selectedContacts = longObjectMapOf(),
+                            isMultiSelectEnabled = isMultiSelectEnabled,
+                            callingAppName = callingAppName,
+                            requestedMimeTypes = requestedMimeTypes,
+                        )
+                } catch (e: IllegalArgumentException) {
+                    Log.e(TAG, "An invalid intent was passed.", e)
+                    // TODO(b/444459883): iterate on error handling and error messages
+                    _uiState.value = ContactsListState.Error(e.message ?: "Invalid intent.")
+                } catch (e: Exception) {
+                    if (e is kotlinx.coroutines.CancellationException) {
+                        Log.i(TAG, "Contacts loading cancelled.")
+                        return@launch
+                    }
+                    Log.e(TAG, "An unexpected error occurred during load.", e)
+                    _uiState.value = ContactsListState.Error("An unexpected error occurred.")
+                }
+            }
     }
 
     @VisibleForTesting
@@ -558,6 +578,11 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
         }
         _uiState.value = cachedStateBeforePreview!!
         cachedStateBeforePreview = null
+    }
+
+    // TODO(b/12345678): remove once the permission is pregranted
+    open fun onContactsPermissionGranted() {
+        loadContactsData()
     }
 }
 

@@ -116,7 +116,7 @@ class ContactsViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         val errorState = viewModel.uiState.value as ContactsListState.Error
-        assertThat(errorState.message).isEqualTo("Unsupported action")
+        assertThat(errorState.message).isEqualTo("Unsupported intent action: INVALID_ACTION")
     }
 
     @Test
@@ -696,49 +696,28 @@ class ContactsViewModelTest {
         assertThat(state is ContactsListState.Success).isTrue()
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException::class)
     fun processIntent_whenSelectMultipleEnabledAndLimitExceedsMax_throwsException() = runTest {
         processIntentWithInitialContacts(
             ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
             buildIntentExtrasWithSelectionLimit(true, MAX_ALLOWED_SELECTION_LIMIT + 1),
         )
-
-        // UI state is Error
-        val state = viewModel.uiState.value
-        assertThat(state is ContactsListState.Error).isTrue()
-        val errorMessage = (state as ContactsListState.Error).message
-        assertThat(
-                errorMessage.contains("Selection limit cannot exceed $MAX_ALLOWED_SELECTION_LIMIT")
-            )
-            .isTrue()
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException::class)
     fun processIntent_whenSelectMultipleEnabledAndLimitZero_throwsException() = runTest {
         processIntentWithInitialContacts(
             ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
             buildIntentExtrasWithSelectionLimit(true, 0),
         )
-
-        // UI state is Error
-        val state = viewModel.uiState.value
-        assertThat(state is ContactsListState.Error).isTrue()
-        val errorMessage = (state as ContactsListState.Error).message
-        assertThat(errorMessage.contains("Selection limit must be a positive number")).isTrue()
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException::class)
     fun processIntent_whenSelectMultipleEnabledAndLimitNegative_throwsException() = runTest {
         processIntentWithInitialContacts(
             ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
             buildIntentExtrasWithSelectionLimit(true, -1),
         )
-
-        // UI state is Error
-        val state = viewModel.uiState.value
-        assertThat(state is ContactsListState.Error).isTrue()
-        val errorMessage = (state as ContactsListState.Error).message
-        assertThat(errorMessage.contains("Selection limit must be a positive number")).isTrue()
     }
 
     @Test
