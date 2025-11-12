@@ -154,11 +154,16 @@ fun ContactItem(
     ) {
         Column(modifier = Modifier.animateContentSize()) {
             val rowModifier =
-                if (isExpandable) {
-                    Modifier.fillMaxWidth().clickable { expanded = !expanded }.padding(16.dp)
-                } else {
-                    Modifier.fillMaxWidth().padding(CONTACT_ITEM_PADDING)
-                }
+                Modifier.fillMaxWidth()
+                    .clickable {
+                        if (isExpandable) {
+                            expanded = !expanded
+                        } else {
+                            onToggleContactSelection(contact)
+                        }
+                    }
+                    .padding(CONTACT_ITEM_PADDING)
+
             Row(
                 modifier = rowModifier,
                 verticalAlignment = Alignment.CenterVertically,

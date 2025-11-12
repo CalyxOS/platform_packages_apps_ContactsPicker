@@ -363,6 +363,73 @@ class ContactItemTest {
         )
     }
 
+    @Test
+    fun entryClick_withSingleEmailContact_callsOnToggleContactSelection() {
+        assertEntryClickBehavior(
+            contact = ContactTestDataFactory.GENERIC_EMAIL_CONTACT,
+            expectToggleContactCalled = true,
+            expectItemExpanded = false,
+        )
+    }
+
+    @Test
+    fun entryClick_withSinglePhoneContact_callsOnToggleContactSelection() {
+        assertEntryClickBehavior(
+            contact = ContactTestDataFactory.GENERIC_PHONE_CONTACT,
+            expectToggleContactCalled = true,
+            expectItemExpanded = false,
+        )
+    }
+
+    @Test
+    fun entryClick_withMultiEmailContact_expandsAndDoesNotCallSelection() {
+        assertEntryClickBehavior(
+            contact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT,
+            expectToggleContactCalled = false,
+            expectItemExpanded = true,
+        )
+    }
+
+    @Test
+    fun entryClick_withMultiPhoneContact_expandsAndDoesNotCallSelection() {
+        assertEntryClickBehavior(
+            contact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT,
+            expectToggleContactCalled = false,
+            expectItemExpanded = true,
+        )
+    }
+
+    @Test
+    fun entryClick_withMultiEmailContact_callsOnToggleEntrySelection() {
+        val contact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT
+        var onToggleEntryCalled = false
+        var toggledEntryId: Long? = null
+
+        composeTestRule.setContent {
+            ContactItem(
+                contact = contact,
+                position = ItemPosition.ONLY,
+                selectedEntries = emptySet(),
+                isMultiSelectEnabled = true,
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, entryId ->
+                    onToggleEntryCalled = true
+                    toggledEntryId = entryId
+                },
+            )
+        }
+
+        // Expand first by clicking the row
+        composeTestRule.onNodeWithText(contact.displayName).performClick()
+
+        // Click the first email entry
+        val firstEmail = contact.emails.first()
+        composeTestRule.onNodeWithText(firstEmail.address).performClick()
+
+        assertThat(onToggleEntryCalled).isTrue()
+        assertThat(toggledEntryId).isEqualTo(firstEmail.id)
+    }
+
     /** Helper function to test the click behavior of the avatar in a [ContactItem]. */
     private fun assertAvatarClickBehavior(
         contact: Contact,
@@ -400,6 +467,66 @@ class ContactItemTest {
                     }
                 is DisplayNameContact ->
                     throw AssertionError("DisplayNameContact should not be expandable")
+            }
+        }
+    }
+
+    /**
+     * Helper function to test the click behavior of the row body (clicking the text/row area) in a
+     * [ContactItem].
+     */
+    private fun assertEntryClickBehavior(
+        contact: Contact,
+        expectToggleContactCalled: Boolean,
+        expectItemExpanded: Boolean,
+    ) {
+        var onToggleContactCalled = false
+        var onToggleEntryCalled = false
+        composeTestRule.setContent {
+            ContactItem(
+                contact = contact,
+                selectedEntries = emptySet(),
+                position = ItemPosition.ONLY,
+                isMultiSelectEnabled = true,
+                onToggleContactSelection = { onToggleContactCalled = true },
+                onToggleEntrySelection = { _, _ -> onToggleEntryCalled = true },
+            )
+        }
+
+        // Perform click on the display name text, which bubbles up to the row click handler
+        composeTestRule.onNodeWithText(contact.displayName).performClick()
+
+        assertThat(onToggleContactCalled).isEqualTo(expectToggleContactCalled)
+        assertThat(onToggleEntryCalled).isFalse()
+
+        verifyExpansion(contact, expectItemExpanded, true)
+    }
+
+    private fun verifyExpansion(
+        contact: Contact,
+        expectItemExpanded: Boolean,
+        isMultiSelectEnabled: Boolean,
+    ) {
+        if (expectItemExpanded || isMultiSelectEnabled) {
+            when (contact) {
+                is PhoneContact ->
+                    contact.phones.forEach { phoneEntry ->
+                        composeTestRule.onNodeWithText(phoneEntry.number).assertIsDisplayed()
+                    }
+                is EmailContact ->
+                    contact.emails.forEach { emailEntry ->
+                        composeTestRule.onNodeWithText(emailEntry.address).assertIsDisplayed()
+                    }
+                is DisplayNameContact ->
+                    throw AssertionError("DisplayNameContact should not be expandable")
+            }
+        } else {
+            // If not expected to expand, verify entries are not shown (if they exist)
+            if (contact is PhoneContact && contact.phones.isNotEmpty()) {
+                composeTestRule.onNodeWithText(contact.phones.first().number).assertDoesNotExist()
+            }
+            if (contact is EmailContact && contact.emails.isNotEmpty()) {
+                composeTestRule.onNodeWithText(contact.emails.first().address).assertDoesNotExist()
             }
         }
     }
