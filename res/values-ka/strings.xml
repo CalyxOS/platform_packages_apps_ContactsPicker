@@ -27,10 +27,8 @@
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"საძიებო ტექსტის გასუფთავება"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"ძიების დახურვა"</string>
     <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"რჩეულები"</string>
-    <!-- no translation found for favorites_header_icon_content_description (7094941017377292492) -->
-    <skip />
-    <!-- no translation found for emoji_header_icon_content_description (2926727446702186759) -->
-    <skip />
+    <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"ვარსკვლავის ხატულა"</string>
+    <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"ღიმილის ხატულა"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"პროფილის გადართვა"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"ინფორმაცია კონფიდენციალურობის შესახებ"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"კონტაქტის პროფილის სურათი"</string>
@@ -41,6 +39,8 @@
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"ელფოსტა"</string>
     <string name="contact_item_emails_count" msgid="4742575236201305612">"%d ელფოსტა"</string>
     <string name="contact_item_phones_count" msgid="6713112060821558464">"ტელეფონის %d ნომერი"</string>
+    <!-- no translation found for contacts_selection_limit_reached_message (4501460255611012354) -->
+    <skip />
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"არჩეულია %1$s"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"არჩევანის გასუფთავება"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"გადახედვა"</string>
@@ -48,5 +48,7 @@
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s-ს ექნება წვდომა მხოლოდ თქვენ მიერ არჩეული კონტაქტების ინფორმაციაზე"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"დაწვრილებით"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"დახურვა"</string>
+    <!-- no translation found for title_top_bar_back_button_content_description (7162880372713819715) -->
+    <skip />
     <string name="default_calling_app_name" msgid="5345125341557406609">"ეს აპი"</string>
 </resources>
