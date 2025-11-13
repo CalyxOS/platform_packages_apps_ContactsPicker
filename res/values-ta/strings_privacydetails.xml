@@ -47,5 +47,5 @@
     <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"தொடர்புக் குழு"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"தொடர்புக்கான சில விருப்பத்தேர்வுகள்"</string>
     <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"தொடர்புக்கான சில விருப்பத்தேர்வுகள்"</string>
-    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"தொடர்புக்கான விருப்பமான நிலை, தொடர்பின் அழைப்புகள் குரலஞ்சலுக்கு அனுப்பப்பட்டதா என்பது குறித்த விவரங்கள் ஆகியவை அடங்கும்"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"தொடர்பு விருப்பமானதாகக் குறிக்கப்பட்டதா என்ற விவரமும், தொடர்பின் அழைப்புகள் குரலஞ்சலுக்கு அனுப்பப்படுகிறதா என்ற விவரமும் இதிலடங்கும்"</string>
 </resources>
