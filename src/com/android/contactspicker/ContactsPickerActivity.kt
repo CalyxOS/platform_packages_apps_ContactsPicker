@@ -179,6 +179,8 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
                     onDoneClicked = ::handleDoneClicked,
                     onQueryChange = contactsViewModel::onSearchQueryChanged,
                     onExitSearch = contactsViewModel::exitSearch,
+                    onPreviewClicked = contactsViewModel::onPreviewClicked,
+                    onBackFromPreview = contactsViewModel::onBackFromPreview,
                 )
             }
         }

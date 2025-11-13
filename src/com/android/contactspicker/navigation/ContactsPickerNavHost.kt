@@ -37,6 +37,7 @@ fun ContactsPickerNavHost(
     onQueryChange: (String) -> Unit,
     onExitSearch: () -> Unit,
     modifier: Modifier = Modifier,
+    onBackFromPreview: () -> Unit,
 ) {
     NavHost(
         navController = navController,
@@ -54,6 +55,7 @@ fun ContactsPickerNavHost(
                 onExpandRequest = onExpandRequest,
                 onQueryChange = onQueryChange,
                 onExitSearch = onExitSearch,
+                onBackFromPreview = onBackFromPreview,
             )
         }
 

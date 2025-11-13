@@ -16,7 +16,6 @@
 package com.android.contactspicker.ui.components
 
 import android.icu.text.MessageFormat
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -58,11 +57,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.android.contactspicker.ContactsListState
+import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
+import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.navigation.ContactsPickerNavHost
-import com.android.contactspicker.navigation.ContactsPickerRoute
 import com.android.contactspicker.ui.pickerscreen.SelectionBottomBar
 import com.android.contactspicker.util.totalElementCount
 import com.android.contactspicker.viewmodel.SnackbarEvent
@@ -94,6 +94,8 @@ fun ContactsPickerBottomSheet(
     onDoneClicked: () -> Unit,
     onQueryChange: (String) -> Unit,
     onExitSearch: () -> Unit,
+    onPreviewClicked: () -> Unit,
+    onBackFromPreview: () -> Unit,
 ) {
     val peekHeight = LocalConfiguration.current.screenHeightDp.dp * BOTTOM_SHEET_PEEK_HEIGHT_RATIO
     val navController = rememberNavController()
@@ -104,7 +106,6 @@ fun ContactsPickerBottomSheet(
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val uiStateValue = uiState.value
 
     LaunchedEffect(bottomSheetState.currentValue) {
         if (bottomSheetState.currentValue == SheetValue.Hidden) {
@@ -162,6 +163,7 @@ fun ContactsPickerBottomSheet(
                     modifier = Modifier.testTag(BOTTOM_SHEET_TEST_TAG),
                     onQueryChange = onQueryChange,
                     onExitSearch = onExitSearch,
+                    onBackFromPreview = onBackFromPreview,
                 )
             },
         ) { /* Empty content of the screen that appears behind the bottom sheet. */
@@ -187,43 +189,64 @@ fun ContactsPickerBottomSheet(
                 }
             }
 
-            if (uiStateValue is ContactsListState.Success) {
-                AnimatedSelectionBottomBar(
-                    visible =
-                        uiStateValue.selectedContacts.isNotEmpty() &&
-                            currentRoute == ContactsPickerRoute.route,
-                    selectedContactsCount = uiStateValue.selectedContacts.totalElementCount(),
-                    onClearSelection = onClearSelection,
-                    onDoneClicked = onDoneClicked,
-                )
-            }
+            AnimatedSelectionBottomBar(
+                uiState = uiState,
+                onClearSelection = onClearSelection,
+                onDoneClicked = onDoneClicked,
+                onPreviewClicked = onPreviewClicked,
+                onBackFromPreview = onBackFromPreview,
+            )
         }
     }
 }
 
 @Composable
 private fun AnimatedSelectionBottomBar(
-    visible: Boolean,
-    selectedContactsCount: Int,
+    uiState: State<ContactsUiState>,
     onClearSelection: () -> Unit,
     onDoneClicked: () -> Unit,
+    onPreviewClicked: () -> Unit,
+    onBackFromPreview: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val context = LocalContext.current
+    val uiStateValue = uiState.value
+
+    val isPreviewMode = uiStateValue is ContactsPreviewState
+
     AnimatedVisibility(
-        visible = visible,
+        visible = uiStateValue.isSelectionBarVisible(),
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it }),
         modifier = modifier.padding(start = 16.dp, end = 16.dp, bottom = 24.dp),
     ) {
         SelectionBottomBar(
-            selectedCount = selectedContactsCount,
-            onPreviewClick = {
-                // TODO(b/441480198): Navigate to the preview screen
-                Toast.makeText(context, "Preview clicked", Toast.LENGTH_SHORT).show()
-            },
+            selectedCount = uiStateValue.selectedCount(),
+            isPreviewMode = isPreviewMode,
+            onPreviewClicked = onPreviewClicked,
+            onBackFromPreview = onBackFromPreview,
             onDoneClick = { onDoneClicked() },
-            onClearSelection = onClearSelection,
+            onClearSelection = {
+                if (isPreviewMode) {
+                    onBackFromPreview()
+                }
+                onClearSelection()
+            },
         )
     }
 }
+
+private fun ContactsUiState.isSelectionBarVisible(): Boolean =
+    when (this) {
+        is ContactsListState.Success -> selectedContacts.isNotEmpty()
+        is SearchState.Success -> selectedContacts.isNotEmpty()
+        is ContactsPreviewState -> true
+        else -> false
+    }
+
+private fun ContactsUiState.selectedCount(): Int =
+    when (this) {
+        is ContactsListState.Success -> selectedContacts.totalElementCount()
+        is SearchState.Success -> selectedContacts.totalElementCount()
+        is ContactsPreviewState -> selectedContacts.totalElementCount()
+        else -> 0
+    }

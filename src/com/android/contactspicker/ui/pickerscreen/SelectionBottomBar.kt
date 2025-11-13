@@ -42,16 +42,20 @@ import com.android.contactspicker.R
  * and provide actions.
  *
  * @param selectedCount The number of currently selected items.
- * @param onPreviewClick A callback for when the preview button is clicked.
+ * @param isPreviewMode Whether the picker is currently in preview mode.
+ * @param onPreviewClicked A callback for when the preview button is clicked.
  * @param onDoneClick A callback for when the done button is clicked.
  * @param onClearSelection A callback for when the clear selection button is clicked.
+ * @param onBackFromPreview A callback for when the back button is clicked while in preview mode.
  */
 @Composable
 fun SelectionBottomBar(
     selectedCount: Int,
-    onPreviewClick: () -> Unit,
+    isPreviewMode: Boolean,
+    onPreviewClicked: () -> Unit,
     onDoneClick: () -> Unit,
     onClearSelection: () -> Unit,
+    onBackFromPreview: () -> Unit,
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
@@ -76,8 +80,14 @@ fun SelectionBottomBar(
             }
             Text(text = "$selectedCount", style = MaterialTheme.typography.headlineSmall)
             Spacer(modifier = Modifier.weight(1f))
-            TextButton(onClick = onPreviewClick) {
-                Text(stringResource(R.string.selection_bottom_bar_preview_button_label))
+            if (isPreviewMode) {
+                TextButton(onClick = onBackFromPreview) {
+                    Text(stringResource(R.string.selection_bottom_bar_back_button_label))
+                }
+            } else {
+                TextButton(onClick = onPreviewClicked) {
+                    Text(stringResource(R.string.selection_bottom_bar_preview_button_label))
+                }
             }
             Button(onClick = onDoneClick) {
                 Text(stringResource(R.string.selection_bottom_bar_done_button_label))

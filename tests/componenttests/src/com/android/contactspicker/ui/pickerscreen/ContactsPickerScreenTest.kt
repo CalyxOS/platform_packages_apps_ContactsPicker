@@ -63,6 +63,7 @@ class ContactsPickerScreenTest {
                 onToggleEntrySelection = { _, _ -> },
                 onQueryChange = {},
                 onExitSearch = {},
+                onBackFromPreview = {},
             )
         }
         composeTestRule
@@ -83,6 +84,7 @@ class ContactsPickerScreenTest {
                 onToggleEntrySelection = { _, _ -> },
                 onQueryChange = {},
                 onExitSearch = {},
+                onBackFromPreview = {},
             )
         }
 
@@ -118,6 +120,7 @@ class ContactsPickerScreenTest {
                 onToggleEntrySelection = { _, _ -> },
                 onQueryChange = {},
                 onExitSearch = {},
+                onBackFromPreview = {},
             )
         }
         composeTestRule
@@ -138,6 +141,7 @@ class ContactsPickerScreenTest {
                 onToggleEntrySelection = { _, _ -> },
                 onQueryChange = {},
                 onExitSearch = {},
+                onBackFromPreview = {},
             )
         }
         composeTestRule
@@ -188,6 +192,7 @@ class ContactsPickerScreenTest {
                 onToggleEntrySelection = { _, _ -> },
                 onQueryChange = {},
                 onExitSearch = {},
+                onBackFromPreview = {},
             )
         }
 
@@ -229,6 +234,7 @@ class ContactsPickerScreenTest {
                 onToggleEntrySelection = { _, _ -> },
                 onQueryChange = {},
                 onExitSearch = {},
+                onBackFromPreview = {},
             )
         }
 
@@ -264,6 +270,7 @@ class ContactsPickerScreenTest {
                 onToggleEntrySelection = { _, _ -> },
                 onQueryChange = {},
                 onExitSearch = {},
+                onBackFromPreview = {},
             )
         }
     }
