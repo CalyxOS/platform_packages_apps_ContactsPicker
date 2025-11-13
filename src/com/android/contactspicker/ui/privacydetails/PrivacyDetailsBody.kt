@@ -15,7 +15,6 @@
  */
 package com.android.contactspicker.ui.privacydetails
 
-import android.provider.ContactsContract
 import androidx.annotation.OpenForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -51,28 +50,11 @@ private val PADDING_PRIVACY_DESCRIPTION =
 private val PADDING_CONTACT_DATA_FIELDS_LIST_HEADER =
     PaddingValues(top = 20.dp, end = 16.dp, bottom = 10.dp, start = 8.dp)
 
-// TODO(b/446118140) : Add validation to ignore any unsupported MIME types passed as input.
-// mimetypes
-private val POSSIBLE_INTENT_EXTRA_DATA_FIELDS =
-    listOf(
-        ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE,
-        ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
-        ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
-        ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
-        ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE,
-        ContactsContract.CommonDataKinds.Relation.CONTENT_ITEM_TYPE,
-        ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE,
-        ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE,
-        ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE,
-        ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE,
-        ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE,
-    )
-
 @Composable
 fun PrivacyDetailsBody(
     modifier: Modifier = Modifier,
     callingAppName: String?,
-    requestedDataFields: List<String> = POSSIBLE_INTENT_EXTRA_DATA_FIELDS,
+    requestedDataFields: List<String>,
 ) {
     LazyColumn(modifier = modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 64.dp)) {
         item {

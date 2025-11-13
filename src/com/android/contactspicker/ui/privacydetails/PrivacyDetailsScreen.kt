@@ -42,6 +42,9 @@ internal const val PRIVACY_DETAILS_SCREEN_BODY_TEST_TAG = "privacy_details_scree
 @Composable
 fun PrivacyDetailsScreen(onBackPressed: () -> Unit, uiState: State<ContactsUiState>) {
     val callingAppName = (uiState.value as? ContactsListState.Success)?.callingAppName
+    val requestedMimeTypes =
+        (uiState.value as? ContactsListState.Success)?.requestedMimeTypes ?: emptyList()
+
     Column(modifier = Modifier.fillMaxSize()) {
         TitleTopBar(
             onBackPressed = onBackPressed,
@@ -59,6 +62,7 @@ fun PrivacyDetailsScreen(onBackPressed: () -> Unit, uiState: State<ContactsUiSta
                 Modifier.padding(PRIVACY_DETAILS_BODY_PADDING)
                     .testTag(PRIVACY_DETAILS_SCREEN_BODY_TEST_TAG),
             callingAppName = callingAppName,
+            requestedDataFields = requestedMimeTypes,
         )
     }
 }
