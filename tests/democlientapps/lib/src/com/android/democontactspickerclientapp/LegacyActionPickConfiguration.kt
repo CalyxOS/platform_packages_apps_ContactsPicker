@@ -30,10 +30,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 
+/** Structured result data for display. */
+data class ContactResult(
+    val contactName: String,
+    val detail: String, // Email address, phone number, or contact ID
+    val detailLabel: String, // "Email", "Phone", or "Contact ID"
+    val uri: String,
+)
+
+/** A data class holding the result of the picker. */
+data class PickerResult(val statusText: String, val contacts: List<ContactResult>)
+
 /** A data class holding only the state relevant to the legacy ACTION_PICK. */
 data class LegacyDemoConfigState(
     val legacyPickerType: LegacyPickerType = LegacyPickerType.EMAIL,
-    val resultText: String = "Picker result will be shown here",
+    val pickerResult: PickerResult = PickerResult("Picker result will be shown here", emptyList()),
 )
 
 enum class LegacyPickerType(val label: String) {
