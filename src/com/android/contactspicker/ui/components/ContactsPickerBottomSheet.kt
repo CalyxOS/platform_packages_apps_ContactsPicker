@@ -242,7 +242,7 @@ private fun ContactsUiState.isSelectionBarVisible(): Boolean =
     when (this) {
         is ContactsListState.Success -> selectedContacts.isNotEmpty()
         is SearchState.Success -> selectedContacts.isNotEmpty()
-        is ContactsPreviewState -> true
+        is ContactsPreviewState -> selectedContacts.isNotEmpty()
         else -> false
     }
 

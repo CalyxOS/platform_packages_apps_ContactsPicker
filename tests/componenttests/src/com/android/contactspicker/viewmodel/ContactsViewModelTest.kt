@@ -948,4 +948,114 @@ class ContactsViewModelTest {
         assertThat(listState.availableContacts).containsExactly(contact)
         assertThat(listState.selectedContacts).isEqualTo(selection)
     }
+
+    @Test
+    fun toggleContactSelection_inPreviewState_deselectsContact() {
+        val contacts = ContactTestDataFactory.createContactList(2)
+        processIntentWithInitialContactsInMultiSelectMode(contacts)
+
+        contacts.forEach { contact -> viewModel.toggleContactSelection(contact) }
+        viewModel.onPreviewClicked()
+
+        viewModel.toggleContactSelection(contacts[0])
+
+        val state = viewModel.uiState.value as ContactsPreviewState
+        assertThat(state.selectedContacts.containsKey(contacts[0].id)).isFalse()
+        assertThat(state.selectedContacts.containsKey(contacts[1].id)).isTrue()
+        assertThat(state.contactsToDisplay).containsExactly(contacts[1])
+    }
+
+    @Test
+    fun toggleEntrySelection_inPreviewState_deselectsEntry() {
+        val contact =
+            ContactTestDataFactory.createPhoneContact(
+                id = 1L,
+                displayName = "Contact 1",
+                phoneCount = 2,
+            )
+        processIntentWithInitialContactsInMultiSelectMode(listOf(contact))
+
+        viewModel.toggleContactSelection(contact)
+        viewModel.onPreviewClicked()
+
+        val entryToDeselect = contact.phones.first()
+        viewModel.toggleEntrySelection(contact.id, entryToDeselect.id)
+
+        val state = viewModel.uiState.value as ContactsPreviewState
+        assertThat(state.selectedContacts.containsKey(contact.id)).isTrue()
+        assertThat(state.selectedContacts[contact.id]).containsExactly(contact.phones.last().id)
+    }
+
+    @Test
+    fun toggleEntrySelection_inPreviewState_deselectingLastEntryRemovesContact() {
+        val contact = ContactTestDataFactory.GENERIC_PHONE_CONTACT
+        processIntentWithInitialContactsInMultiSelectMode(listOf(contact))
+
+        viewModel.toggleContactSelection(contact)
+        viewModel.onPreviewClicked()
+
+        val entryToDeselect = contact.phones.first()
+        viewModel.toggleEntrySelection(contact.id, entryToDeselect.id)
+
+        val state = viewModel.uiState.value as ContactsListState.Success
+        assertThat(state.selectedContacts.isEmpty()).isTrue()
+    }
+
+    @Test
+    fun onPreviewState_deselectingLastItemSwitchToPreviousState() {
+        val contact = ContactTestDataFactory.GENERIC_PHONE_CONTACT
+        processIntentWithInitialContactsInMultiSelectMode(listOf(contact))
+
+        viewModel.toggleContactSelection(contact)
+        viewModel.onPreviewClicked()
+
+        val entryToDeselect = contact.phones.first()
+        viewModel.toggleEntrySelection(contact.id, entryToDeselect.id)
+
+        val state = viewModel.uiState.value
+        assertThat(state).isInstanceOf(ContactsListState.Success::class.java)
+    }
+
+    @Test
+    fun onBackFromPreview_propagatesSelectionChangesToListState() {
+        val contacts = ContactTestDataFactory.createContactList(2)
+        processIntentWithInitialContactsInMultiSelectMode(contacts)
+
+        contacts.forEach { contact -> viewModel.toggleContactSelection(contact) }
+
+        viewModel.onPreviewClicked()
+
+        viewModel.toggleContactSelection(contacts[0])
+
+        viewModel.onBackFromPreview()
+
+        val state = viewModel.uiState.value as ContactsListState.Success
+        assertThat(state.selectedContacts.containsKey(contacts[0].id)).isFalse()
+        assertThat(state.selectedContacts.containsKey(contacts[1].id)).isTrue()
+    }
+
+    @Test
+    fun onBackFromPreview_propagatesSelectionChangesToSearchState() = runTest {
+        val contact1 = ContactTestDataFactory.GENERIC_PHONE_CONTACT
+        val contact2 = ContactTestDataFactory.GENERIC_PHONE_CONTACT
+        val query = "Test"
+        fakeRepository.setSearchResults(query, listOf(contact1))
+        processIntentWithInitialContactsInMultiSelectMode(listOf(contact1, contact2))
+
+        // Search and select contact1
+        viewModel.onSearchQueryChanged(query)
+        testDispatcher.scheduler.advanceTimeBy(SEARCH_DEBOUNCE_MS)
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.toggleContactSelection(contact1)
+
+        // Go to Preview
+        viewModel.onPreviewClicked()
+
+        // Deselect contact1 in Preview
+        viewModel.toggleContactSelection(contact1)
+
+        val state = viewModel.uiState.value as SearchState.Success
+        assertThat(state.selectedContacts.isEmpty()).isTrue()
+        assertThat(state.query).isEqualTo(query)
+    }
 }
