@@ -44,6 +44,7 @@ import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.repository.ContactsRepository
+import com.android.contactspicker.data.repository.PrivacyBannerRepository
 import com.android.contactspicker.util.totalElementCount
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -83,7 +84,10 @@ sealed interface SnackbarEvent {
 @HiltViewModel
 open class ContactsViewModel
 @Inject
-constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
+constructor(
+    private val contactsRepository: ContactsRepository,
+    private val privacyBannerRepository: PrivacyBannerRepository,
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow<ContactsUiState>(ContactsListState.Loading)
     open val uiState: StateFlow<ContactsUiState> = _uiState.asStateFlow()
@@ -101,7 +105,10 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
     private var loadContactsJob: Job? = null
     private var cachedStateBeforePreview: ContactsUiState? = null
 
+    private var callingAppUid: Int = -1
     private var requestedMimeTypes: List<String> = emptyList()
+
+    private var showPrivacyBanner = false
 
     /**
      * Toggles the selection state for an entire contact.
@@ -298,10 +305,12 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
         intentType: String?,
         intentExtras: Bundle?,
         callingAppName: String?,
+        callingAppUid: Int,
     ) {
         this.intentAction = intentAction
         this.intentType = intentType
         this.callingAppName = callingAppName
+        this.callingAppUid = callingAppUid
         this.isMultiSelectEnabled =
             intentExtras?.getBoolean(Intent.EXTRA_ALLOW_MULTIPLE, false) ?: false
         try {
@@ -338,18 +347,19 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
             } else {
                 DEFAULT_SELECTION_LIMIT
             }
-        loadContactsData()
+        loadContactsListData()
     }
 
-    private fun loadContactsData() {
+    private fun loadContactsListData() {
         loadContactsJob?.cancel()
         loadContactsJob =
             viewModelScope.launch {
                 _uiState.value = ContactsListState.Loading
                 try {
                     Log.d(TAG, "Loading contacts for action: $intentAction, type: $intentType")
-                    initialContacts =
-                        contactsRepository.getContactsForIntent(intentAction, intentType)
+                    loadContactsData()
+                    loadPrivacyBannerState()
+
                     // TODO(b/444459883): check and handle empty list
                     _uiState.value =
                         ContactsListState.Success(
@@ -358,6 +368,7 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
                             isMultiSelectEnabled = isMultiSelectEnabled,
                             callingAppName = callingAppName,
                             requestedMimeTypes = requestedMimeTypes,
+                            showPrivacyBanner = showPrivacyBanner,
                         )
                 } catch (e: IllegalArgumentException) {
                     Log.e(TAG, "An invalid intent was passed.", e)
@@ -374,6 +385,22 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
             }
     }
 
+    private suspend fun loadContactsData() {
+        Log.d(TAG, "Loading contacts for action: $intentAction, type: $intentType")
+        initialContacts = contactsRepository.getContactsForIntent(intentAction, intentType)
+    }
+
+    private suspend fun loadPrivacyBannerState() {
+        Log.d(
+            TAG,
+            "Loading privacy banner state for appUid: $callingAppUid, mimeTypes: $requestedMimeTypes",
+        )
+        // Only show the privacy banner if user hasn't seen it before for this combination of uid
+        // and MIME types.
+        showPrivacyBanner =
+            !privacyBannerRepository.wasPrivacyBannerShown(callingAppUid, requestedMimeTypes)
+    }
+
     @VisibleForTesting
     internal fun getRequestedMimeTypesForIntent(
         intentAction: String?,
@@ -385,6 +412,19 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
                 else throw IllegalArgumentException("Unsupported intent type: $intentType")
 
             else -> throw IllegalArgumentException("Unsupported intent action: $intentAction")
+        }
+    }
+
+    /** Hides the privacy banner for the current session. */
+    fun hidePrivacyBanner() {
+        showPrivacyBanner = false
+
+        _uiState.update { currentState ->
+            if (currentState is ContactsListState.Success) {
+                currentState.copy(showPrivacyBanner = showPrivacyBanner)
+            } else {
+                currentState
+            }
         }
     }
 
@@ -552,6 +592,7 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
                     isMultiSelectEnabled = isMultiSelectEnabled,
                     callingAppName = callingAppName,
                     requestedMimeTypes = requestedMimeTypes,
+                    showPrivacyBanner = showPrivacyBanner,
                 )
             } else {
                 currentState
@@ -609,7 +650,7 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
 
     // TODO(b/12345678): remove once the permission is pregranted
     open fun onContactsPermissionGranted() {
-        loadContactsData()
+        loadContactsListData()
     }
 }
 

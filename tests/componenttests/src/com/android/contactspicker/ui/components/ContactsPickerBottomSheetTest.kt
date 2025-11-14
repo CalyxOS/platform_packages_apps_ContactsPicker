@@ -78,6 +78,7 @@ class ContactsPickerBottomSheetTest {
             selectedContacts = selectedContacts,
             isMultiSelectEnabled = false,
             callingAppName = null,
+            showPrivacyBanner = false,
             requestedMimeTypes = emptyList(),
         )
 
@@ -168,6 +169,7 @@ class ContactsPickerBottomSheetTest {
                                 selectedContacts = selectedContacts,
                                 isMultiSelectEnabled = false,
                                 callingAppName = null,
+                                showPrivacyBanner = false,
                                 requestedMimeTypes = emptyList(),
                             )
                         ),
@@ -180,6 +182,7 @@ class ContactsPickerBottomSheetTest {
                     onExitSearch = {},
                     onPreviewClicked = {},
                     onBackFromPreview = {},
+                    onPrivacyBannerDismissRequest = {},
                 )
             }
         }
@@ -214,6 +217,7 @@ class ContactsPickerBottomSheetTest {
                                 selectedContacts = selectedContacts,
                                 isMultiSelectEnabled = false,
                                 callingAppName = null,
+                                showPrivacyBanner = false,
                                 requestedMimeTypes = emptyList(),
                             )
                         ),
@@ -226,6 +230,7 @@ class ContactsPickerBottomSheetTest {
                     onExitSearch = {},
                     onPreviewClicked = {},
                     onBackFromPreview = {},
+                    onPrivacyBannerDismissRequest = {},
                 )
             }
         }
@@ -277,6 +282,7 @@ class ContactsPickerBottomSheetTest {
                                 false,
                                 callingAppName = null,
                                 requestedMimeTypes = emptyList(),
+                                showPrivacyBanner = false,
                             )
                         ),
                     snackbarEvents = flowOf(),
@@ -288,6 +294,7 @@ class ContactsPickerBottomSheetTest {
                     onExitSearch = {},
                     onPreviewClicked = {},
                     onBackFromPreview = {},
+                    onPrivacyBannerDismissRequest = {},
                 )
             }
         }
@@ -326,6 +333,7 @@ class ContactsPickerBottomSheetTest {
                             isMultiSelectEnabled = false,
                             callingAppName = null,
                             requestedMimeTypes = emptyList(),
+                            showPrivacyBanner = false,
                         )
                     ),
                 snackbarEvents = events,
@@ -337,6 +345,7 @@ class ContactsPickerBottomSheetTest {
                 onExitSearch = {},
                 onPreviewClicked = {},
                 onBackFromPreview = {},
+                onPrivacyBannerDismissRequest = {},
             )
         }
 
@@ -377,6 +386,7 @@ class ContactsPickerBottomSheetTest {
                     onExitSearch = {},
                     onPreviewClicked = {},
                     onBackFromPreview = { onBackFromPreview = true },
+                    onPrivacyBannerDismissRequest = {},
                 )
             }
         }
@@ -403,6 +413,7 @@ class ContactsPickerBottomSheetTest {
                                     longObjectMapOf(testContact.id, setOf(testContact.id)),
                                 isMultiSelectEnabled = false,
                                 callingAppName = null,
+                                showPrivacyBanner = false,
                                 requestedMimeTypes = emptyList(),
                             )
                         ),
@@ -415,6 +426,7 @@ class ContactsPickerBottomSheetTest {
                     onExitSearch = {},
                     onPreviewClicked = {},
                     onBackFromPreview = { onBackFromPreview = true },
+                    onPrivacyBannerDismissRequest = {},
                 )
             }
         }
@@ -477,6 +489,7 @@ class ContactsPickerBottomSheetTest {
                     onExitSearch = {},
                     onPreviewClicked = {},
                     onBackFromPreview = {},
+                    onPrivacyBannerDismissRequest = {},
                 )
             }
         }

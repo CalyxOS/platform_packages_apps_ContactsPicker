@@ -126,7 +126,7 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
                     TAG,
                     "Handling ${intent.action} for $callingPackage (targetSDK=${appInfo.targetSdkVersion}) internally.",
                 )
-                processIntentAndSetupUi(intent, callingAppName)
+                processIntentAndSetupUi(intent, callingAppName, appInfo.uid)
             } else {
                 Log.d(
                     TAG,
@@ -146,7 +146,7 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
             }
         } catch (e: PackageManager.NameNotFoundException) {
             Log.e(TAG, "Calling package not found: $callingPackage", e)
-            processIntentAndSetupUi(intent, null)
+            processIntentAndSetupUi(intent, null, -1)
         }
     }
 
@@ -182,8 +182,14 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
     }
 
     // Processes the intent which will trigger querying CP2 for contacts and sets up the UI.
-    private fun processIntentAndSetupUi(intent: Intent, appName: String?) {
-        contactsViewModel.processIntent(intent.action, intent.type, intent.extras, appName)
+    private fun processIntentAndSetupUi(intent: Intent, appName: String?, appUid: Int) {
+        contactsViewModel.processIntent(
+            intentAction = intent.action,
+            intentType = intent.type,
+            intentExtras = intent.extras,
+            callingAppName = appName,
+            callingAppUid = appUid,
+        )
         setupComposeUi()
     }
 
@@ -201,6 +207,7 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
                         onToggleContactSelection = contactsViewModel::toggleContactSelection,
                         onToggleEntrySelection = contactsViewModel::toggleEntrySelection,
                         onClearSelection = contactsViewModel::clearSelection,
+                        onPrivacyBannerDismissRequest = contactsViewModel::hidePrivacyBanner,
                         onDoneClicked = ::handleDoneClicked,
                         onQueryChange = contactsViewModel::onSearchQueryChanged,
                         onExitSearch = contactsViewModel::exitSearch,
