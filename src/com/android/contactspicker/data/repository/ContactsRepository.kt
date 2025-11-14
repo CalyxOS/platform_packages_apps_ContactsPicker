@@ -15,34 +15,27 @@
  */
 package com.android.contactspicker.data.repository
 
+import com.android.contactspicker.config.ContactsQueryMode
 import com.android.contactspicker.data.model.Contact
 
 /** Interface for accessing contact data from the Android ContactsProvider. */
 interface ContactsRepository {
 
     /**
-     * Retrieves the initial list of contacts appropriate for the given picker action and type.
+     * Retrieves the initial list of contacts appropriate for the given [ContactsQueryMode].
      *
-     * @param intentAction The action from the intent (e.g., Intent.ACTION_PICK).
-     * @param intentType The MIME type from the intent (e.g., Phone.CONTENT_TYPE).
+     * @param queryMode The mode of query to perform.
      * @return A list of matching [Contact]s.
-     * @throws IllegalArgumentException if the action or type is unsupported.
      */
-    suspend fun getContactsForIntent(intentAction: String?, intentType: String?): List<Contact>
+    suspend fun getContacts(queryMode: ContactsQueryMode): List<Contact>
 
     /**
      * Searches for contacts that match the given query and have at least one of the requested mime
      * types.
      *
      * @param query The text to search for in contact names, emails, and phone numbers.
-     * @param intentAction The action from the intent (e.g., Intent.ACTION_PICK).
-     * @param intentType The MIME type from the intent (e.g., Phone.CONTENT_TYPE).
+     * @param queryMode The mode of query to perform.
      * @return A list of matching [Contact]s.
-     * @throws IllegalArgumentException if the action or type is unsupported.
      */
-    suspend fun searchContacts(
-        query: String,
-        intentAction: String?,
-        intentType: String?,
-    ): List<Contact>
+    suspend fun searchContacts(query: String, queryMode: ContactsQueryMode): List<Contact>
 }

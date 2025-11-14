@@ -16,12 +16,12 @@
 package com.android.contactspicker.data.repository
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsContract.Contacts
 import android.provider.ContactsContract.Data
+import com.android.contactspicker.config.ContactsQueryMode
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
@@ -67,63 +67,38 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             )
     }
 
-    override suspend fun getContactsForIntent(
-        intentAction: String?,
-        intentType: String?,
-    ): List<Contact> =
+    override suspend fun getContacts(queryMode: ContactsQueryMode): List<Contact> =
         withContext(Dispatchers.IO) {
-            when (intentAction) {
-                Intent.ACTION_PICK ->
-                    when (intentType) {
-                        Email.CONTENT_ITEM_TYPE,
-                        Email.CONTENT_TYPE -> getEmailContacts()
-                        Phone.CONTENT_ITEM_TYPE,
-                        Phone.CONTENT_TYPE -> getPhoneContacts()
-                        Contacts.CONTENT_TYPE,
-                        Contacts.CONTENT_ITEM_TYPE -> getDisplayNameContacts()
-                        else ->
-                            throw IllegalArgumentException("Unsupported intent type: $intentType")
-                    }
-                else -> throw IllegalArgumentException("Unsupported intent action: $intentAction")
+            when (queryMode) {
+                ContactsQueryMode.EmailsOnly -> getEmailContacts()
+                ContactsQueryMode.PhonesOnly -> getPhoneContacts()
+                ContactsQueryMode.DisplayNamesOnly -> getDisplayNameContacts()
+                is ContactsQueryMode.Custom -> {
+                    // TODO(b/452020367): Implement custom query logic using mimetypes in
+                    // queryMode.mimetypes.
+                    // For UI presentation in Custom mode, currently return DisplayNameContact.
+                    getDisplayNameContacts()
+                }
             }
         }
 
-    /**
-     * Searches for contacts that match the given query based on the intent action and type.
-     *
-     * @param query The text to search for in contact names, emails, phone numbers, or other
-     *   contact's fields.
-     * @param intentAction The action from the intent (e.g., Intent.ACTION_PICK).
-     * @param intentType The MIME type from the intent (e.g., Phone.CONTENT_TYPE).
-     * @return A list of matching [Contact]s.
-     * @throws IllegalArgumentException if the action or type is unsupported.
-     */
     override suspend fun searchContacts(
         query: String,
-        intentAction: String?,
-        intentType: String?,
+        queryMode: ContactsQueryMode,
     ): List<Contact> {
         if (query.isBlank()) {
             return emptyList()
         }
         return withContext(Dispatchers.IO) {
-            when (intentAction) {
-                Intent.ACTION_PICK ->
-                    when (intentType) {
-                        Email.CONTENT_ITEM_TYPE,
-                        Email.CONTENT_TYPE -> searchEmails(query)
-
-                        Phone.CONTENT_ITEM_TYPE,
-                        Phone.CONTENT_TYPE -> searchPhones(query)
-
-                        Contacts.CONTENT_TYPE,
-                        Contacts.CONTENT_ITEM_TYPE -> searchDisplayNames(query)
-
-                        else ->
-                            throw IllegalArgumentException("Unsupported intent type: $intentType")
-                    }
-
-                else -> throw IllegalArgumentException("Unsupported intent action: $intentAction")
+            when (queryMode) {
+                ContactsQueryMode.EmailsOnly -> searchEmails(query)
+                ContactsQueryMode.PhonesOnly -> searchPhones(query)
+                ContactsQueryMode.DisplayNamesOnly -> searchDisplayNames(query)
+                is ContactsQueryMode.Custom -> {
+                    // TODO(b/452020367): For UI presentation in Custom search mode, currently
+                    //  return DisplayNameContact.
+                    searchDisplayNames(query)
+                }
             }
         }
     }

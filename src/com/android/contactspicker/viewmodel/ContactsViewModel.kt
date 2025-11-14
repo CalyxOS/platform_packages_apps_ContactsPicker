@@ -20,19 +20,17 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.ContactsContract.CommonDataKinds.Email
-import android.provider.ContactsContract.CommonDataKinds.Phone
-import android.provider.ContactsContract.Contacts
-import android.provider.ContactsPickerSessionContract
 import android.util.Log
 import androidx.annotation.OpenForTesting
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.SearchState
+import com.android.contactspicker.config.ContactsPickerAction
+import com.android.contactspicker.config.ContactsPickerRequestConfig
+import com.android.contactspicker.config.ContactsQueryMode
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.PhoneContact
@@ -97,17 +95,13 @@ constructor(
     private var selectionCollectorJob: Job? = null
 
     private var initialContacts: List<Contact> = emptyList()
-    private var isMultiSelectEnabled: Boolean = false
-    private var maxSelectionLimit: Int = DEFAULT_SELECTION_LIMIT
-    private var intentAction: String? = null
-    private var intentType: String? = null
     private var callingAppName: String? = null
     private var searchJob: Job? = null
     private var loadContactsJob: Job? = null
     private var cachedStateBeforePreview: ContactsUiState? = null
-
     private var callingAppUid: Int = -1
-    private var requestedMimeTypes: List<String> = emptyList()
+
+    private var pickerConfig: ContactsPickerRequestConfig? = null
 
     private var showPrivacyBanner = false
 
@@ -142,52 +136,21 @@ constructor(
         callingAppName: String?,
         callingAppUid: Int,
     ) {
-        this.intentAction = intentAction
-        this.intentType = intentType
         this.callingAppName = callingAppName
         this.callingAppUid = callingAppUid
-        this.isMultiSelectEnabled =
-            intentExtras?.getBoolean(Intent.EXTRA_ALLOW_MULTIPLE, false) ?: false
-        try {
-            this.requestedMimeTypes = getRequestedMimeTypesForIntent(intentAction, intentType)
-        } catch (e: IllegalArgumentException) {
-            Log.e(TAG, "An invalid intent was passed.", e)
-            _uiState.value = ContactsListState.Error(e.message ?: "Invalid intent.")
-            return
-        }
-        maxSelectionLimit =
-            if (
-                isMultiSelectEnabled &&
-                    intentExtras?.containsKey(
-                        ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_SELECTION_LIMIT
-                    ) == true
-            ) {
-                val limit =
-                    intentExtras.getInt(
-                        ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_SELECTION_LIMIT,
-                        DEFAULT_SELECTION_LIMIT,
-                    )
-                if (limit <= 0) {
-                    throw IllegalArgumentException(
-                        "Selection limit must be a positive number. Received $limit."
-                    )
-                }
-                if (limit > MAX_ALLOWED_SELECTION_LIMIT) {
-                    throw IllegalArgumentException(
-                        "Selection limit cannot exceed $MAX_ALLOWED_SELECTION_LIMIT. " +
-                            "Received $limit."
-                    )
-                }
-                limit
-            } else {
-                DEFAULT_SELECTION_LIMIT
+
+        val config =
+            ContactsPickerRequestConfig.create(intentAction, intentType, intentExtras).also {
+                pickerConfig = it
             }
+
         selectionHandler =
-            selectionHandlerFactory.create(isMultiSelectEnabled, maxSelectionLimit) { event ->
+            selectionHandlerFactory.create(config.isMultiSelectEnabled, config.maxSelectionLimit) {
+                event ->
                 viewModelScope.launch { _snackbarEvents.emit(event) }
             }
         startObservingSelection()
-        loadContactsListData()
+        loadContactsListData(config)
     }
 
     private fun startObservingSelection() {
@@ -221,15 +184,21 @@ constructor(
             }
     }
 
-    private fun loadContactsListData() {
+    private fun loadContactsListData(config: ContactsPickerRequestConfig) {
         loadContactsJob?.cancel()
         loadContactsJob =
             viewModelScope.launch {
                 _uiState.value = ContactsListState.Loading
                 try {
-                    Log.d(TAG, "Loading contacts for action: $intentAction, type: $intentType")
-                    loadContactsData()
-                    loadPrivacyBannerState()
+                    // load contacts data
+                    initialContacts = contactsRepository.getContacts(config.queryMode)
+                    // Only show the privacy banner if user hasn't seen it before for this
+                    // combination of uid and MIME types.
+                    showPrivacyBanner =
+                        !privacyBannerRepository.wasPrivacyBannerShown(
+                            callingAppUid,
+                            config.requestedMimeTypes,
+                        )
 
                     // TODO(b/444459883): check and handle empty list
                     _uiState.value =
@@ -237,54 +206,22 @@ constructor(
                             availableContacts = initialContacts,
                             selectedContacts =
                                 checkNotNull(selectionHandler).selectedContacts.value,
-                            isMultiSelectEnabled = isMultiSelectEnabled,
+                            isMultiSelectEnabled = config.isMultiSelectEnabled,
                             callingAppName = callingAppName,
-                            requestedMimeTypes = requestedMimeTypes,
+                            requestedMimeTypes = config.requestedMimeTypes,
                             showPrivacyBanner = showPrivacyBanner,
                         )
-                } catch (e: IllegalArgumentException) {
-                    Log.e(TAG, "An invalid intent was passed.", e)
-                    // TODO(b/444459883): iterate on error handling and error messages
-                    _uiState.value = ContactsListState.Error(e.message ?: "Invalid intent.")
                 } catch (e: Exception) {
+                    // TODO(b/444459883): iterate on error handling and error messages
                     if (e is kotlinx.coroutines.CancellationException) {
                         Log.i(TAG, "Contacts loading cancelled.")
                         return@launch
                     }
                     Log.e(TAG, "An unexpected error occurred during load.", e)
-                    _uiState.value = ContactsListState.Error("An unexpected error occurred.")
+                    _uiState.value =
+                        ContactsListState.Error(e.message ?: "An unexpected error occurred.")
                 }
             }
-    }
-
-    private suspend fun loadContactsData() {
-        Log.d(TAG, "Loading contacts for action: $intentAction, type: $intentType")
-        initialContacts = contactsRepository.getContactsForIntent(intentAction, intentType)
-    }
-
-    private suspend fun loadPrivacyBannerState() {
-        Log.d(
-            TAG,
-            "Loading privacy banner state for appUid: $callingAppUid, mimeTypes: $requestedMimeTypes",
-        )
-        // Only show the privacy banner if user hasn't seen it before for this combination of uid
-        // and MIME types.
-        showPrivacyBanner =
-            !privacyBannerRepository.wasPrivacyBannerShown(callingAppUid, requestedMimeTypes)
-    }
-
-    @VisibleForTesting
-    internal fun getRequestedMimeTypesForIntent(
-        intentAction: String?,
-        intentType: String?,
-    ): List<String> {
-        return when (intentAction) {
-            Intent.ACTION_PICK ->
-                if (intentType != null) listOf(intentType)
-                else throw IllegalArgumentException("Unsupported intent type: $intentType")
-
-            else -> throw IllegalArgumentException("Unsupported intent action: $intentAction")
-        }
     }
 
     /** Hides the privacy banner for the current session. */
@@ -308,6 +245,7 @@ constructor(
      */
     @OpenForTesting
     open fun prepareSelectionResult(): Intent? {
+        val config = checkNotNull(pickerConfig)
         val currentState = _uiState.value
         check(
             currentState is ContactsListState.Success ||
@@ -320,13 +258,15 @@ constructor(
         val finalUris = checkNotNull(selectionHandler).resolveSelectedUris(initialContacts)
         if (finalUris.isEmpty()) return null
 
-        return when (intentAction) {
-            Intent.ACTION_PICK -> createActionPickResult(finalUris)
-            else -> null
+        return when (config.pickerAction) {
+            ContactsPickerAction.ACTION_PICK ->
+                createActionPickResult(finalUris, config.isMultiSelectEnabled)
+            // TODO(b/452020367): handle action pick contacts
+            ContactsPickerAction.ACTION_PICK_CONTACTS -> null
         }
     }
 
-    private fun createActionPickResult(uris: List<Uri>): Intent? {
+    private fun createActionPickResult(uris: List<Uri>, isMultiSelectEnabled: Boolean): Intent? {
         if (uris.isEmpty()) {
             return null
         }
@@ -374,8 +314,9 @@ constructor(
 
     /** Executes the search against the repository and updates the UI state. */
     private suspend fun performSearch(query: String) {
+        val config = checkNotNull(pickerConfig)
         try {
-            val results = contactsRepository.searchContacts(query, intentAction, intentType)
+            val results = contactsRepository.searchContacts(query, config.queryMode)
             _uiState.update { currentState ->
                 val selectedContacts =
                     when (currentState) {
@@ -406,6 +347,7 @@ constructor(
      * current selection.
      */
     fun exitSearch() {
+        val config = checkNotNull(pickerConfig)
         _uiState.update { currentState ->
             if (currentState is SearchState) {
                 val selectedContacts =
@@ -417,9 +359,9 @@ constructor(
                 ContactsListState.Success(
                     availableContacts = initialContacts,
                     selectedContacts = selectedContacts,
-                    isMultiSelectEnabled = isMultiSelectEnabled,
+                    isMultiSelectEnabled = config.isMultiSelectEnabled,
                     callingAppName = callingAppName,
-                    requestedMimeTypes = requestedMimeTypes,
+                    requestedMimeTypes = config.requestedMimeTypes,
                     showPrivacyBanner = showPrivacyBanner,
                 )
             } else {
@@ -429,6 +371,7 @@ constructor(
     }
 
     fun onPreviewClicked() {
+        val config = checkNotNull(pickerConfig)
         val currentState = _uiState.value
         require(currentState is ContactsListState.Success || currentState is SearchState.Success) {
             "onPreviewClicked called from unexpected state: $currentState"
@@ -446,11 +389,11 @@ constructor(
                     )
 
                 is SearchState.Success -> {
-                    val aggregatedContacts = currentState.getAggregatedContacts(intentType)
+                    val aggregatedContacts = currentState.getAggregatedContacts(config.queryMode)
                     Triple(
                         aggregatedContacts,
                         currentState.selectedContacts,
-                        this.isMultiSelectEnabled,
+                        config.isMultiSelectEnabled,
                     )
                 }
                 else -> return
@@ -487,15 +430,16 @@ constructor(
 
     // TODO(b/12345678): remove once the permission is pregranted
     open fun onContactsPermissionGranted() {
-        loadContactsListData()
+        val config = pickerConfig ?: return
+        loadContactsListData(config)
     }
 }
 
 /** Aggregates search results into a list of unique contacts, grouping entries by contact ID. */
-private fun SearchState.Success.getAggregatedContacts(intentType: String?): List<Contact> {
-    return when (intentType) {
-        Email.CONTENT_ITEM_TYPE,
-        Email.CONTENT_TYPE -> {
+// TODO(b/441480198): Add unit tests to verify the correctness of this aggregation.
+private fun SearchState.Success.getAggregatedContacts(queryMode: ContactsQueryMode): List<Contact> =
+    when (queryMode) {
+        ContactsQueryMode.EmailsOnly -> {
             val emailContacts = searchResults as List<EmailContact>
             emailContacts
                 .groupBy { it.id }
@@ -506,8 +450,7 @@ private fun SearchState.Success.getAggregatedContacts(intentType: String?): List
                         .copy(emails = contacts.flatMap { it.emails }.distinctBy { it.id })
                 }
         }
-        Phone.CONTENT_ITEM_TYPE,
-        Phone.CONTENT_TYPE -> {
+        ContactsQueryMode.PhonesOnly -> {
             val phoneContacts = searchResults as List<PhoneContact>
             phoneContacts
                 .groupBy { it.id }
@@ -518,8 +461,7 @@ private fun SearchState.Success.getAggregatedContacts(intentType: String?): List
                         .copy(phones = contacts.flatMap { it.phones }.distinctBy { it.id })
                 }
         }
-        Contacts.CONTENT_TYPE,
-        Contacts.CONTENT_ITEM_TYPE -> searchResults
-        else -> throw IllegalArgumentException("Unsupported intent type: $intentType")
+        ContactsQueryMode.DisplayNamesOnly -> searchResults
+        // TODO(b/452020367): handle action pick contacts
+        is ContactsQueryMode.Custom -> throw IllegalArgumentException("Not yet supported")
     }
-}

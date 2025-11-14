@@ -15,6 +15,7 @@
  */
 package com.android.contactspicker.fakes
 
+import com.android.contactspicker.config.ContactsQueryMode
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.repository.ContactsRepository
 
@@ -51,18 +52,14 @@ class FakeContactsRepository : ContactsRepository {
         return searchInvocationsCountMap.getOrDefault(query, 0)
     }
 
-    override suspend fun getContactsForIntent(
-        intentAction: String?,
-        intentType: String?,
-    ): List<Contact> {
+    override suspend fun getContacts(queryMode: ContactsQueryMode): List<Contact> {
         exceptionToThrow?.let { throw it }
         return initialContacts
     }
 
     override suspend fun searchContacts(
         query: String,
-        intentAction: String?,
-        intentType: String?,
+        queryMode: ContactsQueryMode,
     ): List<Contact> {
         searchInvocationsCountMap[query] = searchInvocationsCountMap.getOrDefault(query, 0) + 1
         searchExceptionMap[query]?.let { throw it }
