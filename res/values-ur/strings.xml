@@ -39,6 +39,8 @@
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"ای میل"</string>
     <string name="contact_item_emails_count" msgid="4742575236201305612">"‏‫‎%d ای میلز"</string>
     <string name="contact_item_phones_count" msgid="6713112060821558464">"‏‫‎%d فون نمبرز"</string>
+    <!-- no translation found for contacts_selection_limit_reached_message (4501460255611012354) -->
+    <skip />
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"‏‫‎%1$s کو منتخب کیا گیا"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"انتخاب صاف کریں"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"پیش منظر"</string>
@@ -46,5 +48,7 @@
     <string name="privacy_banner_description" msgid="8397685763338639247">"‏‫%1$s کو صرف آپ کے منتخب کردہ رابطوں کی معلومات تک رسائی حاصل ہوگی"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"مزید تفصیلات"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"برخاست کریں"</string>
+    <!-- no translation found for title_top_bar_back_button_content_description (7162880372713819715) -->
+    <skip />
     <string name="default_calling_app_name" msgid="5345125341557406609">"یہ ایپ"</string>
 </resources>
