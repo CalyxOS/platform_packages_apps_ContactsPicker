@@ -39,16 +39,18 @@
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Correu electrònic"</string>
     <string name="contact_item_emails_count" msgid="4742575236201305612">"%d correus electrònics"</string>
     <string name="contact_item_phones_count" msgid="6713112060821558464">"%d números de telèfon"</string>
-    <!-- no translation found for contacts_selection_limit_reached_message (4501460255611012354) -->
-    <skip />
+    <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{Només es pot compartir # contacte alhora}other{Només es poden compartir # contactes alhora}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"S\'ha seleccionat %1$s"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Esborra la selecció"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"Previsualitza"</string>
+    <!-- no translation found for selection_bottom_bar_back_button_label (6447375742968584743) -->
+    <skip />
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"Fet"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s només tindrà accés a la informació dels contactes que seleccionis"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"Més detalls"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"Ignora"</string>
-    <!-- no translation found for title_top_bar_back_button_content_description (7162880372713819715) -->
+    <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"Enrere"</string>
+    <!-- no translation found for preview_screen_title (2852036336424026274) -->
     <skip />
     <string name="default_calling_app_name" msgid="5345125341557406609">"Aquesta aplicació"</string>
 </resources>
