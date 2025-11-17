@@ -31,16 +31,30 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.android.democontactspickerclientapp.lib.R
 
 @Composable
 fun ScreenTitle(targetSdk: Int) {
+    val context = LocalContext.current
+    val buildInfo = remember {
+        try {
+            context.resources.openRawResource(R.raw.build_info).bufferedReader().use {
+                it.readText()
+            }
+        } catch (e: Exception) {
+            "Build info not available"
+        }
+    }
     Text("Contacts Picker Demo Client", style = MaterialTheme.typography.headlineMedium)
     Text("Target SDK: $targetSdk", style = MaterialTheme.typography.headlineSmall)
+    Text(buildInfo.trim(), style = MaterialTheme.typography.labelMedium)
 }
 
 @Composable
