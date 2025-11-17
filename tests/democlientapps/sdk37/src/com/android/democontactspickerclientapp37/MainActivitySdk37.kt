@@ -77,7 +77,8 @@ private fun Sdk37Screen(targetSdk: Int) {
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.StartActivityForResult()
         ) { result ->
-            legacyConfig = legacyConfig.copy(resultText = handlePickerResult(result))
+            val pickerResult = handlePickerResult(context, result, legacyConfig.legacyPickerType)
+            legacyConfig = legacyConfig.copy(pickerResult = pickerResult)
         }
 
     Column(
@@ -136,6 +137,6 @@ private fun Sdk37Screen(targetSdk: Int) {
         }
         Spacer(modifier = Modifier.height(20.dp))
 
-        ResultDisplay(legacyConfig.resultText)
+        ResultDisplay(legacyConfig.pickerResult)
     }
 }

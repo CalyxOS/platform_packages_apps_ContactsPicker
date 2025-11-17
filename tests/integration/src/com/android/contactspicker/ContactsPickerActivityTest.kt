@@ -48,6 +48,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.android.contactspicker.Flags.FLAG_ENABLE_ACTION_PICK_TAKEOVER_IN_DROIDFOOD
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.inject.ActivityModule
 import com.android.contactspicker.inject.AppModule
@@ -60,6 +61,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertThrows
@@ -141,6 +143,7 @@ class ContactsPickerActivityTest {
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successState)
+        whenever(mockViewModel.snackbarEvents).thenReturn(emptyFlow())
         doNothing()
             .whenever(mockViewModel)
             .processIntent(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull())
@@ -206,6 +209,7 @@ class ContactsPickerActivityTest {
 
     @Test
     @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
+    @RequiresFlagsDisabled(FLAG_ENABLE_ACTION_PICK_TAKEOVER_IN_DROIDFOOD)
     fun lowTargetSdk_forwardsToChooser() {
         val appInfo = ApplicationInfo().apply { targetSdkVersion = 36 }
         whenever(mockPackageManager.getApplicationInfo(testPackageName, 0)).doReturn(appInfo)
@@ -357,6 +361,7 @@ class ContactsPickerActivityTest {
 
     @Test
     @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
+    @RequiresFlagsDisabled(FLAG_ENABLE_ACTION_PICK_TAKEOVER_IN_DROIDFOOD)
     fun lowTargetSdk_withPreferredActivity_startsPreferredActivity() {
         val appInfo = ApplicationInfo().apply { targetSdkVersion = 36 }
         whenever(mockPackageManager.getApplicationInfo(testPackageName, 0)).doReturn(appInfo)
@@ -391,6 +396,28 @@ class ContactsPickerActivityTest {
         val intentWithExtra =
             Intent(baseIntent).apply { putExtra(Intent.EXTRA_USE_SYSTEM_CONTACTS_PICKER, true) }
         val scenario = ActivityScenario.launch<ContactsPickerActivity>(intentWithExtra)
+
+        composeTestRule
+            .onNodeWithText(
+                context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
+            )
+            .assertIsDisplayed()
+
+        scenario.onActivity { activity -> assertThat(activity.isFinishing).isFalse() }
+        assertThat(Intents.getIntents().filter { it.action == Intent.ACTION_CHOOSER }).isEmpty()
+    }
+
+    @Test
+    @RequiresFlagsEnabled(
+        Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER,
+        FLAG_ENABLE_ACTION_PICK_TAKEOVER_IN_DROIDFOOD,
+    )
+    fun enableActionPickTakeoverInDroidfoodAndLowSdk_handlesInternally() {
+        val appInfo = ApplicationInfo().apply { targetSdkVersion = 36 }
+        whenever(mockPackageManager.getApplicationInfo(testPackageName, 0)).doReturn(appInfo)
+        whenever(mockPackageManager.getPreferredActivities(any(), any(), any())).thenAnswer { 0 }
+
+        val scenario = ActivityScenario.launch<ContactsPickerActivity>(baseIntent)
 
         composeTestRule
             .onNodeWithText(

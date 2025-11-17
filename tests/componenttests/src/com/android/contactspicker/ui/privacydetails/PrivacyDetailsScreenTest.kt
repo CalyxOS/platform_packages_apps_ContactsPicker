@@ -25,6 +25,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -58,6 +59,9 @@ class PrivacyDetailsScreenTest {
         }
 
         composeTestRule.onNodeWithTag(PRIVACY_DETAILS_SCREEN_TOP_BAR_TEST_TAG).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.privacy_details_top_bar_header))
+            .assertIsDisplayed()
         composeTestRule.onNodeWithTag(PRIVACY_DETAILS_SCREEN_BODY_TEST_TAG).assertIsDisplayed()
     }
 
@@ -73,7 +77,7 @@ class PrivacyDetailsScreenTest {
         }
 
         val backButtonContentDescription =
-            context.getString(R.string.privacy_details_top_bar_back_button_content_description)
+            context.getString(R.string.title_top_bar_back_button_content_description)
         composeTestRule.onNodeWithContentDescription(backButtonContentDescription).performClick()
 
         verify(mockOnBackPressed, times(1)).invoke()

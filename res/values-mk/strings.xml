@@ -26,8 +26,9 @@
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"Пребарај"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"Избришете го текстот за пребарување"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"Затворете го пребарувањето"</string>
-    <!-- no translation found for contacts_picker_favorites_header (8832599911501712849) -->
-    <skip />
+    <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"Омилени"</string>
+    <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"Икона за ѕвезда"</string>
+    <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"Икона за насмевка"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"Променете го профилот"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"Информации за приватноста"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Профилна слика на контактот"</string>
@@ -38,6 +39,8 @@
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Е-пошта"</string>
     <string name="contact_item_emails_count" msgid="4742575236201305612">"%d е-пошти"</string>
     <string name="contact_item_phones_count" msgid="6713112060821558464">"%d телефонски броеви"</string>
+    <!-- no translation found for contacts_selection_limit_reached_message (4501460255611012354) -->
+    <skip />
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"Се избра %1$s"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Поништете го изборот"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"Прегледај"</string>
@@ -45,6 +48,7 @@
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s ќе има пристап само до податоците од контактите што ќе ги изберете"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"Повеќе детали"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"Отфрли"</string>
-    <!-- no translation found for default_calling_app_name (5345125341557406609) -->
+    <!-- no translation found for title_top_bar_back_button_content_description (7162880372713819715) -->
     <skip />
+    <string name="default_calling_app_name" msgid="5345125341557406609">"Оваа апликација"</string>
 </resources>

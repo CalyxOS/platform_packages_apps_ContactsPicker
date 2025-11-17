@@ -54,6 +54,23 @@ class ContactDataFieldProviderTest {
     }
 
     @Test
+    fun getContactDataFieldItems_withEmptyList_returnsOnlyNameAndPreferences() {
+        // Scenario: Test the behavior when the input list of data fields is empty.
+        // The function should still return the default 'Name' and 'Preferences' items.
+        val dataFields = emptyList<String>()
+
+        // Act: Call the function with an empty list.
+        val result = ContactDataFieldProvider.getContactDataFieldItems(dataFields)
+
+        // Assert: The result should contain only the 'Name' and 'Preferences' items, in that order.
+        assertThat(result).hasSize(2)
+        assertThat(result.first().headerTextResId)
+            .isEqualTo(R.string.privacy_details_data_field_name_header)
+        assertThat(result.last().headerTextResId)
+            .isEqualTo(R.string.privacy_details_data_field_preferences_header)
+    }
+
+    @Test
     fun getContactDataFieldItems_sortsAllKnownFieldsCorrectly() {
         val allKnownDataFields =
             listOf(

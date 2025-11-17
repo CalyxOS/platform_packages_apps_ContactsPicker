@@ -78,3 +78,17 @@ sealed interface SearchState : ContactsUiState {
      */
     data class Error(val message: String) : SearchState
 }
+
+/**
+ * Represents the state for displaying a preview of selected contacts.
+ *
+ * @property contactsToDisplay The list of contacts to show in the preview.
+ * @property selectedContacts A map representing the current selection, where the key is the contact
+ *   ID and the value is a set of selected entry IDs.
+ * @param isMultiSelectEnabled True if multiple contacts can be selected.
+ */
+data class ContactsPreviewState(
+    val contactsToDisplay: List<Contact>,
+    val selectedContacts: LongObjectMap<Set<Long>>,
+    val isMultiSelectEnabled: Boolean,
+) : ContactsUiState

@@ -27,6 +27,8 @@
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"ಹುಡುಕಾಟ ಪಠ್ಯವನ್ನು ತೆರವುಗೊಳಿಸಿ"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"ಹುಡುಕಾಟವನ್ನು ಮುಚ್ಚಿರಿ"</string>
     <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"ಮೆಚ್ಚಿನವುಗಳು"</string>
+    <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"ನಕ್ಷತ್ರ ಐಕಾನ್"</string>
+    <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"ನಗು ಎಂಬುದನ್ನು ಸೂಚಿಸುವ ಐಕಾನ್"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"ಪ್ರೊಫೈಲ್ ಅನ್ನು ಬದಲಿಸಿ"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"ಗೌಪ್ಯತೆ ಮಾಹಿತಿ"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"ಸಂಪರ್ಕದ ಪ್ರೊಫೈಲ್ ಚಿತ್ರ"</string>
@@ -37,6 +39,8 @@
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"ಇಮೇಲ್"</string>
     <string name="contact_item_emails_count" msgid="4742575236201305612">"%d ಇಮೇಲ್‌ಗಳು"</string>
     <string name="contact_item_phones_count" msgid="6713112060821558464">"%d ಫೋನ್ ಸಂಖ್ಯೆಗಳು"</string>
+    <!-- no translation found for contacts_selection_limit_reached_message (4501460255611012354) -->
+    <skip />
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"ಆಯ್ಕೆಯನ್ನು ತೆರವುಗೊಳಿಸಿ"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"ಪೂರ್ವವೀಕ್ಷಣೆ"</string>
@@ -44,6 +48,7 @@
     <string name="privacy_banner_description" msgid="8397685763338639247">"ನೀವು ಆಯ್ಕೆ ಮಾಡಿದ ಸಂಪರ್ಕಗಳ ಮಾಹಿತಿಗೆ ಮಾತ್ರ %1$s ಆ್ಯಕ್ಸೆಸ್ ಅನ್ನು ಹೊಂದಿರುತ್ತದೆ"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"ಇನ್ನಷ್ಟು ವಿವರಗಳು"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"ವಜಾಗೊಳಿಸಿ"</string>
-    <!-- no translation found for default_calling_app_name (5345125341557406609) -->
+    <!-- no translation found for title_top_bar_back_button_content_description (7162880372713819715) -->
     <skip />
+    <string name="default_calling_app_name" msgid="5345125341557406609">"ಈ ಆ್ಯಪ್"</string>
 </resources>

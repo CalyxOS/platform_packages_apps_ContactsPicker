@@ -17,6 +17,7 @@ package com.android.contactspicker.ui.components
 
 import android.content.Context
 import android.content.flags.Flags
+import android.icu.text.MessageFormat
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
@@ -42,11 +43,17 @@ import androidx.compose.ui.unit.height
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsListState
+import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
+import com.android.contactspicker.viewmodel.SnackbarEvent
 import com.google.common.truth.Truth.assertThat
+import java.util.Locale
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -164,12 +171,15 @@ class ContactsPickerBottomSheetTest {
                                 requestedMimeTypes = emptyList(),
                             )
                         ),
-                    onToggleEntrySelection = { _, _ -> },
+                    snackbarEvents = flowOf(),
                     onToggleContactSelection = {},
+                    onToggleEntrySelection = { _, _ -> },
                     onClearSelection = {},
                     onDoneClicked = {},
                     onQueryChange = {},
                     onExitSearch = {},
+                    onPreviewClicked = {},
+                    onBackFromPreview = {},
                 )
             }
         }
@@ -207,12 +217,15 @@ class ContactsPickerBottomSheetTest {
                                 requestedMimeTypes = emptyList(),
                             )
                         ),
-                    onToggleEntrySelection = { _, _ -> },
+                    snackbarEvents = flowOf(),
                     onToggleContactSelection = {},
+                    onToggleEntrySelection = { _, _ -> },
                     onClearSelection = {},
                     onDoneClicked = {},
                     onQueryChange = {},
                     onExitSearch = {},
+                    onPreviewClicked = {},
+                    onBackFromPreview = {},
                 )
             }
         }
@@ -266,12 +279,15 @@ class ContactsPickerBottomSheetTest {
                                 requestedMimeTypes = emptyList(),
                             )
                         ),
+                    snackbarEvents = flowOf(),
                     onToggleEntrySelection = { _, _ -> },
                     onToggleContactSelection = {},
                     onClearSelection = {},
                     onDoneClicked = {},
                     onQueryChange = onSearchQueryChanged,
                     onExitSearch = {},
+                    onPreviewClicked = {},
+                    onBackFromPreview = {},
                 )
             }
         }
@@ -286,6 +302,163 @@ class ContactsPickerBottomSheetTest {
         verify(onSearchQueryChanged).invoke(searchQuery)
     }
 
+    @Test
+    fun selectionLimitSnackbar_appearsWhenEventIsEmitted_andDisappearsAfterTimeout() {
+        val events = MutableSharedFlow<SnackbarEvent>()
+        val msgFormat =
+            MessageFormat(
+                context.getString(R.string.contacts_selection_limit_reached_message),
+                Locale.getDefault(),
+            )
+        val args = mapOf(Pair("count", 2))
+
+        val snackbarMessage = msgFormat.format(args)
+
+        composeTestRule.setContent {
+            ContactsPickerBottomSheet(
+                onDismissRequest = {},
+                uiState =
+                    mutableStateOf(
+                        ContactsListState.Success(
+                            availableContacts = listOf(testContact),
+                            selectedContacts =
+                                longObjectMapOf(testContact.id, setOf(testContact.id)),
+                            isMultiSelectEnabled = false,
+                            callingAppName = null,
+                            requestedMimeTypes = emptyList(),
+                        )
+                    ),
+                snackbarEvents = events,
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
+                onClearSelection = {},
+                onDoneClicked = {},
+                onQueryChange = {},
+                onExitSearch = {},
+                onPreviewClicked = {},
+                onBackFromPreview = {},
+            )
+        }
+
+        composeTestRule.onNodeWithText(snackbarMessage).assertDoesNotExist()
+
+        runBlocking { events.emit(SnackbarEvent.ShowSelectionLimitReached(2)) }
+
+        composeTestRule.onNodeWithText(snackbarMessage).assertIsDisplayed()
+
+        // Advance the clock past the Snackbar's default duration (4 seconds) + 1 to be safe
+        composeTestRule.mainClock.advanceTimeBy(5000)
+
+        composeTestRule.onNodeWithText(snackbarMessage).assertDoesNotExist()
+    }
+
+    @Test
+    fun fromPreviewScreen_clickingBackIcon_onBackFromPreviewInvoked() {
+        var onBackFromPreview = false
+        composeTestRule.setContent {
+            ContactsPickerAppTheme {
+                ContactsPickerBottomSheet(
+                    onDismissRequest = {},
+                    uiState =
+                        mutableStateOf(
+                            ContactsPreviewState(
+                                contactsToDisplay = listOf(testContact),
+                                selectedContacts =
+                                    longObjectMapOf(testContact.id, setOf(testContact.id)),
+                                isMultiSelectEnabled = false,
+                            )
+                        ),
+                    snackbarEvents = flowOf(),
+                    onToggleContactSelection = {},
+                    onToggleEntrySelection = { _, _ -> },
+                    onClearSelection = {},
+                    onDoneClicked = {},
+                    onQueryChange = {},
+                    onExitSearch = {},
+                    onPreviewClicked = {},
+                    onBackFromPreview = { onBackFromPreview = true },
+                )
+            }
+        }
+
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.title_top_bar_back_button_content_description)
+            )
+            .performClick()
+        assertThat(onBackFromPreview).isTrue()
+    }
+
+    fun fromPreviewScreen_clickingBackButton_onBackFromPreviewInvoked() {
+        var onBackFromPreview = false
+        composeTestRule.setContent {
+            ContactsPickerAppTheme {
+                ContactsPickerBottomSheet(
+                    onDismissRequest = {},
+                    uiState =
+                        mutableStateOf(
+                            ContactsListState.Success(
+                                availableContacts = listOf(testContact),
+                                selectedContacts =
+                                    longObjectMapOf(testContact.id, setOf(testContact.id)),
+                                isMultiSelectEnabled = false,
+                                callingAppName = null,
+                                requestedMimeTypes = emptyList(),
+                            )
+                        ),
+                    snackbarEvents = flowOf(),
+                    onToggleContactSelection = {},
+                    onToggleEntrySelection = { _, _ -> },
+                    onClearSelection = {},
+                    onDoneClicked = {},
+                    onQueryChange = {},
+                    onExitSearch = {},
+                    onPreviewClicked = {},
+                    onBackFromPreview = { onBackFromPreview = true },
+                )
+            }
+        }
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.selection_bottom_bar_preview_button_label))
+            .performClick()
+
+        val backButton =
+            composeTestRule.onNodeWithText(
+                context.getString(R.string.selection_bottom_bar_back_button_label)
+            )
+        backButton.assertIsDisplayed()
+        backButton.performClick()
+        assertThat(onBackFromPreview).isTrue()
+    }
+
+    @Test
+    fun selectionBar_isVisible_onPreviewScreen_whenAContactIsSelected() {
+        setupBottomSheet(
+            uiState =
+                ContactsPreviewState(
+                    contactsToDisplay = listOf(testContact),
+                    selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
+                    isMultiSelectEnabled = false,
+                )
+        )
+
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.selection_bottom_bar_clear_button_content_description)
+            )
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.selection_bottom_bar_preview_button_label)
+            )
+            .assertDoesNotExist()
+
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.selection_bottom_bar_back_button_label))
+            .assertIsDisplayed()
+    }
+
     private fun setupBottomSheet(
         onDismissRequest: () -> Unit = {},
         uiState: ContactsUiState = ContactsListState.Loading,
@@ -295,12 +468,15 @@ class ContactsPickerBottomSheetTest {
                 ContactsPickerBottomSheet(
                     onDismissRequest = onDismissRequest,
                     uiState = mutableStateOf(uiState),
-                    onToggleEntrySelection = { _, _ -> },
+                    snackbarEvents = flowOf(),
                     onToggleContactSelection = {},
+                    onToggleEntrySelection = { _, _ -> },
                     onClearSelection = {},
                     onDoneClicked = {},
                     onQueryChange = {},
                     onExitSearch = {},
+                    onPreviewClicked = {},
+                    onBackFromPreview = {},
                 )
             }
         }

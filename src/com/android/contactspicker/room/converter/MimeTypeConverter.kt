@@ -17,8 +17,6 @@ package com.android.contactspicker.room.converter
 
 import android.provider.ContactsContract
 import androidx.room.TypeConverter
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlin.collections.iterator
 
 /**
@@ -27,8 +25,7 @@ import kotlin.collections.iterator
  *
  * This is an efficient way to persist a set of predefined strings in the database.
  */
-@Singleton
-class MimeTypeConverter @Inject constructor() {
+class MimeTypeConverter {
 
     /**
      * Defines the mapping from a contact data MIME type to its unique bit position within the

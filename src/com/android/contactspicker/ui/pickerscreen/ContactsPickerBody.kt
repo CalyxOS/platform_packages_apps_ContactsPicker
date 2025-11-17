@@ -18,7 +18,10 @@ package com.android.contactspicker.ui.pickerscreen
 import androidx.annotation.VisibleForTesting
 import androidx.collection.LongObjectMap
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -83,7 +86,10 @@ fun ContactsPickerBody(
 
     val favoriteContacts = remember(contacts) { contacts.filter { it.isFavorite } }
 
-    LazyColumn(modifier = Modifier.fillMaxWidth().testTag(CONTACTS_LIST_TEST_TAG)) {
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth().testTag(CONTACTS_LIST_TEST_TAG),
+        contentPadding = WindowInsets.navigationBars.asPaddingValues(),
+    ) {
         item(key = "privacy_banner") {
             PrivacyBanner(
                 callingAppName = callingAppName,

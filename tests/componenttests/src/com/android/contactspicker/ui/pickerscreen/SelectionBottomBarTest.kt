@@ -48,9 +48,11 @@ class SelectionBottomBarTest {
         composeTestRule.setContent {
             SelectionBottomBar(
                 selectedCount = count,
-                onPreviewClick = {},
+                onPreviewClicked = {},
                 onDoneClick = {},
                 onClearSelection = {},
+                isPreviewMode = false,
+                onBackFromPreview = {},
             )
         }
 
@@ -63,9 +65,11 @@ class SelectionBottomBarTest {
         composeTestRule.setContent {
             SelectionBottomBar(
                 selectedCount = 1,
-                onPreviewClick = {},
+                onPreviewClicked = {},
                 onDoneClick = {},
                 onClearSelection = { clearClicked = true },
+                isPreviewMode = false,
+                onBackFromPreview = {},
             )
         }
 
@@ -74,5 +78,25 @@ class SelectionBottomBarTest {
         composeTestRule.onNodeWithContentDescription(clearContentDesc).performClick()
 
         assertThat(clearClicked).isTrue()
+    }
+
+    @Test
+    fun previewButton_triggersCallback() {
+        var previewClicked = false
+        composeTestRule.setContent {
+            SelectionBottomBar(
+                selectedCount = 1,
+                onPreviewClicked = { previewClicked = true },
+                onDoneClick = {},
+                onClearSelection = {},
+                isPreviewMode = false,
+                onBackFromPreview = {},
+            )
+        }
+
+        val previewLabel = context.getString(R.string.selection_bottom_bar_preview_button_label)
+        composeTestRule.onNodeWithText(previewLabel).performClick()
+
+        assertThat(previewClicked).isTrue()
     }
 }

@@ -1,0 +1,9 @@
+package: "com.android.contactspicker"
+container: "system"
+
+flag {
+    name: "enable_action_pick_takeover_in_droidfood"
+    namespace: "profile_experiences"
+    description: "Enables the system contacts picker to always handle the ACTION_PICK for contacts"
+    bug: "459413010"
+}

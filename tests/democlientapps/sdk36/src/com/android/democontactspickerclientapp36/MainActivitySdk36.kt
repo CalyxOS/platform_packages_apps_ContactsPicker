@@ -76,7 +76,10 @@ private fun Sdk36Screen(targetSdk: Int) {
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.StartActivityForResult()
         ) { result ->
-            legacyConfig = legacyConfig.copy(resultText = handlePickerResult(result))
+            // Handle picker result to get structured data
+            val pickerResult = handlePickerResult(context, result, legacyConfig.legacyPickerType)
+            // Update state with structured results and status text
+            legacyConfig = legacyConfig.copy(pickerResult = pickerResult)
         }
 
     Box(Modifier.systemBarsPadding()) {
@@ -121,7 +124,8 @@ private fun Sdk36Screen(targetSdk: Int) {
             }
             Spacer(modifier = Modifier.height(20.dp))
 
-            ResultDisplay(legacyConfig.resultText)
+            // Pass status and structured results to the display composable
+            ResultDisplay(legacyConfig.pickerResult)
         }
     }
 }
