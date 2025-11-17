@@ -109,6 +109,8 @@ enum class ItemPosition {
  * @param contact The contact to display.
  * @param selectedEntries The list of currently selected entries for the contact, keyed by IDs.
  * @param isMultiSelectEnabled True if multiple selections are allowed.
+ * @param isSearchMode True if the item is being displayed in search results. In this mode,
+ *   interactions target the specific entry displayed rather than the entire contact.
  * @param onToggleContactSelection A callback invoked when the avatar is clicked to select/deselect
  *   the whole contact.
  * @param onToggleEntrySelection A callback invoked when a single entry (e.g. an email) is selected
@@ -121,6 +123,7 @@ fun ContactItem(
     position: ItemPosition,
     selectedEntries: Set<Long>?,
     isMultiSelectEnabled: Boolean,
+    isSearchMode: Boolean,
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (contactId: Long, entryId: Long) -> Unit,
 ) {
@@ -129,15 +132,37 @@ fun ContactItem(
         (contact is PhoneContact && contact.phones.size > 1) ||
             (contact is EmailContact && contact.emails.size > 1)
 
-    // A contact is considered "fully selected" for the avatar checkmark only when all of its
-    // entries are selected.
-    val isFullySelected = contact.isFullySelected(selectedEntries)
+    val searchTargetEntryId =
+        remember(contact) {
+            when (contact) {
+                is PhoneContact -> contact.phones.firstOrNull()?.id
+                is EmailContact -> contact.emails.firstOrNull()?.id
+                is DisplayNameContact -> contact.id
+            }
+        }
 
-    // The background highlights if any entry is selected.
-    val isAnyEntrySelected = selectedEntries?.isNotEmpty() == true
+    // A contact is considered "fully selected" for the avatar checkmark only when all of its
+    // entries are selected. In search mode, each item is considered fully selected.
+    val isAvatarSelected =
+        if (isSearchMode) {
+            searchTargetEntryId != null && selectedEntries?.contains(searchTargetEntryId) == true
+        } else {
+            contact.isFullySelected(selectedEntries)
+        }
+
+    // The background highlights if any entry is selected, or in search mode, if the specific entry
+    // is selected.
+    val showAsSelected =
+        if (isSearchMode) {
+            searchTargetEntryId != null && selectedEntries?.contains(searchTargetEntryId) == true
+        } else {
+            selectedEntries?.isNotEmpty() == true
+        }
 
     val onAvatarClick: () -> Unit = {
-        if (isMultiSelectEnabled || !isExpandable) {
+        if (isSearchMode) {
+            searchTargetEntryId?.let { entryId -> onToggleEntrySelection(contact.id, entryId) }
+        } else if (isMultiSelectEnabled || !isExpandable) {
             // In multi-select, or for simple contacts, the avatar toggles selection.
             onToggleContactSelection(contact)
         } else {
@@ -148,15 +173,19 @@ fun ContactItem(
 
     Surface(
         color =
-            if (isAnyEntrySelected) MaterialTheme.colorScheme.surfaceDim
+            if (showAsSelected) MaterialTheme.colorScheme.surfaceDim
             else MaterialTheme.colorScheme.surfaceBright,
-        shape = calculateShape(position, isAnyEntrySelected),
+        shape = calculateShape(position, showAsSelected),
     ) {
         Column(modifier = Modifier.animateContentSize()) {
             val rowModifier =
                 Modifier.fillMaxWidth()
                     .clickable {
-                        if (isExpandable) {
+                        if (isSearchMode) {
+                            searchTargetEntryId?.let { entryId ->
+                                onToggleEntrySelection(contact.id, entryId)
+                            }
+                        } else if (isExpandable) {
                             expanded = !expanded
                         } else {
                             onToggleContactSelection(contact)
@@ -171,7 +200,7 @@ fun ContactItem(
             ) {
                 SelectableAvatar(
                     contact = contact,
-                    isSelected = isFullySelected,
+                    isSelected = isAvatarSelected,
                     onClick = { onAvatarClick() },
                 )
                 Column(modifier = Modifier.weight(1f)) {
@@ -189,7 +218,7 @@ fun ContactItem(
                         )
                     }
                 }
-                if (isExpandable) {
+                if (isExpandable && !isSearchMode) {
                     val rotationAngle by
                         animateFloatAsState(
                             targetValue = if (expanded) 180f else 0f,

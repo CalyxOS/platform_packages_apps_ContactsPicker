@@ -83,6 +83,7 @@ fun PreviewScreen(
                         position = ItemPosition.ONLY,
                         selectedEntries = selectedContacts[contact.id],
                         isMultiSelectEnabled = uiState.isMultiSelectEnabled,
+                        isSearchMode = false,
                         onToggleContactSelection = onToggleContactSelection,
                         onToggleEntrySelection = onToggleEntrySelection,
                     )

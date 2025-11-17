@@ -136,6 +136,7 @@ fun ContactsPickerBody(
                         position = position,
                         selectedEntries = selectedContacts[contact.id],
                         isMultiSelectEnabled = isMultiSelectEnabled,
+                        isSearchMode = false,
                         onToggleContactSelection = onToggleContactSelection,
                         onToggleEntrySelection = onToggleEntrySelection,
                     )
@@ -190,6 +191,7 @@ private fun LazyListScope.favoritesSection(
                     position = position,
                     selectedEntries = selectedContacts[contact.id],
                     isMultiSelectEnabled = isMultiSelectEnabled,
+                    isSearchMode = false,
                     onToggleContactSelection = onToggleContactSelection,
                     onToggleEntrySelection = onToggleEntrySelection,
                 )

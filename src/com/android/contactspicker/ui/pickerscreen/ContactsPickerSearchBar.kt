@@ -200,6 +200,7 @@ private fun SearchResultsList(
                     isMultiSelectEnabled = false, // Not relevant in search state
                     onToggleContactSelection = onToggleContactSelection,
                     onToggleEntrySelection = onToggleEntrySelection,
+                    isSearchMode = true,
                 )
             }
         }
