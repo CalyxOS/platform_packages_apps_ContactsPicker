@@ -24,20 +24,20 @@ import android.net.Uri
  * Creates a result intent for a single selected contact URI.
  *
  * @param context The context.
- * @param intent The original intent that was used to launch the Contacts Picker.
+ * @param intentAction The original intent action that was used to launch the Contacts Picker.
  * @param uri The selected contact URI.
  * @param callingUid The UID of the calling app.
  * @return The result intent to be returned to the calling app.
  */
 fun createSingleSelectionResult(
     context: Context,
-    intent: Intent,
+    intentAction: String,
     uri: Uri,
     callingUid: Int,
 ): Intent {
-    if (intent.action != Intent.ACTION_PICK) {
+    if (intentAction != Intent.ACTION_PICK) {
         // TODO(b/441478451): Support ACTION_PICK_CONTACTS later.
-        throw IllegalArgumentException("Unsupported intent action: ${intent.action}")
+        throw IllegalArgumentException("Unsupported intent action: $intentAction")
     }
     val resultIntent = Intent()
     resultIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -49,20 +49,20 @@ fun createSingleSelectionResult(
  * Creates a result intent for multiple selected contact URIs.
  *
  * @param context The context.
- * @param intent The original intent that was used to launch the Contacts Picker.
+ * @param intentAction The original intent action that was used to launch the Contacts Picker.
  * @param uris The list of selected contact URIs.
  * @param callingUid The UID of the calling app.
  * @return The result intent to be returned to the calling app.
  */
 fun createMultiSelectionResult(
     context: Context,
-    intent: Intent,
+    intentAction: String,
     uris: List<Uri>,
     callingUid: Int,
 ): Intent {
-    if (intent.action != Intent.ACTION_PICK) {
+    if (intentAction != Intent.ACTION_PICK) {
         // TODO(b/441478451): Support ACTION_PICK_CONTACTS later.
-        throw IllegalArgumentException("Unsupported intent action: ${intent.action}")
+        throw IllegalArgumentException("Unsupported intent action: $intentAction")
     }
     return Intent().apply {
         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

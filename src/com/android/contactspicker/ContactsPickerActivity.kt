@@ -214,24 +214,13 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
 
     /** Prepares the result intent and finishes the activity. */
     private fun handleDoneClicked() {
-        val uris = contactsViewModel.prepareSelectionResult()
-        if (uris.isEmpty()) {
+        val resultIntent = contactsViewModel.prepareSelectionResult(this)
+
+        if (resultIntent == null) {
             setResult(RESULT_CANCELED)
-            finish()
-            return
+        } else {
+            setResult(RESULT_OK, resultIntent)
         }
-
-        // TODO(b/452020367): Pass calling uid when we support ACTION_PICK_CONTACTS
-        val resultIntent =
-            if (
-                (contactsViewModel.uiState.value as ContactsListState.Success).isMultiSelectEnabled
-            ) {
-                createMultiSelectionResult(this, intent, uris, -1)
-            } else {
-                createSingleSelectionResult(this, intent, uris.first(), -1)
-            }
-
-        setResult(RESULT_OK, resultIntent)
         finish()
     }
 

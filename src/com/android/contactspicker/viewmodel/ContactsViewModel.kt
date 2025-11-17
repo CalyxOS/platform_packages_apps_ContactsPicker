@@ -16,6 +16,7 @@
 package com.android.contactspicker.viewmodel
 
 import android.content.ContentUris
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -36,6 +37,8 @@ import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.SearchState
+import com.android.contactspicker.createMultiSelectionResult
+import com.android.contactspicker.createSingleSelectionResult
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
@@ -44,7 +47,6 @@ import com.android.contactspicker.data.repository.ContactsRepository
 import com.android.contactspicker.util.totalElementCount
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlin.collections.set
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -387,25 +389,38 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
     }
 
     /**
-     * Converts the current selection map into a final list of content URIs.
+     * Converts the current selection map into a final result intent.
      *
-     * @return A list of [Uri]s for the selected items, or an empty list.
+     * @return A ready-to-use result [Intent], or null if selection is empty/error occurred.
      */
+    // TODO(b/452020367): refactor to not pass the context from the activity
     @OpenForTesting
-    open fun prepareSelectionResult(): List<Uri> {
-        val currentState = _uiState.value
-        val (contacts, selectedContacts) =
-            when (currentState) {
-                is ContactsListState.Success ->
-                    Pair(currentState.availableContacts, currentState.selectedContacts)
-                is SearchState.Success ->
-                    Pair(currentState.searchResults, currentState.selectedContacts)
-                else -> {
-                    Log.w(TAG, "prepareSelectionResult called while not in a Success state.")
-                    return emptyList()
-                }
+    open fun prepareSelectionResult(context: Context): Intent? {
+        val selectedContacts =
+            when (val currentState = _uiState.value) {
+                is ContactsListState.Success -> currentState.selectedContacts
+                is SearchState.Success -> currentState.selectedContacts
+                is ContactsPreviewState -> currentState.selectedContacts
+                else ->
+                    throw IllegalStateException(
+                        "prepareSelectionResult called while not in a Success state."
+                    )
             }
 
+        val finalUris = convertSelectionToUris(initialContacts, selectedContacts)
+        if (finalUris.isEmpty()) return null
+
+        return when (val action = intentAction) {
+            Intent.ACTION_PICK ->
+                createActionPickResult(context, finalUris, action, isMultiSelectEnabled)
+            else -> null
+        }
+    }
+
+    private fun convertSelectionToUris(
+        contacts: List<Contact>,
+        selectedContacts: LongObjectMap<Set<Long>>,
+    ): List<Uri> {
         try {
             val finalUris = mutableListOf<Uri>()
             val contactsById = contacts.associateBy { it.id }
@@ -419,9 +434,7 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
 
                 when (contact) {
                     is DisplayNameContact -> {
-                        finalUris.add(
-                            ContactsContract.Contacts.getLookupUri(contact.id, contact.lookupKey)
-                        )
+                        finalUris.add(Contacts.getLookupUri(contact.id, contact.lookupKey))
                     }
                     is EmailContact,
                     is PhoneContact -> {
@@ -441,6 +454,20 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
             Log.e(TAG, "Error preparing selection result", e)
             _uiState.value = ContactsListState.Error("Error preparing result: ${e.message}")
             return emptyList()
+        }
+    }
+
+    private fun createActionPickResult(
+        context: Context,
+        uris: List<Uri>,
+        intentAction: String,
+        isMultiSelectEnabled: Boolean,
+    ): Intent {
+        // TODO(b/452020367): Pass calling uid when we support ACTION_PICK_CONTACTS
+        return if (isMultiSelectEnabled) {
+            createMultiSelectionResult(context, intentAction, uris, callingUid = -1)
+        } else {
+            createSingleSelectionResult(context, intentAction, uris.first(), callingUid = -1)
         }
     }
 

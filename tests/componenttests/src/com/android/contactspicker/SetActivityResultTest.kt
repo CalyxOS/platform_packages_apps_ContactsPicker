@@ -44,8 +44,8 @@ class SetActivityResultTest {
 
     @Test
     fun createSingleSelectionResult_withPickAction_returnsIntentWithData() {
-        val intent = Intent(Intent.ACTION_PICK)
-        val resultIntent = createSingleSelectionResult(context, intent, testUri1, callingUid)
+        val resultIntent =
+            createSingleSelectionResult(context, Intent.ACTION_PICK, testUri1, callingUid)
 
         assertThat(resultIntent.data).isEqualTo(testUri1)
         assertThat(resultIntent.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION).isNotEqualTo(0)
@@ -53,9 +53,8 @@ class SetActivityResultTest {
 
     @Test
     fun createSingleSelectionResult_withWrongAction_throwsException() {
-        val intent = Intent(Intent.ACTION_VIEW)
         assertThrows(IllegalArgumentException::class.java) {
-            createSingleSelectionResult(context, intent, testUri1, callingUid)
+            createSingleSelectionResult(context, Intent.ACTION_VIEW, testUri1, callingUid)
         }
     }
 
@@ -65,9 +64,9 @@ class SetActivityResultTest {
         val mockContext = mock(Context::class.java)
         whenever(mockContext.contentResolver).thenReturn(mockContentResolver)
 
-        val intent = Intent(Intent.ACTION_PICK)
         val uris = listOf(testUri1, testUri2)
-        val resultIntent = createMultiSelectionResult(mockContext, intent, uris, callingUid)
+        val resultIntent =
+            createMultiSelectionResult(mockContext, Intent.ACTION_PICK, uris, callingUid)
 
         assertThat(resultIntent.clipData!!.itemCount).isEqualTo(2)
         assertThat(resultIntent.clipData!!.getItemAt(0).uri).isEqualTo(testUri1)
@@ -77,19 +76,17 @@ class SetActivityResultTest {
 
     @Test
     fun createMultiSelectionResult_withWrongAction_throwsException() {
-        val intent = Intent(Intent.ACTION_VIEW)
         val uris = listOf(testUri1, testUri2)
         assertThrows(IllegalArgumentException::class.java) {
-            createMultiSelectionResult(context, intent, uris, callingUid)
+            createMultiSelectionResult(context, Intent.ACTION_VIEW, uris, callingUid)
         }
     }
 
     @Test
     fun createMultiSelectionResult_withEmptyUris_throwsException() {
-        val intent = Intent(Intent.ACTION_VIEW)
         val uris = listOf<Uri>()
         assertThrows(IllegalArgumentException::class.java) {
-            createMultiSelectionResult(context, intent, uris, callingUid)
+            createMultiSelectionResult(context, Intent.ACTION_PICK, uris, callingUid)
         }
     }
 }

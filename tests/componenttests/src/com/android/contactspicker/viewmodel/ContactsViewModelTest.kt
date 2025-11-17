@@ -17,8 +17,10 @@
 package com.android.contactspicker.viewmodel
 
 import android.content.ContentUris
+import android.content.Context
 import android.content.Intent
 import android.content.flags.Flags
+import android.net.Uri
 import android.os.Bundle
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
@@ -27,6 +29,7 @@ import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsPickerSessionContract
 import androidx.collection.longObjectMapOf
+import androidx.test.core.app.ApplicationProvider
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
@@ -55,6 +58,7 @@ class ContactsViewModelTest {
 
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
     private val testDispatcher = StandardTestDispatcher()
+    private val context: Context = ApplicationProvider.getApplicationContext()
     private lateinit var fakeRepository: FakeContactsRepository
     private lateinit var viewModel: ContactsViewModel
 
@@ -341,15 +345,35 @@ class ContactsViewModelTest {
         assertThat(selection.isEmpty()).isTrue()
     }
 
+    @Test(expected = IllegalStateException::class)
+    fun prepareSelectionResult_inLoadingState_throwsException() {
+        val result = viewModel.prepareSelectionResult(context)
+        assertThat(result).isNull()
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun prepareSelectionResult_inErrorState_throwsException() {
+        viewModel.processIntent(
+            intentAction = "INVALID_ACTION",
+            intentType = null,
+            intentExtras = null,
+            callingAppName = null,
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val result = viewModel.prepareSelectionResult(context)
+        assertThat(result).isNull()
+    }
+
     @Test
-    fun prepareSelectionResult_withNoSelection_returnsEmptyList() {
+    fun prepareSelectionResult_withNoSelection_returnsNull() {
         processIntentWithInitialContacts(
             listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT)
         )
 
-        val uris = viewModel.prepareSelectionResult()
+        val intent = viewModel.prepareSelectionResult(context)
 
-        assertThat(uris).isEmpty()
+        assertThat(intent).isNull()
     }
 
     @Test
@@ -358,14 +382,14 @@ class ContactsViewModelTest {
         processIntentWithInitialContacts(listOf(displayNameContact))
         viewModel.toggleContactSelection(displayNameContact)
 
-        val uris = viewModel.prepareSelectionResult()
-
+        val intent = viewModel.prepareSelectionResult(context)
         val expectedUri =
             ContactsContract.Contacts.getLookupUri(
                 displayNameContact.id,
                 displayNameContact.lookupKey,
             )
-        assertThat(uris).containsExactly(expectedUri)
+
+        assertIntentData(intent, expectedUri)
     }
 
     @Test
@@ -375,10 +399,10 @@ class ContactsViewModelTest {
         val entry = singleEmailContact.emails.first()
         viewModel.toggleEntrySelection(singleEmailContact.id, entry.id)
 
-        val uris = viewModel.prepareSelectionResult()
-
+        val intent = viewModel.prepareSelectionResult(context)
         val expectedUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, entry.id)
-        assertThat(uris).containsExactly(expectedUri)
+
+        assertIntentData(intent, expectedUri)
     }
 
     @Test
@@ -391,14 +415,10 @@ class ContactsViewModelTest {
         )
         viewModel.toggleContactSelection(multiPhoneContact) // Selects all entries
 
-        val uris = viewModel.prepareSelectionResult()
+        val intent = viewModel.prepareSelectionResult(context)
 
-        assertThat(uris.size).isEqualTo(multiPhoneContact.phones.size)
-        multiPhoneContact.phones.forEach { phoneEntry ->
-            val expectedUri =
-                ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, phoneEntry.id)
-            assertThat(uris).contains(expectedUri)
-        }
+        assertThat(getUrisFromClipData(intent))
+            .containsExactlyElementsIn(getExpectedDataUris(multiPhoneContact.phones.map { it.id }))
     }
 
     @Test
@@ -417,7 +437,7 @@ class ContactsViewModelTest {
         val entry = multiPhoneContact.phones.first()
         viewModel.toggleEntrySelection(multiPhoneContact.id, entry.id)
 
-        val uris = viewModel.prepareSelectionResult()
+        val intent = viewModel.prepareSelectionResult(context)
 
         val expectedDisplayNameUri =
             ContactsContract.Contacts.getLookupUri(
@@ -426,8 +446,8 @@ class ContactsViewModelTest {
             )
         val expectedPhoneUri =
             ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, entry.id)
-
-        assertThat(uris).containsExactly(expectedDisplayNameUri, expectedPhoneUri)
+        assertThat(getUrisFromClipData(intent))
+            .containsExactly(expectedDisplayNameUri, expectedPhoneUri)
     }
 
     @Test
@@ -442,12 +462,111 @@ class ContactsViewModelTest {
             multiPhoneContact
         ) // This should only select the first entry
 
-        val uris = viewModel.prepareSelectionResult()
+        val intent = viewModel.prepareSelectionResult(context)
         val firstEntry = multiPhoneContact.phones.first()
         val expectedUri =
             ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, firstEntry.id)
 
-        assertThat(uris).containsExactly(expectedUri)
+        assertIntentData(intent, expectedUri)
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun prepareSelectionResult_inSearchStateWithError_throwsException() = runTest {
+        val query = "query"
+        fakeRepository.setSearchException(query, IllegalArgumentException())
+        processIntentWithInitialContacts(
+            listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT)
+        )
+        viewModel.onSearchQueryChanged(query)
+        testDispatcher.scheduler.advanceUntilIdle()
+        assertThat(viewModel.uiState.value is SearchState.Error).isTrue()
+
+        val result = viewModel.prepareSelectionResult(context)
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun prepareSelectionResult_withSingleEmailEntryInSearchState_returnsDataUri() = runTest {
+        val singleEmailContact = ContactTestDataFactory.GENERIC_EMAIL_CONTACT
+        processIntentWithInitialContacts(listOf(singleEmailContact))
+        viewModel.onSearchQueryChanged("query")
+        testDispatcher.scheduler.advanceUntilIdle()
+        assertThat(viewModel.uiState.value is SearchState.Success).isTrue()
+        val entry = singleEmailContact.emails.first()
+        viewModel.toggleEntrySelection(singleEmailContact.id, entry.id)
+
+        val intent = viewModel.prepareSelectionResult(context)
+        val expectedUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, entry.id)
+
+        assertIntentData(intent, expectedUri)
+    }
+
+    @Test
+    fun prepareSelectionResult_withMultiplePhoneEntriesInSearchState_returnsDataUris() = runTest {
+        val multiPhoneContact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT
+        // Must be in multi-select mode
+        processIntentWithInitialContacts(
+            listOf(multiPhoneContact),
+            buildIntentExtrasWithMultiSelect(true),
+        )
+        viewModel.onSearchQueryChanged("query")
+        testDispatcher.scheduler.advanceUntilIdle()
+        assertThat(viewModel.uiState.value is SearchState.Success).isTrue()
+        viewModel.toggleContactSelection(multiPhoneContact) // Selects all entries
+
+        val intent = viewModel.prepareSelectionResult(context)
+
+        assertThat(getUrisFromClipData(intent))
+            .containsExactlyElementsIn(getExpectedDataUris(multiPhoneContact.phones.map { it.id }))
+    }
+
+    @Test
+    fun prepareSelectionResult_withSingleEmailEntryInPreviewState_returnsDataUri() {
+        val singleEmailContact = ContactTestDataFactory.GENERIC_EMAIL_CONTACT
+        processIntentWithInitialContacts(listOf(singleEmailContact))
+        val entry = singleEmailContact.emails.first()
+        viewModel.toggleEntrySelection(singleEmailContact.id, entry.id)
+        viewModel.onPreviewClicked()
+        assertThat(viewModel.uiState.value is ContactsPreviewState).isTrue()
+
+        val intent = viewModel.prepareSelectionResult(context)
+        val expectedUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, entry.id)
+
+        assertIntentData(intent, expectedUri)
+    }
+
+    @Test
+    fun prepareSelectionResult_withMultiplePhoneEntriesInPreviewState_returnsDataUris() {
+        val multiPhoneContact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT
+        // Must be in multi-select mode
+        processIntentWithInitialContacts(
+            listOf(multiPhoneContact),
+            buildIntentExtrasWithMultiSelect(true),
+        )
+        viewModel.toggleContactSelection(multiPhoneContact) // Selects all entries
+        viewModel.onPreviewClicked()
+        assertThat(viewModel.uiState.value is ContactsPreviewState).isTrue()
+
+        val intent = viewModel.prepareSelectionResult(context)
+
+        assertThat(getUrisFromClipData(intent))
+            .containsExactlyElementsIn(getExpectedDataUris(multiPhoneContact.phones.map { it.id }))
+    }
+
+    fun getUrisFromClipData(intent: Intent?): List<Uri> {
+        assertThat(intent).isNotNull()
+        val clipData = intent!!.clipData
+        assertThat(clipData).isNotNull()
+        return (0 until clipData!!.itemCount).map { index -> clipData.getItemAt(index).uri }
+    }
+
+    fun getExpectedDataUris(dataIds: List<Long>): List<Uri> {
+        return dataIds.map { ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, it) }
+    }
+
+    private fun assertIntentData(intent: Intent?, expectedUri: Uri) {
+        assertThat(intent).isNotNull()
+        assertThat(intent!!.data).isEqualTo(expectedUri)
     }
 
     @Test

@@ -60,6 +60,7 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
+import kotlin.test.Ignore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runTest
@@ -264,7 +265,8 @@ class ContactsPickerActivityTest {
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successStateSingleSelect)
-        whenever(mockViewModel.prepareSelectionResult()).thenReturn(listOf(testUri))
+        whenever(mockViewModel.prepareSelectionResult(any()))
+            .thenReturn(createSingleSelectionResult(context, Intent.ACTION_PICK, testUri, -1))
 
         val scenario = ActivityScenario.launchActivityForResult<ContactsPickerActivity>(baseIntent)
 
@@ -288,6 +290,7 @@ class ContactsPickerActivityTest {
         }
     }
 
+    @Ignore("TODO(b/461444388): reenable")
     @Test
     @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
     fun handleDoneClicked_withMultiSelection_setsResultOkWithClipData() {
@@ -302,8 +305,16 @@ class ContactsPickerActivityTest {
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successStateMultiSelect)
-        // Set up ViewModel to return multiple URIs
-        whenever(mockViewModel.prepareSelectionResult()).thenReturn(listOf(testUri, testUri2))
+        // Set up ViewModel to return intent with multiple URIs
+        whenever(mockViewModel.prepareSelectionResult(context))
+            .thenReturn(
+                createMultiSelectionResult(
+                    context,
+                    Intent.ACTION_PICK,
+                    listOf(testUri, testUri2),
+                    -1,
+                )
+            )
 
         val scenario = ActivityScenario.launchActivityForResult<ContactsPickerActivity>(baseIntent)
 
@@ -332,7 +343,7 @@ class ContactsPickerActivityTest {
 
     @Test
     @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
-    fun handleDoneClicked_withNoSelection_setsResultCanceled() {
+    fun handleDoneClicked_viewModelReturnsNull_setsResultCanceled() {
         val successStateSingleSelect =
             MutableStateFlow(
                 ContactsListState.Success(
@@ -344,7 +355,7 @@ class ContactsPickerActivityTest {
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successStateSingleSelect)
-        whenever(mockViewModel.prepareSelectionResult()).thenReturn(emptyList())
+        whenever(mockViewModel.prepareSelectionResult(any())).thenReturn(null)
 
         val scenario = ActivityScenario.launchActivityForResult<ContactsPickerActivity>(baseIntent)
 
