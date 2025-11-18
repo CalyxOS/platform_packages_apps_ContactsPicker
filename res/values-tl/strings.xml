@@ -43,10 +43,14 @@
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s ang napili"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"I-clear ang pagpipilian"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"I-preview"</string>
+    <!-- no translation found for selection_bottom_bar_back_button_label (6447375742968584743) -->
+    <skip />
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"Tapos na"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"Magkakaroon lang ng access ang %1$s sa impormasyon mula sa mga contact na pipiliin mo"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"Higit pang Detalye"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"I-dismiss"</string>
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"Bumalik"</string>
+    <!-- no translation found for preview_screen_title (2852036336424026274) -->
+    <skip />
     <string name="default_calling_app_name" msgid="5345125341557406609">"App na ito"</string>
 </resources>
