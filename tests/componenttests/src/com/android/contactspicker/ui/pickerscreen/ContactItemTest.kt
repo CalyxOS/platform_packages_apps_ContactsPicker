@@ -411,6 +411,7 @@ class ContactItemTest {
                 position = ItemPosition.ONLY,
                 selectedEntries = emptySet(),
                 isMultiSelectEnabled = true,
+                isSearchMode = false,
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, entryId ->
                     onToggleEntryCalled = true
@@ -445,6 +446,7 @@ class ContactItemTest {
                 selectedEntries = emptySet(),
                 position = ItemPosition.ONLY,
                 isMultiSelectEnabled = isMultiSelectEnabled,
+                isSearchMode = false,
                 onToggleContactSelection = { onToggleContactCalled = true },
                 onToggleEntrySelection = { _, _ -> onToggleEntryCalled = true },
             )
@@ -488,6 +490,7 @@ class ContactItemTest {
                 selectedEntries = emptySet(),
                 position = ItemPosition.ONLY,
                 isMultiSelectEnabled = true,
+                isSearchMode = false,
                 onToggleContactSelection = { onToggleContactCalled = true },
                 onToggleEntrySelection = { _, _ -> onToggleEntryCalled = true },
             )
@@ -579,6 +582,85 @@ class ContactItemTest {
         assertThat(shape).isEqualTo(SINGLE_ITEM_SHAPE)
     }
 
+    @Test
+    fun searchMode_avatarClick_togglesEntrySelection() {
+        val contact = ContactTestDataFactory.GENERIC_EMAIL_CONTACT
+        val entryId = contact.emails.first().id
+        var toggledContactId: Long? = null
+        var toggledEntryId: Long? = null
+        var toggleContactInvoked = false
+
+        composeTestRule.setContent {
+            ContactItem(
+                contact = contact,
+                position = ItemPosition.ONLY,
+                selectedEntries = emptySet(),
+                isMultiSelectEnabled = false,
+                onToggleContactSelection = { toggleContactInvoked = true },
+                onToggleEntrySelection = { cId, eId ->
+                    toggledContactId = cId
+                    toggledEntryId = eId
+                },
+                isSearchMode = true,
+            )
+        }
+
+        composeTestRule.onNode(hasTestTag(AVATAR_TEST_TAG), useUnmergedTree = true).performClick()
+
+        assertThat(toggledContactId).isEqualTo(contact.id)
+        assertThat(toggledEntryId).isEqualTo(entryId)
+        assertThat(toggleContactInvoked).isFalse()
+    }
+
+    @Test
+    fun searchMode_itemSelected_avatarShowsCheckmark() {
+        val contact = ContactTestDataFactory.GENERIC_EMAIL_CONTACT
+        val entryId = contact.emails.first().id
+
+        composeTestRule.setContent {
+            ContactItem(
+                contact = contact,
+                position = ItemPosition.ONLY,
+                selectedEntries = setOf(entryId), // Entry is selected
+                isMultiSelectEnabled = false,
+                isSearchMode = true,
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
+            )
+        }
+
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(
+                    R.string.contact_item_selected_content_description,
+                    contact.displayName,
+                )
+            )
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun searchMode_expandIconHidden() {
+        val contact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT
+        composeTestRule.setContent {
+            ContactItem(
+                contact = contact,
+                position = ItemPosition.ONLY,
+                selectedEntries = emptySet(),
+                isMultiSelectEnabled = false,
+                isSearchMode = true,
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
+            )
+        }
+
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.contact_item_expand_button_content_description)
+            )
+            .assertDoesNotExist()
+    }
+
     private fun createContactItemWithEmptySelection(contact: Contact) {
         createContactItem(contact, emptySet())
     }
@@ -590,6 +672,7 @@ class ContactItemTest {
                 position = ItemPosition.ONLY,
                 selectedEntries = selectedEntries,
                 isMultiSelectEnabled = true,
+                isSearchMode = false,
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
             )
