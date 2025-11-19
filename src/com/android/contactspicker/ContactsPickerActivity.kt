@@ -221,7 +221,7 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
 
     /** Prepares the result intent and finishes the activity. */
     private fun handleDoneClicked() {
-        val resultIntent = contactsViewModel.prepareSelectionResult(this)
+        val resultIntent = contactsViewModel.prepareSelectionResult()
 
         if (resultIntent == null) {
             setResult(RESULT_CANCELED)

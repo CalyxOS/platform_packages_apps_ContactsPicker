@@ -19,6 +19,7 @@ package com.android.contactspicker
 import android.app.Activity
 import android.app.ApplicationPackageManager
 import android.app.Instrumentation
+import android.content.ClipData
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -269,8 +270,13 @@ class ContactsPickerActivityTest {
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successStateSingleSelect)
-        whenever(mockViewModel.prepareSelectionResult(any()))
-            .thenReturn(createSingleSelectionResult(context, Intent.ACTION_PICK, testUri, -1))
+        whenever(mockViewModel.prepareSelectionResult())
+            .thenReturn(
+                Intent().apply {
+                    data = testUri
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+            )
 
         val scenario = ActivityScenario.launchActivityForResult<ContactsPickerActivity>(baseIntent)
 
@@ -311,14 +317,15 @@ class ContactsPickerActivityTest {
             )
         whenever(mockViewModel.uiState).thenReturn(successStateMultiSelect)
         // Set up ViewModel to return intent with multiple URIs
-        whenever(mockViewModel.prepareSelectionResult(context))
+        whenever(mockViewModel.prepareSelectionResult())
             .thenReturn(
-                createMultiSelectionResult(
-                    context,
-                    Intent.ACTION_PICK,
-                    listOf(testUri, testUri2),
-                    -1,
-                )
+                Intent().apply {
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    clipData =
+                        ClipData.newUri(context.contentResolver, "uri", testUri).apply {
+                            addItem(ClipData.Item(testUri2))
+                        }
+                }
             )
 
         val scenario = ActivityScenario.launchActivityForResult<ContactsPickerActivity>(baseIntent)
@@ -361,7 +368,7 @@ class ContactsPickerActivityTest {
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successStateSingleSelect)
-        whenever(mockViewModel.prepareSelectionResult(any())).thenReturn(null)
+        whenever(mockViewModel.prepareSelectionResult()).thenReturn(null)
 
         val scenario = ActivityScenario.launchActivityForResult<ContactsPickerActivity>(baseIntent)
 

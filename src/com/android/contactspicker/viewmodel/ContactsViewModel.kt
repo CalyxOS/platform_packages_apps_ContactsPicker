@@ -15,6 +15,7 @@
  */
 package com.android.contactspicker.viewmodel
 
+import android.content.ClipData
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
@@ -37,8 +38,6 @@ import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.SearchState
-import com.android.contactspicker.createMultiSelectionResult
-import com.android.contactspicker.createSingleSelectionResult
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
@@ -47,6 +46,7 @@ import com.android.contactspicker.data.repository.ContactsRepository
 import com.android.contactspicker.data.repository.PrivacyBannerRepository
 import com.android.contactspicker.util.totalElementCount
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -85,9 +85,12 @@ sealed interface SnackbarEvent {
 open class ContactsViewModel
 @Inject
 constructor(
+    @ApplicationContext context: Context,
     private val contactsRepository: ContactsRepository,
     private val privacyBannerRepository: PrivacyBannerRepository,
 ) : ViewModel() {
+
+    private val contentResolver = context.contentResolver
 
     private val _uiState = MutableStateFlow<ContactsUiState>(ContactsListState.Loading)
     open val uiState: StateFlow<ContactsUiState> = _uiState.asStateFlow()
@@ -460,10 +463,11 @@ constructor(
      * Converts the current selection map into a final result intent.
      *
      * @return A ready-to-use result [Intent], or null if selection is empty/error occurred.
+     * @throws [IllegalStateException] if called in non success ui state.
      */
     // TODO(b/452020367): refactor to not pass the context from the activity
     @OpenForTesting
-    open fun prepareSelectionResult(context: Context): Intent? {
+    open fun prepareSelectionResult(): Intent? {
         val selectedContacts =
             when (val currentState = _uiState.value) {
                 is ContactsListState.Success -> currentState.selectedContacts
@@ -478,9 +482,8 @@ constructor(
         val finalUris = convertSelectionToUris(initialContacts, selectedContacts)
         if (finalUris.isEmpty()) return null
 
-        return when (val action = intentAction) {
-            Intent.ACTION_PICK ->
-                createActionPickResult(context, finalUris, action, isMultiSelectEnabled)
+        return when (intentAction) {
+            Intent.ACTION_PICK -> createActionPickResult(finalUris)
             else -> null
         }
     }
@@ -525,17 +528,21 @@ constructor(
         }
     }
 
-    private fun createActionPickResult(
-        context: Context,
-        uris: List<Uri>,
-        intentAction: String,
-        isMultiSelectEnabled: Boolean,
-    ): Intent {
-        // TODO(b/452020367): Pass calling uid when we support ACTION_PICK_CONTACTS
-        return if (isMultiSelectEnabled) {
-            createMultiSelectionResult(context, intentAction, uris, callingUid = -1)
-        } else {
-            createSingleSelectionResult(context, intentAction, uris.first(), callingUid = -1)
+    private fun createActionPickResult(uris: List<Uri>): Intent? {
+        if (uris.isEmpty()) {
+            return null
+        }
+
+        return Intent().apply {
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            if (isMultiSelectEnabled) {
+                clipData =
+                    ClipData.newUri(contentResolver, "uri", uris.first()).apply {
+                        uris.drop(1).forEach { addItem(ClipData.Item(it)) }
+                    }
+            } else {
+                data = uris.first()
+            }
         }
     }
 
