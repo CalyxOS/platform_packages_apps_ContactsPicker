@@ -39,7 +39,7 @@
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Tölvupóstur"</string>
     <string name="contact_item_emails_count" msgid="4742575236201305612">"%d tölvupóstar"</string>
     <string name="contact_item_phones_count" msgid="6713112060821558464">"%d símanúmer"</string>
-    <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{Aðeins er hægt að deila # tengilið í einu}one{Aðeins er hægt að deila # tengilið í einu}other{Aðeins er hægt að deila # tengiliðum í einu}}"</string>
+    <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{Aðeins er hægt að deila einum tengilið í einu}one{Aðeins er hægt að deila # tengilið í einu}other{Aðeins er hægt að deila # tengiliðum í einu}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s valin(n)"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Hreinsa val"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"Forskoða"</string>
