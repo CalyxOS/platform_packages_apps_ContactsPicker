@@ -116,6 +116,7 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
                 when (currentState) {
                     is ContactsListState.Success -> currentState.selectedContacts
                     is SearchState.Success -> currentState.selectedContacts
+                    is ContactsPreviewState -> currentState.selectedContacts
                     else ->
                         return@update currentState // Not in a state where selection can be toggled
                 }
@@ -163,6 +164,19 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
             when (currentState) {
                 is ContactsListState.Success -> currentState.copy(selectedContacts = newSelection)
                 is SearchState.Success -> currentState.copy(selectedContacts = newSelection)
+                is ContactsPreviewState ->
+                    if (newSelection.isEmpty()) {
+                        onBackFromPreview()
+                        currentState
+                    } else {
+                        currentState.copy(
+                            selectedContacts = newSelection,
+                            contactsToDisplay =
+                                currentState.contactsToDisplay.filter { contact ->
+                                    newSelection.containsKey(contact.id)
+                                },
+                        )
+                    }
                 else ->
                     throw IllegalStateException("Cannot toggle selection in state $currentState")
             }
@@ -185,6 +199,7 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
                 when (currentState) {
                     is ContactsListState.Success -> currentState.selectedContacts
                     is SearchState.Success -> currentState.selectedContacts
+                    is ContactsPreviewState -> currentState.selectedContacts
                     else -> return@update currentState
                 }
 
@@ -218,6 +233,19 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
             when (currentState) {
                 is ContactsListState.Success -> currentState.copy(selectedContacts = newSelection)
                 is SearchState.Success -> currentState.copy(selectedContacts = newSelection)
+                is ContactsPreviewState ->
+                    if (newSelection.isEmpty()) {
+                        onBackFromPreview()
+                        currentState
+                    } else {
+                        currentState.copy(
+                            selectedContacts = newSelection,
+                            contactsToDisplay =
+                                currentState.contactsToDisplay.filter { contact ->
+                                    newSelection.containsKey(contact.id)
+                                },
+                        )
+                    }
                 else ->
                     throw IllegalStateException(
                         "Cannot toggle entry selection in state $currentState"
@@ -603,8 +631,23 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
         require(currentState is ContactsPreviewState && cachedStateBeforePreview != null) {
             "onBackFromPreview called from unexpected state: $currentState, or no previous state found"
         }
+        val currentSelection = currentState.selectedContacts
+
+        updateSelectedContactsInCachedState(currentSelection)
+
         _uiState.value = cachedStateBeforePreview!!
         cachedStateBeforePreview = null
+    }
+
+    private fun updateSelectedContactsInCachedState(newSelection: LongObjectMap<Set<Long>>) {
+        val currentCachedState = cachedStateBeforePreview
+        cachedStateBeforePreview =
+            when (currentCachedState) {
+                is ContactsListState.Success ->
+                    currentCachedState.copy(selectedContacts = newSelection)
+                is SearchState.Success -> currentCachedState.copy(selectedContacts = newSelection)
+                else -> currentCachedState
+            }
     }
 
     // TODO(b/12345678): remove once the permission is pregranted
