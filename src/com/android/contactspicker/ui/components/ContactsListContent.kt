@@ -72,6 +72,7 @@ fun ContactsListContent(
             ContactsPickerBody(
                 contacts = uiState.availableContacts,
                 callingAppName = uiState.callingAppName,
+                showPrivacyBanner = uiState.showPrivacyBanner,
                 selectedContacts = uiState.selectedContacts,
                 isMultiSelectEnabled = uiState.isMultiSelectEnabled,
                 onToggleContactSelection = onToggleContactSelection,
