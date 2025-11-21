@@ -61,65 +61,66 @@ class PrivacyBannerShownDaoTest {
     }
 
     @Test
-    fun wasPrivacyBannerShown_noRecord_returnsFalse() = runBlocking {
-        val result = dao.wasPrivacyBannerShown(12345, listOf(mimeType1))
+    fun hasPrivacyBannerBeenShown_noRecord_returnsFalse() = runBlocking {
+        val result = dao.hasPrivacyBannerBeenShown("com.example.app", listOf(mimeType1))
         assertThat(result).isFalse()
     }
 
     @Test
-    fun wasPrivacyBannerShown_recordExists_returnsTrue() = runBlocking {
-        val entity = PrivacyBannerShown(appUid = 12345, mimeTypes = listOf(mimeType1))
+    fun hasPrivacyBannerBeenShown_recordExists_returnsTrue() = runBlocking {
+        val entity = PrivacyBannerShown(appUid = "com.example.app", mimeTypes = listOf(mimeType1))
         dao.insert(entity)
-        val result = dao.wasPrivacyBannerShown(12345, listOf(mimeType1))
+        val result = dao.hasPrivacyBannerBeenShown("com.example.app", listOf(mimeType1))
         assertThat(result).isTrue()
     }
 
     @Test
-    fun wasPrivacyBannerShown_recordExistsWithDifferentAppUid_returnsFalse() = runBlocking {
-        val entity = PrivacyBannerShown(appUid = 12345, mimeTypes = listOf(mimeType1))
+    fun hasPrivacyBannerBeenShown_recordExistsWithDifferentAppUid_returnsFalse() = runBlocking {
+        val entity = PrivacyBannerShown(appUid = "com.example.app1", mimeTypes = listOf(mimeType1))
         dao.insert(entity)
         // Query for a different app UID but the same mime types.
-        val result = dao.wasPrivacyBannerShown(54321, listOf(mimeType1))
+        val result = dao.hasPrivacyBannerBeenShown("com.example.app2", listOf(mimeType1))
         assertThat(result).isFalse()
     }
 
     @Test
-    fun wasPrivacyBannerShown_recordExistsWithDifferentMimeTypes_returnsFalse() = runBlocking {
-        val entity = PrivacyBannerShown(appUid = 12345, mimeTypes = listOf(mimeType1))
+    fun hasPrivacyBannerBeenShown_recordExistsWithDifferentMimeTypes_returnsFalse() = runBlocking {
+        val entity = PrivacyBannerShown(appUid = "com.example.app", mimeTypes = listOf(mimeType1))
         dao.insert(entity)
 
         // Query for the same app UID but a different set of mime types.
-        val result = dao.wasPrivacyBannerShown(12345, listOf(mimeType2))
+        val result = dao.hasPrivacyBannerBeenShown("com.example.app", listOf(mimeType2))
         assertThat(result).isFalse()
     }
 
     @Test
-    fun wasPrivacyBannerShown_recordExistsWithSubsetOfMimeTypes_returnsFalse() = runBlocking {
-        val entity = PrivacyBannerShown(appUid = 12345, mimeTypes = listOf(mimeType1, mimeType2))
+    fun hasPrivacyBannerBeenShown_recordExistsWithSubsetOfMimeTypes_returnsFalse() = runBlocking {
+        val entity =
+            PrivacyBannerShown(appUid = "com.example.app", mimeTypes = listOf(mimeType1, mimeType2))
         dao.insert(entity)
 
         // Query for a subset of the inserted mime types.
-        val result = dao.wasPrivacyBannerShown(12345, listOf(mimeType1))
+        val result = dao.hasPrivacyBannerBeenShown("com.example.app", listOf(mimeType1))
         assertThat(result).isFalse()
     }
 
     @Test
     fun insert_insertsRecord() = runBlocking {
-        val entity = PrivacyBannerShown(appUid = 12345, mimeTypes = listOf(mimeType1))
-        assertThat(dao.wasPrivacyBannerShown(12345, listOf(mimeType1))).isFalse()
+        val entity = PrivacyBannerShown(appUid = "com.example.app", mimeTypes = listOf(mimeType1))
+        assertThat(dao.hasPrivacyBannerBeenShown("com.example.app", listOf(mimeType1))).isFalse()
         dao.insert(entity)
-        assertThat(dao.wasPrivacyBannerShown(12345, listOf(mimeType1))).isTrue()
+        assertThat(dao.hasPrivacyBannerBeenShown("com.example.app", listOf(mimeType1))).isTrue()
     }
 
     @Test
     fun insert_duplicate_isIgnored() = runBlocking {
-        val appUid = 12345
+        val appUid = "com.example.app"
         val mimeTypes = listOf(mimeType1)
         val entity = PrivacyBannerShown(appUid = appUid, mimeTypes = mimeTypes)
 
         dao.insert(entity)
         dao.insert(entity)
-        assertThat(dao.wasPrivacyBannerShown(12345, listOf(mimeType1))).isTrue()
+        assertThat(dao.hasPrivacyBannerBeenShown("com.example.app", listOf(mimeType1))).isTrue()
 
         val sql = "SELECT COUNT(*) FROM privacy_banner_shown WHERE app_uid = ? AND mime_types = ?"
         val args = arrayOf<Any>(appUid, mimeTypeConverter.fromMimeTypeList(mimeTypes))

@@ -38,7 +38,6 @@ import com.android.contactspicker.R
 import com.android.contactspicker.inject.ActivityModule
 import com.android.contactspicker.inject.AppModule
 import com.android.contactspicker.provider.CallingPackageProvider
-import com.android.contactspicker.room.dao.PrivacyBannerShownDao
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -68,7 +67,6 @@ class ContactsPickerSearchBarTest {
     @BindValue @JvmField val mockPackageManager: ApplicationPackageManager = mock()
 
     @BindValue @JvmField val mockCallingPackageProvider: CallingPackageProvider = mock()
-    @BindValue val mockPrivacyBannerShownDao: PrivacyBannerShownDao = mock()
 
     @Before
     fun setUp() {

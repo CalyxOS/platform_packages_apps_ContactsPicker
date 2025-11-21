@@ -63,7 +63,6 @@ const val CONTACTS_LIST_TEST_TAG = "contacts_list"
 fun ContactsPickerBody(
     contacts: List<Contact>,
     callingAppName: String?,
-    showPrivacyBanner: Boolean,
     onPrivacyBannerMoreDetails: () -> Unit,
     onPrivacyBannerDismissRequest: () -> Unit,
     selectedContacts: LongObjectMap<Set<Long>>,
@@ -91,14 +90,12 @@ fun ContactsPickerBody(
         modifier = Modifier.fillMaxWidth().testTag(CONTACTS_LIST_TEST_TAG),
         contentPadding = WindowInsets.navigationBars.asPaddingValues(),
     ) {
-        if (showPrivacyBanner) {
-            item(key = "privacy_banner") {
-                PrivacyBanner(
-                    callingAppName = callingAppName,
-                    onMoreDetails = onPrivacyBannerMoreDetails,
-                    onDismissRequest = onPrivacyBannerDismissRequest,
-                )
-            }
+        item(key = "privacy_banner") {
+            PrivacyBanner(
+                callingAppName = callingAppName,
+                onMoreDetails = onPrivacyBannerMoreDetails,
+                onDismissRequest = onPrivacyBannerDismissRequest,
+            )
         }
 
         favoritesSection(

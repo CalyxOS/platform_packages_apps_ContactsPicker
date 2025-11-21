@@ -64,7 +64,6 @@ class ContactsPickerScreenTest {
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
-                onPrivacyBannerDismissRequest = {},
             )
         }
         composeTestRule
@@ -86,7 +85,6 @@ class ContactsPickerScreenTest {
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
-                onPrivacyBannerDismissRequest = {},
             )
         }
 
@@ -123,7 +121,6 @@ class ContactsPickerScreenTest {
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
-                onPrivacyBannerDismissRequest = {},
             )
         }
         composeTestRule
@@ -145,7 +142,6 @@ class ContactsPickerScreenTest {
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
-                onPrivacyBannerDismissRequest = {},
             )
         }
         composeTestRule
@@ -187,7 +183,6 @@ class ContactsPickerScreenTest {
                             selectedContacts = longObjectMapOf(),
                             isMultiSelectEnabled = false,
                             callingAppName = null,
-                            showPrivacyBanner = false,
                             requestedMimeTypes = emptyList(),
                         )
                     ),
@@ -198,7 +193,6 @@ class ContactsPickerScreenTest {
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
-                onPrivacyBannerDismissRequest = {},
             )
         }
 
@@ -226,7 +220,6 @@ class ContactsPickerScreenTest {
                     selectedContacts = longObjectMapOf(),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
-                    showPrivacyBanner = false,
                     requestedMimeTypes = emptyList(),
                 )
             )
@@ -242,7 +235,6 @@ class ContactsPickerScreenTest {
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
-                onPrivacyBannerDismissRequest = {},
             )
         }
 
@@ -269,7 +261,6 @@ class ContactsPickerScreenTest {
                             selectedContacts = longObjectMapOf(),
                             isMultiSelectEnabled = false,
                             callingAppName = null,
-                            showPrivacyBanner = false,
                             requestedMimeTypes = emptyList(),
                         )
                     ),
@@ -280,7 +271,6 @@ class ContactsPickerScreenTest {
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
-                onPrivacyBannerDismissRequest = {},
             )
         }
     }

@@ -74,7 +74,6 @@ class ContactsPickerNavHostTest {
                     selectedContacts = longObjectMapOf(),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
-                    showPrivacyBanner = true,
                     requestedMimeTypes = emptyList(),
                 )
             )
@@ -95,7 +94,6 @@ class ContactsPickerNavHostTest {
                     selectedContacts = longObjectMapOf(),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
-                    showPrivacyBanner = true,
                     requestedMimeTypes = emptyList(),
                 )
             )
@@ -130,7 +128,6 @@ class ContactsPickerNavHostTest {
                     onQueryChange = {},
                     onExitSearch = {},
                     onBackFromPreview = {},
-                    onPrivacyBannerDismissRequest = {},
                 )
             }
         }

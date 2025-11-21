@@ -79,7 +79,6 @@ class ContactsListContentTest {
                         isMultiSelectEnabled = false,
                         callingAppName = null,
                         requestedMimeTypes = emptyList(),
-                        showPrivacyBanner = true,
                     ),
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},

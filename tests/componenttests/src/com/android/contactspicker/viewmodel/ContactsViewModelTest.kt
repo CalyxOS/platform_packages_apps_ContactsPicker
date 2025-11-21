@@ -36,7 +36,6 @@ import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.fakes.FakeContactsRepository
-import com.android.contactspicker.fakes.FakePrivacyBannerRepository
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.util.totalElementCount
 import com.google.common.truth.Truth.assertThat
@@ -60,16 +59,14 @@ class ContactsViewModelTest {
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
     private val testDispatcher = StandardTestDispatcher()
     private val context: Context = ApplicationProvider.getApplicationContext()
-    private lateinit var fakeContactsRepository: FakeContactsRepository
-    private lateinit var fakePrivacyBannerRepository: FakePrivacyBannerRepository
+    private lateinit var fakeRepository: FakeContactsRepository
     private lateinit var viewModel: ContactsViewModel
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        fakeContactsRepository = FakeContactsRepository()
-        fakePrivacyBannerRepository = FakePrivacyBannerRepository()
-        viewModel = ContactsViewModel(fakeContactsRepository, fakePrivacyBannerRepository)
+        fakeRepository = FakeContactsRepository()
+        viewModel = ContactsViewModel(fakeRepository)
     }
 
     @After
@@ -80,7 +77,7 @@ class ContactsViewModelTest {
     @Test
     fun processIntent_setsLoadingThenSuccessState() = runTest {
         val testContacts = listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT)
-        fakeContactsRepository.setInitialContacts(testContacts)
+        fakeRepository.setInitialContacts(testContacts)
         val collectedStates = mutableListOf<ContactsUiState>()
         val job = launch { viewModel.uiState.toList(collectedStates) }
 
@@ -88,8 +85,7 @@ class ContactsViewModelTest {
             intentAction = Intent.ACTION_PICK,
             intentType = Phone.CONTENT_TYPE,
             intentExtras = null,
-            callingAppName = "TestApp",
-            callingAppUid = 12345,
+            callingAppName = null,
         )
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -113,14 +109,13 @@ class ContactsViewModelTest {
     @Test
     fun processIntent_withInvalidAction_setsErrorState() = runTest {
         val testException = IllegalArgumentException("Unsupported action")
-        fakeContactsRepository.setException(testException)
+        fakeRepository.setException(testException)
 
         viewModel.processIntent(
             intentAction = "INVALID_ACTION",
             intentType = null,
             intentExtras = null,
-            callingAppName = "TestApp",
-            callingAppUid = 12345,
+            callingAppName = null,
         )
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -350,25 +345,6 @@ class ContactsViewModelTest {
         assertThat(selection.isEmpty()).isTrue()
     }
 
-    @Test
-    fun processIntent_privacyBannerShownBefore_shouldNotShowBannerAgain() = runTest {
-        val testContacts = listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT)
-        fakePrivacyBannerRepository.markPrivacyBannerAsShown(12345, listOf(Phone.CONTENT_TYPE))
-        processIntentWithInitialContacts(contacts = testContacts, callingAppUid = 12345)
-
-        val successState = viewModel.uiState.value as ContactsListState.Success
-        assertThat(successState.showPrivacyBanner).isFalse()
-    }
-
-    @Test
-    fun processIntent_privacyBannerShownFirstTime_shouldShowBanner() = runTest {
-        val testContacts = listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT)
-        processIntentWithInitialContacts(testContacts, callingAppUid = 12345)
-
-        val successState = viewModel.uiState.value as ContactsListState.Success
-        assertThat(successState.showPrivacyBanner).isTrue()
-    }
-
     @Test(expected = IllegalStateException::class)
     fun prepareSelectionResult_inLoadingState_throwsException() {
         val result = viewModel.prepareSelectionResult(context)
@@ -382,7 +358,6 @@ class ContactsViewModelTest {
             intentType = null,
             intentExtras = null,
             callingAppName = null,
-            callingAppUid = -1,
         )
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -498,7 +473,7 @@ class ContactsViewModelTest {
     @Test(expected = IllegalStateException::class)
     fun prepareSelectionResult_inSearchStateWithError_throwsException() = runTest {
         val query = "query"
-        fakeContactsRepository.setSearchException(query, IllegalArgumentException())
+        fakeRepository.setSearchException(query, IllegalArgumentException())
         processIntentWithInitialContacts(
             listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT)
         )
@@ -600,7 +575,7 @@ class ContactsViewModelTest {
         val searchResult =
             listOf(ContactTestDataFactory.createDisplayNameContact(10L, "Test Result 1"))
 
-        fakeContactsRepository.setSearchResults(searchQuery, searchResult)
+        fakeRepository.setSearchResults(searchQuery, searchResult)
         processIntentWithInitialContacts(emptyList())
 
         val collectedStates = mutableListOf<ContactsUiState>()
@@ -609,11 +584,11 @@ class ContactsViewModelTest {
         viewModel.onSearchQueryChanged(searchQuery)
         testDispatcher.scheduler.advanceTimeBy(SEARCH_DEBOUNCE_MS - 100)
         // Repository search for searchQuery should not have been called yet
-        assertThat(fakeContactsRepository.searchInvocationsCountForQuery(searchQuery)).isEqualTo(0)
+        assertThat(fakeRepository.searchInvocationsCountForQuery(searchQuery)).isEqualTo(0)
 
         testDispatcher.scheduler.advanceTimeBy(SEARCH_DEBOUNCE_MS)
         // Repository search for searchQuery should have been called now
-        assertThat(fakeContactsRepository.searchInvocationsCountForQuery(searchQuery)).isEqualTo(1)
+        assertThat(fakeRepository.searchInvocationsCountForQuery(searchQuery)).isEqualTo(1)
         assertThat(collectedStates.last())
             .isEqualTo(SearchState.Success(searchQuery, searchResult, longObjectMapOf()))
         job.cancel()
@@ -623,7 +598,7 @@ class ContactsViewModelTest {
     fun onSearchQueryChanged_searchError_setsErrorState() = runTest {
         val searchQuery = "error"
         val exception = RuntimeException("An unexpected error occurred during search.")
-        fakeContactsRepository.setSearchException(searchQuery, exception)
+        fakeRepository.setSearchException(searchQuery, exception)
 
         processIntentWithInitialContacts(emptyList())
 
@@ -640,7 +615,7 @@ class ContactsViewModelTest {
         val searchResults =
             listOf(ContactTestDataFactory.createDisplayNameContact(10L, "Query Result"))
         processIntentWithInitialContacts(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST)
-        fakeContactsRepository.setSearchResults(searchQuery, searchResults)
+        fakeRepository.setSearchResults(searchQuery, searchResults)
 
         // Collect states in a list
         val collectedStates = mutableListOf<ContactsUiState>()
@@ -663,9 +638,8 @@ class ContactsViewModelTest {
                     ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
                     longObjectMapOf(),
                     false,
-                    callingAppName = "TestApp",
+                    callingAppName = null,
                     requestedMimeTypes = listOf(Phone.CONTENT_TYPE),
-                    showPrivacyBanner = true,
                 ), // Initial state after processIntent
                 SearchState.Success(
                     searchQuery,
@@ -680,7 +654,7 @@ class ContactsViewModelTest {
     fun onSearchQueryChanged_emptySearchResults_setsSuccessWithEmptyList() = runTest {
         val searchQuery = "no_match"
 
-        fakeContactsRepository.setSearchResults(searchQuery, emptyList())
+        fakeRepository.setSearchResults(searchQuery, emptyList())
 
         processIntentWithInitialContacts(emptyList())
 
@@ -720,7 +694,7 @@ class ContactsViewModelTest {
 
         processIntentWithInitialContacts(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST)
 
-        fakeContactsRepository.setSearchResults(searchQuery, searchResults)
+        fakeRepository.setSearchResults(searchQuery, searchResults)
 
         viewModel.onSearchQueryChanged(searchQuery)
         testDispatcher.scheduler.advanceTimeBy(SEARCH_DEBOUNCE_MS)
@@ -738,8 +712,8 @@ class ContactsViewModelTest {
         val results2 =
             listOf(ContactTestDataFactory.createDisplayNameContact(2L, "Another Contact"))
 
-        fakeContactsRepository.setSearchResults(query1, results1)
-        fakeContactsRepository.setSearchResults(query2, results2)
+        fakeRepository.setSearchResults(query1, results1)
+        fakeRepository.setSearchResults(query2, results2)
 
         processIntentWithInitialContacts(emptyList())
 
@@ -779,7 +753,7 @@ class ContactsViewModelTest {
         // Perform a search
         val searchQuery = "query"
         val searchResults = listOf(initialContacts[1])
-        fakeContactsRepository.setSearchResults(searchQuery, searchResults)
+        fakeRepository.setSearchResults(searchQuery, searchResults)
         viewModel.onSearchQueryChanged(searchQuery)
         testDispatcher.scheduler.advanceTimeBy(SEARCH_DEBOUNCE_MS)
         testDispatcher.scheduler.advanceUntilIdle()
@@ -795,7 +769,7 @@ class ContactsViewModelTest {
         val initialContacts = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST
         val searchQuery = "a"
         val searchResults = listOf(initialContacts[0], initialContacts[1])
-        fakeContactsRepository.setSearchResults(searchQuery, searchResults)
+        fakeRepository.setSearchResults(searchQuery, searchResults)
 
         processIntentWithInitialContacts(initialContacts)
 
@@ -998,15 +972,13 @@ class ContactsViewModelTest {
     private fun processIntentWithInitialContacts(
         contacts: List<Contact>,
         intentExtras: Bundle? = null,
-        callingAppUid: Int = 12345,
     ) {
-        fakeContactsRepository.setInitialContacts(contacts)
+        fakeRepository.setInitialContacts(contacts)
         viewModel.processIntent(
             intentAction = Intent.ACTION_PICK,
             intentType = Phone.CONTENT_TYPE,
             intentExtras = intentExtras,
-            callingAppName = "TestApp",
-            callingAppUid = callingAppUid,
+            callingAppName = null,
         )
         testDispatcher.scheduler.advanceUntilIdle()
     }
