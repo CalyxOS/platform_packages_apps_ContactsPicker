@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mood
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.hasAnyDescendant
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.hasText
@@ -68,6 +69,7 @@ class ContactsPickerBodyTest {
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
                 callingAppName = null,
+                showPrivacyBanner = false,
             )
         }
 
@@ -99,11 +101,30 @@ class ContactsPickerBodyTest {
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
                 onToggleContactSelection = {},
+                showPrivacyBanner = true,
                 onToggleEntrySelection = { _, _ -> },
                 callingAppName = null,
             )
         }
         composeTestRule.onNode(hasTestTag(PRIVACY_BANNER_TEST_TAG)).assertIsDisplayed()
+    }
+
+    @Test
+    fun privacyBanner_isNotDisplayed() {
+        composeTestRule.setContent {
+            ContactsPickerBody(
+                contacts = listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT),
+                selectedContacts = longObjectMapOf(),
+                isMultiSelectEnabled = false,
+                onPrivacyBannerMoreDetails = {},
+                onPrivacyBannerDismissRequest = {},
+                onToggleContactSelection = {},
+                showPrivacyBanner = false,
+                onToggleEntrySelection = { _, _ -> },
+                callingAppName = null,
+            )
+        }
+        composeTestRule.onNode(hasTestTag(PRIVACY_BANNER_TEST_TAG)).assertIsNotDisplayed()
     }
 
     @Test
@@ -207,6 +228,7 @@ class ContactsPickerBodyTest {
                 onPrivacyBannerDismissRequest = {},
                 selectedContacts = longObjectMapOf(),
                 isMultiSelectEnabled = false,
+                showPrivacyBanner = true,
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
                 callingAppName = null,
