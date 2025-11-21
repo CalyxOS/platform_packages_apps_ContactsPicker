@@ -29,8 +29,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.any
-import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
@@ -49,63 +47,25 @@ class PrivacyBannerRepositoryImplTest {
     }
 
     @Test
-    fun wasPrivacyBannerShown_callsDaoAndReturnsResult() = runTest {
-        val appUid = 12345
+    fun hasPrivacyBannerBeenShown_callsDaoAndReturnsResult() = runTest {
+        val appUid = "com.example.app"
         val mimeTypes = listOf("type1", "type2")
-        whenever(mockDao.wasPrivacyBannerShown(appUid, mimeTypes)).thenReturn(true)
+        whenever(mockDao.hasPrivacyBannerBeenShown(appUid, mimeTypes)).thenReturn(true)
 
-        val result = repository.wasPrivacyBannerShown(appUid, mimeTypes)
+        val result = repository.hasPrivacyBannerBeenShown(appUid, mimeTypes)
 
-        verify(mockDao).wasPrivacyBannerShown(appUid, mimeTypes)
+        verify(mockDao).hasPrivacyBannerBeenShown(appUid, mimeTypes)
         assertThat(result).isTrue()
     }
 
     @Test
-    fun wasPrivacyBannerShown_unseen_callsDaoInsertWithCorrectEntity() = runTest {
-        val appUid = 12345
+    fun markPrivacyBannerShown_callsDaoInsertWithCorrectEntity() = runTest {
+        val appUid = "com.example.app"
         val mimeTypes = listOf("type1", "type2")
         val expectedEntity = PrivacyBannerShown(appUid = appUid, mimeTypes = mimeTypes)
-        whenever(mockDao.wasPrivacyBannerShown(appUid, mimeTypes)).thenReturn(false)
 
-        repository.wasPrivacyBannerShown(appUid, mimeTypes)
+        repository.markPrivacyBannerShown(appUid, mimeTypes)
 
         verify(mockDao).insert(expectedEntity)
-    }
-
-    @Test
-    fun wasPrivacyBannerShown_appUidIsNegativeOne_returnsFallbackAndDoesNotCallDao() = runTest {
-        val appUid = -1
-        val mimeTypes = listOf("type1", "type2")
-
-        val result = repository.wasPrivacyBannerShown(appUid, mimeTypes)
-
-        assertThat(result).isFalse()
-        verify(mockDao, never()).wasPrivacyBannerShown(any(), any())
-        verify(mockDao, never()).insert(any())
-    }
-
-    @Test
-    fun wasPrivacyBannerShown_mimeTypesIsEmpty_returnsFallbackAndDoesNotCallDao() = runTest {
-        val appUid = 12345
-        val mimeTypes = emptyList<String>()
-
-        val result = repository.wasPrivacyBannerShown(appUid, mimeTypes)
-
-        assertThat(result).isFalse()
-        verify(mockDao, never()).wasPrivacyBannerShown(any(), any())
-        verify(mockDao, never()).insert(any())
-    }
-
-    @Test
-    fun wasPrivacyBannerShown_daoThrowsException_returnsFallbackAndLogsError() = runTest {
-        val appUid = 12345
-        val mimeTypes = listOf("type1", "type2")
-        whenever(mockDao.wasPrivacyBannerShown(appUid, mimeTypes)).thenThrow(RuntimeException())
-
-        val result = repository.wasPrivacyBannerShown(appUid, mimeTypes)
-
-        assertThat(result).isFalse()
-        verify(mockDao).wasPrivacyBannerShown(appUid, mimeTypes)
-        verify(mockDao, never()).insert(any())
     }
 }

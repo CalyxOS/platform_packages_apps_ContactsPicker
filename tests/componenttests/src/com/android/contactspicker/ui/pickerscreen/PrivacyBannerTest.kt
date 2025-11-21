@@ -43,12 +43,12 @@ class PrivacyBannerTest {
 
     private val moreDetailsText = context.getString(R.string.privacy_banner_more_details)
     private val dismissText = context.getString(R.string.privacy_banner_dismiss)
-    private val testAppName = "Test App"
-    private val bannerDescription =
-        context.getString(R.string.privacy_banner_description, testAppName)
 
     @Test
     fun privacyBanner_displaysAllElements() {
+        val testAppName = "Test App"
+        val expectedDescription =
+            context.getString(R.string.privacy_banner_description, testAppName)
         val expectedIconContentDescription =
             context.getString(R.string.privacy_info_content_description)
 
@@ -56,7 +56,7 @@ class PrivacyBannerTest {
             PrivacyBanner(callingAppName = testAppName, onMoreDetails = {}, onDismissRequest = {})
         }
 
-        composeTestRule.onNodeWithText(bannerDescription).assertIsDisplayed()
+        composeTestRule.onNodeWithText(expectedDescription).assertIsDisplayed()
         composeTestRule
             .onNodeWithContentDescription(expectedIconContentDescription)
             .assertIsDisplayed()
@@ -100,6 +100,7 @@ class PrivacyBannerTest {
 
     @Test
     fun privacyBanner_withAppName_displaysAppNameInDescription() {
+        val testAppName = "Test App"
         val expectedDescription =
             context.getString(R.string.privacy_banner_description, testAppName)
         composeTestRule.setContent {

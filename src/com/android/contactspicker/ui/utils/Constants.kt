@@ -22,7 +22,6 @@ import android.provider.ContactsContract
  */
 internal val SUPPORTED_MIME_TYPES =
     listOf(
-        // Mimetypes supported for ACTION_PICK_CONTACTS
         ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE,
         ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
         ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
@@ -34,8 +33,4 @@ internal val SUPPORTED_MIME_TYPES =
         ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE,
         ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE,
         ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE,
-        // Mimetypes supported for ACTION_PICK
-        ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE,
-        ContactsContract.CommonDataKinds.Email.CONTENT_TYPE,
-        ContactsContract.Contacts.CONTENT_TYPE,
     )

@@ -28,10 +28,10 @@ import com.android.contactspicker.room.converter.MimeTypeConverter
  * This entity is used to prevent showing the same privacy banner repeatedly to the user for the
  * same app and mimeType combination.
  *
- * For example, if a banner is shown for an app with `appUid = 10327` requesting `["phone",
- * "email"]`, a row is inserted. If the same app later requests only `["phone"]`, a new, distinct
- * row will be inserted for that combination. This allows multiple entries for the same `appUid` as
- * long as the requested `mimeTypes` combinations are different.
+ * For example, if a banner is shown for an app with `appUid = "com.example.app"` requesting
+ * `["phone", "email"]`, a row is inserted. If the same app later requests only `["phone"]`, a new,
+ * distinct row will be inserted for that combination. This allows multiple entries for the same
+ * `appUid` as long as the requested `mimeTypes` combinations are different.
  *
  * @property id The unique identifier for the database record.
  * @property appUid The unique identifier of the application for which the banner was shown.
@@ -44,6 +44,6 @@ import com.android.contactspicker.room.converter.MimeTypeConverter
 )
 data class PrivacyBannerShown(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "_id") val id: Int = 0,
-    @ColumnInfo(name = "app_uid") val appUid: Int,
+    @ColumnInfo(name = "app_uid") val appUid: String,
     @ColumnInfo(name = "mime_types") val mimeTypes: List<String>,
 )

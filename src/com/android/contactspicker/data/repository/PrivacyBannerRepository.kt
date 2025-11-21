@@ -18,15 +18,19 @@ package com.android.contactspicker.data.repository
 /** Repository to persist state of the privacy banner shown state. */
 interface PrivacyBannerRepository {
     /**
-     * Checks if the privacy banner has been shown for a given `appUid` and `mimeTypes` combination
-     * and marks it as shown if it has not.
+     * Returns whether the privacy banner has been shown for a given app uid and list of MIME types.
      *
-     * This check-and-set operation ensures the banner is only shown once per unique context.
+     * @param appUid The unique identifier of the calling application. MimeTypes The list of contact
+     *   data MIME types.
+     * @return `true` if the banner has been shown, `false` otherwise.
+     */
+    suspend fun hasPrivacyBannerBeenShown(appUid: String, mimeTypes: List<String>): Boolean
+
+    /**
+     * Marks the privacy banner as shown for a given app uid and set of MIME types.
      *
      * @param appUid The unique identifier of the calling application.
-     * @param mimeTypes The list of contact data MIME types for which the state is being checked.
-     * @return `true` if the banner was previously shown, `false` if it was just marked as shown by
-     *   this call.
+     * @param mimeTypes The list of contact data MIME types.
      */
-    suspend fun wasPrivacyBannerShown(appUid: Int, mimeTypes: List<String>): Boolean
+    suspend fun markPrivacyBannerShown(appUid: String, mimeTypes: List<String>)
 }

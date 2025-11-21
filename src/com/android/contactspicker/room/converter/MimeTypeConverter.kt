@@ -30,14 +30,9 @@ class MimeTypeConverter {
     /**
      * Defines the mapping from a contact data MIME type to its unique bit position within the
      * integer bitmask.
-     *
-     * Note: Re-ordering or changing the bit positions in this map will break backward compatibility
-     * for existing data stored in the Room database. New MIME types should be added with
-     * incrementing bit positions.
      */
     private val mimeTypeToBitPosition: Map<String, Int> =
         mapOf(
-            // Mimetypes supported for ACTION_PICK_CONTACTS
             ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE to 0,
             ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE to 1,
             ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE to 2,
@@ -49,10 +44,6 @@ class MimeTypeConverter {
             ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE to 8,
             ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE to 9,
             ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE to 10,
-            // Mimetypes supported for ACTION_PICK
-            ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE to 11,
-            ContactsContract.CommonDataKinds.Email.CONTENT_TYPE to 12,
-            ContactsContract.Contacts.CONTENT_TYPE to 13,
         )
 
     /**

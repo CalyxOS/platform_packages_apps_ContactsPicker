@@ -87,7 +87,6 @@ fun ContactsPickerBottomSheet(
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (Long, Long) -> Unit,
     onClearSelection: () -> Unit,
-    onPrivacyBannerDismissRequest: () -> Unit,
     bottomSheetState: SheetState =
         rememberStandardBottomSheetState(
             initialValue = SheetValue.PartiallyExpanded,
@@ -161,7 +160,6 @@ fun ContactsPickerBottomSheet(
                     uiState = uiState,
                     onToggleContactSelection = onToggleContactSelection,
                     onToggleEntrySelection = onToggleEntrySelection,
-                    onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
                     onExpandRequest = { scope.launch { bottomSheetState.expand() } },
                     modifier = Modifier.testTag(BOTTOM_SHEET_TEST_TAG),
                     onQueryChange = onQueryChange,

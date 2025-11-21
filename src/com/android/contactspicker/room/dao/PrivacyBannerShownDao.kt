@@ -35,7 +35,7 @@ interface PrivacyBannerShownDao {
         "SELECT EXISTS(SELECT 1 FROM privacy_banner_shown " +
             "WHERE app_uid = :appUid AND mime_types = :mimeTypes)"
     )
-    suspend fun wasPrivacyBannerShown(appUid: Int, mimeTypes: List<String>): Boolean
+    suspend fun hasPrivacyBannerBeenShown(appUid: String, mimeTypes: List<String>): Boolean
 
     /**
      * inserts PrivacyBannerShown object into database
