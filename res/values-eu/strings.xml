@@ -26,6 +26,8 @@
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"Bilatu"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"Garbitu bilaketa-eremua"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"Itxi bilaketa"</string>
+    <!-- no translation found for contacts_picker_top_bar_more_options_content_description (6586161048394547875) -->
+    <skip />
     <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"Gogokoak"</string>
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"Izarraren ikonoa"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"Irribarrearen ikonoa"</string>
@@ -51,4 +53,6 @@
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"Atzera"</string>
     <string name="preview_screen_title" msgid="2852036336424026274">"Aurreikusi"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"Aplikazio hau"</string>
+    <!-- no translation found for privacy_details_menu_label (497348969731766203) -->
+    <skip />
 </resources>
