@@ -164,11 +164,23 @@ class ContactsRepositoryImplTest {
         assertThat(contact).isInstanceOf(PhoneContact::class.java)
     }
 
-    // TODO(b/452020367): implement custom query for ACTION_PICK_CONTACTS
     @Test
     fun getContacts_customMode_returnsDisplayNamesContacts() = runTest {
-        val queryMode = ContactsQueryMode.Custom(listOf("invalid"), false)
-        val uriToExpect = Contacts.CONTENT_URI
+        val mimeTypes =
+            listOf("vnd.android.cursor.item/test_type_1", "vnd.android.cursor.item/test_type_2")
+        val matchAll = true
+        val queryMode = ContactsQueryMode.Custom(mimeTypes, matchAll)
+
+        val expectedUri =
+            Contacts.CONTENT_URI.buildUpon()
+                .appendPath("contacts_data")
+                .appendQueryParameter(
+                    Contacts.REQUESTED_MIMETYPES_PARAM_KEY,
+                    mimeTypes.joinToString(","),
+                )
+                .appendQueryParameter(Contacts.MATCH_ALL_MIMETYPES_PARAM_KEY, "true")
+                .build()
+
         val cursor =
             MatrixCursor(
                 arrayOf(
@@ -181,12 +193,51 @@ class ContactsRepositoryImplTest {
             )
         cursor.addRow(arrayOf<Any?>(1L, "Test Contact", 0, null, "contact_lookup_key"))
 
-        fakeContentProvider.setCursorForUri(uriToExpect, cursor)
+        fakeContentProvider.setCursorForUri(expectedUri, cursor)
         val contacts = repository.getContacts(queryMode)
 
         assertThat(contacts).isNotEmpty()
         val contact = contacts.first()
         assertThat(contact).isInstanceOf(DisplayNameContact::class.java)
+        assertThat(contact.displayName).isEqualTo("Test Contact")
+    }
+
+    @Test
+    fun searchContacts_customMode_returnsDisplayNamesContacts() = runTest {
+        val query = "Test"
+        val mimeTypes = listOf("vnd.android.cursor.item/test_type_1")
+        val matchAll = false
+        val queryMode = ContactsQueryMode.Custom(mimeTypes, matchAll)
+
+        val expectedUri =
+            Contacts.CONTENT_URI.buildUpon()
+                .appendPath("contacts_data/filter")
+                .appendPath(query)
+                .appendQueryParameter(
+                    Contacts.REQUESTED_MIMETYPES_PARAM_KEY,
+                    mimeTypes.joinToString(","),
+                )
+                .appendQueryParameter(Contacts.MATCH_ALL_MIMETYPES_PARAM_KEY, "false")
+                .build()
+
+        val cursor =
+            MatrixCursor(
+                arrayOf(
+                    Contacts._ID,
+                    Contacts.DISPLAY_NAME_PRIMARY,
+                    Contacts.STARRED,
+                    Contacts.PHOTO_THUMBNAIL_URI,
+                    Contacts.LOOKUP_KEY,
+                )
+            )
+        cursor.addRow(arrayOf<Any?>(1L, "Test Contact", 0, null, "contact_lookup_key"))
+
+        fakeContentProvider.setCursorForUri(expectedUri, cursor)
+        val contacts = repository.searchContacts(query, queryMode)
+
+        assertThat(contacts).isNotEmpty()
+        val contact = contacts.first()
+        assertThat(contact.displayName).isEqualTo("Test Contact")
     }
 
     @Test
