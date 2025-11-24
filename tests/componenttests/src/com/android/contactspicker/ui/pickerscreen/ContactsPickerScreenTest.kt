@@ -57,13 +57,14 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = mutableStateOf(ContactsListState.Loading),
-                onPrivacyBannerMoreDetails = {},
+                onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
+                onPrivacyBannerDismissRequest = {},
             )
         }
         composeTestRule
@@ -78,13 +79,14 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = mutableStateOf(ContactsListState.Error(errorMessage)),
-                onPrivacyBannerMoreDetails = {},
+                onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
+                onPrivacyBannerDismissRequest = {},
             )
         }
 
@@ -114,13 +116,14 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = mutableStateOf(ContactsListState.Error(errorMessage)),
-                onPrivacyBannerMoreDetails = {},
+                onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
+                onPrivacyBannerDismissRequest = {},
             )
         }
         composeTestRule
@@ -135,13 +138,14 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = mutableStateOf(ContactsListState.Loading),
-                onPrivacyBannerMoreDetails = {},
+                onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
+                onPrivacyBannerDismissRequest = {},
             )
         }
         composeTestRule
@@ -163,10 +167,10 @@ class ContactsPickerScreenTest {
     }
 
     @Test
-    fun whenStateIsSuccess_showsPrivacyButton() {
+    fun whenStateIsSuccess_showsMoreVerticalIconInTopBar() {
         setContentWithDefaultSuccessState()
         composeTestRule
-            .onNodeWithTag(CONTACTS_PICKER_TOP_BAR_PRIVACY_ICON_TEST_TAG)
+            .onNodeWithTag(CONTACTS_PICKER_TOP_BAR_MORE_VERTICAL_ICON_TEST_TAG)
             .assertIsDisplayed()
     }
 
@@ -183,16 +187,18 @@ class ContactsPickerScreenTest {
                             selectedContacts = longObjectMapOf(),
                             isMultiSelectEnabled = false,
                             callingAppName = null,
+                            showPrivacyBanner = false,
                             requestedMimeTypes = emptyList(),
                         )
                     ),
-                onPrivacyBannerMoreDetails = {},
+                onNavigateToPrivacyDetails = {},
                 onExpandRequest = mockOnExpandRequest,
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
+                onPrivacyBannerDismissRequest = {},
             )
         }
 
@@ -220,13 +226,14 @@ class ContactsPickerScreenTest {
                     selectedContacts = longObjectMapOf(),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
+                    showPrivacyBanner = false,
                     requestedMimeTypes = emptyList(),
                 )
             )
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = uiState,
-                onPrivacyBannerMoreDetails = {},
+                onNavigateToPrivacyDetails = {},
                 onExpandRequest = {
                     uiState.value = SearchState.Success("", emptyList(), longObjectMapOf())
                 },
@@ -235,6 +242,7 @@ class ContactsPickerScreenTest {
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
+                onPrivacyBannerDismissRequest = {},
             )
         }
 
@@ -261,16 +269,18 @@ class ContactsPickerScreenTest {
                             selectedContacts = longObjectMapOf(),
                             isMultiSelectEnabled = false,
                             callingAppName = null,
+                            showPrivacyBanner = false,
                             requestedMimeTypes = emptyList(),
                         )
                     ),
-                onPrivacyBannerMoreDetails = {},
+                onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
+                onPrivacyBannerDismissRequest = {},
             )
         }
     }

@@ -47,7 +47,8 @@ private fun formatUriData(context: Context, uri: Uri, pickerType: LegacyPickerTy
         when (pickerType) {
             LegacyPickerType.EMAIL ->
                 arrayOf(
-                    ContactsContract.CommonDataKinds.Email.DISPLAY_NAME,
+                    // Use Contacts.DISPLAY_NAME on purpose to bypass a known bug b/461572507
+                    ContactsContract.Contacts.DISPLAY_NAME,
                     ContactsContract.CommonDataKinds.Email.ADDRESS,
                 )
             LegacyPickerType.PHONE ->
@@ -65,8 +66,7 @@ private fun formatUriData(context: Context, uri: Uri, pickerType: LegacyPickerTy
         if (c != null && c.moveToFirst()) {
             when (pickerType) {
                 LegacyPickerType.EMAIL -> {
-                    val nameIndex =
-                        c.getColumnIndex(ContactsContract.CommonDataKinds.Email.DISPLAY_NAME)
+                    val nameIndex = c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
                     val addressIndex =
                         c.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)
                     val name =

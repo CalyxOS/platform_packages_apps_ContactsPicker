@@ -36,6 +36,8 @@
     <!--Content description for the back arrow icon button in the expanded search bar. Tapping it
         closes the search field. [CHAR LIMIT=NONE] -->
     <string name="contacts_picker_top_bar_search_arrow_back_content_description">Close search</string>
+    <!--Content description for the more options icon on primary contacts list top bar [CHAR LIMIT=NONE] -->
+    <string name="contacts_picker_top_bar_more_options_content_description">More Options</string>
     <!-- The title of the "Favorites" section in the contacts list. -->
     <string name="contacts_picker_favorites_header">Favorites</string>
     <!--Content description for the "Favorites" section header icon. [CHAR LIMIT=NONE] -->
@@ -109,4 +111,7 @@
 
     <!-- The default fallback name to use for the calling application. -->
     <string name="default_calling_app_name">This app</string>
+
+    <!-- Text for the privacy menu in the top bar of Contacts List Screen -->
+    <string name="privacy_details_menu_label">Your contacts\' privacy</string>
 </resources>

@@ -55,7 +55,9 @@ object ContactDataFieldProvider {
     private val sortOrder =
         listOf(
             ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
+            ContactsContract.CommonDataKinds.Email.CONTENT_TYPE,
             ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
+            ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE,
             ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
             ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE,
             ContactsContract.CommonDataKinds.Relation.CONTENT_ITEM_TYPE,
@@ -81,7 +83,6 @@ object ContactDataFieldProvider {
      * @param dataFields A list of MIME type strings from `ContactsContract.CommonDataKinds`.
      * @return A sorted list of [ContactDataFieldItem].
      */
-    // TODO(b/456152464) : Check error handling for empty dataFields in getContactDataFieldItems
     fun getContactDataFieldItems(dataFields: List<String>): List<ContactDataFieldItem> {
         val mappedItems =
             dataFields
@@ -106,10 +107,13 @@ object ContactDataFieldProvider {
         }
     }
 
-    /** Maps a single data field to a [ContactDataFieldItem], returning null for unknown types. */
+    /**
+     * Maps a single data field to a [ContactDataFieldItem], returning null for unsupported types.
+     */
     private fun mapSingleField(dataField: String): ContactDataFieldItem? {
         return when (dataField) {
-            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE ->
+            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
+            ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE ->
                 ContactDataFieldItem(
                     icon = IconResource.Vector(Icons.Outlined.Phone),
                     headerTextResId = R.string.privacy_details_data_field_phone_header,
@@ -117,7 +121,8 @@ object ContactDataFieldProvider {
                         R.string.privacy_details_data_field_phone_content_description,
                 )
 
-            ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE ->
+            ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
+            ContactsContract.CommonDataKinds.Email.CONTENT_TYPE ->
                 ContactDataFieldItem(
                     icon = IconResource.Vector(Icons.Outlined.Email),
                     headerTextResId = R.string.privacy_details_data_field_email_header,

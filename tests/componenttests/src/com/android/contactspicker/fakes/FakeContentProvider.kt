@@ -19,6 +19,7 @@ import android.content.ContentProvider
 import android.content.ContentValues
 import android.database.Cursor
 import android.net.Uri
+import android.provider.ContactsPickerSessionContract
 
 /**
  * A fake [android.content.ContentProvider] for testing that allows setting a specific
@@ -27,9 +28,19 @@ import android.net.Uri
 class FakeContentProvider : ContentProvider() {
 
     private val cursorMap = mutableMapOf<Uri, Cursor>()
+    private val sessionMap = mutableMapOf<Int, Uri>()
+    private val sessionContentValuesMap = mutableMapOf<Int, ContentValues>()
 
     fun setCursorForUri(uri: Uri, cursor: Cursor) {
         cursorMap[uri] = cursor
+    }
+
+    fun insertContactsPickerSessionProviderUri(uid: Int, uri: Uri) {
+        sessionMap[uid] = uri
+    }
+
+    fun getContactsPickerSessionProviderInsertContent(uid: Int): ContentValues? {
+        return sessionContentValuesMap[uid]
     }
 
     override fun onCreate(): Boolean {
@@ -46,13 +57,18 @@ class FakeContentProvider : ContentProvider() {
         return cursorMap[uri]
     }
 
+    override fun insert(uri: Uri, values: ContentValues?): Uri? {
+        return values
+            ?.getAsInteger(ContactsPickerSessionContract.Session.SESSION_REQUESTER_UID)
+            ?.let { uid ->
+                sessionContentValuesMap[uid] = values
+                sessionMap[uid]
+            }
+    }
+
     // Unused abstract methods
 
     override fun getType(uri: Uri): String? {
-        return null
-    }
-
-    override fun insert(uri: Uri, values: ContentValues?): Uri? {
         return null
     }
 

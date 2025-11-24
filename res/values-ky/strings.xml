@@ -39,16 +39,18 @@
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Электрондук почта"</string>
     <string name="contact_item_emails_count" msgid="4742575236201305612">"%d электрондук кат"</string>
     <string name="contact_item_phones_count" msgid="6713112060821558464">"%d телефон номери"</string>
-    <!-- no translation found for contacts_selection_limit_reached_message (4501460255611012354) -->
-    <skip />
+    <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{Бир убакта # байланышты гана бөлүшүүгө болот}other{Бир убакта # байланышты гана бөлүшүүгө болот}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s тандалды"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Тандалгандарды тазалоо"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"Алдын ала көрүү"</string>
+    <!-- no translation found for selection_bottom_bar_back_button_label (6447375742968584743) -->
+    <skip />
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"Бүттү"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s сиз тандаган байланыштардагы маалыматты гана колдоно алат"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"Толук маалымат"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"Жабуу"</string>
-    <!-- no translation found for title_top_bar_back_button_content_description (7162880372713819715) -->
+    <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"Артка"</string>
+    <!-- no translation found for preview_screen_title (2852036336424026274) -->
     <skip />
     <string name="default_calling_app_name" msgid="5345125341557406609">"Ушул колдонмо"</string>
 </resources>

@@ -33,6 +33,7 @@ fun ContactsPickerNavHost(
     uiState: State<ContactsUiState>,
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (Long, Long) -> Unit,
+    onPrivacyBannerDismissRequest: () -> Unit,
     onExpandRequest: () -> Unit,
     onQueryChange: (String) -> Unit,
     onExitSearch: () -> Unit,
@@ -49,9 +50,10 @@ fun ContactsPickerNavHost(
                 uiState = uiState,
                 onToggleContactSelection = onToggleContactSelection,
                 onToggleEntrySelection = onToggleEntrySelection,
-                onPrivacyBannerMoreDetails = {
+                onNavigateToPrivacyDetails = {
                     navController.navigateToAndPopUpToStart(PrivacyDetailsRoute.route)
                 },
+                onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
                 onExpandRequest = onExpandRequest,
                 onQueryChange = onQueryChange,
                 onExitSearch = onExitSearch,

@@ -39,14 +39,14 @@ class ContactDataFieldProviderTest {
     }
 
     @Test
-    fun getContactDataFieldItems_ignoresUnknownDataField() {
-        val dataFieldsWithUnknown =
+    fun getContactDataFieldItems_ignoresUnsupportedDataField() {
+        val dataFieldsWithUnsupported =
             listOf(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
                 "com.example.unknown.data.field",
             )
 
-        val result = ContactDataFieldProvider.getContactDataFieldItems(dataFieldsWithUnknown)
+        val result = ContactDataFieldProvider.getContactDataFieldItems(dataFieldsWithUnsupported)
 
         assertThat(result).hasSize(3)
         assertThat(result[1].headerTextResId)
@@ -71,8 +71,8 @@ class ContactDataFieldProviderTest {
     }
 
     @Test
-    fun getContactDataFieldItems_sortsAllKnownFieldsCorrectly() {
-        val allKnownDataFields =
+    fun getContactDataFieldItems_withCommonDataKindsItemTypes_returnsSortedList() {
+        val supportedCommonDataKindsItemTypes =
             listOf(
                     ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
                     ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
@@ -87,7 +87,8 @@ class ContactDataFieldProviderTest {
                 )
                 .reversed()
 
-        val result = ContactDataFieldProvider.getContactDataFieldItems(allKnownDataFields)
+        val result =
+            ContactDataFieldProvider.getContactDataFieldItems(supportedCommonDataKindsItemTypes)
 
         assertThat(result).hasSize(12)
 
@@ -105,6 +106,53 @@ class ContactDataFieldProviderTest {
                 R.string.privacy_details_data_field_group_header,
                 R.string.privacy_details_data_field_nickname_header,
                 R.string.privacy_details_data_field_website_header,
+                R.string.privacy_details_data_field_preferences_header,
+            )
+            .inOrder()
+    }
+
+    @Test
+    fun getContactDataFieldItems_withCommonDataKindsEmailType_returnsCorrectList() {
+        val input = listOf(ContactsContract.CommonDataKinds.Email.CONTENT_TYPE)
+        // Act
+        val result = ContactDataFieldProvider.getContactDataFieldItems(input)
+        // Assert
+        val resultHeaderIds = result.map { it.headerTextResId }
+        assertThat(resultHeaderIds)
+            .containsExactly(
+                R.string.privacy_details_data_field_name_header,
+                R.string.privacy_details_data_field_email_header,
+                R.string.privacy_details_data_field_preferences_header,
+            )
+            .inOrder()
+    }
+
+    @Test
+    fun getContactDataFieldItems_withCommonDataKindsPhoneType_returnsCorrectList() {
+        val input = listOf(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE)
+        // Act
+        val result = ContactDataFieldProvider.getContactDataFieldItems(input)
+        // Assert
+        val resultHeaderIds = result.map { it.headerTextResId }
+        assertThat(resultHeaderIds)
+            .containsExactly(
+                R.string.privacy_details_data_field_name_header,
+                R.string.privacy_details_data_field_phone_header,
+                R.string.privacy_details_data_field_preferences_header,
+            )
+            .inOrder()
+    }
+
+    @Test
+    fun getContactDataFieldItems_withCommonDataKindsContactType_returnsOnlyNameAndPreferences() {
+        val input = listOf(ContactsContract.Contacts.CONTENT_TYPE)
+        // Act
+        val result = ContactDataFieldProvider.getContactDataFieldItems(input)
+        // Assert
+        val resultHeaderIds = result.map { it.headerTextResId }
+        assertThat(resultHeaderIds)
+            .containsExactly(
+                R.string.privacy_details_data_field_name_header,
                 R.string.privacy_details_data_field_preferences_header,
             )
             .inOrder()

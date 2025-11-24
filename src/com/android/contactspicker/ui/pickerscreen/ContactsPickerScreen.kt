@@ -39,7 +39,8 @@ fun ContactsPickerScreen(
     uiState: State<ContactsUiState>,
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (Long, Long) -> Unit,
-    onPrivacyBannerMoreDetails: () -> Unit,
+    onNavigateToPrivacyDetails: () -> Unit,
+    onPrivacyBannerDismissRequest: () -> Unit,
     onExpandRequest: () -> Unit,
     onQueryChange: (String) -> Unit,
     onExitSearch: () -> Unit,
@@ -75,6 +76,7 @@ fun ContactsPickerScreen(
                 onToggleContactSelection = onToggleContactSelection,
                 onToggleEntrySelection = onToggleEntrySelection,
                 onExitSearch = onExitSearch,
+                onShowPrivacyDetailsClick = onNavigateToPrivacyDetails,
             )
 
             // TODO(b/449172596): Handle dismissal logic of privacy banner
@@ -82,8 +84,8 @@ fun ContactsPickerScreen(
             if (uiStateValue is ContactsListState) {
                 ContactsListContent(
                     uiState = uiStateValue,
-                    onPrivacyBannerMoreDetails = onPrivacyBannerMoreDetails,
-                    onPrivacyBannerDismissRequest = {},
+                    onPrivacyBannerMoreDetails = onNavigateToPrivacyDetails,
+                    onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
                     onToggleContactSelection = onToggleContactSelection,
                     onToggleEntrySelection = onToggleEntrySelection,
                 )

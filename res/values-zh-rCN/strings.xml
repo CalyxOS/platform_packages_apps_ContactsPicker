@@ -43,10 +43,12 @@
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"已选择%1$s"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"清除所选内容"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"预览"</string>
+    <string name="selection_bottom_bar_back_button_label" msgid="6447375742968584743">"返回"</string>
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"完成"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s只能访问您选择的联系人的信息"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"更多详细信息"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"关闭"</string>
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"返回"</string>
+    <string name="preview_screen_title" msgid="2852036336424026274">"预览"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"此应用"</string>
 </resources>

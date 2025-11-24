@@ -39,16 +39,18 @@
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"ইমেল"</string>
     <string name="contact_item_emails_count" msgid="4742575236201305612">"%dটি ইমেল আইডি"</string>
     <string name="contact_item_phones_count" msgid="6713112060821558464">"%dটি ফোন নম্বর"</string>
-    <!-- no translation found for contacts_selection_limit_reached_message (4501460255611012354) -->
-    <skip />
+    <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{একবারে শুধু #টি পরিচিতি শেয়ার করা যাবে}one{একবারে শুধু #টি পরিচিতি শেয়ার করা যাবে}other{একবারে শুধু #টি পরিচিতি শেয়ার করা যাবে}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s-কে বেছে নেওয়া হয়েছে"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"বেছে নেওয়া পরিচিতি মুছে দিন"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"প্রিভিউ দেখুন"</string>
+    <!-- no translation found for selection_bottom_bar_back_button_label (6447375742968584743) -->
+    <skip />
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"হয়ে গেছে"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"আপনি যেসব পরিচিতি বেছে নিয়েছেন, শুধু তাদের থেকে পাওয়া তথ্যই %1$s অ্যাক্সেস করতে পারবে"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"আরও বিবরণ"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"বাতিল করুন"</string>
-    <!-- no translation found for title_top_bar_back_button_content_description (7162880372713819715) -->
+    <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"ফিরে যান"</string>
+    <!-- no translation found for preview_screen_title (2852036336424026274) -->
     <skip />
     <string name="default_calling_app_name" msgid="5345125341557406609">"এই অ্যাপ"</string>
 </resources>

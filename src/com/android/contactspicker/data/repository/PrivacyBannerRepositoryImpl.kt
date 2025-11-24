@@ -15,10 +15,15 @@
  */
 package com.android.contactspicker.data.repository
 
+import android.util.Log
 import com.android.contactspicker.room.dao.PrivacyBannerShownDao
 import com.android.contactspicker.room.entity.PrivacyBannerShown
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private const val TAG = "PrivacyBannerRepository"
+// TODO(b/462100085): Validate the privacy banner's show/hide logic during exception handling
+private const val DEFAULT_PRIVACY_BANNER_SHOWN_STATE_FALLBACK = false
 
 /**
  * A repository for persisting the state of the privacy banner shown state. This class uses DAO
@@ -27,14 +32,22 @@ import javax.inject.Singleton
 @Singleton
 class PrivacyBannerRepositoryImpl @Inject constructor(private val dao: PrivacyBannerShownDao) :
     PrivacyBannerRepository {
-    override suspend fun hasPrivacyBannerBeenShown(
-        appUid: String,
-        mimeTypes: List<String>,
-    ): Boolean {
-        return dao.hasPrivacyBannerBeenShown(appUid, mimeTypes)
-    }
 
-    override suspend fun markPrivacyBannerShown(appUid: String, mimeTypes: List<String>) {
-        dao.insert(PrivacyBannerShown(appUid = appUid, mimeTypes = mimeTypes))
+    override suspend fun wasPrivacyBannerShown(appUid: Int, mimeTypes: List<String>): Boolean {
+        try {
+            if (appUid != -1 && mimeTypes.isNotEmpty()) {
+                val wasPrivacyBannerShown = dao.wasPrivacyBannerShown(appUid, mimeTypes)
+                Log.i(TAG, "Privacy banner shown : $wasPrivacyBannerShown")
+                if (!wasPrivacyBannerShown) {
+                    dao.insert(PrivacyBannerShown(appUid = appUid, mimeTypes = mimeTypes))
+                }
+                return wasPrivacyBannerShown
+            } else {
+                return DEFAULT_PRIVACY_BANNER_SHOWN_STATE_FALLBACK
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "An unexpected error occurred while checking privacy banner shown state.", e)
+            return DEFAULT_PRIVACY_BANNER_SHOWN_STATE_FALLBACK
+        }
     }
 }

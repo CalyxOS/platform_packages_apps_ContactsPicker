@@ -15,11 +15,11 @@
  */
 package com.android.contactspicker.viewmodel
 
-import android.content.ContentUris
+import android.content.ClipData
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsContract.Contacts
@@ -27,8 +27,6 @@ import android.provider.ContactsPickerSessionContract
 import android.util.Log
 import androidx.annotation.OpenForTesting
 import androidx.annotation.VisibleForTesting
-import androidx.collection.LongObjectMap
-import androidx.collection.buildLongObjectMap
 import androidx.collection.longObjectMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -37,14 +35,13 @@ import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
-import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.repository.ContactsRepository
-import com.android.contactspicker.util.totalElementCount
+import com.android.contactspicker.data.repository.PrivacyBannerRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import kotlin.collections.set
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -81,13 +78,23 @@ sealed interface SnackbarEvent {
 @HiltViewModel
 open class ContactsViewModel
 @Inject
-constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
+constructor(
+    @ApplicationContext context: Context,
+    private val contactsRepository: ContactsRepository,
+    private val privacyBannerRepository: PrivacyBannerRepository,
+    private val selectionHandlerFactory: ContactsSelectionHandler.Factory,
+) : ViewModel() {
+
+    private val contentResolver = context.contentResolver
 
     private val _uiState = MutableStateFlow<ContactsUiState>(ContactsListState.Loading)
     open val uiState: StateFlow<ContactsUiState> = _uiState.asStateFlow()
 
     private val _snackbarEvents = MutableSharedFlow<SnackbarEvent>()
     open val snackbarEvents: Flow<SnackbarEvent> = _snackbarEvents.asSharedFlow()
+
+    private var selectionHandler: ContactsSelectionHandler? = null
+    private var selectionCollectorJob: Job? = null
 
     private var initialContacts: List<Contact> = emptyList()
     private var isMultiSelectEnabled: Boolean = false
@@ -99,192 +106,29 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
     private var loadContactsJob: Job? = null
     private var cachedStateBeforePreview: ContactsUiState? = null
 
+    private var callingAppUid: Int = -1
     private var requestedMimeTypes: List<String> = emptyList()
+
+    private var showPrivacyBanner = false
 
     /**
      * Toggles the selection state for an entire contact.
      *
-     * If [uiState.isMultiSelectEnabled()] is true, this toggles all entries for the contact. In
-     * single-select mode, this selects or deselects the contact, replacing any existing selection.
-     * An attempt to select a multi-entry contact in single-select will select only its first entry.
+     * Delegates logic to [ContactsSelectionHandler].
      */
-    fun toggleContactSelection(contact: Contact) {
-        _uiState.update { currentState ->
-            val selectedContacts =
-                when (currentState) {
-                    is ContactsListState.Success -> currentState.selectedContacts
-                    is SearchState.Success -> currentState.selectedContacts
-                    else ->
-                        return@update currentState // Not in a state where selection can be toggled
-                }
-
-            val existingEntryIds = selectedContacts[contact.id] ?: emptySet()
-            val isAlreadyFullySelected = contact.isFullySelected(existingEntryIds)
-
-            // check for the selection limit
-            val currentSelectionCount = selectedContacts.totalElementCount()
-            if (!isAlreadyFullySelected && isMultiSelectEnabled) {
-                val newEntryIds = contact.getEntryIdsForSelection(isMultiSelectEnabled = true)
-                val newEntriesToAdd = newEntryIds.subtract(existingEntryIds).size
-                if (
-                    newEntriesToAdd > 0 &&
-                        (currentSelectionCount + newEntriesToAdd) > maxSelectionLimit
-                ) {
-                    emitSnackbarSelectionLimitReachedEvent()
-                    return@update currentState
-                }
-            }
-
-            val newSelection = buildLongObjectMap {
-                if (isMultiSelectEnabled) {
-                    putAll(selectedContacts)
-                    if (isAlreadyFullySelected) {
-                        remove(contact.id)
-                    } else {
-                        put(
-                            contact.id,
-                            contact.getEntryIdsForSelection(isMultiSelectEnabled = true),
-                        )
-                    }
-                } else {
-                    if (!isAlreadyFullySelected) {
-                        put(
-                            contact.id,
-                            contact.getEntryIdsForSelection(isMultiSelectEnabled = false),
-                        )
-                    }
-                    // deselecting in single-select, leave an empty map
-                }
-            }
-
-            // Return a copy of the state object to trigger UI recomposition.
-            when (currentState) {
-                is ContactsListState.Success -> currentState.copy(selectedContacts = newSelection)
-                is SearchState.Success -> currentState.copy(selectedContacts = newSelection)
-                else ->
-                    throw IllegalStateException("Cannot toggle selection in state $currentState")
-            }
-        }
-    }
+    fun toggleContactSelection(contact: Contact) =
+        checkNotNull(selectionHandler).toggleContactSelection(contact)
 
     /**
      * Toggles the selection state for a single contact entry (e.g., one email or one phone number).
      *
-     * If the entry is already selected, it will be deselected. If it is not selected, it will be
-     * added to the selection. In single-select mode it will replace any previously selected contact
-     * or entry and become the sole selected entry.
-     *
-     * If this action results in no entries being selected for a contact, the contact's ID is
-     * completely removed from the selection map.
+     * Delegates logic to [ContactsSelectionHandler].
      */
-    fun toggleEntrySelection(contactId: Long, entryId: Long) {
-        _uiState.update { currentState ->
-            val selectedContacts =
-                when (currentState) {
-                    is ContactsListState.Success -> currentState.selectedContacts
-                    is SearchState.Success -> currentState.selectedContacts
-                    else -> return@update currentState
-                }
-
-            val alreadySelectedEntriesForCurrentContact = selectedContacts[contactId] ?: emptySet()
-            val isEntryAlreadySelected = entryId in alreadySelectedEntriesForCurrentContact
-
-            // check for the selection limit
-            val currentSelectionCount = selectedContacts.totalElementCount()
-            if (
-                !isEntryAlreadySelected &&
-                    isMultiSelectEnabled &&
-                    currentSelectionCount >= maxSelectionLimit
-            ) {
-                emitSnackbarSelectionLimitReachedEvent()
-                return@update currentState
-            }
-
-            val newSelection =
-                if (isMultiSelectEnabled) {
-                    handleMultiSelectEntryToggle(
-                        selectedContacts,
-                        contactId,
-                        entryId,
-                        alreadySelectedEntriesForCurrentContact,
-                        isEntryAlreadySelected,
-                    )
-                } else {
-                    handleSingleSelectEntryToggle(contactId, entryId, isEntryAlreadySelected)
-                }
-            // Return a copy of the state object to trigger UI recomposition.
-            when (currentState) {
-                is ContactsListState.Success -> currentState.copy(selectedContacts = newSelection)
-                is SearchState.Success -> currentState.copy(selectedContacts = newSelection)
-                else ->
-                    throw IllegalStateException(
-                        "Cannot toggle entry selection in state $currentState"
-                    )
-            }
-        }
-    }
-
-    /**
-     * Handles toggling a single entry in multi-select mode.
-     *
-     * Update the [contactId] mapping to either add or remove [entryId] (if remove, if no entries
-     * remain for [contactId], remove the mapping). Add all other contact mappings to the result map
-     */
-    private fun handleMultiSelectEntryToggle(
-        currentSelection: LongObjectMap<Set<Long>>,
-        contactId: Long,
-        entryId: Long,
-        alreadySelectedEntriesForCurrentContact: Set<Long>,
-        isCurrentEntryAlreadySelected: Boolean,
-    ): LongObjectMap<Set<Long>> = buildLongObjectMap {
-        putAll(currentSelection)
-        if (!isCurrentEntryAlreadySelected) {
-            val newEntryIds = alreadySelectedEntriesForCurrentContact + entryId
-            put(contactId, newEntryIds)
-        } else {
-            val newEntryIds = alreadySelectedEntriesForCurrentContact - entryId
-            if (newEntryIds.isEmpty()) {
-                remove(contactId)
-            } else {
-                put(contactId, newEntryIds)
-            }
-        }
-    }
-
-    /**
-     * Handles toggling a single entry in single-select mode.
-     *
-     * Selecting an entry makes it the *only* selected item. Deselecting an entry results in an
-     * empty selection.
-     */
-    private fun handleSingleSelectEntryToggle(
-        contactId: Long,
-        entryId: Long,
-        isEntryAlreadySelected: Boolean,
-    ): LongObjectMap<Set<Long>> = buildLongObjectMap {
-        if (!isEntryAlreadySelected) {
-            put(contactId, setOf(entryId))
-        }
-    }
+    fun toggleEntrySelection(contactId: Long, entryId: Long) =
+        checkNotNull(selectionHandler).toggleEntrySelection(contactId, entryId)
 
     /** Clears all currently selected contacts. */
-    fun clearSelection() {
-        _uiState.update { currentState ->
-            when (currentState) {
-                is ContactsListState.Success ->
-                    currentState.copy(selectedContacts = longObjectMapOf())
-
-                is SearchState.Success -> currentState.copy(selectedContacts = longObjectMapOf())
-                else -> currentState
-            }
-        }
-    }
-
-    private fun emitSnackbarSelectionLimitReachedEvent() {
-        viewModelScope.launch {
-            _snackbarEvents.emit(SnackbarEvent.ShowSelectionLimitReached(maxSelectionLimit))
-        }
-    }
+    fun clearSelection() = checkNotNull(selectionHandler).clearSelection()
 
     /**
      * Determines the display mode based on the intent. Should only be called from the Activity to
@@ -296,10 +140,12 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
         intentType: String?,
         intentExtras: Bundle?,
         callingAppName: String?,
+        callingAppUid: Int,
     ) {
         this.intentAction = intentAction
         this.intentType = intentType
         this.callingAppName = callingAppName
+        this.callingAppUid = callingAppUid
         this.isMultiSelectEnabled =
             intentExtras?.getBoolean(Intent.EXTRA_ALLOW_MULTIPLE, false) ?: false
         try {
@@ -336,26 +182,65 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
             } else {
                 DEFAULT_SELECTION_LIMIT
             }
-        loadContactsData()
+        selectionHandler =
+            selectionHandlerFactory.create(isMultiSelectEnabled, maxSelectionLimit) { event ->
+                viewModelScope.launch { _snackbarEvents.emit(event) }
+            }
+        startObservingSelection()
+        loadContactsListData()
     }
 
-    private fun loadContactsData() {
+    private fun startObservingSelection() {
+        selectionCollectorJob?.cancel()
+        selectionCollectorJob =
+            viewModelScope.launch {
+                checkNotNull(selectionHandler).selectedContacts.collect { newSelection ->
+                    _uiState.update { currentState ->
+                        when (currentState) {
+                            is ContactsListState.Success ->
+                                currentState.copy(selectedContacts = newSelection)
+                            is SearchState.Success ->
+                                currentState.copy(selectedContacts = newSelection)
+                            is ContactsPreviewState ->
+                                if (newSelection.isEmpty()) {
+                                    onBackFromPreview()
+                                    currentState
+                                } else {
+                                    currentState.copy(
+                                        selectedContacts = newSelection,
+                                        contactsToDisplay =
+                                            currentState.contactsToDisplay.filter { contact ->
+                                                newSelection.containsKey(contact.id)
+                                            },
+                                    )
+                                }
+                            else -> currentState
+                        }
+                    }
+                }
+            }
+    }
+
+    private fun loadContactsListData() {
         loadContactsJob?.cancel()
         loadContactsJob =
             viewModelScope.launch {
                 _uiState.value = ContactsListState.Loading
                 try {
                     Log.d(TAG, "Loading contacts for action: $intentAction, type: $intentType")
-                    initialContacts =
-                        contactsRepository.getContactsForIntent(intentAction, intentType)
+                    loadContactsData()
+                    loadPrivacyBannerState()
+
                     // TODO(b/444459883): check and handle empty list
                     _uiState.value =
                         ContactsListState.Success(
                             availableContacts = initialContacts,
-                            selectedContacts = longObjectMapOf(),
+                            selectedContacts =
+                                checkNotNull(selectionHandler).selectedContacts.value,
                             isMultiSelectEnabled = isMultiSelectEnabled,
                             callingAppName = callingAppName,
                             requestedMimeTypes = requestedMimeTypes,
+                            showPrivacyBanner = showPrivacyBanner,
                         )
                 } catch (e: IllegalArgumentException) {
                     Log.e(TAG, "An invalid intent was passed.", e)
@@ -372,6 +257,22 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
             }
     }
 
+    private suspend fun loadContactsData() {
+        Log.d(TAG, "Loading contacts for action: $intentAction, type: $intentType")
+        initialContacts = contactsRepository.getContactsForIntent(intentAction, intentType)
+    }
+
+    private suspend fun loadPrivacyBannerState() {
+        Log.d(
+            TAG,
+            "Loading privacy banner state for appUid: $callingAppUid, mimeTypes: $requestedMimeTypes",
+        )
+        // Only show the privacy banner if user hasn't seen it before for this combination of uid
+        // and MIME types.
+        showPrivacyBanner =
+            !privacyBannerRepository.wasPrivacyBannerShown(callingAppUid, requestedMimeTypes)
+    }
+
     @VisibleForTesting
     internal fun getRequestedMimeTypesForIntent(
         intentAction: String?,
@@ -386,61 +287,60 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
         }
     }
 
+    /** Hides the privacy banner for the current session. */
+    fun hidePrivacyBanner() {
+        showPrivacyBanner = false
+
+        _uiState.update { currentState ->
+            if (currentState is ContactsListState.Success) {
+                currentState.copy(showPrivacyBanner = showPrivacyBanner)
+            } else {
+                currentState
+            }
+        }
+    }
+
     /**
-     * Converts the current selection map into a final list of content URIs.
+     * Converts the current selection map into a final result intent.
      *
-     * @return A list of [Uri]s for the selected items, or an empty list.
+     * @return A ready-to-use result [Intent], or null if selection is empty/error occurred.
+     * @throws [IllegalStateException] if called in non success ui state.
      */
     @OpenForTesting
-    open fun prepareSelectionResult(): List<Uri> {
+    open fun prepareSelectionResult(): Intent? {
         val currentState = _uiState.value
-        val (contacts, selectedContacts) =
-            when (currentState) {
-                is ContactsListState.Success ->
-                    Pair(currentState.availableContacts, currentState.selectedContacts)
-                is SearchState.Success ->
-                    Pair(currentState.searchResults, currentState.selectedContacts)
-                else -> {
-                    Log.w(TAG, "prepareSelectionResult called while not in a Success state.")
-                    return emptyList()
-                }
-            }
+        check(
+            currentState is ContactsListState.Success ||
+                currentState is SearchState.Success ||
+                currentState is ContactsPreviewState
+        ) {
+            "prepareSelectionResult called while not in a Success state."
+        }
 
-        try {
-            val finalUris = mutableListOf<Uri>()
-            val contactsById = contacts.associateBy { it.id }
+        val finalUris = checkNotNull(selectionHandler).resolveSelectedUris(initialContacts)
+        if (finalUris.isEmpty()) return null
 
-            selectedContacts.forEach { contactId, entryIds ->
-                val contact = contactsById[contactId]
-                if (contact == null) {
-                    Log.w(TAG, "Selected contact with ID $contactId not found in available list.")
-                    return@forEach
-                }
+        return when (intentAction) {
+            Intent.ACTION_PICK -> createActionPickResult(finalUris)
+            else -> null
+        }
+    }
 
-                when (contact) {
-                    is DisplayNameContact -> {
-                        finalUris.add(
-                            ContactsContract.Contacts.getLookupUri(contact.id, contact.lookupKey)
-                        )
+    private fun createActionPickResult(uris: List<Uri>): Intent? {
+        if (uris.isEmpty()) {
+            return null
+        }
+
+        return Intent().apply {
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            if (isMultiSelectEnabled) {
+                clipData =
+                    ClipData.newUri(contentResolver, "uri", uris.first()).apply {
+                        uris.drop(1).forEach { addItem(ClipData.Item(it)) }
                     }
-                    is EmailContact,
-                    is PhoneContact -> {
-                        entryIds.forEach { entryId ->
-                            finalUris.add(
-                                ContentUris.withAppendedId(
-                                    ContactsContract.Data.CONTENT_URI,
-                                    entryId,
-                                )
-                            )
-                        }
-                    }
-                }
+            } else {
+                data = uris.first()
             }
-            return finalUris
-        } catch (e: Exception) {
-            Log.e(TAG, "Error preparing selection result", e)
-            _uiState.value = ContactsListState.Error("Error preparing result: ${e.message}")
-            return emptyList()
         }
     }
 
@@ -454,17 +354,11 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
 
         if (query.isBlank()) {
             // If the user clears the search, go to empty search state
-            _uiState.update { currentState ->
-                val selectedContacts =
-                    when (currentState) {
-                        is ContactsListState.Success -> currentState.selectedContacts
-                        is SearchState.Success -> currentState.selectedContacts
-                        else -> longObjectMapOf()
-                    }
+            _uiState.update { _ ->
                 SearchState.Success(
                     query = "",
                     searchResults = emptyList(),
-                    selectedContacts = selectedContacts,
+                    selectedContacts = checkNotNull(selectionHandler).selectedContacts.value,
                 )
             }
             return
@@ -525,6 +419,7 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
                     isMultiSelectEnabled = isMultiSelectEnabled,
                     callingAppName = callingAppName,
                     requestedMimeTypes = requestedMimeTypes,
+                    showPrivacyBanner = showPrivacyBanner,
                 )
             } else {
                 currentState
@@ -573,55 +468,25 @@ constructor(private val contactsRepository: ContactsRepository) : ViewModel() {
 
     fun onBackFromPreview() {
         val currentState = _uiState.value
-        require(currentState is ContactsPreviewState && cachedStateBeforePreview != null) {
+        val currentCachedState = cachedStateBeforePreview
+        require(currentState is ContactsPreviewState && currentCachedState != null) {
             "onBackFromPreview called from unexpected state: $currentState, or no previous state found"
         }
-        _uiState.value = cachedStateBeforePreview!!
+        // update selected contacts in cached state
+        _uiState.value =
+            when (currentCachedState) {
+                is ContactsListState.Success ->
+                    currentCachedState.copy(selectedContacts = currentState.selectedContacts)
+                is SearchState.Success ->
+                    currentCachedState.copy(selectedContacts = currentState.selectedContacts)
+                else -> currentCachedState
+            }
         cachedStateBeforePreview = null
     }
 
     // TODO(b/12345678): remove once the permission is pregranted
     open fun onContactsPermissionGranted() {
-        loadContactsData()
-    }
-}
-
-/**
- * Helper extension function to get the IDs for given contact and the selection mode. If called in
- * single selection mode for contacts with multiple emails or phones it will return only first
- * element and log a warning.
- */
-private fun Contact.getEntryIdsForSelection(isMultiSelectEnabled: Boolean): Set<Long> {
-    return when (this) {
-        is DisplayNameContact -> setOf(id)
-        is EmailContact -> {
-            if (isMultiSelectEnabled) {
-                emails.map { it.id }.toSet()
-            } else {
-                if (emails.size > 1) {
-                    Log.w(
-                        TAG,
-                        "toggleContactSelection called on multi-email contact in " +
-                            "single-select mode. Selecting first email.",
-                    )
-                }
-                setOf(emails.first().id)
-            }
-        }
-        is PhoneContact -> {
-            if (isMultiSelectEnabled) {
-                phones.map { it.id }.toSet()
-            } else {
-                if (phones.size > 1) {
-                    Log.w(
-                        TAG,
-                        "toggleContactSelection called on multi-phone contact in " +
-                            "single-select mode. Selecting first phone.",
-                    )
-                }
-                setOf(phones.first().id)
-            }
-        }
+        loadContactsListData()
     }
 }
 

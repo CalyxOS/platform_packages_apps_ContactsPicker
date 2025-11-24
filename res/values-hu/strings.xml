@@ -39,16 +39,16 @@
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"E-mail"</string>
     <string name="contact_item_emails_count" msgid="4742575236201305612">"%d e-mail"</string>
     <string name="contact_item_phones_count" msgid="6713112060821558464">"%d telefonszám"</string>
-    <!-- no translation found for contacts_selection_limit_reached_message (4501460255611012354) -->
-    <skip />
+    <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{Egyszerre csak # névjegyet oszthat meg}other{Egyszerre csak # névjegyet oszthat meg}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s kiválasztva"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Kijelölés törlése"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"Előnézet"</string>
+    <string name="selection_bottom_bar_back_button_label" msgid="6447375742968584743">"Vissza"</string>
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"Kész"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"A(z) %1$s csak az Ön által kiválasztott névjegyek adataihoz fér majd hozzá"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"További részletek"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"Elvetés"</string>
-    <!-- no translation found for title_top_bar_back_button_content_description (7162880372713819715) -->
-    <skip />
+    <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"Vissza"</string>
+    <string name="preview_screen_title" msgid="2852036336424026274">"Előnézet"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"Ez az alkalmazás"</string>
 </resources>
