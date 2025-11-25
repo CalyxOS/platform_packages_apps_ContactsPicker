@@ -15,8 +15,8 @@
  */
 package com.android.contactspicker
 
-import androidx.collection.LongObjectMap
 import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.ContactsSelection
 import com.android.contactspicker.data.model.DisplayNameContact
 
 /** Represents the different states for the Contacts Picker screen. */
@@ -39,7 +39,7 @@ sealed interface ContactsListState : ContactsUiState {
      */
     data class Success(
         val availableContacts: List<Contact>,
-        val selectedContacts: LongObjectMap<Set<Long>>,
+        val selectedContacts: ContactsSelection,
         val isMultiSelectEnabled: Boolean,
         val showPrivacyBanner: Boolean,
         val callingAppName: String?,
@@ -62,14 +62,12 @@ sealed interface SearchState : ContactsUiState {
      *
      * @param query The search query that produced these results.
      * @param searchResults The list of contacts that match the query.
-     * @param selectedContacts A map representing the current selection, where the key is the
-     *   contact ID and the value is a set of selected entry IDs. For a [DisplayNameContact] that
-     *   has no entries, its own contact.id is used.
+     * @param selectedContacts The current selected contacts.
      */
     data class Success(
         val query: String,
         val searchResults: List<Contact>,
-        val selectedContacts: LongObjectMap<Set<Long>>,
+        val selectedContacts: ContactsSelection,
     ) : SearchState
 
     /**
@@ -84,12 +82,11 @@ sealed interface SearchState : ContactsUiState {
  * Represents the state for displaying a preview of selected contacts.
  *
  * @property contactsToDisplay The list of contacts to show in the preview.
- * @property selectedContacts A map representing the current selection, where the key is the contact
- *   ID and the value is a set of selected entry IDs.
+ * @property selectedContacts The current selected contacts.
  * @param isMultiSelectEnabled True if multiple contacts can be selected.
  */
 data class ContactsPreviewState(
     val contactsToDisplay: List<Contact>,
-    val selectedContacts: LongObjectMap<Set<Long>>,
+    val selectedContacts: ContactsSelection,
     val isMultiSelectEnabled: Boolean,
 ) : ContactsUiState

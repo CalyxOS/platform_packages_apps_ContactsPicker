@@ -27,7 +27,6 @@ import android.provider.ContactsPickerSessionContract
 import android.util.Log
 import androidx.annotation.OpenForTesting
 import androidx.annotation.VisibleForTesting
-import androidx.collection.longObjectMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.contactspicker.ContactsListState
@@ -37,6 +36,7 @@ import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.PhoneContact
+import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.data.repository.ContactsRepository
 import com.android.contactspicker.data.repository.PrivacyBannerRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -381,7 +381,7 @@ constructor(
                     when (currentState) {
                         is ContactsListState.Success -> currentState.selectedContacts
                         is SearchState.Success -> currentState.selectedContacts
-                        else -> longObjectMapOf()
+                        else -> emptyContactsSelection()
                     }
                 SearchState.Success(
                     query = query,
@@ -411,7 +411,8 @@ constructor(
                 val selectedContacts =
                     when (currentState) {
                         is SearchState.Success -> currentState.selectedContacts
-                        else -> longObjectMapOf() // Should not happen if exiting from Success
+                        else ->
+                            emptyContactsSelection() // Should not happen if exiting from Success
                     }
                 ContactsListState.Success(
                     availableContacts = initialContacts,

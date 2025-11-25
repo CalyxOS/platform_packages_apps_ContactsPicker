@@ -27,13 +27,13 @@ import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsPickerSessionContract
-import androidx.collection.longObjectMapOf
 import androidx.test.core.app.ApplicationProvider
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.fakes.FakeContactsRepository
 import com.android.contactspicker.fakes.FakePrivacyBannerRepository
 import com.android.contactspicker.testdata.ContactTestDataFactory
@@ -498,7 +498,7 @@ class ContactsViewModelTest {
         // Repository search for searchQuery should have been called now
         assertThat(fakeContactsRepository.searchInvocationsCountForQuery(searchQuery)).isEqualTo(1)
         assertThat(collectedStates.last())
-            .isEqualTo(SearchState.Success(searchQuery, searchResult, longObjectMapOf()))
+            .isEqualTo(SearchState.Success(searchQuery, searchResult, emptyContactsSelection()))
         job.cancel()
     }
 
@@ -544,7 +544,7 @@ class ContactsViewModelTest {
             .containsExactly(
                 ContactsListState.Success(
                     ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
-                    longObjectMapOf(),
+                    emptyContactsSelection(),
                     false,
                     callingAppName = "TestApp",
                     requestedMimeTypes = listOf(Phone.CONTENT_TYPE),
@@ -553,7 +553,7 @@ class ContactsViewModelTest {
                 SearchState.Success(
                     searchQuery,
                     searchResults,
-                    longObjectMapOf(),
+                    emptyContactsSelection(),
                 ), // State after search completes
             )
             .inOrder()
@@ -571,7 +571,7 @@ class ContactsViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertThat(viewModel.uiState.value)
-            .isEqualTo(SearchState.Success(searchQuery, emptyList(), longObjectMapOf()))
+            .isEqualTo(SearchState.Success(searchQuery, emptyList(), emptyContactsSelection()))
     }
 
     @Test
@@ -610,7 +610,7 @@ class ContactsViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertThat(viewModel.uiState.value)
-            .isEqualTo(SearchState.Success(searchQuery, searchResults, longObjectMapOf()))
+            .isEqualTo(SearchState.Success(searchQuery, searchResults, emptyContactsSelection()))
     }
 
     @Test

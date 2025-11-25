@@ -63,9 +63,9 @@ import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.totalElementCount
 import com.android.contactspicker.navigation.ContactsPickerNavHost
 import com.android.contactspicker.ui.pickerscreen.SelectionBottomBar
-import com.android.contactspicker.util.totalElementCount
 import com.android.contactspicker.viewmodel.SnackbarEvent
 import java.util.Locale
 import kotlinx.coroutines.flow.Flow

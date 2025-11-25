@@ -20,8 +20,6 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import androidx.collection.longObjectMapOf
-import androidx.collection.mutableLongObjectMapOf
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -33,6 +31,8 @@ import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.R
+import com.android.contactspicker.data.model.buildContactsSelection
+import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
 import com.google.common.truth.Truth.assertThat
@@ -57,7 +57,7 @@ class PreviewScreenTest {
                     uiState =
                         ContactsPreviewState(
                             emptyList(),
-                            longObjectMapOf(),
+                            emptyContactsSelection(),
                             isMultiSelectEnabled = false,
                         ),
                     onToggleContactSelection = {},
@@ -79,7 +79,7 @@ class PreviewScreenTest {
             ContactsPickerAppTheme {
                 PreviewScreen(
                     onBackPressed = { onBackPressed = true },
-                    uiState = ContactsPreviewState(emptyList(), longObjectMapOf(), false),
+                    uiState = ContactsPreviewState(emptyList(), emptyContactsSelection(), false),
                     onToggleContactSelection = {},
                     onToggleEntrySelection = { _, _ -> },
                 )
@@ -102,7 +102,7 @@ class PreviewScreenTest {
             ContactsPickerAppTheme {
                 PreviewScreen(
                     onBackPressed = { onBackPressed = true },
-                    uiState = ContactsPreviewState(emptyList(), longObjectMapOf(), false),
+                    uiState = ContactsPreviewState(emptyList(), emptyContactsSelection(), false),
                     onToggleContactSelection = {},
                     onToggleEntrySelection = { _, _ -> },
                 )
@@ -118,9 +118,10 @@ class PreviewScreenTest {
     fun previewScreen_withSelectedContacts_displaysAllSelectedContacts() {
         val selectedContact1 = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
         val selectedContact2 = ContactTestDataFactory.GENERIC_PHONE_CONTACT
-        val selectedMap = mutableLongObjectMapOf<Set<Long>>()
-        selectedMap[selectedContact1.id] = setOf(selectedContact1.id)
-        selectedMap[selectedContact2.id] = setOf(selectedContact2.phones.first().id)
+        val selectedMap = buildContactsSelection {
+            put(selectedContact1.id, setOf(selectedContact1.id))
+            put(selectedContact2.id, setOf(selectedContact2.phones.first().id))
+        }
 
         val uiState =
             ContactsPreviewState(listOf(selectedContact1, selectedContact2), selectedMap, false)

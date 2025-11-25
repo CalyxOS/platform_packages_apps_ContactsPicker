@@ -21,8 +21,8 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.provider.ContactsContract
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.contactspicker.data.model.totalElementCount
 import com.android.contactspicker.testdata.ContactTestDataFactory
-import com.android.contactspicker.util.totalElementCount
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test

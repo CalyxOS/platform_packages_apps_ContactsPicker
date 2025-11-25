@@ -16,13 +16,13 @@
 
 package com.android.contactspicker.ui.components
 
-import androidx.collection.longObjectMapOf
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsListState
+import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.ui.pickerscreen.CONTACTS_LIST_TEST_TAG
 import com.android.contactspicker.ui.pickerscreen.CONTACTS_PICKER_SCREEN_LOADING_INDICATOR_TEST_TAG
@@ -75,7 +75,7 @@ class ContactsListContentTest {
                 uiState =
                     ContactsListState.Success(
                         availableContacts = listOf(testContact),
-                        selectedContacts = longObjectMapOf(),
+                        selectedContacts = emptyContactsSelection(),
                         isMultiSelectEnabled = false,
                         callingAppName = null,
                         requestedMimeTypes = emptyList(),
