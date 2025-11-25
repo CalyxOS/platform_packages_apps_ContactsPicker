@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
@@ -57,7 +56,7 @@ import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.PhoneContact
 
 private val CollapsedSearchBarPaddingValues =
-    PaddingValues(start = 8.dp, end = 8.dp, top = 8.dp, bottom = 16.dp)
+    PaddingValues(start = 8.dp, end = 8.dp, bottom = 16.dp)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -170,7 +169,7 @@ private fun SearchResultsList(
         val searchResults = searchState.searchResults
         itemsIndexed(
             items = searchResults,
-            key = { index, contact ->
+            key = { _, contact ->
                 when (contact) {
                     is EmailContact -> "search-email-${contact.emails.firstOrNull()?.id}"
                     is PhoneContact -> "search-phone-${contact.phones.firstOrNull()?.id}"

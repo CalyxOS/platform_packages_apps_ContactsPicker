@@ -17,13 +17,11 @@ package com.android.contactspicker.ui.pickerscreen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.unit.dp
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
@@ -47,10 +45,7 @@ fun ContactsPickerScreen(
     onBackFromPreview: () -> Unit,
 ) {
     Column(
-        modifier =
-            Modifier.fillMaxSize()
-                .padding(vertical = 8.dp)
-                .testTag(CONTACTS_PICKER_SCREEN_TEST_TAG),
+        modifier = Modifier.fillMaxSize().testTag(CONTACTS_PICKER_SCREEN_TEST_TAG),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         val uiStateValue = uiState.value
