@@ -26,9 +26,11 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.BottomSheetScaffold
@@ -46,14 +48,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -144,6 +151,8 @@ fun ContactsPickerBottomSheet(
                         .testTag(SCRIM_TEST_TAG)
             )
         }
+        val sheetOffsetLeft = remember { mutableFloatStateOf(0f) }
+        val sheetWidth = remember { mutableFloatStateOf(0f) }
         BottomSheetScaffold(
             modifier =
                 Modifier.windowInsetsPadding(
@@ -163,7 +172,12 @@ fun ContactsPickerBottomSheet(
                     onToggleEntrySelection = onToggleEntrySelection,
                     onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
                     onExpandRequest = { scope.launch { bottomSheetState.expand() } },
-                    modifier = Modifier.testTag(BOTTOM_SHEET_TEST_TAG),
+                    modifier =
+                        Modifier.testTag(BOTTOM_SHEET_TEST_TAG).onGloballyPositioned {
+                            val bounds = it.boundsInWindow()
+                            sheetWidth.value = bounds.width
+                            sheetOffsetLeft.value = bounds.left
+                        },
                     onQueryChange = onQueryChange,
                     onExitSearch = onExitSearch,
                     onBackFromPreview = onBackFromPreview,
@@ -175,7 +189,9 @@ fun ContactsPickerBottomSheet(
         Column(
             modifier =
                 Modifier.windowInsetsPadding(WindowInsets.navigationBars)
-                    .align(Alignment.BottomCenter),
+                    .align(Alignment.BottomStart)
+                    .width(with(LocalDensity.current) { sheetWidth.value.toDp() })
+                    .offset(offset = { IntOffset(x = sheetOffsetLeft.value.toInt(), y = 0) }),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             SnackbarHost(hostState = snackbarHostState) { data ->
