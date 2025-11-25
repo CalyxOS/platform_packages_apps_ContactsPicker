@@ -24,18 +24,26 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.android.democontactspickerclientapp.lib.R
@@ -67,7 +75,10 @@ fun SectionTitle(title: String) {
 }
 
 @Composable
-fun CommonOptions(allowMultiple: Boolean, onAllowMultipleChange: (Boolean) -> Unit) {
+fun CommonOptionsWithSystemPickerDisabled(
+    allowMultiple: Boolean,
+    onAllowMultipleChange: (Boolean) -> Unit,
+) {
     SectionTitle("Options")
     Row(
         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
@@ -76,6 +87,35 @@ fun CommonOptions(allowMultiple: Boolean, onAllowMultipleChange: (Boolean) -> Un
     ) {
         Text("Allow Multiple Selection", style = MaterialTheme.typography.bodyLarge)
         Switch(checked = allowMultiple, onCheckedChange = onAllowMultipleChange)
+    }
+}
+
+@Composable
+fun CommonOptions(
+    allowMultiple: Boolean,
+    onAllowMultipleChange: (Boolean) -> Unit,
+    overrideSelectionLimit: Boolean,
+    onOverrideSelectionLimitChange: (Boolean) -> Unit,
+    selectionLimit: Int,
+    onSelectionLimitChange: (Int) -> Unit,
+) {
+    CommonOptionsWithSystemPickerDisabled(allowMultiple, onAllowMultipleChange)
+
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Text("Override selection limit", style = MaterialTheme.typography.bodyLarge)
+        Switch(checked = overrideSelectionLimit, onCheckedChange = onOverrideSelectionLimitChange)
+    }
+    if (overrideSelectionLimit) {
+        Spacer(modifier = Modifier.height(8.dp))
+        NumberInputRow(
+            value = selectionLimit,
+            onValueChange = onSelectionLimitChange,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 
@@ -151,4 +191,44 @@ fun ResultDisplay(pickerResult: PickerResult) {
 @Composable
 fun LaunchPickerButton(onClick: () -> Unit) {
     Button(onClick = onClick, modifier = Modifier.fillMaxWidth()) { Text("Launch Contacts Picker") }
+}
+
+@Composable
+fun NumberInputRow(value: Int, onValueChange: (Int) -> Unit, modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            IconButton(onClick = { onValueChange(value - 1) }) {
+                Icon(Icons.Default.Remove, contentDescription = "Decrease selection limit")
+            }
+            TextField(
+                value = value.toString(),
+                onValueChange = { newValue ->
+                    if (newValue.isEmpty()) {
+                        onValueChange(0)
+                    } else {
+                        // Make sure we only accept numbers
+                        newValue.toIntOrNull()?.let { onValueChange(it) }
+                    }
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                modifier = Modifier.weight(1f),
+                textStyle = MaterialTheme.typography.bodyLarge.copy(textAlign = TextAlign.Center),
+            )
+            IconButton(onClick = { onValueChange(value + 1) }) {
+                Icon(Icons.Default.Add, contentDescription = "Increase selection limit")
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+        ) {
+            Button(onClick = { onValueChange(5) }) { Text("5") }
+            Button(onClick = { onValueChange(50) }) { Text("50") }
+            Button(onClick = { onValueChange(100) }) { Text("100") }
+        }
+    }
 }

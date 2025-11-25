@@ -21,12 +21,47 @@ import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.provider.ContactsContract
+import android.provider.ContactsPickerSessionContract
 import androidx.activity.result.ActivityResult
 
+/**
+ * Builds an Intent for the legacy ACTION_PICK, without any contacts picker flag-guarded extras.
+ *
+ * @param config The current configuration state for the legacy demo.
+ * @param allowMultiple Whether to allow multiple selections.
+ */
+fun buildLegacyPickerIntentWithSystemPickerDisabled(
+    config: LegacyDemoConfigState,
+    allowMultiple: Boolean,
+): Intent {
+    val intent = Intent(Intent.ACTION_PICK)
+    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, allowMultiple)
+    intent.type =
+        when (config.legacyPickerType) {
+            LegacyPickerType.EMAIL -> ContactsContract.CommonDataKinds.Email.CONTENT_TYPE
+            LegacyPickerType.PHONE -> ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE
+            LegacyPickerType.CONTACT -> ContactsContract.Contacts.CONTENT_TYPE
+        }
+    return intent
+}
+
+/**
+ * Builds an Intent for the legacy ACTION_PICK, including the contacts picker flag-guarded extras.
+ *
+ * @param config The current configuration state for the legacy demo.
+ * @param allowMultiple Whether to allow multiple selections.
+ * @param useSystemPicker Whether to force the system picker. This is a flag-guarded extra.
+ * @param overrideSelectionLimit Whether to override the default selection limit. This is a
+ *   flag-guarded extra.
+ * @param selectionLimit The maximum number of contacts that can be selected. Only used if
+ *   [overrideSelectionLimit] is true.
+ */
 fun buildLegacyPickerIntent(
     config: LegacyDemoConfigState,
     allowMultiple: Boolean,
     useSystemPicker: Boolean = false,
+    overrideSelectionLimit: Boolean,
+    selectionLimit: Int,
 ): Intent {
     val intent = Intent(Intent.ACTION_PICK)
     intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, allowMultiple)
@@ -37,6 +72,12 @@ fun buildLegacyPickerIntent(
             LegacyPickerType.PHONE -> ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE
             LegacyPickerType.CONTACT -> ContactsContract.Contacts.CONTENT_TYPE
         }
+    if (overrideSelectionLimit) {
+        intent.putExtra(
+            ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_SELECTION_LIMIT,
+            selectionLimit,
+        )
+    }
     return intent
 }
 
