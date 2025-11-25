@@ -36,7 +36,6 @@ android_test {
         "androidx.test.ext.truth",
         "androidx.test.rules",
         "androidx.test.runner",
-        "ContactsPickerLib",
         "flag-junit",
         "hilt_android",
         "hilt_android_testing",
@@ -47,8 +46,5 @@ android_test {
     ],
     test_suites: [
         "general-tests",
-    ],
-    associates: [
-        "ContactsPickerLib",
     ],
 }
