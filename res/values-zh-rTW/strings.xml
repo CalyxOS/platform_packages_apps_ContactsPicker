@@ -26,8 +26,7 @@
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"搜尋"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"清除搜尋文字"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"關閉搜尋"</string>
-    <!-- no translation found for contacts_picker_top_bar_more_options_content_description (6586161048394547875) -->
-    <skip />
+    <string name="contacts_picker_top_bar_more_options_content_description" msgid="6586161048394547875">"更多選項"</string>
     <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"常用聯絡人"</string>
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"星號圖示"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"微笑圖示"</string>
@@ -53,6 +52,5 @@
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"返回"</string>
     <string name="preview_screen_title" msgid="2852036336424026274">"預覽"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"這個應用程式"</string>
-    <!-- no translation found for privacy_details_menu_label (497348969731766203) -->
-    <skip />
+    <string name="privacy_details_menu_label" msgid="497348969731766203">"聯絡人的隱私權"</string>
 </resources>
