@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"Kembali"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"Detail selengkapnya"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Jika Anda memilih kontak, %1$s akan memiliki akses ke info berikut dari kontak di perangkat Anda.\n\nJika Anda memperbarui info kontak, %1$s tidak akan memiliki akses ke perubahan tersebut."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Info kontak dapat mencakup detail seperti:"</string>
