@@ -26,8 +26,7 @@
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"Хайх"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"Хайлтын текстийг арилгах"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"Хайлтыг хаах"</string>
-    <!-- no translation found for contacts_picker_top_bar_more_options_content_description (6586161048394547875) -->
-    <skip />
+    <string name="contacts_picker_top_bar_more_options_content_description" msgid="6586161048394547875">"Нэмэлт сонголт"</string>
     <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"Дуртай"</string>
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"Одны дүрс тэмдэг"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"Инээмсэглэх дүрс тэмдэг"</string>
@@ -53,6 +52,5 @@
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"Буцах"</string>
     <string name="preview_screen_title" msgid="2852036336424026274">"Урьдчилан үзэх"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"Энэ апп"</string>
-    <!-- no translation found for privacy_details_menu_label (497348969731766203) -->
-    <skip />
+    <string name="privacy_details_menu_label" msgid="497348969731766203">"Таны харилцагчдын нууцлал"</string>
 </resources>
