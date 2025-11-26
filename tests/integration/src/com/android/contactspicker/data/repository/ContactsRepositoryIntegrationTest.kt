@@ -22,7 +22,6 @@ import android.content.ContentProviderResult
 import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
 import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
@@ -37,6 +36,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
+import com.android.contactspicker.config.ContactsQueryMode
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.PhoneContact
@@ -91,13 +91,11 @@ class ContactsRepositoryIntegrationTest {
         insertContact(TEST_CONTACT_NAME, emails = listOf(TEST_CONTACT_EMAIL_1))
 
         // Search by email
-        var result =
-            repository.searchContacts(TEST_CONTACT_EMAIL_1, Intent.ACTION_PICK, Email.CONTENT_TYPE)
+        var result = repository.searchContacts(TEST_CONTACT_EMAIL_1, ContactsQueryMode.EmailsOnly)
         assertEmailContactPresent(result, TEST_CONTACT_NAME, TEST_CONTACT_EMAIL_1)
 
         // Search by name
-        result =
-            repository.searchContacts(TEST_CONTACT_NAME, Intent.ACTION_PICK, Email.CONTENT_TYPE)
+        result = repository.searchContacts(TEST_CONTACT_NAME, ContactsQueryMode.EmailsOnly)
         assertContactNamePresent(result, TEST_CONTACT_NAME)
     }
 
@@ -107,20 +105,11 @@ class ContactsRepositoryIntegrationTest {
 
         // Search by email
         var result =
-            repository.searchContacts(
-                TEST_CONTACT_EMAIL_1.substring(0, 4),
-                Intent.ACTION_PICK,
-                Email.CONTENT_TYPE,
-            )
+            repository.searchContacts(TEST_CONTACT_EMAIL_1.take(4), ContactsQueryMode.EmailsOnly)
         assertEmailContactPresent(result, TEST_CONTACT_NAME, TEST_CONTACT_EMAIL_1)
 
         // Search by name
-        result =
-            repository.searchContacts(
-                TEST_CONTACT_NAME.substring(0, 4),
-                Intent.ACTION_PICK,
-                Email.CONTENT_TYPE,
-            )
+        result = repository.searchContacts(TEST_CONTACT_NAME.take(4), ContactsQueryMode.EmailsOnly)
         assertContactNamePresent(result, TEST_CONTACT_NAME)
     }
 
@@ -129,13 +118,11 @@ class ContactsRepositoryIntegrationTest {
         insertContact(TEST_CONTACT_NAME, phones = listOf(TEST_CONTACT_PHONE_1))
 
         // Search by phone
-        var result =
-            repository.searchContacts(TEST_CONTACT_PHONE_1, Intent.ACTION_PICK, Phone.CONTENT_TYPE)
+        var result = repository.searchContacts(TEST_CONTACT_PHONE_1, ContactsQueryMode.PhonesOnly)
         assertPhoneContactPresent(result, TEST_CONTACT_NAME, TEST_CONTACT_PHONE_1)
 
         // Search by name
-        result =
-            repository.searchContacts(TEST_CONTACT_NAME, Intent.ACTION_PICK, Phone.CONTENT_TYPE)
+        result = repository.searchContacts(TEST_CONTACT_NAME, ContactsQueryMode.PhonesOnly)
         assertContactNamePresent(result, TEST_CONTACT_NAME)
     }
 
@@ -145,20 +132,11 @@ class ContactsRepositoryIntegrationTest {
 
         // Search by phone
         var result =
-            repository.searchContacts(
-                TEST_CONTACT_PHONE_1.substring(0, 4),
-                Intent.ACTION_PICK,
-                Phone.CONTENT_TYPE,
-            )
+            repository.searchContacts(TEST_CONTACT_PHONE_1.take(4), ContactsQueryMode.PhonesOnly)
         assertPhoneContactPresent(result, TEST_CONTACT_NAME, TEST_CONTACT_PHONE_1)
 
         // Search by name
-        result =
-            repository.searchContacts(
-                TEST_CONTACT_NAME.substring(0, 4),
-                Intent.ACTION_PICK,
-                Phone.CONTENT_TYPE,
-            )
+        result = repository.searchContacts(TEST_CONTACT_NAME.take(4), ContactsQueryMode.PhonesOnly)
         assertContactNamePresent(result, TEST_CONTACT_NAME)
     }
 
@@ -166,11 +144,7 @@ class ContactsRepositoryIntegrationTest {
     fun searchContacts_displayNameMode_findsByName() = runTest {
         insertContact(TEST_CONTACT_NAME)
         val result =
-            repository.searchContacts(
-                TEST_CONTACT_NAME,
-                Intent.ACTION_PICK,
-                ContactsContract.Contacts.CONTENT_TYPE,
-            )
+            repository.searchContacts(TEST_CONTACT_NAME, ContactsQueryMode.DisplayNamesOnly)
         assertContactNamePresent(result, TEST_CONTACT_NAME)
     }
 
@@ -178,11 +152,7 @@ class ContactsRepositoryIntegrationTest {
     fun searchContacts_displayNameMode_findByPrefix() = runTest {
         insertContact(TEST_CONTACT_NAME)
         val result =
-            repository.searchContacts(
-                TEST_CONTACT_NAME.substring(0, 4),
-                Intent.ACTION_PICK,
-                ContactsContract.Contacts.CONTENT_TYPE,
-            )
+            repository.searchContacts(TEST_CONTACT_NAME.take(4), ContactsQueryMode.DisplayNamesOnly)
         assertContactNamePresent(result, TEST_CONTACT_NAME)
     }
 
@@ -192,11 +162,7 @@ class ContactsRepositoryIntegrationTest {
 
         // Search by email
         val result =
-            repository.searchContacts(
-                TEST_CONTACT_EMAIL_1,
-                Intent.ACTION_PICK,
-                ContactsContract.Contacts.CONTENT_TYPE,
-            )
+            repository.searchContacts(TEST_CONTACT_EMAIL_1, ContactsQueryMode.DisplayNamesOnly)
         assertContactNamePresent(result, TEST_CONTACT_NAME)
     }
 
@@ -206,11 +172,7 @@ class ContactsRepositoryIntegrationTest {
 
         // Search by phone
         val result =
-            repository.searchContacts(
-                TEST_CONTACT_PHONE_1,
-                Intent.ACTION_PICK,
-                ContactsContract.Contacts.CONTENT_TYPE,
-            )
+            repository.searchContacts(TEST_CONTACT_PHONE_1, ContactsQueryMode.DisplayNamesOnly)
         assertContactNamePresent(result, TEST_CONTACT_NAME)
     }
 
@@ -222,18 +184,15 @@ class ContactsRepositoryIntegrationTest {
         )
 
         // Search by first email
-        var result =
-            repository.searchContacts(TEST_CONTACT_EMAIL_1, Intent.ACTION_PICK, Email.CONTENT_TYPE)
+        var result = repository.searchContacts(TEST_CONTACT_EMAIL_1, ContactsQueryMode.EmailsOnly)
         assertEmailContactPresent(result, TEST_CONTACT_NAME, TEST_CONTACT_EMAIL_1)
 
         // Search by second email
-        result =
-            repository.searchContacts(TEST_CONTACT_EMAIL_2, Intent.ACTION_PICK, Email.CONTENT_TYPE)
+        result = repository.searchContacts(TEST_CONTACT_EMAIL_2, ContactsQueryMode.EmailsOnly)
         assertEmailContactPresent(result, TEST_CONTACT_NAME, TEST_CONTACT_EMAIL_2)
 
         // Search by name
-        result =
-            repository.searchContacts(TEST_CONTACT_NAME, Intent.ACTION_PICK, Email.CONTENT_TYPE)
+        result = repository.searchContacts(TEST_CONTACT_NAME, ContactsQueryMode.EmailsOnly)
         assertContactNamePresent(result, TEST_CONTACT_NAME)
         assertThat(result).hasSize(2)
         assertThat(
@@ -258,18 +217,15 @@ class ContactsRepositoryIntegrationTest {
         )
 
         // Search by first phone
-        var result =
-            repository.searchContacts(TEST_CONTACT_PHONE_1, Intent.ACTION_PICK, Phone.CONTENT_TYPE)
+        var result = repository.searchContacts(TEST_CONTACT_PHONE_1, ContactsQueryMode.PhonesOnly)
         assertPhoneContactPresent(result, TEST_CONTACT_NAME, TEST_CONTACT_PHONE_1)
 
         // Search by second phone
-        result =
-            repository.searchContacts(TEST_CONTACT_PHONE_2, Intent.ACTION_PICK, Phone.CONTENT_TYPE)
+        result = repository.searchContacts(TEST_CONTACT_PHONE_2, ContactsQueryMode.PhonesOnly)
         assertPhoneContactPresent(result, TEST_CONTACT_NAME, TEST_CONTACT_PHONE_2)
 
         // Search by name
-        result =
-            repository.searchContacts(TEST_CONTACT_NAME, Intent.ACTION_PICK, Phone.CONTENT_TYPE)
+        result = repository.searchContacts(TEST_CONTACT_NAME, ContactsQueryMode.PhonesOnly)
         assertContactNamePresent(result, TEST_CONTACT_NAME)
         assertThat(result).hasSize(2)
         assertThat(
@@ -289,14 +245,14 @@ class ContactsRepositoryIntegrationTest {
     @Test
     fun searchContacts_emailType_noMatch_returnsEmptyList() = runTest {
         val randomQuery = UUID.randomUUID().toString()
-        val result = repository.searchContacts(randomQuery, Intent.ACTION_PICK, Email.CONTENT_TYPE)
+        val result = repository.searchContacts(randomQuery, ContactsQueryMode.EmailsOnly)
         assertThat(result).isEmpty()
     }
 
     @Test
     fun searchContacts_phoneType_noMatch_returnsEmptyList() = runTest {
         val randomQuery = UUID.randomUUID().toString()
-        val result = repository.searchContacts(randomQuery, Intent.ACTION_PICK, Phone.CONTENT_TYPE)
+        val result = repository.searchContacts(randomQuery, ContactsQueryMode.PhonesOnly)
         assertThat(result).isEmpty()
     }
 
