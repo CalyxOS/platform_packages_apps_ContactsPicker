@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"પાછળ"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"વધુ વિગતો"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"જ્યારે તમે કોઈ સંપર્ક પસંદ કરો, ત્યારે %1$s પાસે તમારા ડિવાઇસમાં સાચવેલા સંપર્કોની નીચેની માહિતીનો ઍક્સેસ રહેશે.\n\nજો તમે સંપર્ક માહિતીમાં કોઈ અપડેટ કરો, તો %1$s પાસે ફેરફારોનો ઍક્સેસ રહેશે નહીં."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"સંપર્ક માહિતીમાં આના જેવી વિગતો શામેલ હોઈ શકે છે:"</string>
