@@ -17,9 +17,9 @@
 
 # Script to generate build signature with date and nonce
 
-# Ensure we are in the root of the repo to run this
-
-OUTPUT_DIR="packages/apps/ContactsPicker/tests/democlientapps/lib/res/raw"
+# Get the directory of this script to allow it to be run from any location
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+OUTPUT_DIR="$SCRIPT_DIR/lib/res/raw"
 
 # Create directory if it doesn't exist
 mkdir -p "$OUTPUT_DIR"
