@@ -55,6 +55,7 @@ import com.android.contactspicker.inject.ActivityModule
 import com.android.contactspicker.inject.AppModule
 import com.android.contactspicker.provider.CallingPackageProvider
 import com.android.contactspicker.room.dao.PrivacyBannerShownDao
+import com.android.contactspicker.ui.components.BOTTOM_SHEET_TEST_TAG
 import com.android.contactspicker.viewmodel.ContactsViewModel
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.BindValue
@@ -79,8 +80,6 @@ import org.mockito.kotlin.doNothing
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
-
-private const val BOTTOM_SHEET_TEST_TAG = "bottom_sheet"
 
 @RunWith(AndroidJUnit4::class)
 @UninstallModules(AppModule::class, ActivityModule::class)
