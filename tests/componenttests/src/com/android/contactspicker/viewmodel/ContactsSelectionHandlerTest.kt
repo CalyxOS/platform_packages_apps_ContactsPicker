@@ -19,18 +19,22 @@ package com.android.contactspicker.viewmodel
 import android.content.ContentUris
 import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
+import android.platform.test.flag.junit.CheckFlagsRule
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import android.provider.ContactsContract
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.data.model.totalElementCount
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
 @RunWith(AndroidJUnit4::class)
 class ContactsSelectionHandlerTest {
+    @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
     private lateinit var handler: ContactsSelectionHandler
     private val emittedEvents = mutableListOf<SnackbarEvent>()

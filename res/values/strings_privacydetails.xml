@@ -18,7 +18,7 @@
  -->
 <resources>
     <!-- Header text for the privacy details top bar -->
-    <string name="privacy_details_top_bar_header">More details</string>
+    <string name="privacy_details_top_bar_header">Your contacts\' privacy</string>
 
     <!--
       Description text on the privacy details screen, explaining what contact

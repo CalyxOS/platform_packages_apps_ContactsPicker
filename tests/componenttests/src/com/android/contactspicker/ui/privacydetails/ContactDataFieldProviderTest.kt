@@ -15,15 +15,22 @@
  */
 package com.android.contactspicker.ui.privacydetails
 
+import android.content.flags.Flags
+import android.platform.test.annotations.RequiresFlagsEnabled
+import android.platform.test.flag.junit.CheckFlagsRule
+import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import android.provider.ContactsContract
 import com.android.contactspicker.R
 import com.google.common.truth.Truth.assertThat
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
 @RunWith(JUnit4::class)
 class ContactDataFieldProviderTest {
+    @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
     @Test
     fun getContactDataFieldItems_includesNameAndPreferencesItems() {
