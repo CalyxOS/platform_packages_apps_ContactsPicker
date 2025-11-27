@@ -20,7 +20,6 @@ import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.data.model.Contact
@@ -40,7 +39,7 @@ fun ContactsPickerNavHost(
     modifier: Modifier = Modifier,
     onBackFromPreview: () -> Unit,
 ) {
-    NavHost(
+    AnimatedNavHost(
         navController = navController,
         startDestination = ContactsPickerRoute.route,
         modifier = modifier,
