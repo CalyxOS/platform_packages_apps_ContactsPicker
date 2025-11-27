@@ -39,6 +39,8 @@ import androidx.compose.ui.unit.dp
 import com.android.contactspicker.R
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.ContactsSelection
+import com.android.contactspicker.ui.pickerscreen.SectionKey.IconKey
+import com.android.contactspicker.ui.pickerscreen.SectionKey.LetterKey
 
 const val CONTACTS_LIST_TEST_TAG = "contacts_list"
 
@@ -75,14 +77,7 @@ fun ContactsPickerBody(
     val groupedContacts =
         remember(contacts) {
             // TODO(b/436818961): consider moving the grouping logic to the view models
-            contacts.groupBy {
-                val firstChar = it.displayName.firstOrNull()
-                if (firstChar?.isLetter() == true) {
-                    SectionKey.LetterKey(firstChar.uppercaseChar())
-                } else {
-                    SectionKey.IconKey(Icons.Default.Mood, emojiHeaderContentDesc)
-                }
-            }
+            contacts.groupBy { it.getSectionKey(emojiHeaderContentDesc) }
         }
 
     val favoriteContacts = remember(contacts) { contacts.filter { it.isFavorite } }
@@ -112,9 +107,8 @@ fun ContactsPickerBody(
         groupedContacts.forEach { (sectionKey, contactsInGroup) ->
             stickyHeader(key = "header_$sectionKey") {
                 when (sectionKey) {
-                    is SectionKey.LetterKey -> SectionHeader(sectionKey.letter)
-                    is SectionKey.IconKey ->
-                        SectionHeader(sectionKey.icon, sectionKey.contentDescription)
+                    is LetterKey -> SectionHeader(sectionKey.letter)
+                    is IconKey -> SectionHeader(sectionKey.icon, sectionKey.contentDescription)
                 }
             }
             val groupSize = contactsInGroup.size
@@ -200,6 +194,21 @@ private fun LazyListScope.favoritesSection(
                 )
             }
         }
+    }
+}
+
+/**
+ * Returns the SectionKey for this contact, to be used for grouping in the UI.
+ *
+ * @param nonLetterSectionContentDescription Content description for the icon used for non-letter
+ *   sections.
+ */
+private fun Contact.getSectionKey(nonLetterSectionContentDescription: String): SectionKey {
+    val initial = getDisplayNameInitialLetter()
+    return if (initial != null) {
+        LetterKey(initial)
+    } else {
+        IconKey(Icons.Default.Mood, nonLetterSectionContentDescription)
     }
 }
 

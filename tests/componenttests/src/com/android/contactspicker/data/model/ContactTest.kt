@@ -149,4 +149,49 @@ class ContactTest {
         // All email contacts are selected
         assertThat(emailContact.isFullySelected(emailContact.emails.map { it.id }.toSet())).isTrue()
     }
+
+    @Test
+    fun getDisplayNameInitialLetter_startsWithCapitalLetter() {
+        assertThat(
+                ContactTestDataFactory.createDisplayNameContact(1, "Alice")
+                    .getDisplayNameInitialLetter()
+            )
+            .isEqualTo('A')
+    }
+
+    @Test
+    fun getDisplayNameInitialLetter_startsWithLowercaseLetter() {
+        assertThat(
+                ContactTestDataFactory.createDisplayNameContact(123, ("bob"))
+                    .getDisplayNameInitialLetter()
+            )
+            .isEqualTo('B')
+    }
+
+    @Test
+    fun getDisplayNameInitialLetter_startsWithNumber() {
+        assertThat(
+                ContactTestDataFactory.createDisplayNameContact(123, "123 Contact")
+                    .getDisplayNameInitialLetter()
+            )
+            .isNull()
+    }
+
+    @Test
+    fun getDisplayNameInitialLetter_startsWithSymbol() {
+        assertThat(
+                ContactTestDataFactory.createDisplayNameContact(1, "#hashtag")
+                    .getDisplayNameInitialLetter()
+            )
+            .isNull()
+    }
+
+    @Test
+    fun getDisplayNameInitialLetter_startsWithEmoji() {
+        assertThat(
+                ContactTestDataFactory.createDisplayNameContact(1, "😊")
+                    .getDisplayNameInitialLetter()
+            )
+            .isNull()
+    }
 }

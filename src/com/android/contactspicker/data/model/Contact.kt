@@ -51,6 +51,19 @@ sealed class Contact {
                 is EmailContact -> selectedEntries.size == emails.size
                 is PhoneContact -> selectedEntries.size == phones.size
             }
+
+    /**
+     * Returns the uppercase initial of the display name if it starts with a letter, otherwise null.
+     */
+    fun getDisplayNameInitialLetter(): Char? {
+        val firstChar = displayName.firstOrNull()
+        return if (firstChar?.isLetter() == true) {
+            firstChar.uppercaseChar()
+        } else {
+            // TODO(b/462037670): improve grouping of non-letter characters
+            null
+        }
+    }
 }
 
 /**
