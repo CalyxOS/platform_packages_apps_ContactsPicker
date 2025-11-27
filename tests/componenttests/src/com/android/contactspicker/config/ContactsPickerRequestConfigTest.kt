@@ -200,7 +200,7 @@ class ContactsPickerRequestConfigTest {
             )
 
         assertThat(config.pickerAction).isEqualTo(ContactsPickerAction.ACTION_PICK_CONTACTS)
-        assertThat(config.queryMode).isEqualTo(ContactsQueryMode.Custom(mimeTypes))
+        assertThat(config.queryMode).isEqualTo(ContactsQueryMode.Custom(mimeTypes, false))
         assertThat(config.requestedMimeTypes).isEqualTo(mimeTypes)
     }
 
@@ -223,7 +223,33 @@ class ContactsPickerRequestConfigTest {
                 intentExtras = extras,
             )
 
-        assertThat(config.queryMode).isEqualTo(ContactsQueryMode.Custom(mimeTypes))
+        assertThat(config.queryMode).isEqualTo(ContactsQueryMode.Custom(mimeTypes, false))
+    }
+
+    @Test
+    fun create_actionPickContacts_matchAllRequestedMimeTypes_true() {
+        val mimeTypes = ArrayList(listOf(Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE))
+        val extras =
+            Bundle().apply {
+                putStringArrayList(
+                    ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_REQUESTED_DATA_FIELDS,
+                    mimeTypes,
+                )
+                putBoolean(
+                    ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_MATCH_ALL_DATA_FIELDS,
+                    true,
+                )
+            }
+
+        val config =
+            ContactsPickerRequestConfig.create(
+                intentAction = ContactsPickerSessionContract.ACTION_PICK_CONTACTS,
+                intentType = null,
+                intentExtras = extras,
+            )
+
+        assertThat(config.matchAllRequestedMimeTypes).isTrue()
+        assertThat(config.queryMode).isEqualTo(ContactsQueryMode.Custom(mimeTypes, true))
     }
 
     @Test
@@ -299,5 +325,27 @@ class ContactsPickerRequestConfigTest {
                 intentExtras = extras,
             )
         }
+    }
+
+    @Test
+    fun create_actionPickContacts_matchAllRequestedMimeTypes_defaultFalse() {
+        val mimeTypes = ArrayList(listOf(Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE))
+        val extras =
+            Bundle().apply {
+                putStringArrayList(
+                    ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_REQUESTED_DATA_FIELDS,
+                    mimeTypes,
+                )
+            }
+
+        val config =
+            ContactsPickerRequestConfig.create(
+                intentAction = ContactsPickerSessionContract.ACTION_PICK_CONTACTS,
+                intentType = null,
+                intentExtras = extras,
+            )
+
+        assertThat(config.matchAllRequestedMimeTypes).isFalse()
+        assertThat(config.queryMode).isEqualTo(ContactsQueryMode.Custom(mimeTypes, false))
     }
 }
