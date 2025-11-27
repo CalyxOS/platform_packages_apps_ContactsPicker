@@ -37,7 +37,13 @@ import androidx.compose.ui.unit.dp
 import com.android.contactspicker.R
 
 @Composable
-fun TitleTopBar(onBackPressed: () -> Unit, title: String, modifier: Modifier = Modifier) {
+fun TitleTopBar(
+    onBackPressed: () -> Unit,
+    title: String,
+    backIconDescription: String? =
+        stringResource(id = R.string.title_top_bar_back_button_content_description),
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -55,8 +61,7 @@ fun TitleTopBar(onBackPressed: () -> Unit, title: String, modifier: Modifier = M
             Icon(
                 modifier = Modifier.size(24.dp),
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription =
-                    stringResource(id = R.string.title_top_bar_back_button_content_description),
+                contentDescription = backIconDescription,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
