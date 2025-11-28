@@ -74,8 +74,6 @@ fun ContactsPickerScreen(
                 onShowPrivacyDetailsClick = onNavigateToPrivacyDetails,
             )
 
-            // TODO(b/449172596): Handle dismissal logic of privacy banner
-
             if (uiStateValue is ContactsListState) {
                 ContactsListContent(
                     uiState = uiStateValue,
