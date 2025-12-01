@@ -18,9 +18,13 @@ package com.android.contactspicker.ui.pickerscreen
 
 import android.content.Context
 import android.content.flags.Flags
+import android.icu.text.MessageFormat
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasAnyDescendant
 import androidx.compose.ui.test.hasTestTag
@@ -39,6 +43,7 @@ import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.ui.components.AVATAR_TEST_TAG
 import com.google.common.truth.Truth.assertThat
+import java.util.Locale
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -103,15 +108,10 @@ class ContactItemTest {
         val testMultiEmailContact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT
         createContactItemWithEmptySelection(testMultiEmailContact)
 
+        val totalCountMessage =
+            totalCountMessage(R.string.contact_item_emails_count, testMultiEmailContact.emails.size)
         composeTestRule.onNodeWithText(testMultiEmailContact.displayName).assertIsDisplayed()
-        composeTestRule
-            .onNodeWithText(
-                context.getString(
-                    R.string.contact_item_emails_count,
-                    testMultiEmailContact.emails.size,
-                )
-            )
-            .assertIsDisplayed()
+        composeTestRule.onNodeWithText(totalCountMessage).assertIsDisplayed()
         composeTestRule
             .onNodeWithContentDescription(
                 context.getString(R.string.contact_item_expand_button_content_description)
@@ -127,19 +127,37 @@ class ContactItemTest {
     }
 
     @Test
+    fun contactItem_withMultipleEmails_partialSelection_showsSelectedCount() {
+        val testMultiEmailContact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT
+        val totalCount = testMultiEmailContact.emails.size
+        // Select only the first email
+        val selectedEntries = setOf(testMultiEmailContact.emails.first().id)
+
+        createContactItem(testMultiEmailContact, selectedEntries)
+
+        val selectedCountMessage =
+            selectedCountMessage(
+                R.string.contact_item_emails_selected_count,
+                totalCount,
+                selectedEntries.size,
+            )
+        composeTestRule.onNodeWithText(selectedCountMessage).assertIsDisplayed()
+
+        // The total count string is not be displayed
+        val totalCountMessage = totalCountMessage(R.string.contact_item_emails_count, totalCount)
+        composeTestRule.onNodeWithText(totalCountMessage).assertDoesNotExist()
+    }
+
+    @Test
     fun contactItem_withMultiplePhones_showsPhoneCountAndIsExpandable() {
         val testMultiPhoneContact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT
         createContactItemWithEmptySelection(testMultiPhoneContact)
 
+        val totalCountMessage =
+            totalCountMessage(R.string.contact_item_phones_count, testMultiPhoneContact.phones.size)
+
         composeTestRule.onNodeWithText(testMultiPhoneContact.displayName).assertIsDisplayed()
-        composeTestRule
-            .onNodeWithText(
-                context.getString(
-                    R.string.contact_item_phones_count,
-                    testMultiPhoneContact.phones.size,
-                )
-            )
-            .assertIsDisplayed()
+        composeTestRule.onNodeWithText(totalCountMessage).assertIsDisplayed()
         composeTestRule
             .onNodeWithContentDescription(
                 context.getString(R.string.contact_item_expand_button_content_description)
@@ -151,6 +169,31 @@ class ContactItemTest {
             .assertDoesNotExist()
         composeTestRule
             .onNodeWithText(testMultiPhoneContact.phones.last().number)
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun contactItem_withMultiplePhones_partialSelection_showsSelectedCount() {
+        val testMultiPhoneContact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT
+        val totalCount = testMultiPhoneContact.phones.size
+        // Select only the first phone
+        val selectedEntries = setOf(testMultiPhoneContact.phones.first().id)
+
+        createContactItem(testMultiPhoneContact, selectedEntries)
+
+        val selectedCountMessage =
+            selectedCountMessage(
+                R.string.contact_item_phones_selected_count,
+                testMultiPhoneContact.phones.size,
+                selectedEntries.size,
+            )
+
+        // Shows "1 of X phone numbers"
+        composeTestRule.onNodeWithText(selectedCountMessage).assertIsDisplayed()
+
+        // The total count string is not displayed
+        composeTestRule
+            .onNodeWithText(totalCountMessage(R.string.contact_item_phones_count, totalCount))
             .assertDoesNotExist()
     }
 
@@ -237,13 +280,13 @@ class ContactItemTest {
     }
 
     @Test
-    fun selectableAvatar_showsInitial_whenPartiallySelected() {
+    fun selectableAvatar_showsCheckmark_whenPartiallySelected() {
         val testMultiEmailContact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT
         // Select only the first email
         val selectedEntries = setOf(testMultiEmailContact.emails.first().id)
         createContactItem(testMultiEmailContact, selectedEntries)
 
-        // Checkmark should NOT be displayed
+        // Checkmark is displayed
         composeTestRule
             .onNodeWithContentDescription(
                 context.getString(
@@ -251,16 +294,78 @@ class ContactItemTest {
                     testMultiEmailContact.displayName,
                 )
             )
-            .assertDoesNotExist()
+            .assertIsDisplayed()
 
-        // Avatar with initial should be displayed instead
+        // Avatar with initial is not displayed instead
         val initial = testMultiEmailContact.displayName.first()
         composeTestRule
             .onNode(
                 hasTestTag(AVATAR_TEST_TAG) and hasAnyDescendant(hasText(initial.toString())),
                 useUnmergedTree = true,
             )
-            .assertIsDisplayed()
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun expandedEntry_inMultiSelectMode_showsCheckbox() {
+        val testMultiEmailContact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT
+        composeTestRule.setContent {
+            ContactItem(
+                contact = testMultiEmailContact,
+                position = ItemPosition.ONLY,
+                selectedEntries = emptySet(),
+                isMultiSelectEnabled = true,
+                isSearchMode = false,
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
+            )
+        }
+
+        // Expand
+        composeTestRule.onNodeWithText(testMultiEmailContact.displayName).performClick()
+
+        // Verify the expanded entry has Checkbox role
+        composeTestRule
+            .onNodeWithText(testMultiEmailContact.emails.first().address)
+            .assert(
+                hasAnyDescendant(
+                    SemanticsMatcher.expectValue(
+                        androidx.compose.ui.semantics.SemanticsProperties.Role,
+                        Role.Checkbox,
+                    )
+                )
+            )
+    }
+
+    @Test
+    fun expandedEntry_inSingleSelectMode_showsRadioButton() {
+        val testMultiEmailContact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT
+        composeTestRule.setContent {
+            ContactItem(
+                contact = testMultiEmailContact,
+                position = ItemPosition.ONLY,
+                selectedEntries = emptySet(),
+                isMultiSelectEnabled = false,
+                isSearchMode = false,
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
+            )
+        }
+
+        // Expand
+        composeTestRule.onNodeWithText(testMultiEmailContact.displayName).performClick()
+
+        // Verify the expanded entry has RadioButton role
+        composeTestRule
+            .onNodeWithText(testMultiEmailContact.emails.first().address)
+            .assert(
+                hasAnyDescendant(
+                    SemanticsMatcher.expectValue(
+                        androidx.compose.ui.semantics.SemanticsProperties.Role,
+                        Role.RadioButton,
+                    )
+                )
+            )
     }
 
     @Test
@@ -677,5 +782,26 @@ class ContactItemTest {
                 onToggleEntrySelection = { _, _ -> },
             )
         }
+    }
+
+    /**
+     * Helper function to create the selected count message displayed as the secondary text on
+     * multi-entry contacts when at least one entry is selected. Ex: "1 of 2 emails selected"
+     */
+    private fun selectedCountMessage(resourceId: Int, totalCount: Int, selectedCount: Int): String {
+        val msgFormat = MessageFormat(context.getString(resourceId), Locale.getDefault())
+        val args = mapOf(Pair("total_count", totalCount), Pair("selected_count", selectedCount))
+
+        return msgFormat.format(args)
+    }
+
+    /**
+     * Helper function to create the total count message displayed as the secondary text on
+     * multi-entry contacts when no entries are selected. Ex: "2 emails"
+     */
+    private fun totalCountMessage(resourceId: Int, totalCount: Int): String {
+        val msgFormat = MessageFormat(context.getString(resourceId), Locale.getDefault())
+        val args = mapOf(Pair("count", totalCount))
+        return msgFormat.format(args)
     }
 }

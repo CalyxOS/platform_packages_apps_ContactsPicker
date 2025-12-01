@@ -71,6 +71,8 @@ private fun Sdk37Screen(targetSdk: Int) {
     var allowMultiple by remember { mutableStateOf(false) }
     var intentType by remember { mutableStateOf(Sdk37IntentType.NEW_ACTION_PICK_CONTACTS) }
     var selectedMimeTypes by remember { mutableStateOf(setOf(MimeType.EMAIL)) }
+    var overrideSelectionLimit by remember { mutableStateOf(false) }
+    var selectionLimit by remember { mutableStateOf(0) }
     val context = LocalContext.current
 
     val pickerLauncher =
@@ -110,17 +112,35 @@ private fun Sdk37Screen(targetSdk: Int) {
         }
         Spacer(modifier = Modifier.height(20.dp))
 
-        CommonOptions(allowMultiple) { allowMultiple = it }
+        CommonOptions(
+            allowMultiple = allowMultiple,
+            onAllowMultipleChange = { allowMultiple = it },
+            overrideSelectionLimit = overrideSelectionLimit,
+            onOverrideSelectionLimitChange = { overrideSelectionLimit = it },
+            selectionLimit = selectionLimit,
+            onSelectionLimitChange = { selectionLimit = it },
+        )
         Spacer(modifier = Modifier.height(24.dp))
 
         LaunchPickerButton {
             val intent =
                 when (intentType) {
                     Sdk37IntentType.LEGACY_ACTION_PICK ->
-                        buildLegacyPickerIntent(legacyConfig, allowMultiple)
+                        buildLegacyPickerIntent(
+                            legacyConfig,
+                            allowMultiple,
+                            overrideSelectionLimit = overrideSelectionLimit,
+                            selectionLimit = selectionLimit,
+                        )
 
                     Sdk37IntentType.NEW_ACTION_PICK_CONTACTS ->
-                        buildActionPickContactsIntent(selectedMimeTypes, allowMultiple, context)
+                        buildActionPickContactsIntent(
+                            context,
+                            selectedMimeTypes,
+                            allowMultiple,
+                            overrideSelectionLimit,
+                            selectionLimit,
+                        )
                 }
             intent?.let {
                 try {

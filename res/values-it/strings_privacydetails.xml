@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"Indietro"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"Altri dettagli"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Se selezioni un contatto, %1$s avrà accesso alle seguenti informazioni dai contatti sul tuo dispositivo.\n\nSe apporti aggiornamenti ai dati di contatto, %1$s non avrà accesso alle modifiche."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"I dati di contatto possono includere dettagli come:"</string>

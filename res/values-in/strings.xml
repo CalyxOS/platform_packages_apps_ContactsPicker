@@ -26,6 +26,7 @@
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"Telusuri"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"Hapus teks penelusuran"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"Tutup penelusuran"</string>
+    <string name="contacts_picker_top_bar_more_options_content_description" msgid="6586161048394547875">"Opsi Lainnya"</string>
     <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"Favorit"</string>
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"Ikon bintang"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"Ikon senyum"</string>
@@ -43,14 +44,13 @@
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s dipilih"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Batalkan pilihan"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"Pratinjau"</string>
-    <!-- no translation found for selection_bottom_bar_back_button_label (6447375742968584743) -->
-    <skip />
+    <string name="selection_bottom_bar_back_button_label" msgid="6447375742968584743">"Kembali"</string>
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"Selesai"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s hanya akan memiliki akses ke info dari kontak yang Anda pilih"</string>
     <string name="privacy_banner_more_details" msgid="1028945565826552764">"Detail Selengkapnya"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"Tutup"</string>
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"Kembali"</string>
-    <!-- no translation found for preview_screen_title (2852036336424026274) -->
-    <skip />
+    <string name="preview_screen_title" msgid="2852036336424026274">"Pratinjau"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"Aplikasi ini"</string>
+    <string name="privacy_details_menu_label" msgid="497348969731766203">"Privasi kontak Anda"</string>
 </resources>

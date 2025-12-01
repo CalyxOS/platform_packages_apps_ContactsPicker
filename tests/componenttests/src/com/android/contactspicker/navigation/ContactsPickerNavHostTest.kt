@@ -20,7 +20,6 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import androidx.collection.longObjectMapOf
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.assertIsDisplayed
@@ -36,6 +35,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
+import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.ui.pickerscreen.CONTACTS_PICKER_SCREEN_TEST_TAG
 import com.android.contactspicker.ui.privacydetails.PRIVACY_DETAILS_SCREEN_BODY_TEST_TAG
 import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
@@ -71,7 +71,7 @@ class ContactsPickerNavHostTest {
             mutableStateOf(
                 ContactsListState.Success(
                     availableContacts = emptyList(),
-                    selectedContacts = longObjectMapOf(),
+                    selectedContacts = emptyContactsSelection(),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
                     showPrivacyBanner = true,
@@ -92,7 +92,7 @@ class ContactsPickerNavHostTest {
             mutableStateOf(
                 ContactsListState.Success(
                     availableContacts = emptyList(),
-                    selectedContacts = longObjectMapOf(),
+                    selectedContacts = emptyContactsSelection(),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
                     showPrivacyBanner = true,

@@ -28,13 +28,21 @@ enum class MimeType(val label: String, val mimeTypeString: String) {
 }
 
 internal fun buildActionPickContactsIntent(
+    context: Context,
     selectedMimeTypes: Set<MimeType>,
     allowMultiple: Boolean,
-    context: Context,
+    overrideSelectionLimit: Boolean,
+    selectionLimit: Int,
 ): Intent? {
     val intent = Intent(ContactsPickerSessionContract.ACTION_PICK_CONTACTS)
     intent.type = ContactsContract.Contacts.CONTENT_TYPE
     intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, allowMultiple)
+    if (overrideSelectionLimit) {
+        intent.putExtra(
+            ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_SELECTION_LIMIT,
+            selectionLimit,
+        )
+    }
 
     val requestedDataFields = ArrayList(selectedMimeTypes.map { it.mimeTypeString })
     if (requestedDataFields.isEmpty()) {

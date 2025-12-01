@@ -19,14 +19,14 @@ import android.content.ContentUris
 import android.net.Uri
 import android.provider.ContactsContract
 import android.util.Log
-import androidx.collection.LongObjectMap
-import androidx.collection.buildLongObjectMap
-import androidx.collection.longObjectMapOf
 import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.ContactsSelection
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.PhoneContact
-import com.android.contactspicker.util.totalElementCount
+import com.android.contactspicker.data.model.buildContactsSelection
+import com.android.contactspicker.data.model.emptyContactsSelection
+import com.android.contactspicker.data.model.totalElementCount
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -55,12 +55,12 @@ constructor(
         ): ContactsSelectionHandler
     }
 
-    private val _selectedContacts = MutableStateFlow<LongObjectMap<Set<Long>>>(longObjectMapOf())
-    val selectedContacts: StateFlow<LongObjectMap<Set<Long>>> = _selectedContacts.asStateFlow()
+    private val _selectedContacts = MutableStateFlow<ContactsSelection>(emptyContactsSelection())
+    val selectedContacts: StateFlow<ContactsSelection> = _selectedContacts.asStateFlow()
 
     /** Clears all currently selected contacts. */
     fun clearSelection() {
-        _selectedContacts.value = longObjectMapOf()
+        _selectedContacts.value = emptyContactsSelection()
     }
 
     /**
@@ -86,7 +86,7 @@ constructor(
                 }
             }
 
-            buildLongObjectMap {
+            buildContactsSelection {
                 if (isMultiSelectEnabled) {
                     putAll(currentSelection)
                     if (isAlreadyFullySelected) {
@@ -128,7 +128,7 @@ constructor(
                 return@update currentSelection
             }
 
-            buildLongObjectMap {
+            buildContactsSelection {
                 if (isMultiSelectEnabled) {
                     putAll(currentSelection)
                     if (!isEntryAlreadySelected) {

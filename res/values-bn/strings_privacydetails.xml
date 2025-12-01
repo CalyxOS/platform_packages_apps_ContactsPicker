@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"ফিরে যান"</string>
     <string name="privacy_details_top_bar_header" msgid="316976841297378409">"আরও বিস্তারিত বিবরণ"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"আপনি কোনও পরিচিতি বেছে নিলে, আপনার ডিভাইস পরিচিতি থেকে, %1$s নিম্নলিখিত তথ্য অ্যাক্সেস করতে পারবে।\n\nআপনি পরিচিতির তথ্যে কোনও আপডেট করলে, %1$s সেই পরিবর্তন অ্যাক্সেস করে দেখতে পারবে না।"</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"পরিচিতির তথ্যে এই ধরনের বিবরণ থাকতে পারে:"</string>

@@ -16,7 +16,6 @@
 package com.android.contactspicker.ui.pickerscreen
 
 import androidx.annotation.VisibleForTesting
-import androidx.collection.LongObjectMap
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -39,6 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.R
 import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.ContactsSelection
 
 const val CONTACTS_LIST_TEST_TAG = "contacts_list"
 
@@ -66,7 +66,7 @@ fun ContactsPickerBody(
     showPrivacyBanner: Boolean,
     onPrivacyBannerMoreDetails: () -> Unit,
     onPrivacyBannerDismissRequest: () -> Unit,
-    selectedContacts: LongObjectMap<Set<Long>>,
+    selectedContacts: ContactsSelection,
     isMultiSelectEnabled: Boolean,
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (contactId: Long, entryId: Long) -> Unit,
@@ -161,7 +161,7 @@ private fun itemPosition(index: Int, groupSize: Int): ItemPosition {
 /** A helper function to display the "Favorites" section in the LazyColumn. */
 private fun LazyListScope.favoritesSection(
     favoriteContacts: List<Contact>,
-    selectedContacts: LongObjectMap<Set<Long>>,
+    selectedContacts: ContactsSelection,
     isMultiSelectEnabled: Boolean,
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (contactId: Long, entryId: Long) -> Unit,

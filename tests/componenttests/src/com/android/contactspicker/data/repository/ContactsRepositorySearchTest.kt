@@ -17,7 +17,6 @@
 package com.android.contactspicker.data.repository
 
 import android.content.Context
-import android.content.Intent
 import android.content.flags.Flags
 import android.content.pm.ProviderInfo
 import android.database.MatrixCursor
@@ -30,10 +29,10 @@ import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.test.mock.MockContentResolver
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.contactspicker.config.ContactsQueryMode
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.fakes.FakeContentProvider
 import com.google.common.truth.Truth.assertThat
-import kotlin.test.assertFailsWith
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -81,7 +80,7 @@ class ContactsRepositorySearchTest {
         val filterUri = Email.CONTENT_FILTER_URI.buildUpon().appendPath(query).build()
         fakeContentProvider.setCursorForUri(filterUri, cursor)
 
-        val contacts = repository.searchContacts(query, Intent.ACTION_PICK, Email.CONTENT_TYPE)
+        val contacts = repository.searchContacts(query, ContactsQueryMode.EmailsOnly)
 
         assertThat(contacts).hasSize(1)
         val contact = contacts.first() as com.android.contactspicker.data.model.EmailContact
@@ -111,7 +110,7 @@ class ContactsRepositorySearchTest {
         val filterUri = Phone.CONTENT_FILTER_URI.buildUpon().appendPath(query).build()
         fakeContentProvider.setCursorForUri(filterUri, cursor)
 
-        val contacts = repository.searchContacts(query, Intent.ACTION_PICK, Phone.CONTENT_TYPE)
+        val contacts = repository.searchContacts(query, ContactsQueryMode.PhonesOnly)
 
         assertThat(contacts).hasSize(1)
         val contact = contacts.first() as com.android.contactspicker.data.model.PhoneContact
@@ -141,12 +140,7 @@ class ContactsRepositorySearchTest {
             ContactsContract.Contacts.CONTENT_FILTER_URI.buildUpon().appendPath(query).build()
         fakeContentProvider.setCursorForUri(filterUri, cursor)
 
-        val contacts =
-            repository.searchContacts(
-                query,
-                Intent.ACTION_PICK,
-                ContactsContract.Contacts.CONTENT_TYPE,
-            )
+        val contacts = repository.searchContacts(query, ContactsQueryMode.DisplayNamesOnly)
 
         assertThat(contacts).hasSize(1)
         val contact = contacts.first() as DisplayNameContact
@@ -157,13 +151,13 @@ class ContactsRepositorySearchTest {
 
     @Test
     fun searchContacts_emptyQuery_returnsEmptyList() = runTest {
-        val contacts = repository.searchContacts("", Intent.ACTION_PICK, Phone.CONTENT_TYPE)
+        val contacts = repository.searchContacts("", ContactsQueryMode.PhonesOnly)
         assertThat(contacts).isEmpty()
     }
 
     @Test
     fun searchContacts_whitespaceQuery_returnsEmptyList() = runTest {
-        val contacts = repository.searchContacts("   ", Intent.ACTION_PICK, Email.CONTENT_TYPE)
+        val contacts = repository.searchContacts("   ", ContactsQueryMode.EmailsOnly)
         assertThat(contacts).isEmpty()
     }
 
@@ -171,27 +165,10 @@ class ContactsRepositorySearchTest {
     fun searchContacts_noMatch_returnsEmptyList() = runTest {
         val cursor = MatrixCursor(arrayOf(Phone.CONTACT_ID)) // Empty cursor
         val query = "nomatch"
-        val filterUri =
-            ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI.buildUpon()
-                .appendPath(query)
-                .build()
+        val filterUri = Phone.CONTENT_FILTER_URI.buildUpon().appendPath(query).build()
         fakeContentProvider.setCursorForUri(filterUri, cursor)
 
-        val contacts = repository.searchContacts(query, Intent.ACTION_PICK, Phone.CONTENT_TYPE)
+        val contacts = repository.searchContacts(query, ContactsQueryMode.PhonesOnly)
         assertThat(contacts).isEmpty()
-    }
-
-    @Test
-    fun searchContacts_unsupportedIntentType_throwsIllegalArgumentException() = runTest {
-        assertFailsWith<IllegalArgumentException> {
-            repository.searchContacts("test", Intent.ACTION_PICK, "unsupported/type")
-        }
-    }
-
-    @Test
-    fun searchContacts_unsupportedIntentAction_throwsIllegalArgumentException() = runTest {
-        assertFailsWith<IllegalArgumentException> {
-            repository.searchContacts("test", "unsupported_action", Email.CONTENT_TYPE)
-        }
     }
 }

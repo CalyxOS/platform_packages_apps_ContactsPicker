@@ -15,6 +15,7 @@
  */
 package com.android.contactspicker.ui.pickerscreen
 
+import android.icu.text.MessageFormat
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
@@ -39,6 +40,7 @@ import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,6 +53,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -62,6 +65,7 @@ import com.android.contactspicker.data.model.EmailEntry
 import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.model.PhoneEntry
 import com.android.contactspicker.ui.components.Avatar
+import java.util.Locale
 
 // TODO(b/450842541): move constants to a separate file
 private val CONTACT_ITEM_PADDING = 16.dp
@@ -141,22 +145,14 @@ fun ContactItem(
             }
         }
 
-    // A contact is considered "fully selected" for the avatar checkmark only when all of its
-    // entries are selected. In search mode, each item is considered fully selected.
-    val isAvatarSelected =
+    // The avatar is changed to a checkmark when any of the contact's entries are selected.
+    // In search mode, each entry is shown as a separate ContactItem, so need to know which entryId
+    // corresponds to the current ContactItem.
+    val isSelected =
         if (isSearchMode) {
             searchTargetEntryId != null && selectedEntries?.contains(searchTargetEntryId) == true
         } else {
-            contact.isFullySelected(selectedEntries)
-        }
-
-    // The background highlights if any entry is selected, or in search mode, if the specific entry
-    // is selected.
-    val showAsSelected =
-        if (isSearchMode) {
-            searchTargetEntryId != null && selectedEntries?.contains(searchTargetEntryId) == true
-        } else {
-            selectedEntries?.isNotEmpty() == true
+            contact.hasAnySelection(selectedEntries ?: emptySet())
         }
 
     val onAvatarClick: () -> Unit = {
@@ -173,9 +169,9 @@ fun ContactItem(
 
     Surface(
         color =
-            if (showAsSelected) MaterialTheme.colorScheme.surfaceDim
+            if (isSelected) MaterialTheme.colorScheme.surfaceDim
             else MaterialTheme.colorScheme.surfaceBright,
-        shape = calculateShape(position, showAsSelected),
+        shape = calculateShape(position, isSelected),
     ) {
         Column(modifier = Modifier.animateContentSize()) {
             val rowModifier =
@@ -200,7 +196,7 @@ fun ContactItem(
             ) {
                 SelectableAvatar(
                     contact = contact,
-                    isSelected = isAvatarSelected,
+                    isSelected = isSelected,
                     onClick = { onAvatarClick() },
                 )
                 Column(modifier = Modifier.weight(1f)) {
@@ -209,8 +205,9 @@ fun ContactItem(
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Medium,
                     )
-                    // Secondary text changes based on the type and count of contact entries
-                    contact.secondaryText()?.let { secondaryText ->
+                    // Secondary text changes based on the type, total count of contact entries, and
+                    // count of selected entries.
+                    contact.secondaryText(selectedEntries ?: emptySet())?.let { secondaryText ->
                         Text(
                             text = secondaryText,
                             style = MaterialTheme.typography.bodyMedium,
@@ -241,6 +238,7 @@ fun ContactItem(
                 ExpandedContact(
                     contact = contact,
                     selectedEntries = selectedEntries ?: emptySet(),
+                    isMultiSelectEnabled = isMultiSelectEnabled,
                     onToggleEntry = onToggleEntrySelection,
                 )
             }
@@ -251,21 +249,71 @@ fun ContactItem(
 /**
  * Determines the secondary text to display below the contact's name.
  *
- * Returns the phone number or email if there is only one. If there are multiple, it returns a
- * formatted count string (e.g., "2 phone numbers"). Returns null if the contact has no entries
- * (i.e., it's a [DisplayNameContact]).
+ * Returns:
+ * - null if the contact has no entries (i.e., it's a [DisplayNameContact]).
+ * - the phone number or email for single entry contacts.
+ * - for multi-entry contacts a formatted count string (e.g., "2 phone numbers") if none are
+ *   selected, or a count of selected entries (e.g., "1 of 2 selected").
  */
 @Composable
-private fun Contact.secondaryText(): String? =
-    when (this) {
+private fun Contact.secondaryText(selectedEntries: Set<Long>): String? {
+    val context = LocalContext.current
+    return when (this) {
         is DisplayNameContact -> null
-        is EmailContact ->
-            if (emails.size > 1) stringResource(R.string.contact_item_emails_count, emails.size)
-            else emails.first().address
-        is PhoneContact ->
-            if (phones.size > 1) stringResource(R.string.contact_item_phones_count, phones.size)
-            else phones.first().number
+        is EmailContact -> {
+            val totalCount = emails.size
+            val selectedCount = emails.count { selectedEntries.contains(it.id) }
+            if (totalCount > 1) {
+
+                formatMultiEntrySecondaryText(
+                    selectedCount,
+                    totalCount,
+                    context.getString(R.string.contact_item_emails_selected_count),
+                    context.getString(R.string.contact_item_emails_count),
+                )
+            } else {
+                emails.first().address
+            }
+        }
+
+        is PhoneContact -> {
+            val totalCount = phones.size
+            val selectedCount = phones.count { selectedEntries.contains(it.id) }
+            if (totalCount > 1) {
+                formatMultiEntrySecondaryText(
+                    selectedCount,
+                    totalCount,
+                    context.getString(R.string.contact_item_phones_selected_count),
+                    context.getString(R.string.contact_item_phones_count),
+                )
+            } else {
+                phones.first().number
+            }
+        }
     }
+}
+
+fun formatMultiEntrySecondaryText(
+    selectedCount: Int,
+    totalCount: Int,
+    itemsSelectedCountMessage: String,
+    noItemsSelectedCountMessage: String,
+): String? {
+    val (msgFormat, args) =
+        if (selectedCount > 0) {
+
+            Pair(
+                MessageFormat(itemsSelectedCountMessage, Locale.getDefault()),
+                mapOf(Pair("selected_count", selectedCount), Pair("total_count", totalCount)),
+            )
+        } else {
+            Pair(
+                MessageFormat(noItemsSelectedCountMessage, Locale.getDefault()),
+                mapOf(Pair("count", totalCount)),
+            )
+        }
+    return msgFormat.format(args)
+}
 
 @Composable
 private fun SelectableAvatar(contact: Contact, isSelected: Boolean, onClick: () -> Unit) {
@@ -301,6 +349,7 @@ private fun SelectableAvatar(contact: Contact, isSelected: Boolean, onClick: () 
 private fun ExpandedContact(
     contact: Contact,
     selectedEntries: Set<Long>,
+    isMultiSelectEnabled: Boolean,
     onToggleEntry: (contactId: Long, entryId: Long) -> Unit,
 ) {
     when (contact) {
@@ -309,6 +358,7 @@ private fun ExpandedContact(
                 ExpandedPhoneEntry(
                     phoneEntry = phoneEntry,
                     isChecked = selectedEntries.contains(phoneEntry.id),
+                    isMultiSelectEnabled = isMultiSelectEnabled,
                     onCheckedChange = { onToggleEntry(contact.id, phoneEntry.id) },
                 )
             }
@@ -317,6 +367,7 @@ private fun ExpandedContact(
                 ExpandedEmailEntry(
                     emailEntry = emailEntry,
                     isChecked = selectedEntries.contains(emailEntry.id),
+                    isMultiSelectEnabled = isMultiSelectEnabled,
                     onCheckedChange = { onToggleEntry(contact.id, emailEntry.id) },
                 )
             }
@@ -330,12 +381,14 @@ private fun ExpandedContact(
 private fun ExpandedPhoneEntry(
     phoneEntry: PhoneEntry,
     isChecked: Boolean,
+    isMultiSelectEnabled: Boolean,
     onCheckedChange: () -> Unit,
 ) {
     ExpandedContactEntry(
         text = phoneEntry.number,
         label = phoneEntry.label,
         isChecked = isChecked,
+        isMultiSelectEnabled = isMultiSelectEnabled,
         onCheckedChange = onCheckedChange,
     ) {
         Icon(
@@ -351,12 +404,14 @@ private fun ExpandedPhoneEntry(
 private fun ExpandedEmailEntry(
     emailEntry: EmailEntry,
     isChecked: Boolean,
+    isMultiSelectEnabled: Boolean,
     onCheckedChange: () -> Unit,
 ) {
     ExpandedContactEntry(
         text = emailEntry.address,
         label = emailEntry.label,
         isChecked = isChecked,
+        isMultiSelectEnabled = isMultiSelectEnabled,
         onCheckedChange = onCheckedChange,
     ) {
         Icon(
@@ -373,6 +428,7 @@ private fun ExpandedContactEntry(
     text: String,
     label: String?,
     isChecked: Boolean,
+    isMultiSelectEnabled: Boolean,
     onCheckedChange: () -> Unit,
     icon: @Composable () -> Unit,
 ) {
@@ -401,7 +457,32 @@ private fun ExpandedContactEntry(
                 )
             }
         }
-        Checkbox(checked = isChecked, onCheckedChange = { onCheckedChange() })
+        SelectionControl(
+            selected = isChecked,
+            isMultiSelect = isMultiSelectEnabled,
+            onValueChange = { onCheckedChange() },
+        )
+    }
+}
+
+@Composable
+private fun SelectionControl(selected: Boolean, isMultiSelect: Boolean, onValueChange: () -> Unit) {
+    if (isMultiSelect) {
+        Checkbox(checked = selected, onCheckedChange = { onValueChange() })
+    } else {
+        RadioButton(selected = selected, onClick = onValueChange)
+    }
+}
+
+/**
+ * Checks if any entry within the contact is currently selected. Used to determine whether to show
+ * the avatar with a checkmark.
+ */
+private fun Contact.hasAnySelection(selectedEntries: Set<Long>): Boolean {
+    return when (this) {
+        is PhoneContact -> phones.any { selectedEntries.contains(it.id) }
+        is EmailContact -> emails.any { selectedEntries.contains(it.id) }
+        is DisplayNameContact -> selectedEntries.contains(id)
     }
 }
 

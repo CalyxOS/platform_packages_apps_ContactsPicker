@@ -48,12 +48,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.android.democontactspickerclientapp.CommonOptions
+import com.android.democontactspickerclientapp.CommonOptionsWithSystemPickerDisabled
 import com.android.democontactspickerclientapp.LaunchPickerButton
 import com.android.democontactspickerclientapp.LegacyActionPickConfiguration
 import com.android.democontactspickerclientapp.LegacyDemoConfigState
 import com.android.democontactspickerclientapp.ResultDisplay
 import com.android.democontactspickerclientapp.ScreenTitle
 import com.android.democontactspickerclientapp.buildLegacyPickerIntent
+import com.android.democontactspickerclientapp.buildLegacyPickerIntentWithSystemPickerDisabled
 import com.android.democontactspickerclientapp.handlePickerResult
 
 class MainActivitySdk36 : ComponentActivity() {
@@ -70,6 +72,8 @@ private fun Sdk36Screen(targetSdk: Int) {
     var legacyConfig by remember { mutableStateOf(LegacyDemoConfigState()) }
     var allowMultiple by remember { mutableStateOf(false) }
     var useSystemPicker by remember { mutableStateOf(true) }
+    var overrideSelectionLimit by remember { mutableStateOf(false) }
+    var selectionLimit by remember { mutableStateOf(0) }
     val context = LocalContext.current
 
     val pickerLauncher =
@@ -93,8 +97,15 @@ private fun Sdk36Screen(targetSdk: Int) {
             LegacyActionPickConfiguration(legacyConfig) { newConfig -> legacyConfig = newConfig }
             Spacer(modifier = Modifier.height(20.dp))
 
-            CommonOptions(allowMultiple) { allowMultiple = it }
             if (android.content.flags.Flags.enableSystemContactsPicker()) {
+                CommonOptions(
+                    allowMultiple = allowMultiple,
+                    onAllowMultipleChange = { allowMultiple = it },
+                    overrideSelectionLimit = overrideSelectionLimit,
+                    onOverrideSelectionLimitChange = { overrideSelectionLimit = it },
+                    selectionLimit = selectionLimit,
+                    onSelectionLimitChange = { selectionLimit = it },
+                )
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -105,12 +116,28 @@ private fun Sdk36Screen(targetSdk: Int) {
                     }
                     Switch(checked = useSystemPicker, onCheckedChange = { useSystemPicker = it })
                 }
+            } else {
+                CommonOptionsWithSystemPickerDisabled(
+                    allowMultiple = allowMultiple,
+                    onAllowMultipleChange = { allowMultiple = it },
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
             LaunchPickerButton {
-                val intent = buildLegacyPickerIntent(legacyConfig, allowMultiple, useSystemPicker)
+                val intent =
+                    if (android.content.flags.Flags.enableSystemContactsPicker())
+                        buildLegacyPickerIntent(
+                            legacyConfig,
+                            allowMultiple,
+                            useSystemPicker,
+                            overrideSelectionLimit,
+                            selectionLimit,
+                        )
+                    else
+                        buildLegacyPickerIntentWithSystemPickerDisabled(legacyConfig, allowMultiple)
+
                 try {
                     pickerLauncher.launch(intent)
                 } catch (_: ActivityNotFoundException) {

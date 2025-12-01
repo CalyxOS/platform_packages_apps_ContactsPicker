@@ -26,6 +26,7 @@
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"సెర్చ్ చేయండి"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"సెర్చ్ టెక్స్ట్‌ను క్లియర్ చేయండి"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"సెర్చ్‌ను మూసివేయండి"</string>
+    <string name="contacts_picker_top_bar_more_options_content_description" msgid="6586161048394547875">"మరిన్ని ఆప్షన్‌లు"</string>
     <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"ఫేవరెట్స్"</string>
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"స్టార్ చిహ్నం"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"స్మైల్ చిహ్నం"</string>
@@ -51,4 +52,5 @@
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"వెనుకకు"</string>
     <string name="preview_screen_title" msgid="2852036336424026274">"ప్రివ్యూ"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"ఈ యాప్"</string>
+    <string name="privacy_details_menu_label" msgid="497348969731766203">"మీ కాంటాక్ట్‌ల గోప్యత"</string>
 </resources>

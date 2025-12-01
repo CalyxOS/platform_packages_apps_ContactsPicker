@@ -27,13 +27,13 @@ import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsPickerSessionContract
-import androidx.collection.longObjectMapOf
 import androidx.test.core.app.ApplicationProvider
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.fakes.FakeContactsRepository
 import com.android.contactspicker.fakes.FakePrivacyBannerRepository
 import com.android.contactspicker.testdata.ContactTestDataFactory
@@ -101,8 +101,19 @@ class ContactsViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertThat(collectedStates).hasSize(2)
-        assertThat(collectedStates[0] is ContactsListState.Loading).isTrue()
-        assertThat(collectedStates[1] is ContactsListState.Success).isTrue()
+        assertThat(collectedStates)
+            .containsExactly(
+                ContactsListState.Loading,
+                ContactsListState.Success(
+                    testContacts,
+                    emptyContactsSelection(),
+                    false,
+                    callingAppName = "TestApp",
+                    requestedMimeTypes = listOf(Phone.CONTENT_TYPE),
+                    showPrivacyBanner = true,
+                ),
+            )
+            .inOrder()
 
         job.cancel()
     }
@@ -118,10 +129,25 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun processIntent_withInvalidAction_setsErrorState() = runTest {
+    fun processIntent_repositoryThrows_setsErrorState() = runTest {
         val testException = IllegalArgumentException("Unsupported action")
         fakeContactsRepository.setException(testException)
 
+        viewModel.processIntent(
+            intentAction = Intent.ACTION_PICK,
+            intentType = Phone.CONTENT_TYPE,
+            intentExtras = null,
+            callingAppName = "TestApp",
+            callingAppUid = 123,
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val errorState = viewModel.uiState.value as ContactsListState.Error
+        assertThat(errorState.message).isEqualTo("Unsupported action")
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun processIntent_withInvalidAction_throwsException() {
         viewModel.processIntent(
             intentAction = "INVALID_ACTION",
             intentType = null,
@@ -129,10 +155,6 @@ class ContactsViewModelTest {
             callingAppName = "TestApp",
             callingAppUid = 12345,
         )
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        val errorState = viewModel.uiState.value as ContactsListState.Error
-        assertThat(errorState.message).isEqualTo("Unsupported intent action: INVALID_ACTION")
     }
 
     @Test
@@ -160,28 +182,6 @@ class ContactsViewModelTest {
             intentExtras = buildIntentExtrasWithMultiSelect(isMultiSelectEnabled = true),
         )
         assertThat(viewModel.currentSuccessState.isMultiSelectEnabled).isTrue()
-    }
-
-    @Test
-    fun getRequestedMimeTypesForIntent_actionPickWithValidType_returnsTypeList() {
-        val intentAction = Intent.ACTION_PICK
-        val intentType = Phone.CONTENT_TYPE
-        val result = viewModel.getRequestedMimeTypesForIntent(intentAction, intentType)
-        assertThat(result).containsExactly(intentType)
-    }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun getRequestedMimeTypesForIntent_actionPickWithNullType_throwsException() {
-        val intentAction = Intent.ACTION_PICK
-        val intentType: String? = null
-        viewModel.getRequestedMimeTypesForIntent(intentAction, intentType)
-    }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun getRequestedMimeTypesForIntent_unsupportedAction_throwsException() {
-        val intentAction = Intent.ACTION_VIEW
-        val intentType = Phone.CONTENT_TYPE
-        viewModel.getRequestedMimeTypesForIntent(intentAction, intentType)
     }
 
     @Test
@@ -278,12 +278,15 @@ class ContactsViewModelTest {
 
     @Test(expected = IllegalStateException::class)
     fun prepareSelectionResult_inErrorState_throwsException() {
+        val testException = IllegalArgumentException("Unsupported action")
+        fakeContactsRepository.setException(testException)
+
         viewModel.processIntent(
-            intentAction = "INVALID_ACTION",
-            intentType = null,
+            intentAction = Intent.ACTION_PICK,
+            intentType = Phone.CONTENT_TYPE,
             intentExtras = null,
-            callingAppName = null,
-            callingAppUid = -1,
+            callingAppName = "TestApp",
+            callingAppUid = 123,
         )
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -498,7 +501,7 @@ class ContactsViewModelTest {
         // Repository search for searchQuery should have been called now
         assertThat(fakeContactsRepository.searchInvocationsCountForQuery(searchQuery)).isEqualTo(1)
         assertThat(collectedStates.last())
-            .isEqualTo(SearchState.Success(searchQuery, searchResult, longObjectMapOf()))
+            .isEqualTo(SearchState.Success(searchQuery, searchResult, emptyContactsSelection()))
         job.cancel()
     }
 
@@ -544,7 +547,7 @@ class ContactsViewModelTest {
             .containsExactly(
                 ContactsListState.Success(
                     ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
-                    longObjectMapOf(),
+                    emptyContactsSelection(),
                     false,
                     callingAppName = "TestApp",
                     requestedMimeTypes = listOf(Phone.CONTENT_TYPE),
@@ -553,7 +556,7 @@ class ContactsViewModelTest {
                 SearchState.Success(
                     searchQuery,
                     searchResults,
-                    longObjectMapOf(),
+                    emptyContactsSelection(),
                 ), // State after search completes
             )
             .inOrder()
@@ -571,7 +574,7 @@ class ContactsViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertThat(viewModel.uiState.value)
-            .isEqualTo(SearchState.Success(searchQuery, emptyList(), longObjectMapOf()))
+            .isEqualTo(SearchState.Success(searchQuery, emptyList(), emptyContactsSelection()))
     }
 
     @Test
@@ -610,7 +613,7 @@ class ContactsViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertThat(viewModel.uiState.value)
-            .isEqualTo(SearchState.Success(searchQuery, searchResults, longObjectMapOf()))
+            .isEqualTo(SearchState.Success(searchQuery, searchResults, emptyContactsSelection()))
     }
 
     @Test

@@ -21,7 +21,6 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import androidx.collection.longObjectMapOf
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mood
 import androidx.compose.ui.test.assertCountEquals
@@ -39,6 +38,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.R
 import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.ui.components.AVATAR_TEST_TAG
 import com.google.common.truth.Truth.assertThat
@@ -62,7 +62,7 @@ class ContactsPickerBodyTest {
         composeTestRule.setContent {
             ContactsPickerBody(
                 contacts = contacts,
-                selectedContacts = longObjectMapOf(),
+                selectedContacts = emptyContactsSelection(),
                 isMultiSelectEnabled = false,
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
@@ -96,7 +96,7 @@ class ContactsPickerBodyTest {
         composeTestRule.setContent {
             ContactsPickerBody(
                 contacts = listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT),
-                selectedContacts = longObjectMapOf(),
+                selectedContacts = emptyContactsSelection(),
                 isMultiSelectEnabled = false,
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
@@ -114,7 +114,7 @@ class ContactsPickerBodyTest {
         composeTestRule.setContent {
             ContactsPickerBody(
                 contacts = listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT),
-                selectedContacts = longObjectMapOf(),
+                selectedContacts = emptyContactsSelection(),
                 isMultiSelectEnabled = false,
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
@@ -226,7 +226,7 @@ class ContactsPickerBodyTest {
                 contacts = contacts,
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
-                selectedContacts = longObjectMapOf(),
+                selectedContacts = emptyContactsSelection(),
                 isMultiSelectEnabled = false,
                 showPrivacyBanner = true,
                 onToggleContactSelection = {},

@@ -68,11 +68,34 @@
         addresses. [CHAR LIMIT=NONE] -->
     <string name="contact_item_email_icon_content_description">Email</string>
 
-    <!-- Count of emails shown in the collapsed contact item with multiple emails. [CHAR LIMIT=NONE] -->
-    <string name="contact_item_emails_count">%d emails</string>
-    <!-- Count of phone numbers shown in the collapsed contact item with multiple numbers.
+    <!-- Count of emails shown in the contact item with multiple emails when none are selected.
         [CHAR LIMIT=NONE] -->
-    <string name="contact_item_phones_count">%d phone numbers</string>
+    <string name="contact_item_emails_count">
+        {count, plural,
+        =1 {# email}
+        other {# emails}}
+    </string>
+    <!-- Count of phone numbers shown in the collapsed contact item with multiple numbers when none
+        are selected. [CHAR LIMIT=NONE] -->
+    <string name="contact_item_phones_count">
+        {count, plural,
+        =1 {# phone number}
+        other {# phone numbers}}
+    </string>
+    <!-- Count of selected emails shown in the contact item with multiple emails when one or more
+        are selected. [CHAR LIMIT=NONE] -->
+    <string name="contact_item_emails_selected_count">
+        {total_count, plural,
+        =1 {{selected_count} of # email}
+        other {{selected_count} of # emails}}
+    </string>
+    <!-- Count of selected phone numbers shown in the contact item with multiple numbers when one or
+        more are selected [CHAR LIMIT=NONE] -->
+    <string name="contact_item_phones_selected_count">
+        {total_count, plural,
+        =1 {{selected_count} of # phone number}
+        other {{selected_count} of # phone numbers}}
+    </string>
 
     <!-- Message shown in to the user when trying to select contacts above the limit. [CHAR LIMIT=40] -->
     <string name="contacts_selection_limit_reached_message">

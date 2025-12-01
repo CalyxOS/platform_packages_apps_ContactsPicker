@@ -21,8 +21,6 @@ import android.icu.text.MessageFormat
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import androidx.collection.LongObjectMap
-import androidx.collection.longObjectMapOf
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,6 +44,9 @@ import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
+import com.android.contactspicker.data.model.ContactsSelection
+import com.android.contactspicker.data.model.contactsSelectionOf
+import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
 import com.android.contactspicker.viewmodel.SnackbarEvent
@@ -69,7 +70,7 @@ class ContactsPickerBottomSheetTest {
     @get:Rule val composeTestRule = createComposeRule()
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
-    private var selectedContacts by mutableStateOf<LongObjectMap<Set<Long>>>(longObjectMapOf())
+    private var selectedContacts by mutableStateOf<ContactsSelection>(emptyContactsSelection())
 
     private val testContact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
     private val testSuccessState =
@@ -193,7 +194,7 @@ class ContactsPickerBottomSheetTest {
             )
             .assertDoesNotExist()
 
-        selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id))
+        selectedContacts = contactsSelectionOf(testContact.id, setOf(testContact.id))
 
         composeTestRule
             .onNodeWithContentDescription(
@@ -205,7 +206,7 @@ class ContactsPickerBottomSheetTest {
 
     @Test
     fun selectionBar_isNotVisible_afterSelectionIsCleared() {
-        selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id))
+        selectedContacts = contactsSelectionOf(testContact.id, setOf(testContact.id))
         composeTestRule.setContent {
             ContactsPickerAppTheme {
                 ContactsPickerBottomSheet(
@@ -241,7 +242,7 @@ class ContactsPickerBottomSheetTest {
             )
             .assertIsDisplayed()
 
-        selectedContacts = longObjectMapOf()
+        selectedContacts = emptyContactsSelection()
 
         composeTestRule
             .onNodeWithContentDescription(
@@ -329,7 +330,7 @@ class ContactsPickerBottomSheetTest {
                         ContactsListState.Success(
                             availableContacts = listOf(testContact),
                             selectedContacts =
-                                longObjectMapOf(testContact.id, setOf(testContact.id)),
+                                contactsSelectionOf(testContact.id, setOf(testContact.id)),
                             isMultiSelectEnabled = false,
                             callingAppName = null,
                             requestedMimeTypes = emptyList(),
@@ -373,7 +374,7 @@ class ContactsPickerBottomSheetTest {
                             ContactsPreviewState(
                                 contactsToDisplay = listOf(testContact),
                                 selectedContacts =
-                                    longObjectMapOf(testContact.id, setOf(testContact.id)),
+                                    contactsSelectionOf(testContact.id, setOf(testContact.id)),
                                 isMultiSelectEnabled = false,
                             )
                         ),
@@ -410,7 +411,7 @@ class ContactsPickerBottomSheetTest {
                             ContactsListState.Success(
                                 availableContacts = listOf(testContact),
                                 selectedContacts =
-                                    longObjectMapOf(testContact.id, setOf(testContact.id)),
+                                    contactsSelectionOf(testContact.id, setOf(testContact.id)),
                                 isMultiSelectEnabled = false,
                                 callingAppName = null,
                                 showPrivacyBanner = false,
@@ -449,7 +450,7 @@ class ContactsPickerBottomSheetTest {
             uiState =
                 ContactsPreviewState(
                     contactsToDisplay = listOf(testContact),
-                    selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
+                    selectedContacts = contactsSelectionOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = false,
                 )
         )

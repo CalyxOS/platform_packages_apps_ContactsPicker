@@ -33,7 +33,6 @@ import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import android.provider.ContactsContract
-import androidx.collection.longObjectMapOf
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -51,6 +50,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.contactspicker.Flags.FLAG_ENABLE_ACTION_PICK_TAKEOVER_IN_DROIDFOOD
 import com.android.contactspicker.data.model.DisplayNameContact
+import com.android.contactspicker.data.model.contactsSelectionOf
+import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.inject.ActivityModule
 import com.android.contactspicker.inject.AppModule
 import com.android.contactspicker.provider.CallingPackageProvider
@@ -140,7 +141,7 @@ class ContactsPickerActivityTest {
             MutableStateFlow(
                 ContactsListState.Success(
                     emptyList(),
-                    longObjectMapOf(),
+                    emptyContactsSelection(),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
                     requestedMimeTypes = emptyList(),
@@ -262,7 +263,7 @@ class ContactsPickerActivityTest {
             MutableStateFlow(
                 ContactsListState.Success(
                     availableContacts = listOf(testContact),
-                    selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
+                    selectedContacts = contactsSelectionOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
                     requestedMimeTypes = emptyList(),
@@ -308,7 +309,7 @@ class ContactsPickerActivityTest {
             MutableStateFlow(
                 ContactsListState.Success(
                     availableContacts = listOf(testContact),
-                    selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
+                    selectedContacts = contactsSelectionOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = true,
                     callingAppName = null,
                     requestedMimeTypes = emptyList(),
@@ -360,7 +361,7 @@ class ContactsPickerActivityTest {
             MutableStateFlow(
                 ContactsListState.Success(
                     availableContacts = listOf(testContact),
-                    selectedContacts = longObjectMapOf(testContact.id, setOf(testContact.id)),
+                    selectedContacts = contactsSelectionOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
                     requestedMimeTypes = emptyList(),
@@ -461,7 +462,7 @@ class ContactsPickerActivityTest {
             MutableStateFlow(
                 ContactsListState.Success(
                     availableContacts = emptyList(),
-                    selectedContacts = longObjectMapOf(),
+                    selectedContacts = emptyContactsSelection(),
                     isMultiSelectEnabled = false,
                     callingAppName = testAppName,
                     requestedMimeTypes = emptyList(),
@@ -493,7 +494,7 @@ class ContactsPickerActivityTest {
             MutableStateFlow(
                 ContactsListState.Success(
                     availableContacts = emptyList(),
-                    selectedContacts = longObjectMapOf(),
+                    selectedContacts = emptyContactsSelection(),
                     isMultiSelectEnabled = false,
                     callingAppName = testAppName,
                     requestedMimeTypes = emptyList(),
