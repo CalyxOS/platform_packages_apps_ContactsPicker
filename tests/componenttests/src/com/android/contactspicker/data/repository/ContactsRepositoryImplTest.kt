@@ -167,7 +167,7 @@ class ContactsRepositoryImplTest {
     // TODO(b/452020367): implement custom query for ACTION_PICK_CONTACTS
     @Test
     fun getContacts_customMode_returnsDisplayNamesContacts() = runTest {
-        val queryMode = ContactsQueryMode.Custom(listOf("invalid"))
+        val queryMode = ContactsQueryMode.Custom(listOf("invalid"), false)
         val uriToExpect = Contacts.CONTENT_URI
         val cursor =
             MatrixCursor(

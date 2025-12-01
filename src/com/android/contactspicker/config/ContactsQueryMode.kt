@@ -39,7 +39,8 @@ sealed class ContactsQueryMode {
      * Fetch contacts that have data for at least one of the specified mimetypes. Used by
      * ACTION_PICK_CONTACTS when multiple fields or types other than phone or email are requested.
      */
-    data class Custom(val mimetypes: List<String>) : ContactsQueryMode()
+    data class Custom(val mimetypes: List<String>, val matchAllRequestedMimeTypes: Boolean) :
+        ContactsQueryMode()
 
     companion object {
         fun getQueryModeAndMimeTypes(
@@ -91,16 +92,21 @@ sealed class ContactsQueryMode {
                 )
             }
 
+            val matchAll =
+                intentExtras?.getBoolean(
+                    ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_MATCH_ALL_DATA_FIELDS,
+                    false,
+                ) ?: false
+
             val queryMode =
-                if (mimetypes.size == 1) {
-                    when (mimetypes.first()) {
-                        Email.CONTENT_ITEM_TYPE -> EmailsOnly
-                        Phone.CONTENT_ITEM_TYPE -> PhonesOnly
-                        else -> Custom(mimetypes)
-                    }
-                } else {
-                    Custom(mimetypes)
+                when {
+                    mimetypes.size == 1 && mimetypes.first() == Email.CONTENT_ITEM_TYPE ->
+                        EmailsOnly
+                    mimetypes.size == 1 && mimetypes.first() == Phone.CONTENT_ITEM_TYPE ->
+                        PhonesOnly
+                    else -> Custom(mimetypes, matchAll)
                 }
+
             return Pair(queryMode, mimetypes)
         }
     }
