@@ -75,7 +75,7 @@ class ContactsPickerBodyTest {
 
         contacts.forEach { contact ->
             val displayName = contact.displayName
-            val initial = displayName.first().toString()
+            val initial = contact.getDisplayNameInitialLetter().toString()
             composeTestRule
                 .onNode(hasTestTag(CONTACTS_LIST_SECTION_HEADER_TEST_TAG) and hasText(initial))
                 .assertIsDisplayed()
