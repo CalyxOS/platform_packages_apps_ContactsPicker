@@ -145,12 +145,12 @@ class ScrubberTest {
         val draggableHeight = containerSizePx - scrubberHandleHeightPx
         val expectedFraction = 100f / draggableHeight
         /**
-         * The reported drag delta may not exactly match the drag distance due to the
-         * touch slop implemented in Jetpack Compose's gesture detector. The detector
-         * consumes an initial part of the drag to recognize the gesture to distinguish it
-         * from a tap. This results in a discrepancy between the actual distance moved and
-         * the reported delta. To make the test resilient to this, we assert with a tolerance.
-        */
+         * The reported drag delta may not exactly match the drag distance due to the touch slop
+         * implemented in Jetpack Compose's gesture detector. The detector consumes an initial part
+         * of the drag to recognize the gesture to distinguish it from a tap. This results in a
+         * discrepancy between the actual distance moved and the reported delta. To make the test
+         * resilient to this, we assert with a tolerance.
+         */
         assertThat(lastNotifiedDeltaFraction).isWithin(0.6f).of(expectedFraction)
     }
 
@@ -182,11 +182,11 @@ class ScrubberTest {
         val draggableHeight = containerSizePx - scrubberHandleHeightPx
         val expectedFraction = -100f / draggableHeight
         /**
-         * The reported drag delta may not exactly match the drag distance due to the
-         * touch slop implemented in Jetpack Compose's gesture detector. The detector
-         * consumes an initial part of the drag to recognize the gesture to distinguish it
-         * from a tap. This results in a discrepancy between the actual distance moved and
-         * the reported delta. To make the test resilient to this, we assert with a tolerance.
+         * The reported drag delta may not exactly match the drag distance due to the touch slop
+         * implemented in Jetpack Compose's gesture detector. The detector consumes an initial part
+         * of the drag to recognize the gesture to distinguish it from a tap. This results in a
+         * discrepancy between the actual distance moved and the reported delta. To make the test
+         * resilient to this, we assert with a tolerance.
          */
         assertThat(lastNotifiedDeltaFraction).isWithin(0.6f).of(expectedFraction)
     }
