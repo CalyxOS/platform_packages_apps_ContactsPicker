@@ -47,7 +47,6 @@ internal fun buildActionPickContactsIntent(
     selectionLimit: Int,
 ): Intent? {
     val intent = Intent(ContactsPickerSessionContract.ACTION_PICK_CONTACTS)
-    intent.type = ContactsContract.Contacts.CONTENT_TYPE
     intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, allowMultiple)
     if (overrideSelectionLimit) {
         intent.putExtra(

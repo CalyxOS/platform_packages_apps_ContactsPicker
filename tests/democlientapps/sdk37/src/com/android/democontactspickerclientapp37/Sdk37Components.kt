@@ -15,8 +15,11 @@
  */
 package com.android.democontactspickerclientapp37
 
+import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -89,4 +92,22 @@ fun ActionPickContactsConfiguration(
             )
         }
     }
+}
+
+@Composable
+fun ActionPickContactsResultDisplay(uri: Uri?) {
+    Text("Received session URI:", style = MaterialTheme.typography.titleMedium)
+    Spacer(modifier = Modifier.height(8.dp))
+    Text("TODO: display results", style = MaterialTheme.typography.bodySmall)
+    Text(
+        text = uri?.toString() ?: "No URI received",
+        modifier =
+            Modifier.fillMaxWidth()
+                .background(
+                    MaterialTheme.colorScheme.surfaceVariant,
+                    shape = MaterialTheme.shapes.medium,
+                )
+                .padding(12.dp),
+        style = MaterialTheme.typography.bodyMedium,
+    )
 }

@@ -15,12 +15,16 @@
  */
 package com.android.democontactspickerclientapp37
 
+import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -67,6 +71,7 @@ class MainActivitySdk37 : ComponentActivity() {
 
 @Composable
 private fun Sdk37Screen(targetSdk: Int) {
+    var contactsPickerSession by remember { mutableStateOf(ContactsPickerSession()) }
     var legacyConfig by remember { mutableStateOf(LegacyDemoConfigState()) }
     var allowMultiple by remember { mutableStateOf(false) }
     var intentType by remember { mutableStateOf(Sdk37IntentType.NEW_ACTION_PICK_CONTACTS) }
@@ -79,8 +84,18 @@ private fun Sdk37Screen(targetSdk: Int) {
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.StartActivityForResult()
         ) { result ->
-            val pickerResult = handlePickerResult(context, result, legacyConfig.legacyPickerType)
-            legacyConfig = legacyConfig.copy(pickerResult = pickerResult)
+            when (intentType) {
+                Sdk37IntentType.LEGACY_ACTION_PICK -> {
+                    val pickerResult =
+                        handlePickerResult(context, result, legacyConfig.legacyPickerType)
+                    legacyConfig = legacyConfig.copy(pickerResult = pickerResult)
+                }
+
+                Sdk37IntentType.NEW_ACTION_PICK_CONTACTS -> {
+                    contactsPickerSession =
+                        contactsPickerSession.copy(uri = handleNewPickerResult(result))
+                }
+            }
         }
 
     Column(
@@ -157,6 +172,23 @@ private fun Sdk37Screen(targetSdk: Int) {
         }
         Spacer(modifier = Modifier.height(20.dp))
 
-        ResultDisplay(legacyConfig.pickerResult)
+        when (intentType) {
+            Sdk37IntentType.LEGACY_ACTION_PICK -> ResultDisplay(legacyConfig.pickerResult)
+
+            Sdk37IntentType.NEW_ACTION_PICK_CONTACTS ->
+                ActionPickContactsResultDisplay(contactsPickerSession.uri)
+        }
+    }
+}
+
+/** A data class holding the session URI returned for the ACTION_PICK_CONTACTS. */
+data class ContactsPickerSession(val uri: Uri? = null)
+
+fun handleNewPickerResult(result: ActivityResult): Uri? {
+    return if (result.resultCode == Activity.RESULT_OK) {
+        val data: Intent? = result.data
+        data?.data
+    } else {
+        null
     }
 }
