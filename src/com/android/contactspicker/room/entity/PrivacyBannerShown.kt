@@ -19,6 +19,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.android.contactspicker.data.model.MimeType
 import com.android.contactspicker.room.converter.MimeTypeConverter
 
 /**
@@ -45,5 +46,5 @@ import com.android.contactspicker.room.converter.MimeTypeConverter
 data class PrivacyBannerShown(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "_id") val id: Int = 0,
     @ColumnInfo(name = "app_uid") val appUid: Int,
-    @ColumnInfo(name = "mime_types") val mimeTypes: List<String>,
+    @ColumnInfo(name = "mime_types") val mimeTypes: List<MimeType>,
 )

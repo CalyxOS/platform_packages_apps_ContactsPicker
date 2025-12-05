@@ -19,8 +19,8 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import android.provider.ContactsContract
 import com.android.contactspicker.R
+import com.android.contactspicker.data.model.MimeType
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -34,7 +34,7 @@ class ContactDataFieldProviderTest {
 
     @Test
     fun getContactDataFieldItems_includesNameAndPreferencesItems() {
-        val dataFields = listOf(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+        val dataFields = listOf(MimeType.PHONE)
         val result = ContactDataFieldProvider.getContactDataFieldItems(dataFields)
 
         assertThat(result.size).isEqualTo(3)
@@ -46,12 +46,9 @@ class ContactDataFieldProviderTest {
     }
 
     @Test
-    fun getContactDataFieldItems_ignoresUnsupportedDataField() {
+    fun getContactDataFieldItems_ignoresUnsupportedMimeTypes() {
         val dataFieldsWithUnsupported =
-            listOf(
-                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
-                "com.example.unknown.data.field",
-            )
+            listOf(MimeType.PHONE, MimeType.CONTACTS, MimeType.STRUCTURED_NAME)
 
         val result = ContactDataFieldProvider.getContactDataFieldItems(dataFieldsWithUnsupported)
 
@@ -64,7 +61,7 @@ class ContactDataFieldProviderTest {
     fun getContactDataFieldItems_withEmptyList_returnsOnlyNameAndPreferences() {
         // Scenario: Test the behavior when the input list of data fields is empty.
         // The function should still return the default 'Name' and 'Preferences' items.
-        val dataFields = emptyList<String>()
+        val dataFields = emptyList<MimeType>()
 
         // Act: Call the function with an empty list.
         val result = ContactDataFieldProvider.getContactDataFieldItems(dataFields)
@@ -79,20 +76,7 @@ class ContactDataFieldProviderTest {
 
     @Test
     fun getContactDataFieldItems_withCommonDataKindsItemTypes_returnsSortedList() {
-        val supportedCommonDataKindsItemTypes =
-            listOf(
-                    ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
-                    ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
-                    ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
-                    ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE,
-                    ContactsContract.CommonDataKinds.Relation.CONTENT_ITEM_TYPE,
-                    ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE,
-                    ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE,
-                    ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE,
-                    ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE,
-                    ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE,
-                )
-                .reversed()
+        val supportedCommonDataKindsItemTypes = MimeType.entries.reversed()
 
         val result =
             ContactDataFieldProvider.getContactDataFieldItems(supportedCommonDataKindsItemTypes)
@@ -120,7 +104,7 @@ class ContactDataFieldProviderTest {
 
     @Test
     fun getContactDataFieldItems_withCommonDataKindsEmailType_returnsCorrectList() {
-        val input = listOf(ContactsContract.CommonDataKinds.Email.CONTENT_TYPE)
+        val input = listOf(MimeType.EMAIL)
         // Act
         val result = ContactDataFieldProvider.getContactDataFieldItems(input)
         // Assert
@@ -136,7 +120,7 @@ class ContactDataFieldProviderTest {
 
     @Test
     fun getContactDataFieldItems_withCommonDataKindsPhoneType_returnsCorrectList() {
-        val input = listOf(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE)
+        val input = listOf(MimeType.PHONE)
         // Act
         val result = ContactDataFieldProvider.getContactDataFieldItems(input)
         // Assert
@@ -151,8 +135,8 @@ class ContactDataFieldProviderTest {
     }
 
     @Test
-    fun getContactDataFieldItems_withCommonDataKindsContactType_returnsOnlyNameAndPreferences() {
-        val input = listOf(ContactsContract.Contacts.CONTENT_TYPE)
+    fun getContactDataFieldItems_withContactsType_returnsOnlyNameAndPreferences() {
+        val input = listOf(MimeType.CONTACTS)
         // Act
         val result = ContactDataFieldProvider.getContactDataFieldItems(input)
         // Assert

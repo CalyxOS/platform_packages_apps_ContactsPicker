@@ -42,6 +42,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.R
+import com.android.contactspicker.data.model.MimeType
 import com.android.contactspicker.ui.utils.IconResource
 
 // TODO(b/446118849) : Move constants to xml files
@@ -54,7 +55,7 @@ private val PADDING_CONTACT_DATA_FIELDS_LIST_HEADER =
 fun PrivacyDetailsBody(
     modifier: Modifier = Modifier,
     callingAppName: String?,
-    requestedDataFields: List<String>,
+    requestedDataFields: List<MimeType>,
 ) {
     LazyColumn(modifier = modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 64.dp)) {
         item {
@@ -93,7 +94,7 @@ fun ContactDataFieldsListHeader(modifier: Modifier = Modifier) {
 }
 
 fun LazyListScope.contactDataFieldList(
-    requestedDataFields: List<String>,
+    requestedDataFields: List<MimeType>,
     modifier: Modifier = Modifier,
 ) {
     val dataFieldItems = ContactDataFieldProvider.getContactDataFieldItems(requestedDataFields)

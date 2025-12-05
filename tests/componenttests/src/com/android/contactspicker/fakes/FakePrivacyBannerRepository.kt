@@ -15,18 +15,19 @@
  */
 package com.android.contactspicker.fakes
 
+import com.android.contactspicker.data.model.MimeType
 import com.android.contactspicker.data.repository.PrivacyBannerRepository
 
 /** A fake implementation of PrivacyBannerRepository for use in tests. */
 class FakePrivacyBannerRepository : PrivacyBannerRepository {
 
-    private val privacyBannerShown = mutableMapOf<Pair<Int, List<String>>, Boolean>()
+    private val privacyBannerShown = mutableMapOf<Pair<Int, List<MimeType>>, Boolean>()
 
-    fun markPrivacyBannerAsShown(appUid: Int, mimeTypes: List<String>) {
+    fun markPrivacyBannerAsShown(appUid: Int, mimeTypes: List<MimeType>) {
         privacyBannerShown[Pair(appUid, mimeTypes)] = true
     }
 
-    override suspend fun wasPrivacyBannerShown(appUid: Int, mimeTypes: List<String>): Boolean {
+    override suspend fun wasPrivacyBannerShown(appUid: Int, mimeTypes: List<MimeType>): Boolean {
         return privacyBannerShown.getOrDefault(Pair(appUid, mimeTypes), false)
     }
 }

@@ -19,6 +19,7 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import com.android.contactspicker.data.model.MimeType
 import com.android.contactspicker.room.dao.PrivacyBannerShownDao
 import com.android.contactspicker.room.entity.PrivacyBannerShown
 import com.google.common.truth.Truth.assertThat
@@ -51,7 +52,7 @@ class PrivacyBannerRepositoryImplTest {
     @Test
     fun wasPrivacyBannerShown_callsDaoAndReturnsResult() = runTest {
         val appUid = 12345
-        val mimeTypes = listOf("type1", "type2")
+        val mimeTypes = listOf(MimeType.PHONE, MimeType.EMAIL)
         whenever(mockDao.wasPrivacyBannerShown(appUid, mimeTypes)).thenReturn(true)
 
         val result = repository.wasPrivacyBannerShown(appUid, mimeTypes)
@@ -63,7 +64,7 @@ class PrivacyBannerRepositoryImplTest {
     @Test
     fun wasPrivacyBannerShown_unseen_callsDaoInsertWithCorrectEntity() = runTest {
         val appUid = 12345
-        val mimeTypes = listOf("type1", "type2")
+        val mimeTypes = listOf(MimeType.PHONE, MimeType.EMAIL)
         val expectedEntity = PrivacyBannerShown(appUid = appUid, mimeTypes = mimeTypes)
         whenever(mockDao.wasPrivacyBannerShown(appUid, mimeTypes)).thenReturn(false)
 
@@ -75,7 +76,7 @@ class PrivacyBannerRepositoryImplTest {
     @Test
     fun wasPrivacyBannerShown_appUidIsNegativeOne_returnsFallbackAndDoesNotCallDao() = runTest {
         val appUid = -1
-        val mimeTypes = listOf("type1", "type2")
+        val mimeTypes = listOf(MimeType.PHONE, MimeType.EMAIL)
 
         val result = repository.wasPrivacyBannerShown(appUid, mimeTypes)
 
@@ -87,7 +88,7 @@ class PrivacyBannerRepositoryImplTest {
     @Test
     fun wasPrivacyBannerShown_mimeTypesIsEmpty_returnsFallbackAndDoesNotCallDao() = runTest {
         val appUid = 12345
-        val mimeTypes = emptyList<String>()
+        val mimeTypes = emptyList<MimeType>()
 
         val result = repository.wasPrivacyBannerShown(appUid, mimeTypes)
 
@@ -99,7 +100,7 @@ class PrivacyBannerRepositoryImplTest {
     @Test
     fun wasPrivacyBannerShown_daoThrowsException_returnsFallbackAndLogsError() = runTest {
         val appUid = 12345
-        val mimeTypes = listOf("type1", "type2")
+        val mimeTypes = listOf(MimeType.PHONE, MimeType.EMAIL)
         whenever(mockDao.wasPrivacyBannerShown(appUid, mimeTypes)).thenThrow(RuntimeException())
 
         val result = repository.wasPrivacyBannerShown(appUid, mimeTypes)

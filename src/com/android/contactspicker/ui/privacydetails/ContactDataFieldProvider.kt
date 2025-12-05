@@ -15,7 +15,6 @@
  */
 package com.android.contactspicker.ui.privacydetails
 
-import android.provider.ContactsContract
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Business
@@ -28,7 +27,9 @@ import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Phone
 import com.android.contactspicker.R
-import com.android.contactspicker.ui.utils.IconResource
+import com.android.contactspicker.data.model.MimeType
+import com.android.contactspicker.ui.utils.IconResource.Painter
+import com.android.contactspicker.ui.utils.IconResource.Vector
 
 /**
  * Takes raw contact data field types and provides sorted list of UI-ready [ContactDataFieldItem]s.
@@ -37,14 +38,14 @@ object ContactDataFieldProvider {
 
     private val NAME_DATA_FIELD_ITEM =
         ContactDataFieldItem(
-            icon = IconResource.Vector(Icons.Outlined.Person),
+            icon = Vector(Icons.Outlined.Person),
             headerTextResId = R.string.privacy_details_data_field_name_header,
             contentDescriptionResId = R.string.privacy_details_data_field_name_content_description,
         )
 
     private val PREFERENCES_DATA_FIELD_ITEM =
         ContactDataFieldItem(
-            icon = IconResource.Vector(Icons.Outlined.ManageAccounts),
+            icon = Vector(Icons.Outlined.ManageAccounts),
             headerTextResId = R.string.privacy_details_data_field_preferences_header,
             descriptionTextResId = R.string.privacy_details_data_field_preferences_description,
             contentDescriptionResId =
@@ -54,25 +55,23 @@ object ContactDataFieldProvider {
     // Defines the custom sort order for the data fields.
     private val sortOrder =
         listOf(
-            ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
-            ContactsContract.CommonDataKinds.Email.CONTENT_TYPE,
-            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
-            ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE,
-            ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE,
-            ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE,
-            ContactsContract.CommonDataKinds.Relation.CONTENT_ITEM_TYPE,
-            ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE,
-            ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE,
-            ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE,
-            ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE,
-            ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE,
+            MimeType.EMAIL,
+            MimeType.PHONE,
+            MimeType.STRUCTURED_POSTAL,
+            MimeType.ORGANIZATION,
+            MimeType.RELATION,
+            MimeType.EVENT,
+            MimeType.PHOTO,
+            MimeType.GROUP_MEMBERSHIP,
+            MimeType.NICKNAME,
+            MimeType.WEBSITE,
         )
 
     /**
      * Create a map for efficient O(1) lookup of data fields sort priority. This is initialized only
      * once.
      */
-    private val dataFieldToPriority: Map<String, Int> =
+    private val dataFieldToPriority: Map<MimeType, Int> =
         sortOrder.withIndex().associate { (index, dataField) -> dataField to index }
 
     /**
@@ -83,7 +82,7 @@ object ContactDataFieldProvider {
      * @param dataFields A list of MIME type strings from `ContactsContract.CommonDataKinds`.
      * @return A sorted list of [ContactDataFieldItem].
      */
-    fun getContactDataFieldItems(dataFields: List<String>): List<ContactDataFieldItem> {
+    fun getContactDataFieldItems(dataFields: List<MimeType>): List<ContactDataFieldItem> {
         val mappedItems =
             dataFields
                 // 1. Map each dataField string to a Pair of its UI model and priority.
@@ -110,89 +109,89 @@ object ContactDataFieldProvider {
     /**
      * Maps a single data field to a [ContactDataFieldItem], returning null for unsupported types.
      */
-    private fun mapSingleField(dataField: String): ContactDataFieldItem? {
+    private fun mapSingleField(dataField: MimeType): ContactDataFieldItem? {
         return when (dataField) {
-            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
-            ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE ->
+            MimeType.PHONE ->
                 ContactDataFieldItem(
-                    icon = IconResource.Vector(Icons.Outlined.Phone),
+                    icon = Vector(Icons.Outlined.Phone),
                     headerTextResId = R.string.privacy_details_data_field_phone_header,
                     contentDescriptionResId =
                         R.string.privacy_details_data_field_phone_content_description,
                 )
 
-            ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
-            ContactsContract.CommonDataKinds.Email.CONTENT_TYPE ->
+            MimeType.EMAIL ->
                 ContactDataFieldItem(
-                    icon = IconResource.Vector(Icons.Outlined.Email),
+                    icon = Vector(Icons.Outlined.Email),
                     headerTextResId = R.string.privacy_details_data_field_email_header,
                     contentDescriptionResId =
                         R.string.privacy_details_data_field_email_content_description,
                 )
 
-            ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE ->
+            MimeType.STRUCTURED_POSTAL ->
                 ContactDataFieldItem(
-                    icon = IconResource.Vector(Icons.Outlined.Map),
+                    icon = Vector(Icons.Outlined.Map),
                     headerTextResId = R.string.privacy_details_data_field_address_header,
                     contentDescriptionResId =
                         R.string.privacy_details_data_field_address_content_description,
                 )
 
-            ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE ->
+            MimeType.ORGANIZATION ->
                 ContactDataFieldItem(
-                    icon = IconResource.Vector(Icons.Outlined.Business),
+                    icon = Vector(Icons.Outlined.Business),
                     headerTextResId = R.string.privacy_details_data_field_organization_header,
                     contentDescriptionResId =
                         R.string.privacy_details_data_field_organization_content_description,
                 )
 
-            ContactsContract.CommonDataKinds.Relation.CONTENT_ITEM_TYPE ->
+            MimeType.RELATION ->
                 ContactDataFieldItem(
-                    icon = IconResource.Painter(R.drawable.related_people),
+                    icon = Painter(R.drawable.related_people),
                     headerTextResId = R.string.privacy_details_data_field_related_people_header,
                     contentDescriptionResId =
                         R.string.privacy_details_data_field_related_people_content_description,
                 )
 
-            ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE ->
+            MimeType.EVENT ->
                 ContactDataFieldItem(
-                    icon = IconResource.Vector(Icons.Outlined.Cake),
+                    icon = Vector(Icons.Outlined.Cake),
                     headerTextResId = R.string.privacy_details_data_field_birthday_header,
                     contentDescriptionResId =
                         R.string.privacy_details_data_field_birthday_content_description,
                 )
 
-            ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE ->
+            MimeType.WEBSITE ->
                 ContactDataFieldItem(
-                    icon = IconResource.Vector(Icons.Outlined.Link),
+                    icon = Vector(Icons.Outlined.Link),
                     headerTextResId = R.string.privacy_details_data_field_website_header,
                     contentDescriptionResId =
                         R.string.privacy_details_data_field_website_content_description,
                 )
 
-            ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE ->
+            MimeType.NICKNAME ->
                 ContactDataFieldItem(
-                    icon = IconResource.Vector(Icons.Outlined.Person),
+                    icon = Vector(Icons.Outlined.Person),
                     headerTextResId = R.string.privacy_details_data_field_nickname_header,
                     contentDescriptionResId =
                         R.string.privacy_details_data_field_nickname_content_description,
                 )
-            ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE ->
+            MimeType.PHOTO ->
                 ContactDataFieldItem(
-                    icon = IconResource.Vector(Icons.Outlined.AccountBox),
+                    icon = Vector(Icons.Outlined.AccountBox),
                     headerTextResId = R.string.privacy_details_data_field_photo_header,
                     contentDescriptionResId =
                         R.string.privacy_details_data_field_photo_content_description,
                 )
 
-            ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE ->
+            MimeType.GROUP_MEMBERSHIP ->
                 ContactDataFieldItem(
-                    icon = IconResource.Vector(Icons.Outlined.Group),
+                    icon = Vector(Icons.Outlined.Group),
                     headerTextResId = R.string.privacy_details_data_field_group_header,
                     contentDescriptionResId =
                         R.string.privacy_details_data_field_group_content_description,
                 )
-            else -> null
+
+            MimeType.STRUCTURED_NAME,
+            MimeType.CONTACTS -> null
         }
     }
 }

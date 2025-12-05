@@ -21,6 +21,7 @@ import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsContract.Contacts
 import android.provider.ContactsPickerSessionContract
+import com.android.contactspicker.data.model.MimeType
 import com.google.common.truth.Truth.assertThat
 import kotlin.test.assertFailsWith
 import org.junit.Test
@@ -28,32 +29,28 @@ import org.junit.Test
 class ContactsQueryModeTest {
 
     @Test
-    fun getQueryModeAndMimeTypes_actionPick_supportedTypes() {
+    fun getQueryMode_actionPick_supportedTypes() {
         listOf(
                 Pair(Email.CONTENT_TYPE, ContactsQueryMode.EmailsOnly),
                 Pair(Phone.CONTENT_TYPE, ContactsQueryMode.PhonesOnly),
                 Pair(Contacts.CONTENT_TYPE, ContactsQueryMode.DisplayNamesOnly),
-                Pair(Email.CONTENT_ITEM_TYPE, ContactsQueryMode.EmailsOnly),
-                Pair(Phone.CONTENT_ITEM_TYPE, ContactsQueryMode.PhonesOnly),
-                Pair(Contacts.CONTENT_ITEM_TYPE, ContactsQueryMode.DisplayNamesOnly),
             )
             .forEach { pair ->
-                val (queryMode, requestedMimeTypes) =
-                    ContactsQueryMode.getQueryModeAndMimeTypes(
+                val queryMode =
+                    ContactsQueryMode.getQueryMode(
                         pickerAction = ContactsPickerAction.ACTION_PICK,
                         intentType = pair.first,
                         intentExtras = null,
                     )
 
-                assertThat(requestedMimeTypes).isEqualTo(listOf(pair.first))
                 assertThat(queryMode).isEqualTo(pair.second)
             }
     }
 
     @Test
-    fun getQueryModeAndMimeTypes_actionPick_unsupportedType() {
+    fun getQueryMode_actionPick_unsupportedType() {
         assertFailsWith<IllegalArgumentException> {
-            ContactsQueryMode.getQueryModeAndMimeTypes(
+            ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK,
                 intentType = "vnd.android.cursor.dir/unsupported",
                 intentExtras = null,
@@ -62,9 +59,9 @@ class ContactsQueryModeTest {
     }
 
     @Test
-    fun getQueryModeAndMimeTypes_actionPick_nullType_throwsException() {
+    fun getQueryMode_actionPick_nullType_throwsException() {
         assertFailsWith<IllegalArgumentException> {
-            ContactsQueryMode.getQueryModeAndMimeTypes(
+            ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK,
                 intentType = null,
                 intentExtras = null,
@@ -73,9 +70,9 @@ class ContactsQueryModeTest {
     }
 
     @Test
-    fun getQueryModeAndMimeTypes_actionPickContacts_missingMimeTypes_throwsException() {
+    fun getQueryMode_actionPickContacts_missingMimeTypes_throwsException() {
         assertFailsWith<IllegalArgumentException> {
-            ContactsQueryMode.getQueryModeAndMimeTypes(
+            ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
                 intentType = null,
                 intentExtras = null,
@@ -84,7 +81,26 @@ class ContactsQueryModeTest {
     }
 
     @Test
-    fun getQueryModeAndMimeTypes_actionPickContacts_singleEmailItemType() {
+    fun getQueryMode_actionPickContacts_unsupportedType() {
+        val mimeTypes = ArrayList(listOf("vnd.android.cursor.dir/unsupported"))
+        val extras =
+            Bundle().apply {
+                putStringArrayList(
+                    ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_REQUESTED_DATA_FIELDS,
+                    mimeTypes,
+                )
+            }
+        assertFailsWith<IllegalArgumentException> {
+            ContactsQueryMode.getQueryMode(
+                pickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
+                intentType = null,
+                intentExtras = extras,
+            )
+        }
+    }
+
+    @Test
+    fun getQueryMode_actionPickContacts_singleEmailItemType() {
         val mimeTypes = ArrayList(listOf(Email.CONTENT_ITEM_TYPE))
         val extras =
             Bundle().apply {
@@ -94,19 +110,18 @@ class ContactsQueryModeTest {
                 )
             }
 
-        val (queryMode, requestedMimeTypes) =
-            ContactsQueryMode.getQueryModeAndMimeTypes(
+        val queryMode =
+            ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
                 intentType = null,
                 intentExtras = extras,
             )
 
         assertThat(queryMode).isEqualTo(ContactsQueryMode.EmailsOnly)
-        assertThat(requestedMimeTypes).isEqualTo(mimeTypes)
     }
 
     @Test
-    fun getQueryModeAndMimeTypes_actionPickContacts_singlePhoneItemType() {
+    fun getQueryMode_actionPickContacts_singlePhoneItemType() {
         val mimes = ArrayList(listOf(Phone.CONTENT_ITEM_TYPE))
         val extras =
             Bundle().apply {
@@ -116,8 +131,8 @@ class ContactsQueryModeTest {
                 )
             }
 
-        val (queryMode, requestedMimeTypes) =
-            ContactsQueryMode.getQueryModeAndMimeTypes(
+        val queryMode =
+            ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
                 intentType = null,
                 intentExtras = extras,
@@ -127,7 +142,7 @@ class ContactsQueryModeTest {
     }
 
     @Test
-    fun getQueryModeAndMimeTypes_actionPickContactsWithMultipleMimeTypes_customMode() {
+    fun getQueryMode_actionPickContactsWithMultipleMimeTypes_customMode() {
         val mimeTypes = ArrayList(listOf(Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE))
         val extras =
             Bundle().apply {
@@ -137,19 +152,19 @@ class ContactsQueryModeTest {
                 )
             }
 
-        val (queryMode, requestedMimeTypes) =
-            ContactsQueryMode.getQueryModeAndMimeTypes(
+        val queryMode =
+            ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
                 intentType = null,
                 intentExtras = extras,
             )
 
-        assertThat(queryMode).isEqualTo(ContactsQueryMode.Custom(mimeTypes, false))
-        assertThat(requestedMimeTypes).isEqualTo(mimeTypes)
+        assertThat(queryMode)
+            .isEqualTo(ContactsQueryMode.Custom(listOf(MimeType.EMAIL, MimeType.PHONE), false))
     }
 
     @Test
-    fun getQueryModeAndMimeTypes_actionPickContactsWithSingleOtherMimeType_customMode() {
+    fun getQueryMode_actionPickContactsWithSingleOtherMimeType_customMode() {
         val mimeTypes =
             ArrayList(listOf(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE))
         val extras =
@@ -160,19 +175,59 @@ class ContactsQueryModeTest {
                 )
             }
 
-        val (queryMode, requestedMimeTypes) =
-            ContactsQueryMode.getQueryModeAndMimeTypes(
+        val queryMode =
+            ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
                 intentType = null,
                 intentExtras = extras,
             )
 
-        assertThat(queryMode).isEqualTo(ContactsQueryMode.Custom(mimeTypes, false))
-        assertThat(requestedMimeTypes).isEqualTo(mimeTypes)
+        assertThat(queryMode)
+            .isEqualTo(ContactsQueryMode.Custom(listOf(MimeType.STRUCTURED_POSTAL), false))
     }
 
     @Test
-    fun getQueryModeAndMimeTypes_actionPickContactsWithMatchAll() {
+    fun getQueryMode_actionPickContacts_allSupportedTypes() {
+        val extras =
+            Bundle().apply {
+                putStringArrayList(
+                    ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_REQUESTED_DATA_FIELDS,
+                    MimeType.ACTION_PICK_CONTACTS_SUPPORTED.map { it.value } as ArrayList,
+                )
+            }
+        val queryMode =
+            ContactsQueryMode.getQueryMode(
+                pickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
+                intentType = null,
+                intentExtras = extras,
+            )
+
+        assertThat(queryMode)
+            .isEqualTo(
+                ContactsQueryMode.Custom(MimeType.ACTION_PICK_CONTACTS_SUPPORTED.map { it }, false)
+            )
+    }
+
+    @Test
+    fun getQueryMode_actionPickContacts_contactsMimeTypeNotAllowed() {
+        val extras =
+            Bundle().apply {
+                putStringArrayList(
+                    ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_REQUESTED_DATA_FIELDS,
+                    ArrayList(listOf(MimeType.CONTACTS.value)),
+                )
+            }
+        assertFailsWith<IllegalArgumentException> {
+            ContactsQueryMode.getQueryMode(
+                pickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
+                intentType = null,
+                intentExtras = extras,
+            )
+        }
+    }
+
+    @Test
+    fun getQueryMode_actionPickContactsWithMatchAll() {
         val mimeTypes = ArrayList(listOf(Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE))
         val extras =
             Bundle().apply {
@@ -186,14 +241,40 @@ class ContactsQueryModeTest {
                 )
             }
 
-        val (queryMode, requestedMimeTypes) =
-            ContactsQueryMode.getQueryModeAndMimeTypes(
+        val queryMode =
+            ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
                 intentType = null,
                 intentExtras = extras,
             )
 
-        assertThat(queryMode).isEqualTo(ContactsQueryMode.Custom(mimeTypes, true))
-        assertThat(requestedMimeTypes).isEqualTo(mimeTypes)
+        assertThat(queryMode)
+            .isEqualTo(ContactsQueryMode.Custom(listOf(MimeType.EMAIL, MimeType.PHONE), true))
+    }
+
+    @Test
+    fun getMimeTypes_phonesOnly_returnsPhone() {
+        val queryMode: ContactsQueryMode = ContactsQueryMode.PhonesOnly
+        assertThat(queryMode.getMimeTypes()).containsExactly(MimeType.PHONE)
+    }
+
+    @Test
+    fun getMimeTypes_emailsOnly_returnsEmail() {
+        val queryMode: ContactsQueryMode = ContactsQueryMode.EmailsOnly
+        assertThat(queryMode.getMimeTypes()).containsExactly(MimeType.EMAIL)
+    }
+
+    @Test
+    fun getMimeTypes_displayNamesOnly_returnsContacts() {
+        val queryMode: ContactsQueryMode = ContactsQueryMode.DisplayNamesOnly
+        assertThat(queryMode.getMimeTypes()).containsExactly(MimeType.CONTACTS)
+    }
+
+    @Test
+    fun getMimeTypes_custom_returnsCustomTypes() {
+        val customMimes = listOf(MimeType.STRUCTURED_POSTAL, MimeType.WEBSITE)
+        val queryMode: ContactsQueryMode =
+            ContactsQueryMode.Custom(customMimes, matchAllRequestedMimeTypes = false)
+        assertThat(queryMode.getMimeTypes()).containsExactlyElementsIn(customMimes).inOrder()
     }
 }
