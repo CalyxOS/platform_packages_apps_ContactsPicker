@@ -19,10 +19,8 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for privacy_details_top_bar_back_button_content_description (814362367246064228) -->
-    <skip />
-    <!-- no translation found for privacy_details_top_bar_header (5184775104564684612) -->
-    <skip />
+    <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"వెనుకకు"</string>
+    <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"మీ కాంటాక్ట్‌ల గోప్యత"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"మీరు కాంటాక్ట్‌ను ఎంచుకున్నప్పుడు, మీ డివైజ్‌లోని కాంటాక్ట్‌లకు సంబంధించి కింది సమాచారానికి %1$s‌కు యాక్సెస్ ఉంటుంది.\n\nమీరు కాంటాక్ట్ సమాచారంలో ఏవైనా అప్‌డేట్‌లు చేస్తే, ఆ మార్పులకు %1$s‌కు యాక్సెస్ ఉండదు."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"కాంటాక్ట్ సమాచారంలో ఈ వివరాలు ఉండవచ్చు:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"పేరు"</string>
