@@ -32,20 +32,17 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"Ikona uśmiechu"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"Przełącz profil"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"Informacje o prywatności"</string>
+    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"Uchwyt paska szybkiego przewijania"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Zdjęcie profilowe kontaktu"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"Inicjał kontaktu"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"Rozwiń"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Zwiń"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefon"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"E-mail"</string>
-    <!-- no translation found for contact_item_emails_count (3836424032662346956) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_count (1433705901810867685) -->
-    <skip />
-    <!-- no translation found for contact_item_emails_selected_count (5996362003818614724) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_selected_count (4762497214231618256) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# adres email}few{# adresy email}many{# adresów email}other{# adresu email}}"</string>
+    <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# numer telefonu}few{# numery telefonów}many{# numerów telefonów}other{# numeru telefonu}}"</string>
+    <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} z # adresu e-mail}few{{selected_count} z # adresów e-mail}many{{selected_count} z # adresów e-mail}other{{selected_count} z # adresu e-mail}}"</string>
+    <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} z # numeru telefonu}few{{selected_count} z # numerów telefonów}many{{selected_count} z # numerów telefonów}other{{selected_count} z # numeru telefonu}}"</string>
     <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{Można udostępnić tylko # kontakt naraz}few{Można udostępnić tylko # kontakty naraz}many{Można udostępnić tylko # kontaktów naraz}other{Można udostępnić tylko # kontaktu naraz}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"Wybrano: %1$s"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Cofnij wybór"</string>

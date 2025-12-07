@@ -32,20 +32,17 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"Значок усмішки"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"Змінити профіль"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"Конфіденційність"</string>
+    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"Маркер швидкого прокручування"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Зображення профілю контакта"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"Ініціал контакта"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"Розгорнути"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Згорнути"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Телефон"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Електронна пошта"</string>
-    <!-- no translation found for contact_item_emails_count (3836424032662346956) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_count (1433705901810867685) -->
-    <skip />
-    <!-- no translation found for contact_item_emails_selected_count (5996362003818614724) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_selected_count (4762497214231618256) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# електронний лист}one{# електронний лист}few{# електронні листи}many{# електронних листів}other{# електронного листа}}"</string>
+    <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# номер телефону}one{# номер телефону}few{# номери телефонів}many{# номерів телефонів}other{# номера телефону}}"</string>
+    <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} з # електронного листа}one{{selected_count} з # електронного листа}few{{selected_count} з # електронних листів}many{{selected_count} з # електронних листів}other{{selected_count} з # електронного листа}}"</string>
+    <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} з # номера телефону}one{{selected_count} з # номера телефону}few{{selected_count} з # номерів телефонів}many{{selected_count} з # номерів телефонів}other{{selected_count} з # номера телефону}}"</string>
     <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{Одночасно можна надіслати лише # контакт}one{Одночасно можна надіслати лише # контакт}few{Одночасно можна надіслати лише # контакти}many{Одночасно можна надіслати лише # контактів}other{Одночасно можна надіслати лише # контакта}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"Вибрано %1$s"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Очистити вибір"</string>

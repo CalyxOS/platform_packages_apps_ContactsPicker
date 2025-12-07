@@ -32,20 +32,17 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"Glimlagikoon"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"Wissel profiel"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"Privaatheidsinligting"</string>
+    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"Handvatsel vir vinnige rollees"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Kontak se profielfoto"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"Kontak se voorletter"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"Vou uit"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Vou in"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Foon"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"E-pos"</string>
-    <!-- no translation found for contact_item_emails_count (3836424032662346956) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_count (1433705901810867685) -->
-    <skip />
-    <!-- no translation found for contact_item_emails_selected_count (5996362003818614724) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_selected_count (4762497214231618256) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# e-pos}other{# e-posse}}"</string>
+    <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# foonnommer}other{# foonnommers}}"</string>
+    <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} van # e-pos}other{{selected_count} van # e-posse}}"</string>
+    <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} van # foonnommer}other{{selected_count} van # foonnommers}}"</string>
     <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{Kan net # kontak op ’n slag deel}other{Kan net # kontakte op ’n slag deel}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s gekies"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Vee keuse uit"</string>

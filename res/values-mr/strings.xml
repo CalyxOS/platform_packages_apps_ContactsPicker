@@ -32,20 +32,17 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"स्माइल आयकन"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"प्रोफाइल स्विच करा"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"गोपनीयता माहिती"</string>
+    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"जलद स्क्रोलर हँडल"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"संपर्काचा प्रोफाइल फोटो"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"संपर्काचे पहिले नाव"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"विस्तार करा"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"कोलॅप्स करा"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"फोन"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"ईमेल"</string>
-    <!-- no translation found for contact_item_emails_count (3836424032662346956) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_count (1433705901810867685) -->
-    <skip />
-    <!-- no translation found for contact_item_emails_selected_count (5996362003818614724) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_selected_count (4762497214231618256) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# ईमेल}other{# ईमेल}}"</string>
+    <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# फोन नंबर}other{# फोन नंबर}}"</string>
+    <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{# ईमेलपैकी {selected_count}}other{# ईमेलपैकी {selected_count}}}"</string>
+    <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{# फोन नंबरपैकी {selected_count}}other{# फोन नंबरपैकी {selected_count}}}"</string>
     <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{एका वेळी फक्त # संपर्क शेअर करू शकता}other{एका वेळी फक्त # संपर्क शेअर करू शकता}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s निवडला आहे"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"निवड साफ करा"</string>

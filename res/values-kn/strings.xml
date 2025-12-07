@@ -32,20 +32,17 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"ನಗು ಎಂಬುದನ್ನು ಸೂಚಿಸುವ ಐಕಾನ್"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"ಪ್ರೊಫೈಲ್ ಅನ್ನು ಬದಲಿಸಿ"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"ಗೌಪ್ಯತೆ ಮಾಹಿತಿ"</string>
+    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"ಫಾಸ್ಟ್ ಸ್ಕ್ರಾಲರ್ ಹ್ಯಾಂಡಲ್"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"ಸಂಪರ್ಕದ ಪ್ರೊಫೈಲ್ ಚಿತ್ರ"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"ಸಂಪರ್ಕದ ಮೊದಲ ಅಕ್ಷರ"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"ವಿಸ್ತೃತಗೊಳಿಸಿ"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"ಕುಗ್ಗಿಸಿ"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ಫೋನ್"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"ಇಮೇಲ್"</string>
-    <!-- no translation found for contact_item_emails_count (3836424032662346956) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_count (1433705901810867685) -->
-    <skip />
-    <!-- no translation found for contact_item_emails_selected_count (5996362003818614724) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_selected_count (4762497214231618256) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# ಇಮೇಲ್}one{# ಇಮೇಲ್‌ಗಳು}other{# ಇಮೇಲ್‌ಗಳು}}"</string>
+    <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# ಫೋನ್ ಸಂಖ್ಯೆ}one{# ಫೋನ್ ಸಂಖ್ಯೆಗಳು}other{# ಫೋನ್ ಸಂಖ್ಯೆಗಳು}}"</string>
+    <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{# ರಲ್ಲಿ {selected_count} ಇಮೇಲ್}one{# ರಲ್ಲಿ {selected_count}ಇಮೇಲ್‌ಗಳು}other{# ರಲ್ಲಿ {selected_count}ಇಮೇಲ್‌ಗಳು}}"</string>
+    <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{# ರಲ್ಲಿ {selected_count} ಫೋನ್ ಸಂಖ್ಯೆ}one{# ರಲ್ಲಿ {selected_count} ಫೋನ್ ಸಂಖ್ಯೆಗಳು}other{# ರಲ್ಲಿ {selected_count} ಫೋನ್ ಸಂಖ್ಯೆಗಳು}}"</string>
     <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{ಒಂದು ಬಾರಿಗೆ # ಸಂಪರ್ಕವನ್ನು ಮಾತ್ರ ಹಂಚಿಕೊಳ್ಳಬಹುದು}one{ಒಂದು ಬಾರಿಗೆ # ಸಂಪರ್ಕಗಳನ್ನು ಮಾತ್ರ ಹಂಚಿಕೊಳ್ಳಬಹುದು}other{ಒಂದು ಬಾರಿಗೆ # ಸಂಪರ್ಕಗಳನ್ನು ಮಾತ್ರ ಹಂಚಿಕೊಳ್ಳಬಹುದು}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s ಆಯ್ಕೆಮಾಡಲಾಗಿದೆ"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"ಆಯ್ಕೆಯನ್ನು ತೆರವುಗೊಳಿಸಿ"</string>
