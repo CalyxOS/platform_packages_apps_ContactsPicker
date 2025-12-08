@@ -19,7 +19,10 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="privacy_details_top_bar_header" msgid="316976841297378409">"Higit pang detalye"</string>
+    <!-- no translation found for privacy_details_top_bar_back_button_content_description (814362367246064228) -->
+    <skip />
+    <!-- no translation found for privacy_details_top_bar_header (5184775104564684612) -->
+    <skip />
     <string name="privacy_details_description" msgid="4299567306628059441">"Kapag pumili ka ng contact, magkakaroon ng access ang %1$s sa sumusunod na impormasyon mula sa iyong mga contact sa device.\n\nKung gagawa ka ng anumang update sa impormasyon sa pakikipag-ugnayan, hindi magkakaroon ng access ang %1$s sa mga pagbabago."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Puwedeng kasama sa impormasyon sa pakikipag-ugnayan ang mga detalyeng gaya ng:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Pangalan"</string>

@@ -37,6 +37,7 @@ data class ContactsPickerRequestConfig(
     val maxSelectionLimit: Int,
     // TODO(b/463940164): revisit deriving mime types from ContactsQueryMode
     val requestedMimeTypes: List<String>,
+    val matchAllRequestedMimeTypes: Boolean,
 ) {
     companion object {
         /** Default selection limit if not specified for multi-select. */
@@ -67,12 +68,16 @@ data class ContactsPickerRequestConfig(
                 ContactsQueryMode.getQueryModeAndMimeTypes(pickerAction, intentType, intentExtras)
             val selectionLimit = getSelectionLimit(intentExtras, isMultiSelect)
 
+            val matchAllRequestedMimeTypes =
+                (queryMode as? ContactsQueryMode.Custom)?.matchAllRequestedMimeTypes ?: false
+
             return ContactsPickerRequestConfig(
                 queryMode = queryMode,
                 pickerAction = pickerAction,
                 isMultiSelectEnabled = isMultiSelect,
                 maxSelectionLimit = selectionLimit,
                 requestedMimeTypes = requestedMimeTypes,
+                matchAllRequestedMimeTypes = matchAllRequestedMimeTypes,
             )
         }
 

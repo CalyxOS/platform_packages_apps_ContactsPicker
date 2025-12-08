@@ -50,6 +50,9 @@
     <!--Content description for the privacy icon button in the top bar. Tapping it opens the privacy
         information banner. [CHAR LIMIT=NONE] -->
     <string name="privacy_info_content_description">Privacy information</string>
+    <!--Content description for the fast scroller's handle, which lets the user scroll quickly through a list.
+        [CHAR_LIMIT=NONE] -->
+    <string name="fast_scroller_handle_content_description">Fast scroller handle</string>
     <!-- Content description for the avatar profile picture of the contact. [CHAR LIMIT=NONE] -->
     <string name="contact_avatar_profile_picture_content_description">Contact profile picture</string>
     <!-- Content description for the avatar initial of the contact when profile picture does not

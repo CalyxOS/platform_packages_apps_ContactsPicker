@@ -16,10 +16,13 @@
 package com.android.contactspicker.data.repository
 
 import android.content.Context
+import android.database.Cursor
 import android.net.Uri
 import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsContract.Contacts
+import android.provider.ContactsContract.Contacts.MATCH_ALL_MIMETYPES_PARAM_KEY
+import android.provider.ContactsContract.Contacts.REQUESTED_MIMETYPES_PARAM_KEY
 import android.provider.ContactsContract.Data
 import com.android.contactspicker.config.ContactsQueryMode
 import com.android.contactspicker.data.model.Contact
@@ -34,6 +37,10 @@ import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+// TODO(b/463918621): Define these inside CP2 as hidden APIs
+private const val CONTACTS_DATA_URI_PATH = "contacts_data"
+private const val CONTACTS_DATA_FILTER_URI_PATH = "contacts_data/filter"
+
 @Singleton
 class ContactsRepositoryImpl
 @Inject
@@ -42,6 +49,14 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
     private val contentResolver = context.contentResolver
 
     companion object {
+        private val DISPLAY_NAME_FETCH_PROJECTION =
+            arrayOf(
+                Contacts._ID,
+                Contacts.DISPLAY_NAME_PRIMARY,
+                Contacts.PHOTO_THUMBNAIL_URI,
+                Contacts.STARRED,
+                Contacts.LOOKUP_KEY,
+            )
         private val PHONE_FILTER_PROJECTION =
             arrayOf(
                 Phone.CONTACT_ID,
@@ -74,10 +89,10 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 ContactsQueryMode.PhonesOnly -> getPhoneContacts()
                 ContactsQueryMode.DisplayNamesOnly -> getDisplayNameContacts()
                 is ContactsQueryMode.Custom -> {
-                    // TODO(b/452020367): Implement custom query logic using mimetypes in
-                    // queryMode.mimetypes.
-                    // For UI presentation in Custom mode, currently return DisplayNameContact.
-                    getDisplayNameContacts()
+                    getContactsWithMimetypes(
+                        queryMode.mimetypes,
+                        queryMode.matchAllRequestedMimeTypes,
+                    )
                 }
             }
         }
@@ -95,9 +110,11 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 ContactsQueryMode.PhonesOnly -> searchPhones(query)
                 ContactsQueryMode.DisplayNamesOnly -> searchDisplayNames(query)
                 is ContactsQueryMode.Custom -> {
-                    // TODO(b/452020367): For UI presentation in Custom search mode, currently
-                    //  return DisplayNameContact.
-                    searchDisplayNames(query)
+                    searchContactsByMimeTypes(
+                        query,
+                        queryMode.mimetypes,
+                        queryMode.matchAllRequestedMimeTypes,
+                    )
                 }
             }
         }
@@ -237,51 +254,96 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
     }
 
     private fun getDisplayNameContacts(): List<Contact> {
-        val contacts = mutableListOf<DisplayNameContact>()
         val selection = "${Contacts.DISPLAY_NAME_PRIMARY} IS NOT NULL"
-
-        val projection =
-            arrayOf(
-                Contacts._ID,
-                Contacts.DISPLAY_NAME_PRIMARY,
-                Contacts.PHOTO_THUMBNAIL_URI,
-                Contacts.STARRED,
-                Contacts.LOOKUP_KEY,
-            )
 
         val cursor =
             contentResolver.query(
                 Contacts.CONTENT_URI,
-                projection,
+                DISPLAY_NAME_FETCH_PROJECTION,
                 selection,
                 null, // No selection args
                 Data.SORT_KEY_PRIMARY + " ASC",
             )
 
-        cursor?.use {
-            val idIndex = it.getColumnIndex(Contacts._ID)
-            val nameIndex = it.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY)
-            val profilePictureUriIndex = it.getColumnIndex(Contacts.PHOTO_THUMBNAIL_URI)
-            val starredIndex = it.getColumnIndex(Contacts.STARRED)
-            val lookupKeyIndex = it.getColumnIndex(Contacts.LOOKUP_KEY)
+        return cursor?.use(::parseDisplayNameContacts) ?: emptyList()
+    }
 
-            while (it.moveToNext()) {
-                val id = it.getLong(idIndex)
-                val name = it.getString(nameIndex)
-                val profilePictureUri = it.getString(profilePictureUriIndex)
-                val isFavorite = it.getInt(starredIndex) == 1
-                val lookupKey = it.getString(lookupKeyIndex)
-                if (name != null) {
-                    contacts.add(
-                        DisplayNameContact(
-                            id = id,
-                            displayName = name,
-                            profilePictureUri = profilePictureUri,
-                            isFavorite = isFavorite,
-                            lookupKey = lookupKey,
-                        )
+    private fun getContactsWithMimetypes(
+        mimetypes: List<String>,
+        matchAllRequestedMimetypes: Boolean,
+    ): List<Contact> {
+        if (mimetypes.isEmpty()) {
+            return emptyList()
+        }
+
+        val uri =
+            Contacts.CONTENT_URI.buildUpon()
+                .appendPath(CONTACTS_DATA_URI_PATH)
+                .appendQueryParameter(REQUESTED_MIMETYPES_PARAM_KEY, mimetypes.joinToString(","))
+                .appendQueryParameter(
+                    MATCH_ALL_MIMETYPES_PARAM_KEY,
+                    matchAllRequestedMimetypes.toString(),
+                )
+                .build()
+
+        val cursor =
+            contentResolver.query(
+                uri,
+                DISPLAY_NAME_FETCH_PROJECTION,
+                null,
+                null,
+                Contacts.SORT_KEY_PRIMARY + " ASC",
+            )
+
+        return cursor?.use(::parseDisplayNameContacts) ?: emptyList()
+    }
+
+    private fun searchContactsByMimeTypes(
+        query: String,
+        mimetypes: List<String>,
+        matchAllRequestedMimetypes: Boolean,
+    ): List<Contact> {
+
+        val uri =
+            Contacts.CONTENT_URI.buildUpon()
+                .appendPath(CONTACTS_DATA_FILTER_URI_PATH)
+                .appendPath(query)
+                .appendQueryParameter(REQUESTED_MIMETYPES_PARAM_KEY, mimetypes.joinToString(","))
+                .appendQueryParameter(
+                    MATCH_ALL_MIMETYPES_PARAM_KEY,
+                    matchAllRequestedMimetypes.toString(),
+                )
+                .build()
+
+        val cursor = contentResolver.query(uri, DISPLAY_NAME_FETCH_PROJECTION, null, null, null)
+
+        return cursor?.use(::parseDisplayNameContacts) ?: emptyList()
+    }
+
+    private fun parseDisplayNameContacts(cursor: Cursor): List<DisplayNameContact> {
+        val contacts = mutableListOf<DisplayNameContact>()
+        val idIndex = cursor.getColumnIndex(Contacts._ID)
+        val nameIndex = cursor.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY)
+        val profilePictureUriIndex = cursor.getColumnIndex(Contacts.PHOTO_THUMBNAIL_URI)
+        val starredIndex = cursor.getColumnIndex(Contacts.STARRED)
+        val lookupKeyIndex = cursor.getColumnIndex(Contacts.LOOKUP_KEY)
+
+        while (cursor.moveToNext()) {
+            val id = cursor.getLong(idIndex)
+            val name = cursor.getString(nameIndex)
+            val profilePictureUri = cursor.getString(profilePictureUriIndex)
+            val isFavorite = cursor.getInt(starredIndex) == 1
+            val lookupKey = cursor.getString(lookupKeyIndex)
+            if (name != null) {
+                contacts.add(
+                    DisplayNameContact(
+                        id = id,
+                        displayName = name,
+                        profilePictureUri = profilePictureUri,
+                        isFavorite = isFavorite,
+                        lookupKey = lookupKey,
                     )
-                }
+                )
             }
         }
         return contacts

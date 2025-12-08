@@ -19,7 +19,10 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="privacy_details_top_bar_header" msgid="316976841297378409">"ज़्यादा जानकारी"</string>
+    <!-- no translation found for privacy_details_top_bar_back_button_content_description (814362367246064228) -->
+    <skip />
+    <!-- no translation found for privacy_details_top_bar_header (5184775104564684612) -->
+    <skip />
     <string name="privacy_details_description" msgid="4299567306628059441">"कोई संपर्क चुनने पर, %1$s के पास आपके डिवाइस में सेव किए गए संपर्कों की यह जानकारी ऐक्सेस करने की अनुमति होगी.\n\nअगर संपर्क जानकारी में आपसे कोई बदलाव किया जाता है, तो %1$s के पास उन बदलावों को ऐक्सेस करने की अनुमति नहीं होगी."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"संपर्क की जानकारी में ये चीज़ें शामिल हो सकती हैं:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"नाम"</string>

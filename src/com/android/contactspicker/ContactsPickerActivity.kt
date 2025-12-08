@@ -185,7 +185,7 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
     private fun processIntentAndSetupUi(intent: Intent, appName: String?, appUid: Int) {
         contactsViewModel.processIntent(
             intentAction = intent.action,
-            intentType = intent.type,
+            intentType = intent.resolveType(this),
             intentExtras = intent.extras,
             callingAppName = appName,
             callingAppUid = appUid,
