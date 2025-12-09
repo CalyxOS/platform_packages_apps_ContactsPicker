@@ -19,10 +19,8 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for privacy_details_top_bar_back_button_content_description (814362367246064228) -->
-    <skip />
-    <!-- no translation found for privacy_details_top_bar_header (5184775104564684612) -->
-    <skip />
+    <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"मागे जा"</string>
+    <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"तुमच्या संपर्कांची गोपनीयता"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"तुम्ही संपर्क निवडता, तेव्हा %1$s ला तुमच्या डिव्हाइस संपर्कांमधील पुढील माहितीचा अ‍ॅक्सेस असेल.\n\nतुम्ही संपर्क माहितीमध्ये कोणतीही अपडेट केल्यास, %1$s ला बदलांचा अ‍ॅक्सेस नसेल."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"संपर्क माहितीमध्ये पुढील तपशिलांचा समावेश असू शकतो:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"नाव"</string>
