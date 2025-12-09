@@ -32,20 +32,17 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"Besišypsančio veidelio piktograma"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"Perjungti profilį"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"Privatumo informacija"</string>
+    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"Sparčiojo slinkimo rankenėlė"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Kontakto profilio nuotrauka"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"Kontakto inicialas"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"Išskleisti"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Sutraukti"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefonas"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"El. paštas"</string>
-    <!-- no translation found for contact_item_emails_count (3836424032662346956) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_count (1433705901810867685) -->
-    <skip />
-    <!-- no translation found for contact_item_emails_selected_count (5996362003818614724) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_selected_count (4762497214231618256) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# el. pašto adresas}one{# el. pašto adresas}few{# el. pašto adresai}many{# el. pašto adreso}other{# el. pašto adresų}}"</string>
+    <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# telefono numeris}one{# telefono numeris}few{# telefono numeriai}many{# telefono numerio}other{# telefono numerių}}"</string>
+    <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} iš # el. pašto adreso}one{{selected_count} iš # el. pašto adreso}few{{selected_count} iš # el. pašto adresų}many{{selected_count} iš # el. pašto adreso}other{{selected_count} iš # el. pašto adresų}}"</string>
+    <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} iš # telefono numerio}one{{selected_count} iš # telefono numerio}few{{selected_count} iš # telefono numerių}many{{selected_count} iš # telefono numerio}other{{selected_count} iš # telefono numerių}}"</string>
     <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{Vienu metu galima bendrinti tik # kontaktą}one{Vienu metu galima bendrinti tik # kontaktą}few{Vienu metu galima bendrinti tik # kontaktus}many{Vienu metu galima bendrinti tik # kontakto}other{Vienu metu galima bendrinti tik # kontaktų}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"Pasirinktų elementų: %1$s"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Išvalyti pasirinkimą"</string>

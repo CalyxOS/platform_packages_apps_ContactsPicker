@@ -32,20 +32,17 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"نماد لبخند"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"عوض کردن نمایه"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"اطلاعات حریم خصوصی"</string>
+    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"دستگیره پیمایش‌کننده سریع"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"عکس نمایه مخاطب"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"حرف اول نام مخاطب"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"ازهم بازکردن"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"جمع کردن"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"تلفن"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"ایمیل"</string>
-    <!-- no translation found for contact_item_emails_count (3836424032662346956) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_count (1433705901810867685) -->
-    <skip />
-    <!-- no translation found for contact_item_emails_selected_count (5996362003818614724) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_selected_count (4762497214231618256) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{‫# ایمیل}one{‫# ایمیل}other{‫# ایمیل}}"</string>
+    <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{‫# شماره تلفن}one{‫# شماره تلفن}other{‫# شماره تلفن}}"</string>
+    <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{‫{selected_count} از # ایمیل}one{‫{selected_count} از # ایمیل}other{‫{selected_count} از # ایمیل}}"</string>
+    <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{‫{selected_count} از # شماره تلفن}one{‫{selected_count} از # شماره تلفن}other{‫{selected_count} از # شماره تلفن}}"</string>
     <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{هر بار فقط می‌توانید # مخاطب را هم‌رسانی کنید}one{هر بار فقط می‌توانید # مخاطب را هم‌رسانی کنید}other{هر بار فقط می‌توانید # مخاطب را هم‌رسانی کنید}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"‏‫%1$s انتخاب شد"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"پاک کردن انتخاب"</string>

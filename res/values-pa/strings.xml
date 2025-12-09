@@ -32,20 +32,17 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"ਮੁਸਕਰਾਉਂਦੇ ਚਿਹਰੇ ਦਾ ਪ੍ਰਤੀਕ"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"ਪ੍ਰੋਫਾਈਲ ਸਵਿੱਚ ਕਰੋ"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"ਪਰਦੇਦਾਰੀ ਜਾਣਕਾਰੀ"</string>
+    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"ਤੇਜ਼ ਸਕ੍ਰੋਲਰ ਹੈਂਡਲ"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"ਸੰਪਰਕ ਦੀ ਪ੍ਰੋਫਾਈਲ ਤਸਵੀਰ"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"ਸੰਪਰਕ ਦਾ ਸ਼ੁਰੂਆਤੀ ਅੱਖਰ"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"ਵਿਸਤਾਰ ਕਰੋ"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"ਸਮੇਟੋ"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ਫ਼ੋਨ"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"ਈਮੇਲ"</string>
-    <!-- no translation found for contact_item_emails_count (3836424032662346956) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_count (1433705901810867685) -->
-    <skip />
-    <!-- no translation found for contact_item_emails_selected_count (5996362003818614724) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_selected_count (4762497214231618256) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# ਈਮੇਲ}one{# ਈਮੇਲ}other{# ਈਮੇਲਾਂ}}"</string>
+    <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# ਫ਼ੋਨ ਨੰਬਰ}one{# ਫ਼ੋਨ ਨੰਬਰ}other{# ਫ਼ੋਨ ਨੰਬਰ}}"</string>
+    <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{# ਈਮੇਲ ਵਿੱਚੋਂ {selected_count}}one{# ਈਮੇਲ ਵਿੱਚੋਂ {selected_count}}other{# ਈਮੇਲਾਂ ਵਿੱਚੋਂ {selected_count}}}"</string>
+    <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{# ਫ਼ੋਨ ਨੰਬਰ ਵਿੱਚੋਂ {selected_count}}one{# ਫ਼ੋਨ ਨੰਬਰ ਵਿੱਚੋਂ {selected_count}}other{# ਫ਼ੋਨ ਨੰਬਰਾਂ ਵਿੱਚੋਂ {selected_count}}}"</string>
     <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{ਇੱਕ ਸਮੇਂ \'ਤੇ ਸਿਰਫ਼ # ਸੰਪਰਕ ਸਾਂਝਾ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ}one{ਇੱਕ ਸਮੇਂ \'ਤੇ ਸਿਰਫ਼ # ਸੰਪਰਕ ਸਾਂਝਾ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ}other{ਇੱਕ ਸਮੇਂ \'ਤੇ ਸਿਰਫ਼ # ਸੰਪਰਕ ਸਾਂਝੇ ਕੀਤੇ ਜਾ ਸਕਦੇ ਹਨ}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s ਨੂੰ ਚੁਣਿਆ ਗਿਆ"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"ਚੋਣ ਕਲੀਅਰ ਕਰੋ"</string>

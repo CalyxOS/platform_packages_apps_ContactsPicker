@@ -32,20 +32,17 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"笑顔アイコン"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"プロファイルを切り替え"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"プライバシー情報"</string>
+    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"高速スクロール ハンドル"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"連絡先のプロフィール写真"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"連絡先のイニシャル"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"開く"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"閉じる"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"電話番号"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"メールアドレス"</string>
-    <!-- no translation found for contact_item_emails_count (3836424032662346956) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_count (1433705901810867685) -->
-    <skip />
-    <!-- no translation found for contact_item_emails_selected_count (5996362003818614724) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_selected_count (4762497214231618256) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# 通のメール}other{# 通のメール}}"</string>
+    <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# 個の電話番号}other{# 個の電話番号}}"</string>
+    <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{# 通中 {selected_count} 通のメール}other{# 通中 {selected_count} 通のメール}}"</string>
+    <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{# 個中 {selected_count} 個の電話番号}other{# 個中 {selected_count} 個の電話番号}}"</string>
     <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{一度に共有できる連絡先は # 件のみです}other{一度に共有できる連絡先は # 件のみです}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s が選択されています"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"選択を解除"</string>
