@@ -170,7 +170,7 @@ private fun itemPosition(index: Int, groupSize: Int): ItemPosition {
 }
 
 /** Returns the SectionKey for this contact, to be used for grouping in the UI. */
-private fun Contact.getSectionKeyForNonFavorite(): SectionKey {
+internal fun Contact.getSectionKeyForNonFavorite(): SectionKey {
     val initial = getDisplayNameInitialLetter()
     return if (initial != null) {
         LetterKey(initial)

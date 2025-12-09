@@ -129,7 +129,17 @@ internal class ScrubberPositionToListIndexMapper(
         return contactIndex.toFloat() / maxContactIndex
     }
 
-    private fun getContactIndexFromFraction(verticalOffsetFraction: Float): Int {
+    /**
+     * Converts the scrubber's fractional vertical offset into a contact index within the flattened
+     * list.
+     *
+     * @param verticalOffsetFraction The vertical position of the scrubber handle, from 0.0f (top)
+     *   to 1.0f (bottom).
+     * @return The corresponding index of the contact in the flattened list.
+     */
+    internal fun getContactIndexFromFraction(
+        @FloatRange(from = 0.0, to = 1.0) verticalOffsetFraction: Float
+    ): Int {
         val maxIndex = contactCount - 1
         return (maxIndex * verticalOffsetFraction).roundToInt().coerceIn(0, maxIndex)
     }
