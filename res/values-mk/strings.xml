@@ -32,20 +32,17 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"Икона за насмевка"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"Променете го профилот"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"Информации за приватноста"</string>
+    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"Рачка за брзо лизгање"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Профилна слика на контактот"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"Иницијал на контактот"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"Прошири"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Собери"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Телефон"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Е-пошта"</string>
-    <!-- no translation found for contact_item_emails_count (3836424032662346956) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_count (1433705901810867685) -->
-    <skip />
-    <!-- no translation found for contact_item_emails_selected_count (5996362003818614724) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_selected_count (4762497214231618256) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# е-пошта}one{# е-пошта}other{# е-пошти}}"</string>
+    <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# телефонски број}one{# телефонски број}other{# телефонски броеви}}"</string>
+    <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} од # е-пошта}one{{selected_count} од # е-пошта}other{{selected_count} од # е-пошти}}"</string>
+    <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} од # телефонски број}one{{selected_count} од # телефонски број}other{{selected_count} од # телефонски броеви}}"</string>
     <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{Може да се сподели # контакт одеднаш}one{Може да се споделат # контакт одеднаш}other{Може да се споделат # контакти одеднаш}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"Се избра %1$s"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Поништете го изборот"</string>

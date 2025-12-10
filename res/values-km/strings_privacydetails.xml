@@ -19,10 +19,8 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for privacy_details_top_bar_back_button_content_description (814362367246064228) -->
-    <skip />
-    <!-- no translation found for privacy_details_top_bar_header (5184775104564684612) -->
-    <skip />
+    <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"ថយក្រោយ"</string>
+    <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"ឯកជនភាព​របស់​ទំនាក់ទំនង​អ្នក"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"នៅពេលអ្នក​ជ្រើសរើស​ទំនាក់ទំនង %1$s នឹងមាន​សិទ្ធិចូលប្រើ​ព័ត៌មាន​ខាងក្រោមពី​ទំនាក់ទំនង​នៅក្នុង​ឧបករណ៍​របស់អ្នក។\n\nប្រសិនបើអ្នក​ធ្វើការផ្លាស់ប្ដូរ​ចំពោះ​ព័ត៌មាន​ទំនាក់ទំនង %1$s នឹង​មិនមាន​សិទ្ធិ​មើលឃើញ​ការផ្លាស់ប្ដូរ​ទាំងនោះទេ។"</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"ព័ត៌មាន​ទំនាក់ទំនង​អាច​រួមបញ្ចូល​ព័ត៌មានលម្អិត ដូចជា៖"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"ឈ្មោះ"</string>

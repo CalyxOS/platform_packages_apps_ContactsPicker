@@ -21,8 +21,6 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Mood
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
@@ -220,6 +218,44 @@ class ContactsPickerBodyTest {
             .assertDoesNotExist()
     }
 
+    @Test
+    fun contactsList_rendersSections_inCorrectOrder() {
+        val favContact =
+            ContactTestDataFactory.createDisplayNameContact(
+                id = 1,
+                displayName = "Alice",
+                isFavorite = true,
+            )
+        val emojiContact =
+            ContactTestDataFactory.createDisplayNameContact(id = 2, displayName = "#Symbol")
+        val letterContact =
+            ContactTestDataFactory.createDisplayNameContact(id = 3, displayName = "Bob")
+
+        setContentWithContactsPickerBody(listOf(favContact, emojiContact, letterContact))
+
+        val favStickyHeaderTitle = context.getString(R.string.contacts_picker_favorites_header)
+        val emojiDesc = context.getString(R.string.emoji_header_icon_content_description)
+        val letterHeader = "B" // Initial for Bob
+
+        val favBounds =
+            composeTestRule.onNodeWithText(favStickyHeaderTitle).fetchSemanticsNode().boundsInRoot
+
+        val emojiBounds =
+            composeTestRule
+                .onNodeWithContentDescription(emojiDesc, useUnmergedTree = true)
+                .fetchSemanticsNode()
+                .boundsInRoot
+
+        val letterBounds =
+            composeTestRule
+                .onNode(hasTestTag(CONTACTS_LIST_SECTION_HEADER_TEST_TAG) and hasText(letterHeader))
+                .fetchSemanticsNode()
+                .boundsInRoot
+
+        assertThat(favBounds.top).isLessThan(emojiBounds.top)
+        assertThat(emojiBounds.top).isLessThan(letterBounds.top)
+    }
+
     private fun setContentWithContactsPickerBody(contacts: List<Contact>) {
         composeTestRule.setContent {
             ContactsPickerBody(
@@ -234,19 +270,5 @@ class ContactsPickerBodyTest {
                 callingAppName = null,
             )
         }
-    }
-
-    @Test
-    fun sectionKey_iconKey_isLessThan_letterKey() {
-        val iconKey = SectionKey.IconKey(Icons.Default.Mood, "Content Description")
-        val letterKey = SectionKey.LetterKey('A')
-        assertThat(iconKey < letterKey).isTrue()
-    }
-
-    @Test
-    fun sectionKey_letterKeys_areSorted_alphabetically() {
-        val letterKey1 = SectionKey.LetterKey('A')
-        val letterKey2 = SectionKey.LetterKey('B')
-        assertThat(letterKey1 < letterKey2).isTrue()
     }
 }

@@ -19,10 +19,8 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for privacy_details_top_bar_back_button_content_description (814362367246064228) -->
-    <skip />
-    <!-- no translation found for privacy_details_top_bar_header (5184775104564684612) -->
-    <skip />
+    <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"Wstecz"</string>
+    <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"Prywatność Twoich kontaktów"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Gdy wybierzesz kontakt, %1$s będzie mieć dostęp do tych informacji z kontaktów na Twoim urządzeniu:\n\nJeśli zaktualizujesz informacje kontaktowe, %1$s nie będzie mieć dostępu do tych zmian."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Informacje kontaktowe mogą obejmować takie dane jak:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Imię i nazwisko"</string>

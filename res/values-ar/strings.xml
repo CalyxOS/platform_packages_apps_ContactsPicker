@@ -32,20 +32,17 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"رمز الوجه المبتسم"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"تبديل الملف الشخصي"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"معلومات الخصوصية"</string>
+    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"مقبض التمرير السريع"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"صورة الملف الشخصي لجهة الاتصال"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"الحرف الأول من اسم جهة الاتصال"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"توسيع"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"تصغير"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"الهاتف"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"البريد الإلكتروني"</string>
-    <!-- no translation found for contact_item_emails_count (3836424032662346956) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_count (1433705901810867685) -->
-    <skip />
-    <!-- no translation found for contact_item_emails_selected_count (5996362003818614724) -->
-    <skip />
-    <!-- no translation found for contact_item_phones_selected_count (4762497214231618256) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{عنوان بريد إلكتروني واحد}zero{‫# عنوان بريد إلكتروني}two{عنوانا بريد إلكتروني}few{‫# عناوين بريد إلكتروني}many{‫# عنوان بريد إلكتروني}other{‫# عنوان بريد إلكتروني}}"</string>
+    <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{رقم هاتف واحد}zero{‫# رقم هاتف}two{رقما هاتف}few{‫# أرقام هاتف}many{‫# رقم هاتف}other{‫# رقم هاتف}}"</string>
+    <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{عنوان بريد إلكتروني واحد ({selected_count}) من إجمالي #}zero{‫{selected_count} من إجمالي # عنوان بريد إلكتروني}two{‫{selected_count} من إجمالي عنوانَي بريد إلكتروني}few{‫{selected_count} من إجمالي # عناوين بريد إلكتروني}many{‫{selected_count} من إجمالي # عنوان بريد إلكتروني}other{‫{selected_count} من إجمالي # عنوان بريد إلكتروني}}"</string>
+    <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{رقم هاتف واحد ({selected_count}) من إجمالي #}zero{‫{selected_count} من إجمالي # رقم هاتف}two{رقما هاتف ({selected_count}) من إجمالي #}few{‫{selected_count} من إجمالي # أرقام هاتف}many{‫{selected_count} من إجمالي # رقم هاتف}other{‫{selected_count} من إجمالي # رقم هاتف}}"</string>
     <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{يمكن مشاركة جهة اتصال واحدة في كل مرة}zero{يمكن مشاركة # جهة اتصال فقط في كل مرة}two{يمكن مشاركة جهتَي اتصال فقط في كل مرة}few{يمكن مشاركة # جهات اتصال فقط في كل مرة}many{يمكن مشاركة # جهة اتصال فقط في كل مرة}other{يمكن مشاركة # جهة اتصال فقط في كل مرة}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"‏تم اختيار %1$s"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"محو البيانات المحددة"</string>

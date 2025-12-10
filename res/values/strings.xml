@@ -37,7 +37,7 @@
         closes the search field. [CHAR LIMIT=NONE] -->
     <string name="contacts_picker_top_bar_search_arrow_back_content_description">Close search</string>
     <!--Content description for the more options icon on primary contacts list top bar [CHAR LIMIT=NONE] -->
-    <string name="contacts_picker_top_bar_more_options_content_description">More Options</string>
+    <string name="contacts_picker_top_bar_more_options_content_description">More options</string>
     <!-- The title of the "Favorites" section in the contacts list. -->
     <string name="contacts_picker_favorites_header">Favorites</string>
     <!--Content description for the "Favorites" section header icon. [CHAR LIMIT=NONE] -->
