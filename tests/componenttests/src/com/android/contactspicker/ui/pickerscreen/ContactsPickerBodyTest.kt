@@ -21,6 +21,7 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
@@ -30,8 +31,11 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToIndex
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeUp
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.R
@@ -39,6 +43,9 @@ import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.ui.components.AVATAR_TEST_TAG
+import com.android.contactspicker.ui.scrubber.SCRUBBER_HANDLE_TEST_TAG
+import com.android.contactspicker.ui.scrubber.SCRUBBER_LABEL_TEST_TAG
+import com.android.contactspicker.ui.scrubber.SCRUBBER_VISIBILITY_TIMEOUT_MILLIS
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -256,6 +263,99 @@ class ContactsPickerBodyTest {
         assertThat(emojiBounds.top).isLessThan(letterBounds.top)
     }
 
+    @Test
+    fun scrubberHandle_isDisplayed_whenListIsScrolled() {
+        val contacts = ContactTestDataFactory.createContactList(50)
+        setContentWithContactsPickerBody(contacts)
+        composeTestRule.onNodeWithTag(SCRUBBER_HANDLE_TEST_TAG).assertIsNotDisplayed()
+        // Wake up scrubber handle
+        performListScroll()
+        composeTestRule.onNodeWithTag(SCRUBBER_HANDLE_TEST_TAG).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(SCRUBBER_LABEL_TEST_TAG).assertIsNotDisplayed()
+    }
+
+    @Test
+    fun scrubberHandle_isNotDisplayed_afterScrollAndDelay() {
+        val contacts = ContactTestDataFactory.createContactList(50)
+        setContentWithContactsPickerBody(contacts)
+
+        performListScroll()
+
+        composeTestRule.onNodeWithTag(SCRUBBER_HANDLE_TEST_TAG).assertIsDisplayed()
+        composeTestRule.mainClock.advanceTimeBy(SCRUBBER_VISIBILITY_TIMEOUT_MILLIS)
+        composeTestRule.onNodeWithTag(SCRUBBER_HANDLE_TEST_TAG).assertIsNotDisplayed()
+    }
+
+    @Test
+    fun scrubberHandle_positionChanges_whenListIsScrolled() {
+        val contacts = ContactTestDataFactory.createContactList(50)
+        setContentWithContactsPickerBody(contacts)
+        // Wake up scrubber handle
+        performListScroll(duration = 1000)
+
+        val initialHandleBounds =
+            composeTestRule
+                .onNodeWithTag(SCRUBBER_HANDLE_TEST_TAG)
+                .fetchSemanticsNode()
+                .boundsInRoot
+
+        // Scroll the list towards the bottom
+        performListScroll(duration = 50)
+
+        // Get the final position of the scrubber handle.
+        val finalHandleBounds =
+            composeTestRule
+                .onNodeWithTag(SCRUBBER_HANDLE_TEST_TAG)
+                .fetchSemanticsNode()
+                .boundsInRoot
+        // Assert that the handle has moved down.
+        assertThat(finalHandleBounds.top).isGreaterThan(initialHandleBounds.top)
+    }
+
+    @Test
+    fun scrubberHandleDrag_scrollsTheList() {
+        val contacts = ContactTestDataFactory.createContactList(100)
+        setContentWithContactsPickerBody(contacts)
+        // Initially first contact should be visible
+        composeTestRule.onNodeWithText(contacts.first().displayName).assertIsDisplayed()
+        val listHeight =
+            composeTestRule
+                .onNode(hasTestTag(CONTACTS_LIST_TEST_TAG))
+                .fetchSemanticsNode()
+                .boundsInRoot
+                .height
+        // Wake up the scrubber
+        performListScroll()
+        composeTestRule.onNodeWithText(contacts.first().displayName).assertIsNotDisplayed()
+        composeTestRule.onNodeWithText(contacts.last().displayName).assertIsNotDisplayed()
+        // Drag Scrubber handle to the bottom end
+        performScrubberDrag(yDelta = listHeight)
+        composeTestRule.onNodeWithText(contacts.last().displayName).assertIsDisplayed()
+        composeTestRule.onNodeWithText(contacts.first().displayName).assertIsNotDisplayed()
+    }
+
+    @Test
+    fun scrubberLabel_appearsDuringDrag_andDisappearsOnRelease() {
+        val contacts = ContactTestDataFactory.createContactList(50)
+        setContentWithContactsPickerBody(contacts)
+
+        // Wake up scrubber handle
+        performListScroll()
+
+        // Drag the scrubber handle to make the label appear.
+        performScrubberDrag(yDelta = 100f, release = false)
+
+        // The label is displayed during the drag.
+        composeTestRule.onNodeWithTag(SCRUBBER_LABEL_TEST_TAG).assertIsDisplayed()
+
+        // Complete the gesture by releasing the scrubber handle.
+        composeTestRule.onNodeWithTag(SCRUBBER_HANDLE_TEST_TAG).performTouchInput { up() }
+        composeTestRule.waitForIdle()
+
+        // The label is no longer displayed after the drag is released.
+        composeTestRule.onNodeWithTag(SCRUBBER_LABEL_TEST_TAG).assertIsNotDisplayed()
+    }
+
     private fun setContentWithContactsPickerBody(contacts: List<Contact>) {
         composeTestRule.setContent {
             ContactsPickerBody(
@@ -270,5 +370,38 @@ class ContactsPickerBodyTest {
                 callingAppName = null,
             )
         }
+    }
+
+    /**
+     * Drags the scrubber handle vertically by the specified [yDelta].
+     *
+     * @param release If true, lifts the finger (up) after moving. If false, keeps the pointer down
+     *   (useful for checking labels visible during drag).
+     */
+    private fun performScrubberDrag(yDelta: Float, release: Boolean = true) {
+        composeTestRule
+            .onNodeWithTag(SCRUBBER_HANDLE_TEST_TAG)
+            .assertIsDisplayed()
+            .performTouchInput {
+                down(center)
+                moveBy(Offset(x = 0f, y = yDelta))
+                if (release) up()
+            }
+
+        // Only wait for idle if we released, otherwise the UI might be in a transient state
+        if (release) composeTestRule.waitForIdle()
+    }
+
+    /**
+     * Performs a vertical swipe up on the contacts list. Used to "wake up" the scrubber or scroll
+     * the list content.
+     */
+    private fun performListScroll(duration: Long = 500) {
+        composeTestRule.onNode(hasTestTag(CONTACTS_LIST_TEST_TAG)).performTouchInput {
+            swipeUp(durationMillis = duration)
+        }
+        // Wait for the scroll animation to finish and for the
+        // AnimatedScrubber's fade-in animation to complete.
+        composeTestRule.waitForIdle()
     }
 }
