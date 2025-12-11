@@ -22,7 +22,7 @@ class FakeContactsPickerSessionProviderRepository : ContactsPickerSessionProvide
     val defaultSessionUri: Uri =
         Uri.parse("content://com.android.contactspicker.session/generated_stub")
 
-    override suspend fun createSession(dataUris: List<Uri>, callingUid: Int): Uri {
+    override suspend fun createSession(dataIds: List<Long>, callingUid: Int): Uri {
         // TODO(b/452020367): add fake implementation and tests for session URI.
         return defaultSessionUri
     }

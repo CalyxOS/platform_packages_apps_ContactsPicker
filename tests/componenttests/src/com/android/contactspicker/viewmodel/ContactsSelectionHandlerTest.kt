@@ -215,4 +215,16 @@ class ContactsSelectionHandlerTest {
 
         assertThat(handler.selectedContacts.value.isEmpty()).isTrue()
     }
+
+    @Test
+    fun getSelectedIds_returnsFlattenedListOfIds() {
+        initHandler(isMultiSelect = true)
+        val contact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT
+        handler.toggleContactSelection(contact)
+
+        val ids = handler.getSelectedIds()
+
+        val expectedIds = contact.phones.map { it.id }
+        assertThat(ids).containsExactlyElementsIn(expectedIds)
+    }
 }

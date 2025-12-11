@@ -22,7 +22,6 @@ import android.provider.ContactsPickerSessionContract
 import android.test.mock.MockContentResolver
 import com.android.contactspicker.fakes.FakeContentProvider
 import com.google.common.truth.Truth.assertThat
-import kotlin.test.assertFailsWith
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -56,18 +55,14 @@ class ContactsPickerSessionProviderRepositoryImplTest {
     @Test
     fun createSession_insertsCorrectValues() = runTest {
         val callingUid = 12345
-        val dataUris =
-            listOf(
-                Uri.parse("content://com.android.contacts/data/1"),
-                Uri.parse("content://com.android.contacts/data/2"),
-            )
+        val dataIds = listOf(1L, 2L)
         val expectedSessionUri =
             Uri.parse("content://${ContactsPickerSessionContract.AUTHORITY}/sessions/session_1")
         val expectedInsertContactDataIds = "1,2"
         val expectedInsertCallingUid = callingUid
 
         fakeContentProvider.insertContactsPickerSessionProviderUri(callingUid, expectedSessionUri)
-        val resultUri = repository.createSession(dataUris, callingUid)
+        val resultUri = repository.createSession(dataIds, callingUid)
 
         val insertedContentValues =
             fakeContentProvider.getContactsPickerSessionProviderInsertContent(callingUid)
@@ -93,41 +88,5 @@ class ContactsPickerSessionProviderRepositoryImplTest {
     @Test(expected = IllegalArgumentException::class)
     fun createSession_throwsExceptionWhenUriListIsEmpty() = runTest {
         repository.createSession(emptyList(), 12345)
-    }
-
-    @Test
-    fun createSession_throwsExceptionWhenUriHasLastArgumentNonNumeric() = runTest {
-        val callingUid = 12345
-        val invalidUris =
-            listOf(
-                Uri.parse("content://com.android.contacts/data/ea2b5"),
-                Uri.parse("content://com.android.contacts/data/abc"),
-                Uri.parse("content://com.android.contacts/data/"), // empty id
-                Uri.parse("content://com.android.contacts/data/123-456"), // hyphenated
-            )
-
-        // Run the assertion for every item in the list
-        for (uri in invalidUris) {
-            assertFailsWith<IllegalArgumentException>("Failed for URI: $uri") {
-                repository.createSession(listOf(uri), callingUid)
-            }
-        }
-    }
-
-    @Test
-    fun createSession_throwsExceptionWhenUriHasLastArgumentNegativeInt() = runTest {
-        val callingUid = 12345
-        val invalidUris =
-            listOf(
-                Uri.parse("content://com.android.contacts/data/-1"),
-                Uri.parse("content://com.android.contacts/data/0"),
-            )
-
-        // Run the assertion for every item in the list
-        for (uri in invalidUris) {
-            assertFailsWith<IllegalArgumentException>("Failed for URI: $uri") {
-                repository.createSession(listOf(uri), callingUid)
-            }
-        }
     }
 }
