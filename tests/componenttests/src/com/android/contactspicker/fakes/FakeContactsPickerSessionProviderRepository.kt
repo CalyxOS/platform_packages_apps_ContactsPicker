@@ -19,11 +19,18 @@ import android.net.Uri
 import com.android.contactspicker.data.repository.ContactsPickerSessionProviderRepository
 
 class FakeContactsPickerSessionProviderRepository : ContactsPickerSessionProviderRepository {
-    val defaultSessionUri: Uri =
-        Uri.parse("content://com.android.contactspicker.session/generated_stub")
+
+    private val results = mutableMapOf<Pair<List<Long>, Int>, Uri>()
+
+    /**
+     * Registers a specific Session URI to be returned when createSession is called with the exact
+     * [dataIds] and [callingUid].
+     */
+    fun setSessionResult(dataIds: List<Long>, callingUid: Int, resultUri: Uri) {
+        results[dataIds to callingUid] = resultUri
+    }
 
     override suspend fun createSession(dataIds: List<Long>, callingUid: Int): Uri {
-        // TODO(b/452020367): add fake implementation and tests for session URI.
-        return defaultSessionUri
+        return results[dataIds to callingUid] ?: Uri.EMPTY
     }
 }

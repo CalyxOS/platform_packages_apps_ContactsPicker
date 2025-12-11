@@ -26,6 +26,7 @@ import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsContract.Contacts
+import android.provider.ContactsContract.Data
 import android.test.mock.MockContentResolver
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -307,5 +308,23 @@ class ContactsRepositoryImplTest {
         assertThat(contacts).hasSize(2)
         assertThat((contacts[0] as PhoneContact).profilePictureUri).isNull()
         assertThat((contacts[1] as PhoneContact).profilePictureUri).isEqualTo(fakeUri)
+    }
+
+    @Test
+    fun getDataRowIds_returnsCorrectDataIds_forContactsAndMimeTypes() = runTest {
+        val contactId = 1L
+        val emailDataId = 101L
+        val phoneDataId = 102L
+        val mimeTypes = listOf(Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE)
+
+        val cursor = MatrixCursor(arrayOf(Data._ID))
+        cursor.addRow(arrayOf(emailDataId))
+        cursor.addRow(arrayOf(phoneDataId))
+
+        fakeContentProvider.setCursorForUri(Data.CONTENT_URI, cursor)
+
+        val result = repository.getDataRowIds(contactIds = listOf(contactId), mimeTypes = mimeTypes)
+
+        assertThat(result).containsExactly(emailDataId, phoneDataId)
     }
 }

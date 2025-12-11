@@ -325,8 +325,8 @@ constructor(
             is ContactsQueryMode.EmailsOnly,
             is ContactsQueryMode.PhonesOnly -> getActionPickContactsIntent(ids)
             is ContactsQueryMode.Custom -> {
-                // TODO(b/452020367): requery the selected contacts for the requested MIME types.
-                throw UnsupportedOperationException()
+                val ids = contactsRepository.getDataRowIds(ids, queryMode.mimetypes)
+                getActionPickContactsIntent(ids)
             }
 
             is ContactsQueryMode.DisplayNamesOnly ->

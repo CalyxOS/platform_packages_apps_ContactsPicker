@@ -121,6 +121,35 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         }
     }
 
+    override suspend fun getDataRowIds(
+        contactIds: List<Long>,
+        mimeTypes: List<String>,
+    ): List<Long> {
+        if (contactIds.isEmpty() || mimeTypes.isEmpty()) return emptyList()
+
+        val keySelection = "${Data.CONTACT_ID} IN (${contactIds.joinToString(",") { "?" }})"
+        val mimeSelection = "${Data.MIMETYPE} IN (${mimeTypes.joinToString(",") { "?" }})"
+
+        val selection = "$keySelection AND $mimeSelection"
+
+        // TODO(b/452020367): add json to work-around the 999 limit, see comment on ag/37450004.
+        //  (lookupKeys.size + mimeTypes.size) must never exceed 999 (the Android SQLite limit).
+        //  Max size of contactIds is 100 (max selection limit) and max size of mimeTypes is ~11
+        //  (number of supported mime types).
+        val selectionArgs = (contactIds.map { it.toString() } + mimeTypes).toTypedArray()
+
+        return buildList {
+            contentResolver
+                .query(Data.CONTENT_URI, arrayOf(Data._ID), selection, selectionArgs, null)
+                ?.use { cursor ->
+                    val idColumnIndex = cursor.getColumnIndexOrThrow(Data._ID)
+                    while (cursor.moveToNext()) {
+                        add(cursor.getLong(idColumnIndex))
+                    }
+                }
+        }
+    }
+
     private fun getEmailContacts(): List<Contact> {
         val contacts = mutableMapOf<Long, EmailContact>()
         val projection =

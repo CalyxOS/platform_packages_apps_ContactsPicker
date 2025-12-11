@@ -38,4 +38,13 @@ interface ContactsRepository {
      * @return A list of matching [Contact]s.
      */
     suspend fun searchContacts(query: String, queryMode: ContactsQueryMode): List<Contact>
+
+    /**
+     * Retrieves Data Row IDs for specific contact lookup keys and mime types.
+     *
+     * @param contactIds List of contact lookup keys.
+     * @param mimeTypes List of mime types.
+     * @return A list of unique data row IDs.
+     */
+    suspend fun getDataRowIds(contactIds: List<Long>, mimeTypes: List<String>): List<Long>
 }

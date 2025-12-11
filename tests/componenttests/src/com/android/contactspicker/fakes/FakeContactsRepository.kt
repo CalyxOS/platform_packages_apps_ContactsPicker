@@ -27,6 +27,7 @@ class FakeContactsRepository : ContactsRepository {
     private val searchResultsMap = mutableMapOf<String, List<Contact>>()
     private val searchExceptionMap = mutableMapOf<String, Exception>()
     private val searchInvocationsCountMap = mutableMapOf<String, Int>()
+    private val dataRowIdsMap = mutableMapOf<Pair<Set<Long>, Set<String>>, List<Long>>()
 
     fun setInitialContacts(contacts: List<Contact>) {
         initialContacts = contacts
@@ -47,6 +48,10 @@ class FakeContactsRepository : ContactsRepository {
         searchResultsMap.remove(query)
     }
 
+    fun setDataRowIdsResult(contactIds: List<Long>, mimeTypes: List<String>, dataIds: List<Long>) {
+        dataRowIdsMap[contactIds.toSet() to mimeTypes.toSet()] = dataIds
+    }
+
     /** Returns the number of times [searchContacts] has been invoked with the provided [query]. */
     fun searchInvocationsCountForQuery(query: String): Int {
         return searchInvocationsCountMap.getOrDefault(query, 0)
@@ -64,5 +69,12 @@ class FakeContactsRepository : ContactsRepository {
         searchInvocationsCountMap[query] = searchInvocationsCountMap.getOrDefault(query, 0) + 1
         searchExceptionMap[query]?.let { throw it }
         return searchResultsMap[query] ?: emptyList()
+    }
+
+    override suspend fun getDataRowIds(
+        contactIds: List<Long>,
+        mimeTypes: List<String>,
+    ): List<Long> {
+        return dataRowIdsMap[contactIds.toSet() to mimeTypes.toSet()] ?: emptyList()
     }
 }
