@@ -21,6 +21,8 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.collection.MutableLongObjectMap
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
@@ -56,6 +58,7 @@ import org.junit.runner.RunWith
 class ContactsPickerBodyTest {
 
     @get:Rule val composeTestRule = createComposeRule()
+
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
     private val context: Context = ApplicationProvider.getApplicationContext()
@@ -138,12 +141,13 @@ class ContactsPickerBodyTest {
 
         setContentWithContactsPickerBody(contacts)
 
-        composeTestRule.onNode(hasTestTag(PRIVACY_BANNER_TEST_TAG)).assertIsDisplayed()
+        composeTestRule.waitForIdle()
 
+        composeTestRule.onNode(hasTestTag(PRIVACY_BANNER_TEST_TAG)).assertIsDisplayed()
         composeTestRule
             .onNode(hasTestTag(CONTACTS_LIST_TEST_TAG))
             .performScrollToIndex(contacts.size - 1)
-
+        composeTestRule.waitForIdle()
         composeTestRule.onNode(hasTestTag(PRIVACY_BANNER_TEST_TAG)).assertDoesNotExist()
     }
 
@@ -261,6 +265,50 @@ class ContactsPickerBodyTest {
 
         assertThat(favBounds.top).isLessThan(emojiBounds.top)
         assertThat(emojiBounds.top).isLessThan(letterBounds.top)
+    }
+
+    @Test
+    fun contactsList_hasExtraBottomPadding_whenSelectionIsNotEmpty() {
+        val contacts = ContactTestDataFactory.createContactList(20)
+        val selectedContactsState = mutableStateOf(emptyContactsSelection())
+
+        composeTestRule.setContent {
+            ContactsPickerBody(
+                contacts = contacts,
+                selectedContacts = selectedContactsState.value,
+                isMultiSelectEnabled = true,
+                onPrivacyBannerMoreDetails = {},
+                onPrivacyBannerDismissRequest = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
+                callingAppName = null,
+                showPrivacyBanner = false,
+            )
+        }
+
+        val lastContactName = contacts.last().displayName
+        val listNode = composeTestRule.onNode(hasTestTag(CONTACTS_LIST_TEST_TAG))
+        listNode.performScrollToIndex(contacts.size - 1)
+        composeTestRule.waitForIdle()
+
+        val listBounds = listNode.fetchSemanticsNode().boundsInRoot
+        val lastItemBoundsEmpty =
+            composeTestRule.onNodeWithText(lastContactName).fetchSemanticsNode().boundsInRoot
+        val gapWhenEmpty = listBounds.bottom - lastItemBoundsEmpty.bottom
+        val newSelection = MutableLongObjectMap<Set<Long>>()
+        newSelection.put(contacts.first().id, emptySet())
+        selectedContactsState.value = newSelection
+        composeTestRule.waitForIdle()
+
+        listNode.performScrollToIndex(contacts.size - 1)
+        composeTestRule.waitForIdle()
+
+        val lastItemBoundsSelected =
+            composeTestRule.onNodeWithText(lastContactName).fetchSemanticsNode().boundsInRoot
+        val gapWhenSelected = listBounds.bottom - lastItemBoundsSelected.bottom
+
+        assertThat(gapWhenSelected).isGreaterThan(gapWhenEmpty)
+        assertThat(gapWhenSelected - gapWhenEmpty).isAtLeast(80f)
     }
 
     @Test
