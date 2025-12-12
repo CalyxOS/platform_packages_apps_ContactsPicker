@@ -24,8 +24,8 @@ import android.widget.Toast
 // TODO(b/442397528): support all mime types for ACTION_PICK_CONTACTS
 enum class MimeType(val label: String, val mimeTypeString: String) {
     STRUCTURED_NAME("Name", ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE),
-    EMAIL("Email Addresses", ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE),
-    PHONE("Phone Numbers", ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE),
+    EMAIL("Email Addresses", ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE),
+    PHONE("Phone Numbers", ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE),
     ADDRESS("Addresses", ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE),
     ORGANIZATION("Company", ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE),
     RELATION("Related people", ContactsContract.CommonDataKinds.Relation.CONTENT_ITEM_TYPE),
