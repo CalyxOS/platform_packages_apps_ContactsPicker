@@ -58,6 +58,7 @@ import com.android.contactspicker.provider.CallingPackageProvider
 import com.android.contactspicker.ui.components.ContactsPickerBottomSheet
 import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
 import com.android.contactspicker.viewmodel.ContactsViewModel
+import com.android.contactspicker.viewmodel.PickerResultEvent
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -197,6 +198,21 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
     // configuration change.
     private fun setupComposeUi() {
         setContent {
+            LaunchedEffect(Unit) {
+                contactsViewModel.pickerResultEvents.collect { event ->
+                    when (event) {
+                        is PickerResultEvent.SetResultAndFinish -> {
+                            setResult(RESULT_OK, event.intent)
+                            finish()
+                        }
+                        is PickerResultEvent.CancelAndFinish -> {
+                            setResult(RESULT_CANCELED)
+                            finish()
+                        }
+                    }
+                }
+            }
+
             val uiState = contactsViewModel.uiState.collectAsState()
             ContactsPickerAppTheme {
                 ReadContactsPermissionCheckedContent(contactsViewModel) {
@@ -208,7 +224,7 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
                         onToggleEntrySelection = contactsViewModel::toggleEntrySelection,
                         onClearSelection = contactsViewModel::clearSelection,
                         onPrivacyBannerDismissRequest = contactsViewModel::hidePrivacyBanner,
-                        onDoneClicked = ::handleDoneClicked,
+                        onDoneClicked = contactsViewModel::onDoneClicked,
                         onQueryChange = contactsViewModel::onSearchQueryChanged,
                         onExitSearch = contactsViewModel::exitSearch,
                         onPreviewClicked = contactsViewModel::onPreviewClicked,
@@ -217,18 +233,6 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
                 }
             }
         }
-    }
-
-    /** Prepares the result intent and finishes the activity. */
-    private fun handleDoneClicked() {
-        val resultIntent = contactsViewModel.prepareSelectionResult()
-
-        if (resultIntent == null) {
-            setResult(RESULT_CANCELED)
-        } else {
-            setResult(RESULT_OK, resultIntent)
-        }
-        finish()
     }
 
     private fun forwardToOtherActionPickHandlersWithChooser(targetIntent: Intent) {

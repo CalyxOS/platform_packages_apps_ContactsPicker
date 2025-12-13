@@ -15,6 +15,8 @@
  */
 package com.android.contactspicker.inject
 
+import com.android.contactspicker.data.repository.ContactsPickerSessionProviderRepository
+import com.android.contactspicker.data.repository.ContactsPickerSessionProviderRepositoryImpl
 import com.android.contactspicker.data.repository.ContactsRepository
 import com.android.contactspicker.data.repository.ContactsRepositoryImpl
 import com.android.contactspicker.data.repository.PrivacyBannerRepository
@@ -31,6 +33,11 @@ abstract class RepositoryModule {
     abstract fun bindContactsRepository(
         contactsRepositoryImpl: ContactsRepositoryImpl
     ): ContactsRepository
+
+    @Binds
+    abstract fun bindContactsPickerSessionProviderRepository(
+        contactsPickerSessionProviderRepositoryImpl: ContactsPickerSessionProviderRepositoryImpl
+    ): ContactsPickerSessionProviderRepository
 
     @Binds
     abstract fun bindPrivacyRepository(

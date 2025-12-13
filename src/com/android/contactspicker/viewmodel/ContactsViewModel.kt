@@ -35,12 +35,14 @@ import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.model.emptyContactsSelection
+import com.android.contactspicker.data.repository.ContactsPickerSessionProviderRepository
 import com.android.contactspicker.data.repository.ContactsRepository
 import com.android.contactspicker.data.repository.PrivacyBannerRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -48,6 +50,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -67,6 +70,13 @@ sealed interface SnackbarEvent {
     data class ShowSelectionLimitReached(val limit: Int) : SnackbarEvent
 }
 
+/** Events for the Activity Result. */
+sealed interface PickerResultEvent {
+    data class SetResultAndFinish(val intent: Intent) : PickerResultEvent
+
+    data object CancelAndFinish : PickerResultEvent
+}
+
 /**
  * ViewModel for the Contacts Picker screen.
  *
@@ -79,6 +89,7 @@ open class ContactsViewModel
 constructor(
     @ApplicationContext context: Context,
     private val contactsRepository: ContactsRepository,
+    private val contactsPickerSessionProviderRepository: ContactsPickerSessionProviderRepository,
     private val privacyBannerRepository: PrivacyBannerRepository,
     private val selectionHandlerFactory: ContactsSelectionHandler.Factory,
 ) : ViewModel() {
@@ -90,6 +101,9 @@ constructor(
 
     private val _snackbarEvents = MutableSharedFlow<SnackbarEvent>()
     open val snackbarEvents: Flow<SnackbarEvent> = _snackbarEvents.asSharedFlow()
+
+    private val _pickerResultEvents = Channel<PickerResultEvent>(Channel.BUFFERED)
+    open val pickerResultEvents = _pickerResultEvents.receiveAsFlow()
 
     private var selectionHandler: ContactsSelectionHandler? = null
     private var selectionCollectorJob: Job? = null
@@ -238,13 +252,11 @@ constructor(
     }
 
     /**
-     * Converts the current selection map into a final result intent.
-     *
-     * @return A ready-to-use result [Intent], or null if selection is empty/error occurred.
-     * @throws [IllegalStateException] if called in non success ui state.
+     * Called when the user clicks the "Done" button. Acts as the single entry point for finishing
+     * the selection process.
      */
     @OpenForTesting
-    open fun prepareSelectionResult(): Intent? {
+    open fun onDoneClicked() {
         val config = checkNotNull(pickerConfig)
         val currentState = _uiState.value
         check(
@@ -252,17 +264,31 @@ constructor(
                 currentState is SearchState.Success ||
                 currentState is ContactsPreviewState
         ) {
-            "prepareSelectionResult called while not in a Success state."
+            "onDoneClicked called while not in a Success state."
         }
+        viewModelScope.launch {
+            val finalUris = checkNotNull(selectionHandler).resolveSelectedUris(initialContacts)
+            if (finalUris.isEmpty()) {
+                _pickerResultEvents.send(PickerResultEvent.CancelAndFinish)
+                return@launch
+            }
 
-        val finalUris = checkNotNull(selectionHandler).resolveSelectedUris(initialContacts)
-        if (finalUris.isEmpty()) return null
+            val resultIntent: Intent? =
+                when (config.pickerAction) {
+                    ContactsPickerAction.ACTION_PICK ->
+                        createActionPickResult(finalUris, config.isMultiSelectEnabled)
+                    ContactsPickerAction.ACTION_PICK_CONTACTS -> {
+                        // TODO(b/37307800): consider setting _uiState.update {
+                        // it.copy(isLoading = true) }
+                        createActionPickContactsResult(finalUris, config.queryMode)
+                    }
+                }
 
-        return when (config.pickerAction) {
-            ContactsPickerAction.ACTION_PICK ->
-                createActionPickResult(finalUris, config.isMultiSelectEnabled)
-            // TODO(b/452020367): handle action pick contacts
-            ContactsPickerAction.ACTION_PICK_CONTACTS -> null
+            if (resultIntent != null) {
+                _pickerResultEvents.send(PickerResultEvent.SetResultAndFinish(resultIntent))
+            } else {
+                _pickerResultEvents.send(PickerResultEvent.CancelAndFinish)
+            }
         }
     }
 
@@ -281,6 +307,34 @@ constructor(
             } else {
                 data = uris.first()
             }
+        }
+    }
+
+    private suspend fun createActionPickContactsResult(
+        uris: List<Uri>,
+        queryMode: ContactsQueryMode,
+    ): Intent? {
+        if (uris.isEmpty()) {
+            return null
+        }
+
+        return when (queryMode) {
+            is ContactsQueryMode.EmailsOnly,
+            is ContactsQueryMode.PhonesOnly -> getActionPickContactsIntent(uris)
+            is ContactsQueryMode.Custom -> {
+                // TODO(b/452020367): requery the selected contacts for the requested MIME types.
+                throw UnsupportedOperationException()
+            }
+
+            is ContactsQueryMode.DisplayNamesOnly ->
+                throw IllegalStateException("Wrong query mode for ACTION_PICK_CONTACTS")
+        }
+    }
+
+    private suspend fun getActionPickContactsIntent(uris: List<Uri>): Intent {
+        return Intent().apply {
+            data = contactsPickerSessionProviderRepository.createSession(uris, callingAppUid)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
     }
 

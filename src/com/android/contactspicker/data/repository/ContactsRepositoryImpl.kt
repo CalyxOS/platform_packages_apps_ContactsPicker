@@ -18,6 +18,7 @@ package com.android.contactspicker.data.repository
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsContract.Contacts
@@ -276,8 +277,9 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             return emptyList()
         }
 
+        // TODO(467326511#comment3): consider fix in the CP2 matcher and change the used URI
         val uri =
-            Contacts.CONTENT_URI.buildUpon()
+            ContactsContract.AUTHORITY_URI.buildUpon()
                 .appendPath(CONTACTS_DATA_URI_PATH)
                 .appendQueryParameter(REQUESTED_MIMETYPES_PARAM_KEY, mimetypes.joinToString(","))
                 .appendQueryParameter(
@@ -304,8 +306,9 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         matchAllRequestedMimetypes: Boolean,
     ): List<Contact> {
 
+        // TODO(467326511#comment3): consider fix in the CP2 matcher and change the used URI
         val uri =
-            Contacts.CONTENT_URI.buildUpon()
+            ContactsContract.AUTHORITY_URI.buildUpon()
                 .appendPath(CONTACTS_DATA_FILTER_URI_PATH)
                 .appendPath(query)
                 .appendQueryParameter(REQUESTED_MIMETYPES_PARAM_KEY, mimetypes.joinToString(","))
