@@ -24,10 +24,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
@@ -83,24 +87,37 @@ fun ContactsPickerTopBar(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun OverflowMenu(onClickPrivacyDetailsMenuItem: () -> Unit) {
     var showOverflowMenu by rememberSaveable { mutableStateOf(false) }
 
     Box {
-        // TODO(b/460366127): To improve accessibility, wrap the IconButton in a TooltipBox
-        IconButton(
-            onClick = { showOverflowMenu = true },
-            modifier = Modifier.testTag(CONTACTS_PICKER_TOP_BAR_MORE_VERTICAL_ICON_TEST_TAG),
+        TooltipBox(
+            positionProvider = TooltipDefaults.rememberTooltipPositionProvider(),
+            tooltip = {
+                Text(
+                    text =
+                        stringResource(
+                            R.string.contacts_picker_top_bar_more_options_content_description
+                        )
+                )
+            },
+            state = rememberTooltipState(),
         ) {
-            Icon(
-                imageVector = Icons.Default.MoreVert,
-                contentDescription =
-                    stringResource(
-                        R.string.contacts_picker_top_bar_more_options_content_description
-                    ),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            IconButton(
+                onClick = { showOverflowMenu = true },
+                modifier = Modifier.testTag(CONTACTS_PICKER_TOP_BAR_MORE_VERTICAL_ICON_TEST_TAG),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription =
+                        stringResource(
+                            R.string.contacts_picker_top_bar_more_options_content_description
+                        ),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
         DropdownMenu(expanded = showOverflowMenu, onDismissRequest = { showOverflowMenu = false }) {
             DropdownMenuItem(
