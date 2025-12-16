@@ -26,7 +26,8 @@
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"검색"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"검색어 삭제"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"검색 닫기"</string>
-    <string name="contacts_picker_top_bar_more_options_content_description" msgid="6586161048394547875">"옵션 더보기"</string>
+    <!-- no translation found for contacts_picker_top_bar_more_options_content_description (3631455099077689243) -->
+    <skip />
     <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"즐겨찾기"</string>
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"별표 아이콘"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"스마일 아이콘"</string>

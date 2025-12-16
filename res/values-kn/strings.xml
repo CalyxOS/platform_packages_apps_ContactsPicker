@@ -26,7 +26,8 @@
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"ಹುಡುಕಿ"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"ಹುಡುಕಾಟ ಪಠ್ಯವನ್ನು ತೆರವುಗೊಳಿಸಿ"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"ಹುಡುಕಾಟವನ್ನು ಮುಚ್ಚಿರಿ"</string>
-    <string name="contacts_picker_top_bar_more_options_content_description" msgid="6586161048394547875">"ಇನ್ನಷ್ಟು ಆಯ್ಕೆಗಳು"</string>
+    <!-- no translation found for contacts_picker_top_bar_more_options_content_description (3631455099077689243) -->
+    <skip />
     <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"ಮೆಚ್ಚಿನವುಗಳು"</string>
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"ನಕ್ಷತ್ರ ಐಕಾನ್"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"ನಗು ಎಂಬುದನ್ನು ಸೂಚಿಸುವ ಐಕಾನ್"</string>

@@ -26,7 +26,8 @@
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"সন্ধান কৰক"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"সন্ধান কৰা পাঠবোৰ মচক"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"সন্ধান কৰাটো বন্ধ কৰক"</string>
-    <string name="contacts_picker_top_bar_more_options_content_description" msgid="6586161048394547875">"অধিক বিকল্প"</string>
+    <!-- no translation found for contacts_picker_top_bar_more_options_content_description (3631455099077689243) -->
+    <skip />
     <string name="contacts_picker_favorites_header" msgid="8832599911501712849">"প্ৰিয়"</string>
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"তৰা চিহ্ন"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"হাঁহিৰ চিহ্ন"</string>
