@@ -494,7 +494,7 @@ constructor(
 private fun SearchState.Success.getAggregatedContacts(queryMode: ContactsQueryMode): List<Contact> =
     when (queryMode) {
         ContactsQueryMode.EmailsOnly -> {
-            val emailContacts = searchResults as List<EmailContact>
+            val emailContacts = searchResults.map { it as EmailContact }
             emailContacts
                 .groupBy { it.id }
                 .values
@@ -505,7 +505,7 @@ private fun SearchState.Success.getAggregatedContacts(queryMode: ContactsQueryMo
                 }
         }
         ContactsQueryMode.PhonesOnly -> {
-            val phoneContacts = searchResults as List<PhoneContact>
+            val phoneContacts = searchResults.map { it as PhoneContact }
             phoneContacts
                 .groupBy { it.id }
                 .values
