@@ -35,14 +35,17 @@ class ContactsPickerSessionProviderRepositoryImpl
 constructor(@param:ApplicationContext private val context: Context) :
     ContactsPickerSessionProviderRepository {
 
-    override suspend fun createSession(dataUris: List<Uri>, callingUid: Int): Uri =
+    override suspend fun createSession(dataIds: List<Long>, callingUid: Int): Uri =
         withContext(Dispatchers.IO) {
-            validateDataUris(dataUris)
+            if (dataIds.isEmpty()) {
+                throw IllegalArgumentException("Empty dataIds passed")
+            }
 
-            val dataIds = dataUris.joinToString(",") { it.lastPathSegment.toString() }
+            val idsString = dataIds.joinToString(",")
+
             val values =
                 ContentValues().apply {
-                    put(ContactsPickerSessionContract.Session.CONTACT_DATA_IDS, dataIds)
+                    put(ContactsPickerSessionContract.Session.CONTACT_DATA_IDS, idsString)
                     put(ContactsPickerSessionContract.Session.SESSION_REQUESTER_UID, callingUid)
                 }
 
@@ -51,19 +54,4 @@ constructor(@param:ApplicationContext private val context: Context) :
                 values,
             ) as Uri
         }
-
-    private fun validateDataUris(dataUris: List<Uri>) {
-        if (dataUris.isEmpty()) {
-            throw IllegalArgumentException("Empty dataUris passed")
-        }
-        val hasInvalidIds =
-            dataUris.any { uri ->
-                val id = uri.lastPathSegment?.toLongOrNull()
-                id == null || id <= 0
-            }
-        // Verify that all IDs are numeric, positive integers
-        if (hasInvalidIds) {
-            throw IllegalArgumentException("All data URIs must contain positive numeric IDs")
-        }
-    }
 }

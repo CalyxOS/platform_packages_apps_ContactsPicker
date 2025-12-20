@@ -17,6 +17,7 @@ package com.android.democontactspickerclientapp37
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.provider.ContactsContract
 import android.provider.ContactsPickerSessionContract
 import android.widget.Toast
@@ -70,4 +71,56 @@ internal fun buildActionPickContactsIntent(
         requestedDataFields,
     )
     return intent
+}
+
+data class SessionDataRow(val id: Long, val mimeType: String, val value: String?)
+
+data class SessionContact(
+    val contactId: Long,
+    val displayName: String?,
+    val dataRows: List<SessionDataRow>,
+)
+
+/** Queries the session URI for the contact data and converts it to a list of [SessionContact]. */
+internal fun parseSessionResult(context: Context, uri: Uri): List<SessionContact> {
+    val projection =
+        arrayOf(
+            ContactsContract.Data.CONTACT_ID,
+            ContactsContract.Data.DISPLAY_NAME_PRIMARY,
+            ContactsContract.Data.MIMETYPE,
+            // TODO(b/452020367): check if DATA1 is sufficient for all mimetypes
+            ContactsContract.Data.DATA1,
+            ContactsContract.Data._ID,
+        )
+
+    // TODO(b/452020367): add another view that shows the order of the returned data rows.
+    // TODO(b/452020367): verify the desired order of returned values.
+    val sortOrder = "${ContactsContract.Data.CONTACT_ID} ASC"
+
+    val contentResolver = context.contentResolver
+    val contactsMap = mutableMapOf<Long, MutableList<SessionDataRow>>()
+    val namesMap = mutableMapOf<Long, String?>()
+
+    contentResolver.query(uri, projection, null, null, sortOrder)?.use { cursor ->
+        val idCol = cursor.getColumnIndexOrThrow(ContactsContract.Data.CONTACT_ID)
+        val nameCol = cursor.getColumnIndexOrThrow(ContactsContract.Data.DISPLAY_NAME_PRIMARY)
+        val mimeCol = cursor.getColumnIndexOrThrow(ContactsContract.Data.MIMETYPE)
+        val dataCol = cursor.getColumnIndexOrThrow(ContactsContract.Data.DATA1)
+        val dataIdCol = cursor.getColumnIndexOrThrow(ContactsContract.Data._ID)
+
+        while (cursor.moveToNext()) {
+            val contactId = cursor.getLong(idCol)
+            val name = cursor.getString(nameCol)
+            val mimeType = cursor.getString(mimeCol)
+            val value = cursor.getString(dataCol)
+            val dataId = cursor.getLong(dataIdCol)
+
+            namesMap.putIfAbsent(contactId, name)
+            contactsMap
+                .computeIfAbsent(contactId) { mutableListOf() }
+                .add(SessionDataRow(dataId, mimeType, value))
+        }
+    }
+
+    return contactsMap.map { (id, rows) -> SessionContact(id, namesMap[id], rows) }
 }

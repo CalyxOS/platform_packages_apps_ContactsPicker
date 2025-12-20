@@ -35,6 +35,7 @@ android_library {
     platform_apis: true,
     srcs: [
         "src/**/*.kt",
+        ":statslog-contactspicker-java-gen",
     ],
     resource_dirs: ["res"],
     static_libs: [
@@ -78,4 +79,12 @@ aconfig_declarations {
 java_aconfig_library {
     name: "contactspicker_aconfig_flags_java_lib",
     aconfig_declarations: "contactspicker_aconfig_flags",
+}
+
+genrule {
+    name: "statslog-contactspicker-java-gen",
+    tools: ["stats-log-api-gen"],
+    cmd: "$(location stats-log-api-gen) --java $(out) --module contactspicker" +
+        " --javaPackage com.android.contactspicker --javaClass ContactsPickerStatsLog",
+    out: ["com/android/contactspicker/logging/ContactsPickerStatsLog.java"],
 }

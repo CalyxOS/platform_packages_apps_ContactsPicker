@@ -267,20 +267,23 @@ constructor(
             "onDoneClicked called while not in a Success state."
         }
         viewModelScope.launch {
-            val finalUris = checkNotNull(selectionHandler).resolveSelectedUris(initialContacts)
-            if (finalUris.isEmpty()) {
+            val handler = checkNotNull(selectionHandler)
+            if (handler.selectedContacts.value.isEmpty()) {
                 _pickerResultEvents.send(PickerResultEvent.CancelAndFinish)
                 return@launch
             }
 
             val resultIntent: Intent? =
                 when (config.pickerAction) {
-                    ContactsPickerAction.ACTION_PICK ->
+                    ContactsPickerAction.ACTION_PICK -> {
+                        val finalUris = handler.resolveSelectedUris(initialContacts)
                         createActionPickResult(finalUris, config.isMultiSelectEnabled)
+                    }
                     ContactsPickerAction.ACTION_PICK_CONTACTS -> {
                         // TODO(b/37307800): consider setting _uiState.update {
                         // it.copy(isLoading = true) }
-                        createActionPickContactsResult(finalUris, config.queryMode)
+                        val selectedIds = handler.getSelectedIds()
+                        createActionPickContactsResult(selectedIds, config.queryMode)
                     }
                 }
 
@@ -311,19 +314,19 @@ constructor(
     }
 
     private suspend fun createActionPickContactsResult(
-        uris: List<Uri>,
+        ids: List<Long>,
         queryMode: ContactsQueryMode,
     ): Intent? {
-        if (uris.isEmpty()) {
+        if (ids.isEmpty()) {
             return null
         }
 
         return when (queryMode) {
             is ContactsQueryMode.EmailsOnly,
-            is ContactsQueryMode.PhonesOnly -> getActionPickContactsIntent(uris)
+            is ContactsQueryMode.PhonesOnly -> getActionPickContactsIntent(ids)
             is ContactsQueryMode.Custom -> {
-                // TODO(b/452020367): requery the selected contacts for the requested MIME types.
-                throw UnsupportedOperationException()
+                val ids = contactsRepository.getDataRowIds(ids, queryMode.mimetypes)
+                getActionPickContactsIntent(ids)
             }
 
             is ContactsQueryMode.DisplayNamesOnly ->
@@ -331,9 +334,9 @@ constructor(
         }
     }
 
-    private suspend fun getActionPickContactsIntent(uris: List<Uri>): Intent {
+    private suspend fun getActionPickContactsIntent(dataIds: List<Long>): Intent {
         return Intent().apply {
-            data = contactsPickerSessionProviderRepository.createSession(uris, callingAppUid)
+            data = contactsPickerSessionProviderRepository.createSession(dataIds, callingAppUid)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
     }

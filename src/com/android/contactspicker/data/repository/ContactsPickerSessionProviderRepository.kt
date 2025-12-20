@@ -22,9 +22,9 @@ interface ContactsPickerSessionProviderRepository {
     /**
      * Creates a new contacts picker session.
      *
-     * @param dataUris List of URIs for the selected contact data.
+     * @param dataIds List of data IDs for the selected contact data.
      * @param callingUid The UID of the calling application.
      * @return The URI of the created session.
      */
-    suspend fun createSession(dataUris: List<Uri>, callingUid: Int): Uri
+    suspend fun createSession(dataIds: List<Long>, callingUid: Int): Uri
 }

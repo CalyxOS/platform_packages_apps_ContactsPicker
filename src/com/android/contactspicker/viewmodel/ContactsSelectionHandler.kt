@@ -152,6 +152,13 @@ constructor(
     }
 
     /**
+     * Returns a list of all selected IDs (Contact lookup keys or Data IDs depending on the mode).
+     */
+    fun getSelectedIds(): List<Long> = buildList {
+        _selectedContacts.value.forEachValue { idSet -> addAll(idSet) }
+    }
+
+    /**
      * Resolves the currently selected IDs into a list of URIs based on the available contacts data.
      */
     fun resolveSelectedUris(availableContacts: List<Contact>): List<Uri> {
