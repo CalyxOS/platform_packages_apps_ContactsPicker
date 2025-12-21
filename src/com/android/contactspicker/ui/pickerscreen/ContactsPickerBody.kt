@@ -15,16 +15,22 @@
  */
 package com.android.contactspicker.ui.pickerscreen
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -35,7 +41,12 @@ import com.android.contactspicker.data.model.ContactsSelection
 import com.android.contactspicker.ui.pickerscreen.SectionKey.EmojiIconKey
 import com.android.contactspicker.ui.pickerscreen.SectionKey.FavoriteIconKey
 import com.android.contactspicker.ui.pickerscreen.SectionKey.LetterKey
+import com.android.contactspicker.ui.scrubber.AnimatedScrubber
+import com.android.contactspicker.ui.scrubber.ScrubberController
+import com.android.contactspicker.ui.scrubber.ScrubberLabel
+import com.android.contactspicker.ui.scrubber.rememberScrubberController
 import java.util.TreeMap
+import kotlinx.coroutines.flow.collectLatest
 
 const val CONTACTS_LIST_TEST_TAG = "contacts_list"
 
@@ -71,11 +82,12 @@ fun ContactsPickerBody(
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (contactId: Long, entryId: Long) -> Unit,
 ) {
+    val favorites = remember(contacts) { contacts.filter { it.isFavorite } }
+
     val sortedAllSectionsMap =
         remember(contacts) {
             val groups = TreeMap<SectionKey, List<Contact>>()
 
-            val favorites = contacts.filter { it.isFavorite }
             if (favorites.isNotEmpty()) {
                 groups[FavoriteIconKey] = favorites
             }
@@ -86,55 +98,91 @@ fun ContactsPickerBody(
             groups
         }
 
-    LazyColumn(
-        modifier = Modifier.fillMaxWidth().testTag(CONTACTS_LIST_TEST_TAG),
-        contentPadding = WindowInsets.navigationBars.asPaddingValues(),
-    ) {
-        if (showPrivacyBanner) {
-            item(key = "privacy_banner") {
-                PrivacyBanner(
-                    callingAppName = callingAppName,
-                    onMoreDetails = onPrivacyBannerMoreDetails,
-                    onDismissRequest = onPrivacyBannerDismissRequest,
-                )
-            }
-        }
-        sortedAllSectionsMap.forEach { (sectionKey, contactsInGroup) ->
-            stickyHeader(key = "header_${sectionKey.uniqueId}") { SectionHeaderForKey(sectionKey) }
+    val listState = rememberLazyListState()
+    val scrubberController =
+        rememberScrubberController(sortedAllSectionsMap, favorites.size, showPrivacyBanner)
+    ScrubberListSynchronizationEffects(scrubberController, listState)
 
-            val groupSize = contactsInGroup.size
-            itemsIndexed(
-                items = contactsInGroup,
-                // The key must be unique across the entire list.
-                // Since a contact that appears in 'Favorites' will appear in another
-                // section, prefix the key with the section ID.
-                key = { _, contact -> "${sectionKey.uniqueId}_${contact.id}" },
-            ) { index, contact ->
-                val position = itemPosition(index, groupSize)
-
-                val bottomPadding =
-                    if (position == ItemPosition.LAST || position == ItemPosition.ONLY) 8.dp
-                    else 1.dp
-
-                Row(
-                    modifier =
-                        Modifier.fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .padding(bottom = bottomPadding),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    ContactItem(
-                        contact = contact,
-                        position = position,
-                        selectedEntries = selectedContacts[contact.id],
-                        isMultiSelectEnabled = isMultiSelectEnabled,
-                        isSearchMode = false,
-                        onToggleContactSelection = onToggleContactSelection,
-                        onToggleEntrySelection = onToggleEntrySelection,
+    Box(modifier = Modifier.fillMaxWidth()) {
+        LazyColumn(
+            state = listState,
+            userScrollEnabled = scrubberController.isListScrollEnabledForUser,
+            modifier = Modifier.fillMaxWidth().testTag(CONTACTS_LIST_TEST_TAG),
+            contentPadding = WindowInsets.navigationBars.asPaddingValues(),
+        ) {
+            if (showPrivacyBanner) {
+                item(key = "privacy_banner") {
+                    PrivacyBanner(
+                        callingAppName = callingAppName,
+                        onMoreDetails = onPrivacyBannerMoreDetails,
+                        onDismissRequest = onPrivacyBannerDismissRequest,
                     )
                 }
             }
+            sortedAllSectionsMap.forEach { (sectionKey, contactsInGroup) ->
+                stickyHeader(key = "header_${sectionKey.uniqueId}") {
+                    SectionHeaderForKey(sectionKey)
+                }
+
+                val groupSize = contactsInGroup.size
+                itemsIndexed(
+                    items = contactsInGroup,
+                    // The key must be unique across the entire list.
+                    // Since a contact that appears in 'Favorites' will appear in another
+                    // section, prefix the key with the section ID.
+                    key = { _, contact -> "${sectionKey.uniqueId}_${contact.id}" },
+                ) { index, contact ->
+                    val position = itemPosition(index, groupSize)
+
+                    val bottomPadding =
+                        if (position == ItemPosition.LAST || position == ItemPosition.ONLY) 8.dp
+                        else 1.dp
+
+                    Row(
+                        modifier =
+                            Modifier.fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .padding(bottom = bottomPadding),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        ContactItem(
+                            contact = contact,
+                            position = position,
+                            selectedEntries = selectedContacts[contact.id],
+                            isMultiSelectEnabled = isMultiSelectEnabled,
+                            isSearchMode = false,
+                            onToggleContactSelection = onToggleContactSelection,
+                            onToggleEntrySelection = onToggleEntrySelection,
+                        )
+                    }
+                }
+            }
         }
+        AnimatedScrubber(
+            scrubberController.scrubberState,
+            listState,
+            Modifier.fillMaxHeight(),
+            label = { ScrubberLabel(scrubberController.labelSectionKey) },
+        )
+    }
+}
+
+@Composable
+private fun ScrubberListSynchronizationEffects(
+    scrubberController: ScrubberController,
+    listState: LazyListState,
+) {
+    // Scrubber -> List: Collects scroll requests upon scrubber position change from
+    // [ListScrubberMediator.scrollRequests] and triggers [LazyListState.scrollToItem] to move the
+    // list
+    LaunchedEffect(scrubberController, listState) {
+        scrubberController.scrollRequests.collectLatest { index -> listState.scrollToItem(index) }
+    }
+
+    // List -> Scrubber: Syncs the scrubber position to the [LazyListState.firstVisibleItemIndex]
+    LaunchedEffect(scrubberController, listState) {
+        snapshotFlow { listState.firstVisibleItemIndex }
+            .collect { listIndex -> scrubberController.updateVerticalOffsetFraction(listIndex) }
     }
 }
 
@@ -170,7 +218,7 @@ private fun itemPosition(index: Int, groupSize: Int): ItemPosition {
 }
 
 /** Returns the SectionKey for this contact, to be used for grouping in the UI. */
-private fun Contact.getSectionKeyForNonFavorite(): SectionKey {
+internal fun Contact.getSectionKeyForNonFavorite(): SectionKey {
     val initial = getDisplayNameInitialLetter()
     return if (initial != null) {
         LetterKey(initial)
