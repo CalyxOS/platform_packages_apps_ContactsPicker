@@ -18,6 +18,7 @@ package com.android.contactspicker
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.ContactsSelection
 import com.android.contactspicker.data.model.DisplayNameContact
+import com.android.contactspicker.data.model.MimeType
 
 /** Represents the different states for the Contacts Picker screen. */
 sealed interface ContactsUiState
@@ -43,7 +44,7 @@ sealed interface ContactsListState : ContactsUiState {
         val isMultiSelectEnabled: Boolean,
         val showPrivacyBanner: Boolean,
         val callingAppName: String?,
-        val requestedMimeTypes: List<String>,
+        val requestedMimeTypes: List<MimeType>,
     ) : ContactsListState
 
     /**

@@ -19,12 +19,12 @@ import android.content.Intent
 import android.content.flags.Flags
 import android.os.Bundle
 import android.platform.test.annotations.RequiresFlagsEnabled
-import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsContract.Contacts
 import android.provider.ContactsPickerSessionContract
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.contactspicker.data.model.MimeType
 import com.google.common.truth.Truth.assertThat
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -69,7 +69,7 @@ class ContactsPickerRequestConfigTest {
         assertThat(config.queryMode).isEqualTo(ContactsQueryMode.EmailsOnly)
         assertThat(config.isMultiSelectEnabled).isFalse()
         assertThat(config.maxSelectionLimit).isEqualTo(1)
-        assertThat(config.requestedMimeTypes).isEqualTo(listOf(Email.CONTENT_TYPE))
+        assertThat(config.requestedMimeTypes).isEqualTo(listOf(MimeType.EMAIL))
     }
 
     @Test
@@ -87,7 +87,7 @@ class ContactsPickerRequestConfigTest {
         assertThat(config.isMultiSelectEnabled).isTrue()
         assertThat(config.maxSelectionLimit)
             .isEqualTo(ContactsPickerRequestConfig.DEFAULT_SELECTION_LIMIT)
-        assertThat(config.requestedMimeTypes).isEqualTo(listOf(Phone.CONTENT_TYPE))
+        assertThat(config.requestedMimeTypes).isEqualTo(listOf(MimeType.PHONE))
     }
 
     @Test
@@ -157,7 +157,7 @@ class ContactsPickerRequestConfigTest {
 
         assertThat(config.pickerAction).isEqualTo(ContactsPickerAction.ACTION_PICK_CONTACTS)
         assertThat(config.queryMode).isEqualTo(ContactsQueryMode.EmailsOnly)
-        assertThat(config.requestedMimeTypes).isEqualTo(mimeTypes)
+        assertThat(config.requestedMimeTypes).isEqualTo(listOf(MimeType.EMAIL))
     }
 
     @Test
@@ -183,12 +183,12 @@ class ContactsPickerRequestConfigTest {
 
     @Test
     fun create_actionPickContacts_multipleMimeTypes_customMode() {
-        val mimeTypes = ArrayList(listOf(Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE))
+        val mimeTypes = listOf(MimeType.EMAIL, MimeType.PHONE)
         val extras =
             Bundle().apply {
                 putStringArrayList(
                     ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_REQUESTED_DATA_FIELDS,
-                    mimeTypes,
+                    ArrayList(listOf(Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE)),
                 )
             }
 
@@ -206,13 +206,12 @@ class ContactsPickerRequestConfigTest {
 
     @Test
     fun create_actionPickContacts_singleOtherMimeType_customMode() {
-        val mimeTypes =
-            ArrayList(listOf(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE))
+        val mimeTypes = listOf(MimeType.STRUCTURED_POSTAL)
         val extras =
             Bundle().apply {
                 putStringArrayList(
                     ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_REQUESTED_DATA_FIELDS,
-                    mimeTypes,
+                    ArrayList(mimeTypes.map { it.value }),
                 )
             }
 
@@ -228,12 +227,12 @@ class ContactsPickerRequestConfigTest {
 
     @Test
     fun create_actionPickContacts_matchAllRequestedMimeTypes_true() {
-        val mimeTypes = ArrayList(listOf(Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE))
+        val mimeTypes = listOf(MimeType.EMAIL, MimeType.PHONE)
         val extras =
             Bundle().apply {
                 putStringArrayList(
                     ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_REQUESTED_DATA_FIELDS,
-                    mimeTypes,
+                    ArrayList(mimeTypes.map { it.value }),
                 )
                 putBoolean(
                     ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_MATCH_ALL_DATA_FIELDS,
@@ -329,12 +328,12 @@ class ContactsPickerRequestConfigTest {
 
     @Test
     fun create_actionPickContacts_matchAllRequestedMimeTypes_defaultFalse() {
-        val mimeTypes = ArrayList(listOf(Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE))
+        val mimeTypes = listOf(MimeType.EMAIL, MimeType.PHONE)
         val extras =
             Bundle().apply {
                 putStringArrayList(
                     ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_REQUESTED_DATA_FIELDS,
-                    mimeTypes,
+                    ArrayList(mimeTypes.map { it.value }),
                 )
             }
 

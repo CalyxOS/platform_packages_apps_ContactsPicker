@@ -15,6 +15,8 @@
  */
 package com.android.contactspicker.data.repository
 
+import com.android.contactspicker.data.model.MimeType
+
 /** Repository to persist state of the privacy banner shown state. */
 interface PrivacyBannerRepository {
     /**
@@ -28,5 +30,5 @@ interface PrivacyBannerRepository {
      * @return `true` if the banner was previously shown, `false` if it was just marked as shown by
      *   this call.
      */
-    suspend fun wasPrivacyBannerShown(appUid: Int, mimeTypes: List<String>): Boolean
+    suspend fun wasPrivacyBannerShown(appUid: Int, mimeTypes: List<MimeType>): Boolean
 }

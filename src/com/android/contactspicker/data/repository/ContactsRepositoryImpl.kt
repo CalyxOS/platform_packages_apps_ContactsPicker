@@ -31,6 +31,7 @@ import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.EmailEntry
+import com.android.contactspicker.data.model.MimeType
 import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.model.PhoneEntry
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -124,7 +125,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
 
     override suspend fun getDataRowIds(
         contactIds: List<Long>,
-        mimeTypes: List<String>,
+        mimeTypes: List<MimeType>,
     ): List<Long> {
         if (contactIds.isEmpty() || mimeTypes.isEmpty()) return emptyList()
 
@@ -137,7 +138,8 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         //  (lookupKeys.size + mimeTypes.size) must never exceed 999 (the Android SQLite limit).
         //  Max size of contactIds is 100 (max selection limit) and max size of mimeTypes is ~11
         //  (number of supported mime types).
-        val selectionArgs = (contactIds.map { it.toString() } + mimeTypes).toTypedArray()
+        val selectionArgs =
+            (contactIds.map { it.toString() } + mimeTypes.map { it.value }).toTypedArray()
 
         return buildList {
             contentResolver
@@ -298,7 +300,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
     }
 
     private fun getContactsWithMimetypes(
-        mimetypes: List<String>,
+        mimetypes: List<MimeType>,
         matchAllRequestedMimetypes: Boolean,
     ): List<Contact> {
         if (mimetypes.isEmpty()) {
@@ -309,7 +311,10 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         val uri =
             ContactsContract.AUTHORITY_URI.buildUpon()
                 .appendPath(CONTACTS_DATA_URI_PATH)
-                .appendQueryParameter(REQUESTED_MIMETYPES_PARAM_KEY, mimetypes.joinToString(","))
+                .appendQueryParameter(
+                    REQUESTED_MIMETYPES_PARAM_KEY,
+                    mimetypes.joinToString(",") { it.value },
+                )
                 .appendQueryParameter(
                     MATCH_ALL_MIMETYPES_PARAM_KEY,
                     matchAllRequestedMimetypes.toString(),
@@ -330,7 +335,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
 
     private fun searchContactsByMimeTypes(
         query: String,
-        mimetypes: List<String>,
+        mimetypes: List<MimeType>,
         matchAllRequestedMimetypes: Boolean,
     ): List<Contact> {
 
@@ -339,7 +344,10 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             ContactsContract.AUTHORITY_URI.buildUpon()
                 .appendPath(CONTACTS_DATA_FILTER_URI_PATH)
                 .appendPath(query)
-                .appendQueryParameter(REQUESTED_MIMETYPES_PARAM_KEY, mimetypes.joinToString(","))
+                .appendQueryParameter(
+                    REQUESTED_MIMETYPES_PARAM_KEY,
+                    mimetypes.joinToString(",") { it.value },
+                )
                 .appendQueryParameter(
                     MATCH_ALL_MIMETYPES_PARAM_KEY,
                     matchAllRequestedMimetypes.toString(),

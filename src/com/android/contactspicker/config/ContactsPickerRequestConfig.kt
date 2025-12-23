@@ -18,6 +18,7 @@ package com.android.contactspicker.config
 import android.content.Intent
 import android.os.Bundle
 import android.provider.ContactsPickerSessionContract
+import com.android.contactspicker.data.model.MimeType
 
 /**
  * A configuration object, parsed from the incoming Intent, that dictates the contacts picker's
@@ -35,8 +36,7 @@ data class ContactsPickerRequestConfig(
     val pickerAction: ContactsPickerAction,
     val isMultiSelectEnabled: Boolean,
     val maxSelectionLimit: Int,
-    // TODO(b/463940164): revisit deriving mime types from ContactsQueryMode
-    val requestedMimeTypes: List<String>,
+    val requestedMimeTypes: List<MimeType>,
     val matchAllRequestedMimeTypes: Boolean,
 ) {
     companion object {
@@ -64,8 +64,8 @@ data class ContactsPickerRequestConfig(
             val pickerAction = getPickerAction(intentAction)
             val isMultiSelect =
                 intentExtras?.getBoolean(Intent.EXTRA_ALLOW_MULTIPLE, false) ?: false
-            val (queryMode, requestedMimeTypes) =
-                ContactsQueryMode.getQueryModeAndMimeTypes(pickerAction, intentType, intentExtras)
+            val queryMode = ContactsQueryMode.getQueryMode(pickerAction, intentType, intentExtras)
+            val requestedMimeTypes = queryMode.getMimeTypes()
             val selectionLimit = getSelectionLimit(intentExtras, isMultiSelect)
 
             val matchAllRequestedMimeTypes =
@@ -76,8 +76,8 @@ data class ContactsPickerRequestConfig(
                 pickerAction = pickerAction,
                 isMultiSelectEnabled = isMultiSelect,
                 maxSelectionLimit = selectionLimit,
-                requestedMimeTypes = requestedMimeTypes,
                 matchAllRequestedMimeTypes = matchAllRequestedMimeTypes,
+                requestedMimeTypes = requestedMimeTypes,
             )
         }
 

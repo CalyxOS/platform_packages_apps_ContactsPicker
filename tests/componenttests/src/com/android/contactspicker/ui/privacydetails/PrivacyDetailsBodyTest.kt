@@ -20,7 +20,6 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import android.provider.ContactsContract
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -29,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.R
+import com.android.contactspicker.data.model.MimeType
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -47,11 +47,7 @@ class PrivacyDetailsBodyTest {
 
     @Test
     fun privacyDetailsBody_displaysAllElements() {
-        val dataFields =
-            listOf(
-                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,
-                ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE,
-            )
+        val dataFields = listOf(MimeType.EMAIL, MimeType.PHONE)
 
         composeTestRule.setContent {
             PrivacyDetailsBody(callingAppName = SAMPLE_APP_NAME, requestedDataFields = dataFields)

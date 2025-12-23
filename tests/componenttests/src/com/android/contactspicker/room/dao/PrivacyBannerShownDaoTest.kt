@@ -20,10 +20,10 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import android.provider.ContactsContract
 import androidx.room.Room
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.test.core.app.ApplicationProvider
+import com.android.contactspicker.data.model.MimeType
 import com.android.contactspicker.room.converter.MimeTypeConverter
 import com.android.contactspicker.room.database.PrivacyBannerDatabase
 import com.android.contactspicker.room.entity.PrivacyBannerShown
@@ -45,8 +45,8 @@ class PrivacyBannerShownDaoTest {
     private lateinit var dao: PrivacyBannerShownDao
     private val mimeTypeConverter = MimeTypeConverter()
 
-    private val mimeType1 = ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
-    private val mimeType2 = ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE
+    private val mimeType1 = MimeType.PHONE
+    private val mimeType2 = MimeType.EMAIL
 
     @Before
     fun setUp() {
