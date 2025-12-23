@@ -96,6 +96,31 @@ class ContactsRepositoryImplTest {
     }
 
     @Test
+    fun getContacts_displayNamesOnlyMode_noName_returnsNoName() = runTest {
+        val queryMode = ContactsQueryMode.DisplayNamesOnly
+        val uriToExpect = Contacts.CONTENT_URI
+        val cursor =
+            MatrixCursor(
+                arrayOf(
+                    Contacts._ID,
+                    Contacts.DISPLAY_NAME_PRIMARY,
+                    Contacts.STARRED,
+                    Contacts.PHOTO_THUMBNAIL_URI,
+                    Contacts.LOOKUP_KEY,
+                )
+            )
+        cursor.addRow(arrayOf<Any?>(1L, null, 0, null, "contact_lookup_key"))
+
+        fakeContentProvider.setCursorForUri(uriToExpect, cursor)
+        val contacts = repository.getContacts(queryMode)
+
+        assertThat(contacts).isNotEmpty()
+        val contact = contacts.first()
+        assertThat(contact).isInstanceOf(DisplayNameContact::class.java)
+        assertThat(contact.displayName).isEqualTo("(No name)")
+    }
+
+    @Test
     fun getContacts_emailsOnlyMode_returnsEmailContacts() = runTest {
         val queryMode = ContactsQueryMode.EmailsOnly
         val uriToExpect = Email.CONTENT_URI
