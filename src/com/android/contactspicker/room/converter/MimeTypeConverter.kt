@@ -48,11 +48,6 @@ class MimeTypeConverter {
             MimeType.GROUP_MEMBERSHIP to 8,
             MimeType.WEBSITE to 9,
             MimeType.NICKNAME to 10,
-            // TODO: agree with the team to "break" for the team members and use 11 for CONTACTS
-            // or use 13 and reserve position 11 and 12 for no longer existing Phone and Email
-            // CONTENT_TYPE. I am voting for just removing the Phone and Email CONTENT_TYPE since
-            // the project is still only in development and only teamfood devices might have any
-            // entries in the DB.
             MimeType.CONTACTS to 11,
         )
 
