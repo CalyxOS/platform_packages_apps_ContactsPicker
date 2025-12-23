@@ -25,6 +25,7 @@ import android.provider.ContactsContract.Contacts
 import android.provider.ContactsContract.Contacts.MATCH_ALL_MIMETYPES_PARAM_KEY
 import android.provider.ContactsContract.Contacts.REQUESTED_MIMETYPES_PARAM_KEY
 import android.provider.ContactsContract.Data
+import com.android.contactspicker.R
 import com.android.contactspicker.config.ContactsQueryMode
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.DisplayNameContact
@@ -284,13 +285,11 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
     }
 
     private fun getDisplayNameContacts(): List<Contact> {
-        val selection = "${Contacts.DISPLAY_NAME_PRIMARY} IS NOT NULL"
-
         val cursor =
             contentResolver.query(
                 Contacts.CONTENT_URI,
                 DISPLAY_NAME_FETCH_PROJECTION,
-                selection,
+                null, // No specific selection
                 null, // No selection args
                 Data.SORT_KEY_PRIMARY + " ASC",
             )
@@ -362,7 +361,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
 
         while (cursor.moveToNext()) {
             val id = cursor.getLong(idIndex)
-            val name = cursor.getString(nameIndex)
+            val name = cursor.getString(nameIndex)?.takeIf{ it.isNotBlank() } ?: context.getString(R.string.no_name_placeholder)
             val profilePictureUri = cursor.getString(profilePictureUriIndex)
             val isFavorite = cursor.getInt(starredIndex) == 1
             val lookupKey = cursor.getString(lookupKeyIndex)
