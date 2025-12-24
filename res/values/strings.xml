@@ -58,6 +58,8 @@
     <!-- Content description for the avatar initial of the contact when profile picture does not
         exist. [CHAR LIMIT=NONE] -->
     <string name="contact_avatar_initial_content_description">Contact initial</string>
+    <!-- Placeholder name for contacts that do not have a display name. -->
+    <string name="no_name_placeholder">(No name)</string>
     <!-- Content description for the drop down button to expand contacts with multiple email
         addresses or phone numbers. [CHAR LIMIT=NONE] -->
     <string name="contact_item_expand_button_content_description">Expand</string>

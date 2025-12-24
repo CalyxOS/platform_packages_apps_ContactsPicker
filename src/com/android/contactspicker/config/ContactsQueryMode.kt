@@ -20,6 +20,7 @@ import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsContract.Contacts
 import android.provider.ContactsPickerSessionContract
+import com.android.contactspicker.data.model.MimeType
 
 /** Defines which specific contact data to query from the ContactsRepository. */
 sealed class ContactsQueryMode {
@@ -39,15 +40,24 @@ sealed class ContactsQueryMode {
      * Fetch contacts that have data for at least one of the specified mimetypes. Used by
      * ACTION_PICK_CONTACTS when multiple fields or types other than phone or email are requested.
      */
-    data class Custom(val mimetypes: List<String>, val matchAllRequestedMimeTypes: Boolean) :
+    data class Custom(val mimetypes: List<MimeType>, val matchAllRequestedMimeTypes: Boolean) :
         ContactsQueryMode()
 
+    fun getMimeTypes(): List<MimeType> {
+        return when (this) {
+            is PhonesOnly -> listOf(MimeType.PHONE)
+            is EmailsOnly -> listOf(MimeType.EMAIL)
+            is DisplayNamesOnly -> listOf(MimeType.CONTACTS)
+            is Custom -> this.mimetypes
+        }
+    }
+
     companion object {
-        fun getQueryModeAndMimeTypes(
+        fun getQueryMode(
             pickerAction: ContactsPickerAction,
             intentType: String?,
             intentExtras: Bundle?,
-        ): Pair<ContactsQueryMode, List<String>> {
+        ): ContactsQueryMode {
             return when (pickerAction) {
                 ContactsPickerAction.ACTION_PICK -> parseActionPick(intentType)
                 ContactsPickerAction.ACTION_PICK_CONTACTS -> parseActionPickContacts(intentExtras)
@@ -55,42 +65,40 @@ sealed class ContactsQueryMode {
         }
 
         /** Handles parsing for the legacy ACTION_PICK intent. */
-        private fun parseActionPick(intentType: String?): Pair<ContactsQueryMode, List<String>> {
-            val queryMode =
-                when (intentType) {
-                    Email.CONTENT_TYPE,
-                    Email.CONTENT_ITEM_TYPE -> EmailsOnly
+        private fun parseActionPick(intentType: String?): ContactsQueryMode {
+            return when (intentType) {
+                Email.CONTENT_TYPE -> EmailsOnly
 
-                    Phone.CONTENT_TYPE,
-                    Phone.CONTENT_ITEM_TYPE -> PhonesOnly
+                Phone.CONTENT_TYPE -> PhonesOnly
 
-                    Contacts.CONTENT_TYPE,
-                    Contacts.CONTENT_ITEM_TYPE -> DisplayNamesOnly
+                Contacts.CONTENT_TYPE -> DisplayNamesOnly
 
-                    else ->
-                        throw IllegalArgumentException(
-                            "Unsupported intent type for ACTION_PICK: $intentType"
-                        )
-                }
-            val mimeTypes = listOf(intentType)
-            return Pair(queryMode, mimeTypes)
+                else ->
+                    throw IllegalArgumentException(
+                        "Unsupported intent type for ACTION_PICK: $intentType"
+                    )
+            }
         }
 
         /** Handles parsing for the new ACTION_PICK_CONTACTS intent. */
-        private fun parseActionPickContacts(
-            intentExtras: Bundle?
-        ): Pair<ContactsQueryMode, List<String>> {
-            // TODO(b/442397528): check for allowed mime types
-            val mimetypes =
+        private fun parseActionPickContacts(intentExtras: Bundle?): ContactsQueryMode {
+            val mimeTypeStrings =
                 intentExtras?.getStringArrayList(
                     ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_REQUESTED_DATA_FIELDS
                 ) ?: emptyList()
 
-            if (mimetypes.isEmpty()) {
+            if (mimeTypeStrings.isEmpty()) {
                 throw IllegalArgumentException(
                     "Missing or empty EXTRA_PICK_CONTACTS_REQUESTED_DATA_FIELDS for ACTION_PICK_CONTACTS"
                 )
             }
+
+            val validatedMimeTypes =
+                mimeTypeStrings.map { mimeString ->
+                    val mappedType = MimeType.fromString(mimeString)
+                    mappedType.validateForActionPickContacts()
+                    mappedType
+                }
 
             val matchAll =
                 intentExtras?.getBoolean(
@@ -98,16 +106,15 @@ sealed class ContactsQueryMode {
                     false,
                 ) ?: false
 
-            val queryMode =
-                when {
-                    mimetypes.size == 1 && mimetypes.first() == Email.CONTENT_ITEM_TYPE ->
-                        EmailsOnly
-                    mimetypes.size == 1 && mimetypes.first() == Phone.CONTENT_ITEM_TYPE ->
-                        PhonesOnly
-                    else -> Custom(mimetypes, matchAll)
+            return if (validatedMimeTypes.size == 1) {
+                when (validatedMimeTypes.first()) {
+                    MimeType.EMAIL -> EmailsOnly
+                    MimeType.PHONE -> PhonesOnly
+                    else -> Custom(validatedMimeTypes, matchAll)
                 }
-
-            return Pair(queryMode, mimetypes)
+            } else {
+                Custom(validatedMimeTypes, matchAll)
+            }
         }
     }
 }

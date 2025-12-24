@@ -16,6 +16,7 @@
 package com.android.contactspicker.data.repository
 
 import android.util.Log
+import com.android.contactspicker.data.model.MimeType
 import com.android.contactspicker.room.dao.PrivacyBannerShownDao
 import com.android.contactspicker.room.entity.PrivacyBannerShown
 import javax.inject.Inject
@@ -33,7 +34,7 @@ private const val DEFAULT_PRIVACY_BANNER_SHOWN_STATE_FALLBACK = false
 class PrivacyBannerRepositoryImpl @Inject constructor(private val dao: PrivacyBannerShownDao) :
     PrivacyBannerRepository {
 
-    override suspend fun wasPrivacyBannerShown(appUid: Int, mimeTypes: List<String>): Boolean {
+    override suspend fun wasPrivacyBannerShown(appUid: Int, mimeTypes: List<MimeType>): Boolean {
         try {
             if (appUid != -1 && mimeTypes.isNotEmpty()) {
                 val wasPrivacyBannerShown = dao.wasPrivacyBannerShown(appUid, mimeTypes)

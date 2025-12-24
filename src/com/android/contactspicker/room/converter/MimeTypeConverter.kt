@@ -15,8 +15,8 @@
  */
 package com.android.contactspicker.room.converter
 
-import android.provider.ContactsContract
 import androidx.room.TypeConverter
+import com.android.contactspicker.data.model.MimeType
 import kotlin.collections.iterator
 
 /**
@@ -35,24 +35,25 @@ class MimeTypeConverter {
      * for existing data stored in the Room database. New MIME types should be added with
      * incrementing bit positions.
      */
-    private val mimeTypeToBitPosition: Map<String, Int> =
+    private val mimeTypeToBitPosition: Map<MimeType, Int> =
         mapOf(
-            // Mimetypes supported for ACTION_PICK_CONTACTS
-            ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE to 0,
-            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE to 1,
-            ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE to 2,
-            ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE to 3,
-            ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE to 4,
-            ContactsContract.CommonDataKinds.Relation.CONTENT_ITEM_TYPE to 5,
-            ContactsContract.CommonDataKinds.Event.CONTENT_ITEM_TYPE to 6,
-            ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE to 7,
-            ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE to 8,
-            ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE to 9,
-            ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE to 10,
-            // Mimetypes supported for ACTION_PICK
-            ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE to 11,
-            ContactsContract.CommonDataKinds.Email.CONTENT_TYPE to 12,
-            ContactsContract.Contacts.CONTENT_TYPE to 13,
+            MimeType.STRUCTURED_NAME to 0,
+            MimeType.PHONE to 1,
+            MimeType.EMAIL to 2,
+            MimeType.STRUCTURED_POSTAL to 3,
+            MimeType.ORGANIZATION to 4,
+            MimeType.RELATION to 5,
+            MimeType.EVENT to 6,
+            MimeType.PHOTO to 7,
+            MimeType.GROUP_MEMBERSHIP to 8,
+            MimeType.WEBSITE to 9,
+            MimeType.NICKNAME to 10,
+            // TODO: agree with the team to "break" for the team members and use 11 for CONTACTS
+            // or use 13 and reserve position 11 and 12 for no longer existing Phone and Email
+            // CONTENT_TYPE. I am voting for just removing the Phone and Email CONTENT_TYPE since
+            // the project is still only in development and only teamfood devices might have any
+            // entries in the DB.
+            MimeType.CONTACTS to 11,
         )
 
     /**
@@ -65,7 +66,7 @@ class MimeTypeConverter {
      * @return An integer bitmask representing the provided list of MIME types.
      */
     @TypeConverter
-    fun fromMimeTypeList(mimeTypes: List<String>): Int {
+    fun fromMimeTypeList(mimeTypes: List<MimeType>): Int {
         var bitmask = 0
         for (mimeType in mimeTypes) {
             val bitPosition = mimeTypeToBitPosition[mimeType]
@@ -86,8 +87,8 @@ class MimeTypeConverter {
      * @return A list of MIME type strings represented by the bitmask.
      */
     @TypeConverter
-    fun toMimeTypeList(bitmask: Int): List<String> {
-        val mimeTypes = mutableListOf<String>()
+    fun toMimeTypeList(bitmask: Int): List<MimeType> {
+        val mimeTypes = mutableListOf<MimeType>()
         for ((mimeType, bitPosition) in mimeTypeToBitPosition) {
             if (bitmask and (1 shl bitPosition) != 0) {
                 mimeTypes.add(mimeType)

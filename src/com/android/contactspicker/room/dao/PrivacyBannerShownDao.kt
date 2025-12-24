@@ -19,6 +19,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.android.contactspicker.data.model.MimeType
 import com.android.contactspicker.room.entity.PrivacyBannerShown
 
 /** Data access object for the [PrivacyBannerShown] table. */
@@ -35,7 +36,7 @@ interface PrivacyBannerShownDao {
         "SELECT EXISTS(SELECT 1 FROM privacy_banner_shown " +
             "WHERE app_uid = :appUid AND mime_types = :mimeTypes)"
     )
-    suspend fun wasPrivacyBannerShown(appUid: Int, mimeTypes: List<String>): Boolean
+    suspend fun wasPrivacyBannerShown(appUid: Int, mimeTypes: List<MimeType>): Boolean
 
     /**
      * inserts PrivacyBannerShown object into database

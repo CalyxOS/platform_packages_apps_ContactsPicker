@@ -17,6 +17,7 @@ package com.android.contactspicker.data.repository
 
 import com.android.contactspicker.config.ContactsQueryMode
 import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.MimeType
 
 /** Interface for accessing contact data from the Android ContactsProvider. */
 interface ContactsRepository {
@@ -46,5 +47,5 @@ interface ContactsRepository {
      * @param mimeTypes List of mime types.
      * @return A list of unique data row IDs.
      */
-    suspend fun getDataRowIds(contactIds: List<Long>, mimeTypes: List<String>): List<Long>
+    suspend fun getDataRowIds(contactIds: List<Long>, mimeTypes: List<MimeType>): List<Long>
 }

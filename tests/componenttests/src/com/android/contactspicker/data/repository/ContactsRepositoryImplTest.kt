@@ -33,6 +33,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.config.ContactsQueryMode
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
+import com.android.contactspicker.data.model.MimeType
 import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.fakes.FakeContentProvider
 import com.google.common.truth.Truth.assertThat
@@ -94,6 +95,31 @@ class ContactsRepositoryImplTest {
         assertThat(contacts).isNotEmpty()
         val contact = contacts.first()
         assertThat(contact).isInstanceOf(DisplayNameContact::class.java)
+    }
+
+    @Test
+    fun getContacts_displayNamesOnlyMode_noName_returnsNoName() = runTest {
+        val queryMode = ContactsQueryMode.DisplayNamesOnly
+        val uriToExpect = Contacts.CONTENT_URI
+        val cursor =
+            MatrixCursor(
+                arrayOf(
+                    Contacts._ID,
+                    Contacts.DISPLAY_NAME_PRIMARY,
+                    Contacts.STARRED,
+                    Contacts.PHOTO_THUMBNAIL_URI,
+                    Contacts.LOOKUP_KEY,
+                )
+            )
+        cursor.addRow(arrayOf<Any?>(1L, null, 0, null, "contact_lookup_key"))
+
+        fakeContentProvider.setCursorForUri(uriToExpect, cursor)
+        val contacts = repository.getContacts(queryMode)
+
+        assertThat(contacts).isNotEmpty()
+        val contact = contacts.first()
+        assertThat(contact).isInstanceOf(DisplayNameContact::class.java)
+        assertThat(contact.displayName).isEqualTo("(No name)")
     }
 
     @Test
@@ -167,8 +193,7 @@ class ContactsRepositoryImplTest {
 
     @Test
     fun getContacts_customMode_returnsDisplayNamesContacts() = runTest {
-        val mimeTypes =
-            listOf("vnd.android.cursor.item/test_type_1", "vnd.android.cursor.item/test_type_2")
+        val mimeTypes = listOf(MimeType.EMAIL, MimeType.PHONE)
         val matchAll = true
         val queryMode = ContactsQueryMode.Custom(mimeTypes, matchAll)
 
@@ -177,7 +202,7 @@ class ContactsRepositoryImplTest {
                 .appendPath("contacts_data")
                 .appendQueryParameter(
                     Contacts.REQUESTED_MIMETYPES_PARAM_KEY,
-                    mimeTypes.joinToString(","),
+                    mimeTypes.joinToString(",") { it.value },
                 )
                 .appendQueryParameter(Contacts.MATCH_ALL_MIMETYPES_PARAM_KEY, "true")
                 .build()
@@ -206,7 +231,7 @@ class ContactsRepositoryImplTest {
     @Test
     fun searchContacts_customMode_returnsDisplayNamesContacts() = runTest {
         val query = "Test"
-        val mimeTypes = listOf("vnd.android.cursor.item/test_type_1")
+        val mimeTypes = listOf(MimeType.PHOTO)
         val matchAll = false
         val queryMode = ContactsQueryMode.Custom(mimeTypes, matchAll)
 
@@ -216,7 +241,7 @@ class ContactsRepositoryImplTest {
                 .appendPath(query)
                 .appendQueryParameter(
                     Contacts.REQUESTED_MIMETYPES_PARAM_KEY,
-                    mimeTypes.joinToString(","),
+                    mimeTypes.joinToString(",") { it.value },
                 )
                 .appendQueryParameter(Contacts.MATCH_ALL_MIMETYPES_PARAM_KEY, "false")
                 .build()
@@ -315,7 +340,7 @@ class ContactsRepositoryImplTest {
         val contactId = 1L
         val emailDataId = 101L
         val phoneDataId = 102L
-        val mimeTypes = listOf(Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE)
+        val mimeTypes = listOf(MimeType.EMAIL, MimeType.PHONE)
 
         val cursor = MatrixCursor(arrayOf(Data._ID))
         cursor.addRow(arrayOf(emailDataId))

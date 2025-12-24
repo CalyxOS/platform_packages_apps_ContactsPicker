@@ -34,6 +34,7 @@ import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.MimeType
 import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.fakes.FakeContactsPickerSessionProviderRepository
 import com.android.contactspicker.fakes.FakeContactsRepository
@@ -118,7 +119,7 @@ class ContactsViewModelTest {
                     emptyContactsSelection(),
                     false,
                     callingAppName = "TestApp",
-                    requestedMimeTypes = listOf(Phone.CONTENT_TYPE),
+                    requestedMimeTypes = listOf(MimeType.PHONE),
                     showPrivacyBanner = true,
                 ),
             )
@@ -267,7 +268,7 @@ class ContactsViewModelTest {
     @Test
     fun processIntent_privacyBannerShownBefore_shouldNotShowBannerAgain() = runTest {
         val testContacts = listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT)
-        fakePrivacyBannerRepository.markPrivacyBannerAsShown(12345, listOf(Phone.CONTENT_TYPE))
+        fakePrivacyBannerRepository.markPrivacyBannerAsShown(12345, listOf(MimeType.PHONE))
         initializeViewModelForLegacyActionPick(contacts = testContacts, callingAppUid = 12345)
 
         val successState = viewModel.uiState.value as ContactsListState.Success
@@ -548,7 +549,7 @@ class ContactsViewModelTest {
         val callingUid = 123
         fakeContactsRepository.setDataRowIdsResult(
             contactIds = listOf(contact1.id, contact2.id),
-            mimeTypes = mimeTypes,
+            mimeTypes = mimeTypes.map { MimeType.fromString(it) },
             dataIds = expectedDataIds,
         )
         fakeContactsPickerSessionProviderRepository.setSessionResult(
@@ -657,7 +658,7 @@ class ContactsViewModelTest {
                     emptyContactsSelection(),
                     false,
                     callingAppName = "TestApp",
-                    requestedMimeTypes = listOf(Phone.CONTENT_TYPE),
+                    requestedMimeTypes = listOf(MimeType.PHONE),
                     showPrivacyBanner = true,
                 ), // Initial state after processIntent
                 SearchState.Success(
