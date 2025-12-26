@@ -35,6 +35,8 @@
     <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"फास्ट स्क्रोलर ह्यान्डल"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"कन्ट्याक्टको प्रोफाइल फोटो"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"कन्ट्याक्टको नामको सुरुको अक्षर"</string>
+    <!-- no translation found for no_name_placeholder (491336212594465933) -->
+    <skip />
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"एक्स्पान्ड गर्नुहोस्"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"कोल्याप्स गर्नुहोस्"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"फोन नम्बर"</string>
