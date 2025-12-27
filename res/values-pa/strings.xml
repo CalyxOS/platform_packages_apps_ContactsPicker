@@ -35,6 +35,8 @@
     <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"ਤੇਜ਼ ਸਕ੍ਰੋਲਰ ਹੈਂਡਲ"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"ਸੰਪਰਕ ਦੀ ਪ੍ਰੋਫਾਈਲ ਤਸਵੀਰ"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"ਸੰਪਰਕ ਦਾ ਸ਼ੁਰੂਆਤੀ ਅੱਖਰ"</string>
+    <!-- no translation found for no_name_placeholder (491336212594465933) -->
+    <skip />
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"ਵਿਸਤਾਰ ਕਰੋ"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"ਸਮੇਟੋ"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ਫ਼ੋਨ"</string>

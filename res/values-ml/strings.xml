@@ -35,6 +35,8 @@
     <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"ഫാസ്റ്റ് സ്ക്രോളർ ഹാൻഡിൽ"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"കോൺടാക്റ്റ് പ്രൊഫൈൽ ചിത്രം"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"കോൺടാക്റ്റ് ഇനിഷ്യൽ"</string>
+    <!-- no translation found for no_name_placeholder (491336212594465933) -->
+    <skip />
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"വികസിപ്പിക്കുക"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"ചുരുക്കുക"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ഫോൺ"</string>
