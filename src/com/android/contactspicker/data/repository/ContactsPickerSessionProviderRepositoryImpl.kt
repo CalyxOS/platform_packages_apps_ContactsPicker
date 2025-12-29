@@ -15,6 +15,7 @@
  */
 package com.android.contactspicker.data.repository
 
+import android.content.ContentProvider
 import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
@@ -35,7 +36,11 @@ class ContactsPickerSessionProviderRepositoryImpl
 constructor(@param:ApplicationContext private val context: Context) :
     ContactsPickerSessionProviderRepository {
 
-    override suspend fun createSession(dataIds: List<Long>, callingUid: Int): Uri =
+    override suspend fun createSession(
+        dataIds: List<Long>,
+        callingUid: Int,
+        sourceUserId: Int,
+    ): Uri =
         withContext(Dispatchers.IO) {
             if (dataIds.isEmpty()) {
                 throw IllegalArgumentException("Empty dataIds passed")
@@ -50,7 +55,10 @@ constructor(@param:ApplicationContext private val context: Context) :
                 }
 
             context.contentResolver.insert(
-                ContactsPickerSessionContract.Session.CONTENT_URI,
+                ContentProvider.maybeAddUserId(
+                    ContactsPickerSessionContract.Session.CONTENT_URI,
+                    sourceUserId,
+                ),
                 values,
             ) as Uri
         }

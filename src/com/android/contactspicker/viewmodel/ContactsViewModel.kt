@@ -39,6 +39,8 @@ import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.data.repository.ContactsPickerSessionProviderRepository
 import com.android.contactspicker.data.repository.ContactsRepository
 import com.android.contactspicker.data.repository.PrivacyBannerRepository
+import com.android.contactspicker.data.repository.UserRepository
+import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -92,6 +94,7 @@ constructor(
     private val contactsRepository: ContactsRepository,
     private val contactsPickerSessionProviderRepository: ContactsPickerSessionProviderRepository,
     private val privacyBannerRepository: PrivacyBannerRepository,
+    private val userRepository: Lazy<UserRepository>,
     private val selectionHandlerFactory: ContactsSelectionHandler.Factory,
 ) : ViewModel() {
 
@@ -158,6 +161,14 @@ constructor(
             ContactsPickerRequestConfig.create(intentAction, intentType, intentExtras).also {
                 pickerConfig = it
             }
+
+        // TODO(b/479454402): Refactor isUserSwitchingEnabled into ContactsPickerRequestConfig
+        // to decouple from ACTION_PICK_CONTACTS
+        val isUserSwitchingEnabled =
+            config.pickerAction == ContactsPickerAction.ACTION_PICK_CONTACTS
+        if (isUserSwitchingEnabled) {
+            viewModelScope.launch { userRepository.get().clearSelectedUser() }
+        }
 
         selectionHandler =
             selectionHandlerFactory.create(config.isMultiSelectEnabled, config.maxSelectionLimit) {
@@ -342,7 +353,13 @@ constructor(
 
     private suspend fun getActionPickContactsIntent(dataIds: List<Long>): Intent {
         return Intent().apply {
-            data = contactsPickerSessionProviderRepository.createSession(dataIds, callingAppUid)
+            data =
+                contactsPickerSessionProviderRepository.createSession(
+                    dataIds,
+                    callingAppUid,
+                    // TODO(b/449960997): Use selected user ID from UserStates
+                    android.os.UserHandle.myUserId(),
+                )
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
     }

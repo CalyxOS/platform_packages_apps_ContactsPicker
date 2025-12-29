@@ -62,6 +62,17 @@ class ContactsRepositoryImplTest {
     private val mockContentResolver = MockContentResolver()
     private lateinit var repository: ContactsRepository
 
+    companion object {
+        private const val TEST_CONTACT_ID = 1L
+        private const val TEST_CONTACT_NAME = "Test Contact"
+        private const val TEST_CONTACT_LOOKUP_KEY = "contact_lookup_key"
+        private const val TEST_CONTACT_DATA_ID_1 = 101L
+        private const val TEST_CONTACT_DATA_ID_2 = 102L
+        private const val TEST_EMAIL = "test@example.com"
+        private const val TEST_PHONE_1 = "555-0123"
+        private const val TEST_PHONE_2 = "555-0124"
+    }
+
     @Before
     fun setUp() {
         val providerInfo = ProviderInfo().apply { authority = ContactsContract.AUTHORITY }
@@ -87,7 +98,9 @@ class ContactsRepositoryImplTest {
                     Contacts.LOOKUP_KEY,
                 )
             )
-        cursor.addRow(arrayOf<Any?>(1L, "Test Contact", 0, null, "contact_lookup_key"))
+        cursor.addRow(
+            arrayOf<Any?>(TEST_CONTACT_ID, TEST_CONTACT_NAME, 0, null, TEST_CONTACT_LOOKUP_KEY)
+        )
 
         fakeContentProvider.setCursorForUri(uriToExpect, cursor)
         val contacts = repository.getContacts(queryMode)
@@ -111,7 +124,7 @@ class ContactsRepositoryImplTest {
                     Contacts.LOOKUP_KEY,
                 )
             )
-        cursor.addRow(arrayOf<Any?>(1L, null, 0, null, "contact_lookup_key"))
+        cursor.addRow(arrayOf<Any?>(TEST_CONTACT_ID, null, 0, null, TEST_CONTACT_LOOKUP_KEY))
 
         fakeContentProvider.setCursorForUri(uriToExpect, cursor)
         val contacts = repository.getContacts(queryMode)
@@ -142,12 +155,12 @@ class ContactsRepositoryImplTest {
 
         cursor.addRow(
             arrayOf<Any?>(
-                1L,
-                "Test Contact",
+                TEST_CONTACT_ID,
+                TEST_CONTACT_NAME,
                 0,
                 null,
-                "test@example.com",
-                101L,
+                TEST_EMAIL,
+                TEST_CONTACT_DATA_ID_1,
                 Email.TYPE_HOME,
                 null,
             )
@@ -180,7 +193,16 @@ class ContactsRepositoryImplTest {
             )
 
         cursor.addRow(
-            arrayOf<Any?>(1L, "Test Contact", 0, null, "555-0123", 101L, Phone.TYPE_HOME, null)
+            arrayOf<Any?>(
+                TEST_CONTACT_ID,
+                TEST_CONTACT_NAME,
+                0,
+                null,
+                TEST_PHONE_1,
+                TEST_CONTACT_DATA_ID_1,
+                Phone.TYPE_HOME,
+                null,
+            )
         )
 
         fakeContentProvider.setCursorForUri(uriToExpect, cursor)
@@ -217,7 +239,9 @@ class ContactsRepositoryImplTest {
                     Contacts.LOOKUP_KEY,
                 )
             )
-        cursor.addRow(arrayOf<Any?>(1L, "Test Contact", 0, null, "contact_lookup_key"))
+        cursor.addRow(
+            arrayOf<Any?>(TEST_CONTACT_ID, TEST_CONTACT_NAME, 0, null, TEST_CONTACT_LOOKUP_KEY)
+        )
 
         fakeContentProvider.setCursorForUri(expectedUri, cursor)
         val contacts = repository.getContacts(queryMode)
@@ -225,7 +249,7 @@ class ContactsRepositoryImplTest {
         assertThat(contacts).isNotEmpty()
         val contact = contacts.first()
         assertThat(contact).isInstanceOf(DisplayNameContact::class.java)
-        assertThat(contact.displayName).isEqualTo("Test Contact")
+        assertThat(contact.displayName).isEqualTo(TEST_CONTACT_NAME)
     }
 
     @Test
@@ -257,14 +281,16 @@ class ContactsRepositoryImplTest {
                     Contacts.LOOKUP_KEY,
                 )
             )
-        cursor.addRow(arrayOf<Any?>(1L, "Test Contact", 0, null, "contact_lookup_key"))
+        cursor.addRow(
+            arrayOf<Any?>(TEST_CONTACT_ID, TEST_CONTACT_NAME, 0, null, TEST_CONTACT_LOOKUP_KEY)
+        )
 
         fakeContentProvider.setCursorForUri(expectedUri, cursor)
         val contacts = repository.searchContacts(query, queryMode)
 
         assertThat(contacts).isNotEmpty()
         val contact = contacts.first()
-        assertThat(contact.displayName).isEqualTo("Test Contact")
+        assertThat(contact.displayName).isEqualTo(TEST_CONTACT_NAME)
     }
 
     @Test
@@ -284,10 +310,28 @@ class ContactsRepositoryImplTest {
                 )
             )
         cursor.addRow(
-            arrayOf<Any?>(1L, "Test Contact", 0, null, "555-0123", 101L, Phone.TYPE_HOME, null)
+            arrayOf<Any?>(
+                TEST_CONTACT_ID,
+                TEST_CONTACT_NAME,
+                0,
+                null,
+                TEST_PHONE_1,
+                TEST_CONTACT_DATA_ID_1,
+                Phone.TYPE_HOME,
+                null,
+            )
         )
         cursor.addRow(
-            arrayOf<Any?>(1L, "Test Contact2", 0, null, "555-0124", 102L, Phone.TYPE_WORK, null)
+            arrayOf<Any?>(
+                TEST_CONTACT_ID,
+                "Test Contact2",
+                0,
+                null,
+                TEST_PHONE_2,
+                TEST_CONTACT_DATA_ID_2,
+                Phone.TYPE_WORK,
+                null,
+            )
         )
 
         fakeContentProvider.setCursorForUri(Phone.CONTENT_URI, cursor)
@@ -297,9 +341,9 @@ class ContactsRepositoryImplTest {
         assertThat(contacts).hasSize(1)
         val phoneContact = contacts.first() as PhoneContact
         assertThat(phoneContact.phones).hasSize(2)
-        assertThat(phoneContact.phones[0].number).isEqualTo("555-0123")
+        assertThat(phoneContact.phones[0].number).isEqualTo(TEST_PHONE_1)
         assertThat(phoneContact.phones[0].label).isEqualTo("Home")
-        assertThat(phoneContact.phones[1].number).isEqualTo("555-0124")
+        assertThat(phoneContact.phones[1].number).isEqualTo(TEST_PHONE_2)
         assertThat(phoneContact.phones[1].label).isEqualTo("Work")
     }
 
@@ -321,10 +365,28 @@ class ContactsRepositoryImplTest {
             )
         val fakeUri = "content://fake/uri/123"
         cursor.addRow(
-            arrayOf<Any?>(1L, "Test Contact", null, 0, "555-0123", 101L, Phone.TYPE_HOME, null)
+            arrayOf<Any?>(
+                TEST_CONTACT_ID,
+                TEST_CONTACT_NAME,
+                null,
+                0,
+                TEST_PHONE_1,
+                TEST_CONTACT_DATA_ID_1,
+                Phone.TYPE_HOME,
+                null,
+            )
         )
         cursor.addRow(
-            arrayOf<Any?>(2L, "Test Contact2", fakeUri, 0, "555-0124", 102L, Phone.TYPE_WORK, null)
+            arrayOf<Any?>(
+                2L,
+                "Test Contact2",
+                fakeUri,
+                0,
+                TEST_PHONE_2,
+                TEST_CONTACT_DATA_ID_2,
+                Phone.TYPE_WORK,
+                null,
+            )
         )
 
         fakeContentProvider.setCursorForUri(Phone.CONTENT_URI, cursor)
@@ -338,9 +400,9 @@ class ContactsRepositoryImplTest {
 
     @Test
     fun getDataRowIds_returnsCorrectDataIds_forContactsAndMimeTypes() = runTest {
-        val contactId = 1L
-        val emailDataId = 101L
-        val phoneDataId = 102L
+        val contactId = TEST_CONTACT_ID
+        val emailDataId = TEST_CONTACT_DATA_ID_1
+        val phoneDataId = TEST_CONTACT_DATA_ID_2
         val mimeTypes = listOf(MimeType.EMAIL, MimeType.PHONE)
 
         val cursor = MatrixCursor(arrayOf(Data._ID))

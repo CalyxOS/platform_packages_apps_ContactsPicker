@@ -24,7 +24,8 @@ interface ContactsPickerSessionProviderRepository {
      *
      * @param dataIds List of data IDs for the selected contact data.
      * @param callingUid The UID of the calling application.
+     * @param sourceUserId The user ID where the contact data resides.
      * @return The URI of the created session.
      */
-    suspend fun createSession(dataIds: List<Long>, callingUid: Int): Uri
+    suspend fun createSession(dataIds: List<Long>, callingUid: Int, sourceUserId: Int): Uri
 }

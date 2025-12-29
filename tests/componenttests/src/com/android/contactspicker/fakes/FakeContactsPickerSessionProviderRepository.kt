@@ -30,7 +30,11 @@ class FakeContactsPickerSessionProviderRepository : ContactsPickerSessionProvide
         results[dataIds to callingUid] = resultUri
     }
 
-    override suspend fun createSession(dataIds: List<Long>, callingUid: Int): Uri {
+    override suspend fun createSession(
+        dataIds: List<Long>,
+        callingUid: Int,
+        sourceUserId: Int,
+    ): Uri {
         return results[dataIds to callingUid] ?: Uri.EMPTY
     }
 }

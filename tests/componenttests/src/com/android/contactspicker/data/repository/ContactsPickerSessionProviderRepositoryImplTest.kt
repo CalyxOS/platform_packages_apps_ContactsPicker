@@ -18,6 +18,7 @@ package com.android.contactspicker.data.repository
 import android.content.Context
 import android.content.pm.ProviderInfo
 import android.net.Uri
+import android.os.UserHandle
 import android.provider.ContactsPickerSessionContract
 import android.test.mock.MockContentResolver
 import com.android.contactspicker.fakes.FakeContentProvider
@@ -37,6 +38,7 @@ class ContactsPickerSessionProviderRepositoryImplTest {
     private val fakeContentProvider = FakeContentProvider()
     private val mockContentResolver = MockContentResolver()
     private lateinit var repository: ContactsPickerSessionProviderRepository
+    private val userId = UserHandle.myUserId()
 
     @Before
     fun setUp() {
@@ -45,7 +47,7 @@ class ContactsPickerSessionProviderRepositoryImplTest {
         fakeContentProvider.attachInfo(mockContext, providerInfo)
 
         mockContentResolver.addProvider(
-            ContactsPickerSessionContract.AUTHORITY,
+            "$userId@" + ContactsPickerSessionContract.AUTHORITY,
             fakeContentProvider,
         )
         whenever(mockContext.contentResolver).thenReturn(mockContentResolver)
@@ -57,18 +59,17 @@ class ContactsPickerSessionProviderRepositoryImplTest {
         val callingUid = 12345
         val dataIds = listOf(1L, 2L)
         val expectedSessionUri =
-            Uri.parse("content://${ContactsPickerSessionContract.AUTHORITY}/sessions/session_1")
+            Uri.parse(
+                "content://$userId@${ContactsPickerSessionContract.AUTHORITY}/sessions/session_1"
+            )
         val expectedInsertContactDataIds = "1,2"
         val expectedInsertCallingUid = callingUid
-
         fakeContentProvider.insertContactsPickerSessionProviderUri(callingUid, expectedSessionUri)
-        val resultUri = repository.createSession(dataIds, callingUid)
+
+        val resultUri = repository.createSession(dataIds, callingUid, userId)
 
         val insertedContentValues =
             fakeContentProvider.getContactsPickerSessionProviderInsertContent(callingUid)
-        insertedContentValues?.getAsInteger(
-            ContactsPickerSessionContract.Session.SESSION_REQUESTER_UID
-        )
         assertThat(
                 insertedContentValues?.getAsString(
                     ContactsPickerSessionContract.Session.CONTACT_DATA_IDS
@@ -81,12 +82,35 @@ class ContactsPickerSessionProviderRepositoryImplTest {
                 )
             )
             .isEqualTo(expectedInsertCallingUid)
-
         assertThat(resultUri).isEqualTo(expectedSessionUri)
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun createSession_throwsExceptionWhenUriListIsEmpty() = runTest {
-        repository.createSession(emptyList(), 12345)
+        repository.createSession(emptyList(), 12345, userId)
+    }
+
+    @Test
+    fun createSession_withCrossProfileUserId_usesCorrectAuthority() = runTest {
+        fakeContentProvider.bypassUserIdCheck = true
+        val crossProfileUserId = 10
+        val callingUid = 12345
+        val dataIds = listOf(1L)
+        val expectedSessionUri =
+            Uri.parse(
+                "content://$crossProfileUserId@${ContactsPickerSessionContract.AUTHORITY}/sessions/session_1"
+            )
+        fakeContentProvider.insertContactsPickerSessionProviderUri(callingUid, expectedSessionUri)
+        mockContentResolver.addProvider(
+            "$crossProfileUserId@" + ContactsPickerSessionContract.AUTHORITY,
+            fakeContentProvider,
+        )
+
+        val resultUri = repository.createSession(dataIds, callingUid, crossProfileUserId)
+
+        assertThat(resultUri).isEqualTo(expectedSessionUri)
+        val insertedValues =
+            fakeContentProvider.getContactsPickerSessionProviderInsertContent(callingUid)
+        assertThat(insertedValues).isNotNull()
     }
 }

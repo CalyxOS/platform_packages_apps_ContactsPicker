@@ -35,17 +35,22 @@ import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.MimeType
+import com.android.contactspicker.data.model.PickerUserStates
 import com.android.contactspicker.data.model.emptyContactsSelection
+import com.android.contactspicker.data.repository.UserRepository
 import com.android.contactspicker.fakes.FakeContactsPickerSessionProviderRepository
 import com.android.contactspicker.fakes.FakeContactsRepository
 import com.android.contactspicker.fakes.FakePrivacyBannerRepository
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.google.common.truth.Truth.assertThat
+import dagger.Lazy
 import kotlin.test.assertFailsWith
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.resetMain
@@ -55,6 +60,11 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.Mockito.never
+import org.mockito.Mockito.verify
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
@@ -67,6 +77,7 @@ class ContactsViewModelTest {
     private lateinit var fakeContactsPickerSessionProviderRepository:
         FakeContactsPickerSessionProviderRepository
     private lateinit var fakePrivacyBannerRepository: FakePrivacyBannerRepository
+    private lateinit var mockUserRepository: UserRepository
     private lateinit var viewModel: ContactsViewModel
 
     @Before
@@ -75,6 +86,14 @@ class ContactsViewModelTest {
         fakeContactsRepository = FakeContactsRepository()
         fakeContactsPickerSessionProviderRepository = FakeContactsPickerSessionProviderRepository()
         fakePrivacyBannerRepository = FakePrivacyBannerRepository()
+        mockUserRepository = mock()
+        val defaultUserStates =
+            PickerUserStates(userIdToAvailableUsersMap = emptyMap(), selectedUserId = 0)
+        runBlocking {
+            whenever(mockUserRepository.getUserStates(anyInt()))
+                .thenReturn(flowOf(defaultUserStates))
+        }
+
         val fakeFactory =
             ContactsSelectionHandler.Factory { isMultiSelect, limit, listener ->
                 ContactsSelectionHandler(isMultiSelect, limit, listener)
@@ -85,6 +104,7 @@ class ContactsViewModelTest {
                 fakeContactsRepository,
                 fakeContactsPickerSessionProviderRepository,
                 fakePrivacyBannerRepository,
+                Lazy { mockUserRepository },
                 fakeFactory,
             )
     }
@@ -1135,6 +1155,20 @@ class ContactsViewModelTest {
         val state = viewModel.uiState.value as SearchState.Success
         assertThat(state.selectedContacts.isEmpty()).isTrue()
         assertThat(state.query).isEqualTo(query)
+    }
+
+    @Test
+    fun processIntent_actionPickContacts_clearsSelectedUser() = runTest {
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+
+        verify(mockUserRepository).clearSelectedUser()
+    }
+
+    @Test
+    fun processIntent_actionPick_doesNotClearSelectedUser() = runTest {
+        initializeViewModelForLegacyActionPick(emptyList())
+
+        verify(mockUserRepository, never()).clearSelectedUser()
     }
 
     /** Helper to trigger [onDoneClicked] and capture the emitted result event. */

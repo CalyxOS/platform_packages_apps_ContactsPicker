@@ -31,6 +31,8 @@ class FakeContentProvider : ContentProvider() {
     private val sessionMap = mutableMapOf<Int, Uri>()
     private val sessionContentValuesMap = mutableMapOf<Int, ContentValues>()
 
+    var bypassUserIdCheck: Boolean = false
+
     fun setCursorForUri(uri: Uri, cursor: Cursor) {
         cursorMap[uri] = cursor
     }
@@ -64,6 +66,16 @@ class FakeContentProvider : ContentProvider() {
                 sessionContentValuesMap[uid] = values
                 sessionMap[uid]
             }
+    }
+
+    // Override validateIncomingUri to bypass the default security check in ContentProvider which
+    // enforces that the URI's user ID matches the process user ID. Set bypassUserIdCheck to true
+    // in tests where cross-profile access is simulated but the test process runs as a single user.
+    override fun validateIncomingUri(uri: Uri): Uri {
+        if (bypassUserIdCheck) {
+            return uri
+        }
+        return super.validateIncomingUri(uri)
     }
 
     // Unused abstract methods
