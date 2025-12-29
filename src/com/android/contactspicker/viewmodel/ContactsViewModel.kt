@@ -21,6 +21,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Trace
+import android.os.UserHandle
 import android.util.Log
 import androidx.annotation.OpenForTesting
 import androidx.lifecycle.ViewModel
@@ -218,7 +219,12 @@ constructor(
                 try {
                     Trace.beginSection("$TAG#loadingContacts")
                     // load contacts data
-                    initialContacts = contactsRepository.getContacts(config.queryMode)
+                    initialContacts =
+                        contactsRepository.getContacts(
+                            config.queryMode,
+                            // TODO(b/449960997): Use selected user ID from UserStates
+                            UserHandle.myUserId(),
+                        )
                     // Only show the privacy banner if user hasn't seen it before for this
                     // combination of uid and MIME types.
                     Trace.endSection()
@@ -342,7 +348,13 @@ constructor(
             is ContactsQueryMode.EmailsOnly,
             is ContactsQueryMode.PhonesOnly -> getActionPickContactsIntent(ids)
             is ContactsQueryMode.Custom -> {
-                val ids = contactsRepository.getDataRowIds(ids, queryMode.mimetypes)
+                val ids =
+                    contactsRepository.getDataRowIds(
+                        ids,
+                        queryMode.mimetypes,
+                        // TODO(b/449960997): Use selected user ID from UserStates
+                        UserHandle.myUserId(),
+                    )
                 getActionPickContactsIntent(ids)
             }
 
@@ -397,7 +409,13 @@ constructor(
         val config = checkNotNull(pickerConfig)
         try {
             Trace.beginSection("$TAG#searchingContacts")
-            val results = contactsRepository.searchContacts(query, config.queryMode)
+            val results =
+                contactsRepository.searchContacts(
+                    query,
+                    config.queryMode,
+                    // TODO(b/449960997): Use selected user ID from UserStates
+                    UserHandle.myUserId(),
+                )
             _uiState.update { currentState ->
                 val selectedContacts =
                     when (currentState) {

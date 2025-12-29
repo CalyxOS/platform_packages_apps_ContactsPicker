@@ -32,6 +32,7 @@ class FakeContentProvider : ContentProvider() {
     private val sessionContentValuesMap = mutableMapOf<Int, ContentValues>()
 
     var bypassUserIdCheck: Boolean = false
+    val capturedUris = mutableListOf<Uri>()
 
     fun setCursorForUri(uri: Uri, cursor: Cursor) {
         cursorMap[uri] = cursor
@@ -72,6 +73,7 @@ class FakeContentProvider : ContentProvider() {
     // enforces that the URI's user ID matches the process user ID. Set bypassUserIdCheck to true
     // in tests where cross-profile access is simulated but the test process runs as a single user.
     override fun validateIncomingUri(uri: Uri): Uri {
+        capturedUris.add(uri)
         if (bypassUserIdCheck) {
             return uri
         }

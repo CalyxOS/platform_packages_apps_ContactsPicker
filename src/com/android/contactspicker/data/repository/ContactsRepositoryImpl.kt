@@ -15,6 +15,7 @@
  */
 package com.android.contactspicker.data.repository
 
+import android.content.ContentProvider
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
@@ -85,16 +86,17 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             )
     }
 
-    override suspend fun getContacts(queryMode: ContactsQueryMode): List<Contact> =
+    override suspend fun getContacts(queryMode: ContactsQueryMode, userId: Int): List<Contact> =
         withContext(Dispatchers.IO) {
             when (queryMode) {
-                ContactsQueryMode.EmailsOnly -> getEmailContacts()
-                ContactsQueryMode.PhonesOnly -> getPhoneContacts()
-                ContactsQueryMode.DisplayNamesOnly -> getDisplayNameContacts()
+                ContactsQueryMode.EmailsOnly -> getEmailContacts(userId)
+                ContactsQueryMode.PhonesOnly -> getPhoneContacts(userId)
+                ContactsQueryMode.DisplayNamesOnly -> getDisplayNameContacts(userId)
                 is ContactsQueryMode.Custom -> {
                     getContactsWithMimetypes(
                         queryMode.mimetypes,
                         queryMode.matchAllRequestedMimeTypes,
+                        userId,
                     )
                 }
             }
@@ -103,20 +105,22 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
     override suspend fun searchContacts(
         query: String,
         queryMode: ContactsQueryMode,
+        userId: Int,
     ): List<Contact> {
         if (query.isBlank()) {
             return emptyList()
         }
         return withContext(Dispatchers.IO) {
             when (queryMode) {
-                ContactsQueryMode.EmailsOnly -> searchEmails(query)
-                ContactsQueryMode.PhonesOnly -> searchPhones(query)
-                ContactsQueryMode.DisplayNamesOnly -> searchDisplayNames(query)
+                ContactsQueryMode.EmailsOnly -> searchEmails(query, userId)
+                ContactsQueryMode.PhonesOnly -> searchPhones(query, userId)
+                ContactsQueryMode.DisplayNamesOnly -> searchDisplayNames(query, userId)
                 is ContactsQueryMode.Custom -> {
                     searchContactsByMimeTypes(
                         query,
                         queryMode.mimetypes,
                         queryMode.matchAllRequestedMimeTypes,
+                        userId,
                     )
                 }
             }
@@ -126,6 +130,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
     override suspend fun getDataRowIds(
         contactIds: List<Long>,
         mimeTypes: List<MimeType>,
+        userId: Int,
     ): List<Long> {
         if (contactIds.isEmpty() || mimeTypes.isEmpty()) return emptyList()
 
@@ -143,7 +148,13 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
 
         return buildList {
             contentResolver
-                .query(Data.CONTENT_URI, arrayOf(Data._ID), selection, selectionArgs, null)
+                .query(
+                    ContentProvider.maybeAddUserId(Data.CONTENT_URI, userId),
+                    arrayOf(Data._ID),
+                    selection,
+                    selectionArgs,
+                    null,
+                )
                 ?.use { cursor ->
                     val idColumnIndex = cursor.getColumnIndexOrThrow(Data._ID)
                     while (cursor.moveToNext()) {
@@ -153,7 +164,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         }
     }
 
-    private fun getEmailContacts(): List<Contact> {
+    private fun getEmailContacts(userId: Int): List<Contact> {
         val contacts = mutableMapOf<Long, EmailContact>()
         val projection =
             arrayOf(
@@ -168,7 +179,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             )
         val cursor =
             contentResolver.query(
-                Email.CONTENT_URI,
+                ContentProvider.maybeAddUserId(Email.CONTENT_URI, userId),
                 projection,
                 null, // No specific selection
                 null, // No selection args
@@ -220,7 +231,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         return contacts.values.toList()
     }
 
-    private fun getPhoneContacts(): List<Contact> {
+    private fun getPhoneContacts(userId: Int): List<Contact> {
         val contacts = mutableMapOf<Long, PhoneContact>()
         val projection =
             arrayOf(
@@ -235,7 +246,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             )
         val cursor =
             contentResolver.query(
-                Phone.CONTENT_URI,
+                ContentProvider.maybeAddUserId(Phone.CONTENT_URI, userId),
                 projection,
                 null, // No specific selection
                 null, // No selection args
@@ -286,10 +297,10 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         return contacts.values.toList()
     }
 
-    private fun getDisplayNameContacts(): List<Contact> {
+    private fun getDisplayNameContacts(userId: Int): List<Contact> {
         val cursor =
             contentResolver.query(
-                Contacts.CONTENT_URI,
+                ContentProvider.maybeAddUserId(Contacts.CONTENT_URI, userId),
                 DISPLAY_NAME_FETCH_PROJECTION,
                 null, // No specific selection
                 null, // No selection args
@@ -302,6 +313,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
     private fun getContactsWithMimetypes(
         mimetypes: List<MimeType>,
         matchAllRequestedMimetypes: Boolean,
+        userId: Int,
     ): List<Contact> {
         if (mimetypes.isEmpty()) {
             return emptyList()
@@ -323,7 +335,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
 
         val cursor =
             contentResolver.query(
-                uri,
+                ContentProvider.maybeAddUserId(uri, userId),
                 DISPLAY_NAME_FETCH_PROJECTION,
                 null,
                 null,
@@ -337,6 +349,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         query: String,
         mimetypes: List<MimeType>,
         matchAllRequestedMimetypes: Boolean,
+        userId: Int,
     ): List<Contact> {
 
         // TODO(467326511#comment3): consider fix in the CP2 matcher and change the used URI
@@ -355,7 +368,14 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 )
                 .build()
 
-        val cursor = contentResolver.query(uri, DISPLAY_NAME_FETCH_PROJECTION, null, null, null)
+        val cursor =
+            contentResolver.query(
+                ContentProvider.maybeAddUserId(uri, userId),
+                DISPLAY_NAME_FETCH_PROJECTION,
+                null,
+                null,
+                null,
+            )
 
         return cursor?.use(::parseDisplayNameContacts) ?: emptyList()
     }
@@ -370,7 +390,9 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
 
         while (cursor.moveToNext()) {
             val id = cursor.getLong(idIndex)
-            val name = cursor.getString(nameIndex)?.takeIf{ it.isNotBlank() } ?: context.getString(R.string.no_name_placeholder)
+            val name =
+                cursor.getString(nameIndex)?.takeIf { it.isNotBlank() }
+                    ?: context.getString(R.string.no_name_placeholder)
             val profilePictureUri = cursor.getString(profilePictureUriIndex)
             val isFavorite = cursor.getInt(starredIndex) == 1
             val lookupKey = cursor.getString(lookupKeyIndex)
@@ -387,12 +409,13 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         return contacts
     }
 
-    private fun searchPhones(query: String): List<Contact> {
+    private fun searchPhones(query: String, userId: Int): List<Contact> {
         return searchWithFilter(
             query,
             Phone.CONTENT_FILTER_URI,
             PHONE_FILTER_PROJECTION,
             Phone.NUMBER,
+            userId,
         ) { id, displayName, profilePictureUri, dataId, number ->
             PhoneContact(
                 id = id,
@@ -404,12 +427,13 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         }
     }
 
-    private fun searchEmails(query: String): List<Contact> {
+    private fun searchEmails(query: String, userId: Int): List<Contact> {
         return searchWithFilter(
             query,
             Email.CONTENT_FILTER_URI,
             EMAIL_FILTER_PROJECTION,
             Email.ADDRESS,
+            userId,
         ) { id, displayName, profilePictureUri, dataId, address ->
             EmailContact(
                 id = id,
@@ -427,35 +451,42 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
      *
      * @return A list of [DisplayNameContact] matching the search query.
      */
-    private fun searchDisplayNames(query: String): List<Contact> {
-        val filterUri = Uri.withAppendedPath(Contacts.CONTENT_FILTER_URI, query)
+    private fun searchDisplayNames(query: String, userId: Int): List<Contact> {
         val contacts = mutableListOf<DisplayNameContact>()
-        contentResolver.query(filterUri, DISPLAY_NAME_FILTER_PROJECTION, null, null, null)?.use {
-            cursor ->
-            val idIndex = cursor.getColumnIndex(Contacts._ID)
-            val nameIndex = cursor.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY)
-            val profilePictureUriIndex = cursor.getColumnIndex(Contacts.PHOTO_THUMBNAIL_URI)
-            val lookupKeyIndex = cursor.getColumnIndex(Contacts.LOOKUP_KEY)
+        val uri = Contacts.CONTENT_FILTER_URI.buildUpon().appendPath(query).build()
+        contentResolver
+            .query(
+                ContentProvider.maybeAddUserId(uri, userId),
+                DISPLAY_NAME_FILTER_PROJECTION,
+                null,
+                null,
+                null,
+            )
+            ?.use { cursor ->
+                val idIndex = cursor.getColumnIndex(Contacts._ID)
+                val nameIndex = cursor.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY)
+                val profilePictureUriIndex = cursor.getColumnIndex(Contacts.PHOTO_THUMBNAIL_URI)
+                val lookupKeyIndex = cursor.getColumnIndex(Contacts.LOOKUP_KEY)
 
-            while (cursor.moveToNext()) {
-                val contactId = cursor.getLong(idIndex)
-                val displayName = cursor.getString(nameIndex)
-                val profilePictureUri = cursor.getString(profilePictureUriIndex)
-                val lookupKey = cursor.getString(lookupKeyIndex)
+                while (cursor.moveToNext()) {
+                    val contactId = cursor.getLong(idIndex)
+                    val displayName = cursor.getString(nameIndex)
+                    val profilePictureUri = cursor.getString(profilePictureUriIndex)
+                    val lookupKey = cursor.getString(lookupKeyIndex)
 
-                if (!displayName.isNullOrBlank() && !lookupKey.isNullOrBlank()) {
-                    contacts.add(
-                        DisplayNameContact(
-                            id = contactId,
-                            displayName = displayName,
-                            profilePictureUri = profilePictureUri,
-                            isFavorite = false,
-                            lookupKey = lookupKey,
+                    if (!displayName.isNullOrBlank() && !lookupKey.isNullOrBlank()) {
+                        contacts.add(
+                            DisplayNameContact(
+                                id = contactId,
+                                displayName = displayName,
+                                profilePictureUri = profilePictureUri,
+                                isFavorite = false,
+                                lookupKey = lookupKey,
+                            )
                         )
-                    )
+                    }
                 }
             }
-        }
         return contacts
     }
 
@@ -464,6 +495,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         filterUri: Uri,
         projection: Array<String>,
         dataColumnName: String,
+        userId: Int,
         parseContact:
             (
                 id: Long,
@@ -476,27 +508,29 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         val contacts = mutableListOf<Contact>()
         val uri = filterUri.buildUpon().appendPath(query).build()
 
-        contentResolver.query(uri, projection, null, null, null)?.use { cursor ->
-            val idIndex = cursor.getColumnIndex(Data.CONTACT_ID)
-            val nameIndex = cursor.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)
-            val profilePictureUriIndex = cursor.getColumnIndex(Data.PHOTO_THUMBNAIL_URI)
-            val dataValueIndex = cursor.getColumnIndex(dataColumnName)
-            val dataIdIndex = cursor.getColumnIndex(Data._ID)
+        contentResolver
+            .query(ContentProvider.maybeAddUserId(uri, userId), projection, null, null, null)
+            ?.use { cursor ->
+                val idIndex = cursor.getColumnIndex(Data.CONTACT_ID)
+                val nameIndex = cursor.getColumnIndex(Data.DISPLAY_NAME_PRIMARY)
+                val profilePictureUriIndex = cursor.getColumnIndex(Data.PHOTO_THUMBNAIL_URI)
+                val dataValueIndex = cursor.getColumnIndex(dataColumnName)
+                val dataIdIndex = cursor.getColumnIndex(Data._ID)
 
-            while (cursor.moveToNext()) {
-                val id = cursor.getLong(idIndex)
-                val name = cursor.getString(nameIndex)
-                val profilePictureUri = cursor.getString(profilePictureUriIndex)
-                val dataValue = cursor.getString(dataValueIndex)
-                val dataId = cursor.getLong(dataIdIndex)
+                while (cursor.moveToNext()) {
+                    val id = cursor.getLong(idIndex)
+                    val name = cursor.getString(nameIndex)
+                    val profilePictureUri = cursor.getString(profilePictureUriIndex)
+                    val dataValue = cursor.getString(dataValueIndex)
+                    val dataId = cursor.getLong(dataIdIndex)
 
-                if (!name.isNullOrBlank() && !dataValue.isNullOrBlank()) {
-                    // TODO(b/451963918) Confirm if we return aggregated contacts or single data
-                    // rows
-                    contacts.add(parseContact(id, name, profilePictureUri, dataId, dataValue))
+                    if (!name.isNullOrBlank() && !dataValue.isNullOrBlank()) {
+                        // TODO(b/451963918) Confirm if we return aggregated contacts or single data
+                        // rows
+                        contacts.add(parseContact(id, name, profilePictureUri, dataId, dataValue))
+                    }
                 }
             }
-        }
         return contacts
     }
 }

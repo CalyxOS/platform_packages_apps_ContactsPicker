@@ -26,9 +26,10 @@ interface ContactsRepository {
      * Retrieves the initial list of contacts appropriate for the given [ContactsQueryMode].
      *
      * @param queryMode The mode of query to perform.
+     * @param userId The user ID to query contacts for.
      * @return A list of matching [Contact]s.
      */
-    suspend fun getContacts(queryMode: ContactsQueryMode): List<Contact>
+    suspend fun getContacts(queryMode: ContactsQueryMode, userId: Int): List<Contact>
 
     /**
      * Searches for contacts that match the given query and have at least one of the requested mime
@@ -36,16 +37,26 @@ interface ContactsRepository {
      *
      * @param query The text to search for in contact names, emails, and phone numbers.
      * @param queryMode The mode of query to perform.
+     * @param userId The user ID to query contacts for.
      * @return A list of matching [Contact]s.
      */
-    suspend fun searchContacts(query: String, queryMode: ContactsQueryMode): List<Contact>
+    suspend fun searchContacts(
+        query: String,
+        queryMode: ContactsQueryMode,
+        userId: Int,
+    ): List<Contact>
 
     /**
      * Retrieves Data Row IDs for specific contact lookup keys and mime types.
      *
      * @param contactIds List of contact lookup keys.
      * @param mimeTypes List of mime types.
+     * @param userId The user ID to query contacts for.
      * @return A list of unique data row IDs.
      */
-    suspend fun getDataRowIds(contactIds: List<Long>, mimeTypes: List<MimeType>): List<Long>
+    suspend fun getDataRowIds(
+        contactIds: List<Long>,
+        mimeTypes: List<MimeType>,
+        userId: Int,
+    ): List<Long>
 }

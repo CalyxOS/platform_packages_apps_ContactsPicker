@@ -62,7 +62,7 @@ class FakeContactsRepository : ContactsRepository {
         return searchInvocationsCountMap.getOrDefault(query, 0)
     }
 
-    override suspend fun getContacts(queryMode: ContactsQueryMode): List<Contact> {
+    override suspend fun getContacts(queryMode: ContactsQueryMode, userId: Int): List<Contact> {
         exceptionToThrow?.let { throw it }
         return initialContacts
     }
@@ -70,6 +70,7 @@ class FakeContactsRepository : ContactsRepository {
     override suspend fun searchContacts(
         query: String,
         queryMode: ContactsQueryMode,
+        userId: Int,
     ): List<Contact> {
         searchInvocationsCountMap[query] = searchInvocationsCountMap.getOrDefault(query, 0) + 1
         searchExceptionMap[query]?.let { throw it }
@@ -79,6 +80,7 @@ class FakeContactsRepository : ContactsRepository {
     override suspend fun getDataRowIds(
         contactIds: List<Long>,
         mimeTypes: List<MimeType>,
+        userId: Int,
     ): List<Long> {
         return dataRowIdsMap[contactIds.toSet() to mimeTypes.toSet()] ?: emptyList()
     }
