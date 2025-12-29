@@ -44,6 +44,7 @@ internal fun buildActionPickContactsIntent(
     context: Context,
     selectedMimeTypes: Set<MimeType>,
     allowMultiple: Boolean,
+    matchAllDataFields: Boolean,
     overrideSelectionLimit: Boolean,
     selectionLimit: Int,
 ): Intent? {
@@ -55,6 +56,7 @@ internal fun buildActionPickContactsIntent(
             selectionLimit,
         )
     }
+    intent.putExtra(ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_MATCH_ALL_DATA_FIELDS, true)
 
     val requestedDataFields = ArrayList(selectedMimeTypes.map { it.mimeTypeString })
     if (requestedDataFields.isEmpty()) {

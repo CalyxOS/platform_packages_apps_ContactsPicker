@@ -75,19 +75,29 @@ fun SectionTitle(title: String) {
 }
 
 @Composable
-fun CommonOptionsWithSystemPickerDisabled(
-    allowMultiple: Boolean,
-    onAllowMultipleChange: (Boolean) -> Unit,
-) {
-    SectionTitle("Options")
+fun SwitchOption(title: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        Text("Allow Multiple Selection", style = MaterialTheme.typography.bodyLarge)
-        Switch(checked = allowMultiple, onCheckedChange = onAllowMultipleChange)
+        Column(modifier = Modifier.weight(1f).padding(end = 16.dp)) {
+            Text(title, style = MaterialTheme.typography.bodyLarge)
+        }
+        Switch(checked = checked, onCheckedChange = onCheckedChange)
     }
+}
+
+@Composable
+fun CommonOptionsWithSystemPickerDisabled(
+    allowMultiple: Boolean,
+    onAllowMultipleChange: (Boolean) -> Unit,
+) {
+    SwitchOption(
+        title = "Allow Multiple Selection",
+        checked = allowMultiple,
+        onCheckedChange = onAllowMultipleChange,
+    )
 }
 
 @Composable
@@ -100,15 +110,11 @@ fun CommonOptions(
     onSelectionLimitChange: (Int) -> Unit,
 ) {
     CommonOptionsWithSystemPickerDisabled(allowMultiple, onAllowMultipleChange)
-
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Text("Override selection limit", style = MaterialTheme.typography.bodyLarge)
-        Switch(checked = overrideSelectionLimit, onCheckedChange = onOverrideSelectionLimitChange)
-    }
+    SwitchOption(
+        title = "Override selection limit",
+        checked = overrideSelectionLimit,
+        onCheckedChange = onOverrideSelectionLimitChange,
+    )
     if (overrideSelectionLimit) {
         Spacer(modifier = Modifier.height(8.dp))
         NumberInputRow(
