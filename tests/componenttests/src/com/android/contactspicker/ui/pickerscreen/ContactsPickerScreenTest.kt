@@ -35,6 +35,10 @@ import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
 import com.android.contactspicker.SearchState
+import com.android.contactspicker.data.model.PickerUserStates
+import com.android.contactspicker.data.model.SwitchableProfileInfo
+import com.android.contactspicker.data.model.UserProfile
+import com.android.contactspicker.data.model.UserType
 import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import org.junit.Rule
@@ -59,6 +63,7 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = mutableStateOf(ContactsListState.Loading),
+                userStates = null,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -67,6 +72,7 @@ class ContactsPickerScreenTest {
                 onExitSearch = {},
                 onBackFromPreview = {},
                 onPrivacyBannerDismissRequest = {},
+                onProfileClicked = {},
             )
         }
         composeTestRule
@@ -81,6 +87,7 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = mutableStateOf(ContactsListState.Error(errorMessage)),
+                userStates = null,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -89,6 +96,7 @@ class ContactsPickerScreenTest {
                 onExitSearch = {},
                 onBackFromPreview = {},
                 onPrivacyBannerDismissRequest = {},
+                onProfileClicked = {},
             )
         }
 
@@ -118,6 +126,7 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = mutableStateOf(ContactsListState.Error(errorMessage)),
+                userStates = null,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -126,6 +135,7 @@ class ContactsPickerScreenTest {
                 onExitSearch = {},
                 onBackFromPreview = {},
                 onPrivacyBannerDismissRequest = {},
+                onProfileClicked = {},
             )
         }
         composeTestRule
@@ -140,6 +150,7 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = mutableStateOf(ContactsListState.Loading),
+                userStates = null,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -148,6 +159,7 @@ class ContactsPickerScreenTest {
                 onExitSearch = {},
                 onBackFromPreview = {},
                 onPrivacyBannerDismissRequest = {},
+                onProfileClicked = {},
             )
         }
         composeTestRule
@@ -159,7 +171,7 @@ class ContactsPickerScreenTest {
 
     @Test
     fun whenStateIsSuccess_showsProfileSelector() {
-        setContentWithDefaultSuccessState()
+        setContentWithMockUserStates()
 
         composeTestRule
             .onNodeWithContentDescription(
@@ -193,6 +205,7 @@ class ContactsPickerScreenTest {
                             requestedMimeTypes = emptyList(),
                         )
                     ),
+                userStates = null,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = mockOnExpandRequest,
                 onToggleContactSelection = {},
@@ -201,6 +214,7 @@ class ContactsPickerScreenTest {
                 onExitSearch = {},
                 onBackFromPreview = {},
                 onPrivacyBannerDismissRequest = {},
+                onProfileClicked = {},
             )
         }
 
@@ -235,6 +249,7 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = uiState,
+                userStates = null,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {
                     uiState.value = SearchState.Success("", emptyList(), emptyContactsSelection())
@@ -245,6 +260,7 @@ class ContactsPickerScreenTest {
                 onExitSearch = {},
                 onBackFromPreview = {},
                 onPrivacyBannerDismissRequest = {},
+                onProfileClicked = {},
             )
         }
 
@@ -286,6 +302,7 @@ class ContactsPickerScreenTest {
                             requestedMimeTypes = emptyList(),
                         )
                     ),
+                userStates = null,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -294,7 +311,60 @@ class ContactsPickerScreenTest {
                 onExitSearch = {},
                 onBackFromPreview = {},
                 onPrivacyBannerDismissRequest = {},
+                onProfileClicked = {},
             )
         }
+    }
+
+    private fun setContentWithMockUserStates() {
+        composeTestRule.setContent {
+            ContactsPickerScreen(
+                uiState =
+                    mutableStateOf(
+                        ContactsListState.Success(
+                            availableContacts = listOf(testContact),
+                            selectedContacts = emptyContactsSelection(),
+                            isMultiSelectEnabled = false,
+                            callingAppName = null,
+                            showPrivacyBanner = false,
+                            requestedMimeTypes = emptyList(),
+                        )
+                    ),
+                userStates = createMockUserStates(),
+                onNavigateToPrivacyDetails = {},
+                onExpandRequest = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
+                onQueryChange = {},
+                onExitSearch = {},
+                onBackFromPreview = {},
+                onPrivacyBannerDismissRequest = {},
+                onProfileClicked = {},
+            )
+        }
+    }
+
+    private fun createMockUserStates(): PickerUserStates {
+        val personalProfile =
+            UserProfile(
+                userId = 0,
+                userIdToQueryContacts = 0,
+                userType = UserType.PERSONAL,
+                switchableInfo = SwitchableProfileInfo(label = "Personal", icon = null),
+                pausedInfo = null,
+            )
+        val workProfile =
+            UserProfile(
+                userId = 10,
+                userIdToQueryContacts = 10,
+                userType = UserType.WORK,
+                switchableInfo = SwitchableProfileInfo(label = "Work", icon = null),
+                pausedInfo = null,
+            )
+
+        return PickerUserStates(
+            userIdToAvailableUsersMap = mapOf(0 to personalProfile, 10 to workProfile),
+            selectedUserId = 0,
+        )
     }
 }

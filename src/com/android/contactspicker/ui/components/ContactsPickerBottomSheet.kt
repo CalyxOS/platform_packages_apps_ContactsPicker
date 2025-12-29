@@ -72,6 +72,7 @@ import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.PickerUserStates
 import com.android.contactspicker.data.model.totalElementCount
 import com.android.contactspicker.navigation.ContactsPickerNavHost
 import com.android.contactspicker.ui.pickerscreen.SelectionBottomBar
@@ -92,6 +93,7 @@ private const val SCRIM_ALPHA = 0.32f
 fun ContactsPickerBottomSheet(
     onDismissRequest: () -> Unit,
     uiState: State<ContactsUiState>,
+    userStates: PickerUserStates?,
     snackbarEvents: Flow<SnackbarEvent>,
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (Long, Long) -> Unit,
@@ -172,6 +174,7 @@ fun ContactsPickerBottomSheet(
                 ContactsPickerNavHost(
                     navController = navController,
                     uiState = uiState,
+                    userStates = userStates,
                     onToggleContactSelection = onToggleContactSelection,
                     onToggleEntrySelection = onToggleEntrySelection,
                     onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,

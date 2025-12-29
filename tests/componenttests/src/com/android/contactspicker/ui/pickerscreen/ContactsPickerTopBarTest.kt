@@ -25,6 +25,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.longClick
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -32,7 +33,12 @@ import androidx.compose.ui.test.performTouchInput
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsListState
+import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
+import com.android.contactspicker.data.model.PickerUserStates
+import com.android.contactspicker.data.model.SwitchableProfileInfo
+import com.android.contactspicker.data.model.UserProfile
+import com.android.contactspicker.data.model.UserType
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -46,19 +52,25 @@ class ContactsPickerTopBarTest {
 
     private val context: Context = ApplicationProvider.getApplicationContext()
 
+    private val primaryUser =
+        UserProfile(
+            userId = 10,
+            userIdToQueryContacts = 10,
+            userType = UserType.PERSONAL,
+            switchableInfo = SwitchableProfileInfo(label = "Personal", icon = null),
+        )
+
+    private val workUser =
+        UserProfile(
+            userId = 11,
+            userIdToQueryContacts = 11,
+            userType = UserType.WORK,
+            switchableInfo = SwitchableProfileInfo(label = "Work", icon = null),
+        )
+
     @Test
     fun overflowMenu_isNotVisibleByDefault() {
-        composeTestRule.setContent {
-            ContactsPickerTopBar(
-                uiState = mutableStateOf(ContactsListState.Loading),
-                onSearchBarToggled = {},
-                onQueryChange = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-                onExitSearch = {},
-                onShowPrivacyDetailsClick = {},
-            )
-        }
+        setContactsPickerTopBarContent()
 
         composeTestRule
             .onNodeWithText(context.getString(R.string.privacy_details_menu_label))
@@ -67,17 +79,7 @@ class ContactsPickerTopBarTest {
 
     @Test
     fun moreVertIcon_isDisplayed() {
-        composeTestRule.setContent {
-            ContactsPickerTopBar(
-                uiState = mutableStateOf(ContactsListState.Loading),
-                onSearchBarToggled = {},
-                onQueryChange = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-                onExitSearch = {},
-                onShowPrivacyDetailsClick = {},
-            )
-        }
+        setContactsPickerTopBarContent()
 
         composeTestRule
             .onNodeWithTag(CONTACTS_PICKER_TOP_BAR_MORE_VERTICAL_ICON_TEST_TAG)
@@ -86,17 +88,7 @@ class ContactsPickerTopBarTest {
 
     @Test
     fun clickMoreVertIcon_showsOverflowMenu() {
-        composeTestRule.setContent {
-            ContactsPickerTopBar(
-                uiState = mutableStateOf(ContactsListState.Loading),
-                onSearchBarToggled = {},
-                onQueryChange = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-                onExitSearch = {},
-                onShowPrivacyDetailsClick = {},
-            )
-        }
+        setContactsPickerTopBarContent()
 
         composeTestRule
             .onNodeWithTag(CONTACTS_PICKER_TOP_BAR_MORE_VERTICAL_ICON_TEST_TAG)
@@ -109,17 +101,7 @@ class ContactsPickerTopBarTest {
     @Test
     fun clickOverflowMenuItem_invokesCallback() {
         var privacyDetailsClicked = false
-        composeTestRule.setContent {
-            ContactsPickerTopBar(
-                uiState = mutableStateOf(ContactsListState.Loading),
-                onSearchBarToggled = {},
-                onQueryChange = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-                onExitSearch = {},
-                onShowPrivacyDetailsClick = { privacyDetailsClicked = true },
-            )
-        }
+        setContactsPickerTopBarContent(onShowPrivacyDetailsClick = { privacyDetailsClicked = true })
 
         composeTestRule
             .onNodeWithTag(CONTACTS_PICKER_TOP_BAR_MORE_VERTICAL_ICON_TEST_TAG)
@@ -136,17 +118,7 @@ class ContactsPickerTopBarTest {
 
     @Test
     fun clickOutsideOverflowMenu_dismissesMenu() {
-        composeTestRule.setContent {
-            ContactsPickerTopBar(
-                uiState = mutableStateOf(ContactsListState.Loading),
-                onSearchBarToggled = {},
-                onQueryChange = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-                onExitSearch = {},
-                onShowPrivacyDetailsClick = {},
-            )
-        }
+        setContactsPickerTopBarContent()
 
         // 1. Find the MoreVert icon button and click it to open the menu.
         val overflowButton =
@@ -168,17 +140,7 @@ class ContactsPickerTopBarTest {
 
     @Test
     fun longClickMoreVertIcon_showsTooltip() {
-        composeTestRule.setContent {
-            ContactsPickerTopBar(
-                uiState = mutableStateOf(ContactsListState.Loading),
-                onSearchBarToggled = {},
-                onQueryChange = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
-                onExitSearch = {},
-                onShowPrivacyDetailsClick = {},
-            )
-        }
+        setContactsPickerTopBarContent()
 
         // Perform a long click on the more options icon to trigger the tooltip.
         composeTestRule
@@ -191,5 +153,59 @@ class ContactsPickerTopBarTest {
                 context.getString(R.string.contacts_picker_top_bar_more_options_content_description)
             )
             .assertIsDisplayed()
+    }
+
+    @Test
+    fun showsProfileSwitcher_whenMultipleUsers() {
+        val userStates =
+            PickerUserStates(
+                userIdToAvailableUsersMap =
+                    mapOf(primaryUser.userId to primaryUser, workUser.userId to workUser),
+                selectedUserId = primaryUser.userId,
+            )
+
+        setContactsPickerTopBarContent(userStates = userStates)
+
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.profile_switcher_content_description)
+            )
+            .assertIsDisplayed()
+    }
+
+    @Test
+    fun hidesProfileSwitcher_whenSingleUser() {
+        val userStates =
+            PickerUserStates(
+                userIdToAvailableUsersMap = mapOf(primaryUser.userId to primaryUser),
+                selectedUserId = primaryUser.userId,
+            )
+
+        setContactsPickerTopBarContent(userStates = userStates)
+
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.profile_switcher_content_description)
+            )
+            .assertDoesNotExist()
+    }
+
+    private fun setContactsPickerTopBarContent(
+        userStates: PickerUserStates? = null,
+        onShowPrivacyDetailsClick: () -> Unit = {},
+    ) {
+        composeTestRule.setContent {
+            ContactsPickerTopBar(
+                uiState = mutableStateOf<ContactsUiState>(ContactsListState.Loading),
+                userStates = userStates,
+                onSearchBarToggled = {},
+                onQueryChange = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
+                onExitSearch = {},
+                onShowPrivacyDetailsClick = onShowPrivacyDetailsClick,
+                onProfileClicked = {},
+            )
+        }
     }
 }

@@ -226,11 +226,13 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
             }
 
             val uiState = contactsViewModel.uiState.collectAsStateWithLifecycle()
+            val userStates = contactsViewModel.userStates.collectAsStateWithLifecycle()
             ContactsPickerAppTheme {
                 ReadContactsPermissionCheckedContent(contactsViewModel) {
                     ContactsPickerBottomSheet(
                         onDismissRequest = { finish() },
                         uiState = uiState,
+                        userStates = userStates.value,
                         snackbarEvents = contactsViewModel.snackbarEvents,
                         onToggleContactSelection = contactsViewModel::toggleContactSelection,
                         onToggleEntrySelection = contactsViewModel::toggleEntrySelection,

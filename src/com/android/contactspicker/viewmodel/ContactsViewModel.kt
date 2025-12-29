@@ -36,6 +36,7 @@ import com.android.contactspicker.config.ContactsQueryMode
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.PhoneContact
+import com.android.contactspicker.data.model.PickerUserStates
 import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.data.repository.ContactsPickerSessionProviderRepository
 import com.android.contactspicker.data.repository.ContactsRepository
@@ -103,6 +104,9 @@ constructor(
 
     private val _uiState = MutableStateFlow<ContactsUiState>(ContactsListState.Loading)
     open val uiState: StateFlow<ContactsUiState> = _uiState.asStateFlow()
+
+    private val _userStates = MutableStateFlow<PickerUserStates?>(null)
+    open val userStates: StateFlow<PickerUserStates?> = _userStates.asStateFlow()
 
     private val _snackbarEvents = MutableSharedFlow<SnackbarEvent>()
     open val snackbarEvents: Flow<SnackbarEvent> = _snackbarEvents.asSharedFlow()

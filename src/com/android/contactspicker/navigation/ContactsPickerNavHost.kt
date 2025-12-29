@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.PickerUserStates
 import com.android.contactspicker.ui.pickerscreen.ContactsPickerScreen
 import com.android.contactspicker.ui.privacydetails.PrivacyDetailsScreen
 
@@ -30,6 +31,7 @@ import com.android.contactspicker.ui.privacydetails.PrivacyDetailsScreen
 fun ContactsPickerNavHost(
     navController: NavHostController,
     uiState: State<ContactsUiState>,
+    userStates: PickerUserStates?,
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (Long, Long) -> Unit,
     onPrivacyBannerDismissRequest: () -> Unit,
@@ -47,6 +49,7 @@ fun ContactsPickerNavHost(
         composable(ContactsPickerRoute.route) {
             ContactsPickerScreen(
                 uiState = uiState,
+                userStates = userStates,
                 onToggleContactSelection = onToggleContactSelection,
                 onToggleEntrySelection = onToggleEntrySelection,
                 onNavigateToPrivacyDetails = {
@@ -57,6 +60,9 @@ fun ContactsPickerNavHost(
                 onQueryChange = onQueryChange,
                 onExitSearch = onExitSearch,
                 onBackFromPreview = onBackFromPreview,
+                onProfileClicked = {
+                    /* TODO(b/449960997): Wire up to ViewModel */
+                },
             )
         }
 

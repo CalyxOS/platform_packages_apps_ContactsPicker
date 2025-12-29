@@ -118,7 +118,11 @@ class ContactsListContentTest {
             )
         }
         val context = ApplicationProvider.getApplicationContext<android.content.Context>()
-        composeTestRule.onNodeWithText(context.getString(com.android.contactspicker.R.string.no_contacts_title)).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(
+                context.getString(com.android.contactspicker.R.string.no_contacts_title)
+            )
+            .assertIsDisplayed()
         // Even if showPrivacyBanner is true, the EmptyScreen does NOT show it.
         composeTestRule.onNodeWithTag(PRIVACY_BANNER_TEST_TAG).assertDoesNotExist()
         composeTestRule.onNodeWithTag(CONTACTS_LIST_TEST_TAG).assertDoesNotExist()

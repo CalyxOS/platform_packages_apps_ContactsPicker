@@ -16,6 +16,9 @@
 
 package com.android.contactspicker.data.model
 
+/** Data class for the profile blocked dialog. */
+data class ProfileBlockedDialogData(val title: String, val message: String)
+
 /** State holding the available users/profiles and the current selection. */
 data class PickerUserStates(
     /**
@@ -28,4 +31,9 @@ data class PickerUserStates(
      * are currently displayed to the human user.
      */
     val selectedUserId: Int,
+    /**
+     * Data for a dialog to be shown when a profile is blocked or paused. If null, no dialog is
+     * shown.
+     */
+    val profileBlockedDialogData: ProfileBlockedDialogData? = null,
 )
