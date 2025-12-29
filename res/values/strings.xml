@@ -126,8 +126,8 @@
 
     <!-- Description for the privacy banner shown at the top of the contact picker. %1$s is the app name. -->
     <string name="privacy_banner_description">"%1$s will only have access to info from the contacts you select"</string>
-    <!-- Text for the "More Details" button on the privacy banner. -->
-    <string name="privacy_banner_more_details">"More Details"</string>
+    <!-- Text for the "More details" button on the privacy banner. -->
+    <string name="privacy_banner_more_details">"More details"</string>
     <!-- Text for the "Dismiss" button on the privacy banner. -->
     <string name="privacy_banner_dismiss">"Dismiss"</string>
 
