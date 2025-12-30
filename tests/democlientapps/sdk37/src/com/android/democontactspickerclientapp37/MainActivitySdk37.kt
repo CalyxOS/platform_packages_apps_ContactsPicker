@@ -50,6 +50,7 @@ import com.android.democontactspickerclientapp.LegacyActionPickConfiguration
 import com.android.democontactspickerclientapp.LegacyDemoConfigState
 import com.android.democontactspickerclientapp.ResultDisplay
 import com.android.democontactspickerclientapp.ScreenTitle
+import com.android.democontactspickerclientapp.SwitchOption
 import com.android.democontactspickerclientapp.buildLegacyPickerIntent
 import com.android.democontactspickerclientapp.handlePickerResult
 
@@ -76,6 +77,7 @@ private fun Sdk37Screen(targetSdk: Int) {
     var allowMultiple by remember { mutableStateOf(false) }
     var intentType by remember { mutableStateOf(Sdk37IntentType.NEW_ACTION_PICK_CONTACTS) }
     var selectedMimeTypes by remember { mutableStateOf(setOf(MimeType.EMAIL)) }
+    var matchAllDataFields by remember { mutableStateOf(false) }
     var overrideSelectionLimit by remember { mutableStateOf(false) }
     var selectionLimit by remember { mutableStateOf(0) }
     val context = LocalContext.current
@@ -120,13 +122,19 @@ private fun Sdk37Screen(targetSdk: Int) {
             }
 
             Sdk37IntentType.NEW_ACTION_PICK_CONTACTS -> {
-                ActionPickContactsConfiguration(selectedMimeTypes) { mimeTypes ->
-                    selectedMimeTypes = mimeTypes
-                }
+                ActionPickContactsConfiguration(
+                    selectedMimeTypes = selectedMimeTypes,
+                    onMimeTypesChange = { selectedMimeTypes = it },
+                )
             }
         }
-        Spacer(modifier = Modifier.height(20.dp))
 
+        Spacer(modifier = Modifier.height(20.dp))
+        SwitchOption(
+            title = "Match all data fields",
+            checked = matchAllDataFields,
+            onCheckedChange = { matchAllDataFields = it },
+        )
         CommonOptions(
             allowMultiple = allowMultiple,
             onAllowMultipleChange = { allowMultiple = it },
@@ -153,6 +161,7 @@ private fun Sdk37Screen(targetSdk: Int) {
                             context,
                             selectedMimeTypes,
                             allowMultiple,
+                            matchAllDataFields,
                             overrideSelectionLimit,
                             selectionLimit,
                         )
