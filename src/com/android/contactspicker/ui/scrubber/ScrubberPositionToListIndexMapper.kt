@@ -24,8 +24,6 @@ import kotlin.math.roundToInt
 private const val STICKY_HEADER_OFFSET = 1
 private const val PRIVACY_BANNER_OFFSET = 1
 
-// TODO(b/465962685): Replace linear search using indexOfLast with binary search
-
 /**
  * A class responsible for bidirectional translation between the scrubber handle's vertical position
  * (represented as a `scrubberVerticalOffsetFraction`) and the corresponding index in the
@@ -54,6 +52,15 @@ internal class ScrubberPositionToListIndexMapper(
     private val nonContactItemsBeforeSection: IntArray
 
     /**
+     * Stores the absolute index of the fist contact item of each section within the `LazyColumn`.
+     *
+     * These indices represent the actual position where each section begins in the list, accounting
+     * for both contact rows and non-contact items (such as sticky headers and the privacy banner).
+     * It is the sum of [contactSectionStartIndices] and [nonContactItemsBeforeSection].
+     */
+    private val lazyColumnSectionStartIndices: IntArray
+
+    /**
      * Pre-calculates lookup tables to efficiently map between a contact's index in a conceptual
      * flat list and its actual index in the `LazyColumn`. This is necessary because the
      * `LazyColumn` contains non-contact items (like a privacy banner and sticky headers) that
@@ -63,6 +70,7 @@ internal class ScrubberPositionToListIndexMapper(
         val sectionCount = contactSections.size
         val startIndices = IntArray(sectionCount)
         val nonContactItems = IntArray(sectionCount)
+        val lazyColumnStartIndices = IntArray(sectionCount)
         var _contactCount = 0
 
         var currentContactIndex = 0
@@ -73,7 +81,7 @@ internal class ScrubberPositionToListIndexMapper(
             val currentSectionContactsCount = currentSectionContacts.size
             startIndices[index] = currentContactIndex
             nonContactItems[index] = currentNonContactItemsCount
-
+            lazyColumnStartIndices[index] = currentContactIndex + currentNonContactItemsCount
             currentContactIndex += currentSectionContactsCount
             currentNonContactItemsCount += STICKY_HEADER_OFFSET
             _contactCount += currentSectionContactsCount
@@ -81,6 +89,7 @@ internal class ScrubberPositionToListIndexMapper(
 
         contactSectionStartIndices = startIndices
         nonContactItemsBeforeSection = nonContactItems
+        lazyColumnSectionStartIndices = lazyColumnStartIndices
         contactCount = _contactCount
     }
 
@@ -144,15 +153,38 @@ internal class ScrubberPositionToListIndexMapper(
         return (maxIndex * verticalOffsetFraction).roundToInt().coerceIn(0, maxIndex)
     }
 
-    private fun findSectionIndex(listIndex: Int): Int {
-        return contactSectionStartIndices.indices.indexOfLast {
-            (contactSectionStartIndices[it] + nonContactItemsBeforeSection[it]) <= listIndex
-        }
-    }
+    private fun findSectionIndex(listIndex: Int) =
+        lazyColumnSectionStartIndices.binarySearchFloor(listIndex)
 
     private fun getListIndexFromContactIndex(contactIndex: Int): Int {
-        val sectionIndex = contactSectionStartIndices.indexOfLast { it <= contactIndex }
+        // For a valid contactIndex we always expect to find a non negative sectionIndex
+        val sectionIndex =
+            contactSectionStartIndices.binarySearchFloor(contactIndex).coerceAtLeast(0)
+
         val nonContactItemsCount = nonContactItemsBeforeSection[sectionIndex]
         return contactIndex + nonContactItemsCount
     }
+}
+
+/**
+ * Finds the index of the largest element in this sorted array that is less than or equal to the
+ * given [element].
+ *
+ * Note: The array **must be sorted** otherwise, the result is undefined. If the array contains
+ * duplicates of [element], there is no guarantee which of the matching indices will be returned.
+ *
+ * **Examples:**
+ * - **Exact match:** Given `[0, 10, 25]`, searching for `10` returns `1`.
+ * - **Intermediate value:** Given `[0, 10, 25]`, searching for `15` returns `1` (corresponding to
+ *   `10`).
+ * - **Below minimum:** Given `[0, 10, 25]`, searching for `-5` returns `-1`.
+ * - **Above maximum:** Given `[0, 10, 25]`, searching for `30` returns `2` (corresponding to `25`).
+ *
+ * @param element The value to search for.
+ * @return The index of the floor element, or -1 if the [element] is smaller than the first item in
+ *   the array.
+ */
+private fun IntArray.binarySearchFloor(element: Int): Int {
+    val result = binarySearch(element)
+    return if (result >= 0) result else -result - 2
 }
