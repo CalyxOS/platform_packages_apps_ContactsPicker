@@ -44,14 +44,14 @@ internal const val PRIVACY_BANNER_TEST_TAG = "PrivacyBanner"
  * application
  *
  * @param appName The name of the calling application.
- * @param onMoreDetails Callback to be invoked when the "More details" button is clicked.
  * @param onDismissRequest Callback to be invoked when the "Dismiss" button is clicked.
+ * @param onMoreDetails Callback to be invoked when the "More details" button is clicked.
  */
 @Composable
 fun PrivacyBanner(
     callingAppName: String?,
-    onMoreDetails: () -> Unit,
     onDismissRequest: () -> Unit,
+    onMoreDetails: () -> Unit,
 ) {
     Column(
         modifier =
@@ -68,8 +68,8 @@ fun PrivacyBanner(
             modifier = Modifier.padding(16.dp),
         )
         PrivacyBannerActions(
-            onMoreDetails,
             onDismissRequest,
+            onMoreDetails,
             modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
         )
     }
@@ -93,8 +93,8 @@ private fun PrivacyBannerDescription(callingAppName: String, modifier: Modifier 
 
 @Composable
 private fun PrivacyBannerActions(
-    onMoreDetails: () -> Unit,
     onDismissRequest: () -> Unit,
+    onMoreDetails: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -102,8 +102,8 @@ private fun PrivacyBannerActions(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End,
     ) {
-        ActionButton(textResId = R.string.privacy_banner_more_details, onClick = onMoreDetails)
         ActionButton(textResId = R.string.privacy_banner_dismiss, onClick = onDismissRequest)
+        ActionButton(textResId = R.string.privacy_banner_more_details, onClick = onMoreDetails)
     }
 }
 
