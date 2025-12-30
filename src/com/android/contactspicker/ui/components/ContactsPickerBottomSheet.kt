@@ -156,7 +156,9 @@ fun ContactsPickerBottomSheet(
         BottomSheetScaffold(
             modifier =
                 Modifier.windowInsetsPadding(
-                    WindowInsets.statusBars.union(WindowInsets.displayCutout)
+                    WindowInsets.statusBars
+                        .union(WindowInsets.displayCutout)
+                        .union(WindowInsets.navigationBars)
                 ),
             scaffoldState = scaffoldState,
             sheetPeekHeight = peekHeight,
