@@ -537,4 +537,24 @@ class ContactsPickerActivityTest {
             .onNodeWithText(context.getString(R.string.privacy_details_description, testAppName))
             .assertIsDisplayed()
     }
+
+    @Test
+    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
+    fun processIntent_throwsIllegalArgumentException_finishesWithResultCanceled() {
+        whenever(
+                mockViewModel.processIntent(
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyOrNull(),
+                    anyInt(),
+                )
+            )
+            .thenThrow(IllegalArgumentException("Missing requested fields"))
+
+        val scenario = ActivityScenario.launchActivityForResult<ContactsPickerActivity>(baseIntent)
+
+        assertThat(scenario.state).isEqualTo(Lifecycle.State.DESTROYED)
+        assertThat(scenario.result.resultCode).isEqualTo(Activity.RESULT_CANCELED)
+    }
 }
