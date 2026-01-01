@@ -142,4 +142,9 @@
 
     <!-- Text for the privacy menu in the top bar of Contacts List Screen -->
     <string name="privacy_details_menu_label">Your contacts\' privacy</string>
+
+    <!-- Text shown when there are no contacts to display. [CHAR LIMIT=40] -->
+    <string name="no_contacts_title">No contacts yet</string>
+    <!-- Secondary text shown when there are no contacts to display. [CHAR LIMIT=100] -->
+    <string name="no_contacts_description">The contacts that you create or import to your device will appear here</string>
 </resources>

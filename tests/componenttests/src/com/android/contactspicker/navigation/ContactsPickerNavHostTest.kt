@@ -36,6 +36,7 @@ import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
 import com.android.contactspicker.data.model.emptyContactsSelection
+import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.ui.pickerscreen.CONTACTS_PICKER_SCREEN_TEST_TAG
 import com.android.contactspicker.ui.privacydetails.PRIVACY_DETAILS_SCREEN_BODY_TEST_TAG
 import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
@@ -70,7 +71,7 @@ class ContactsPickerNavHostTest {
         setupNavHostInitialState(
             mutableStateOf(
                 ContactsListState.Success(
-                    availableContacts = emptyList(),
+                    availableContacts = listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT),
                     selectedContacts = emptyContactsSelection(),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
@@ -91,7 +92,7 @@ class ContactsPickerNavHostTest {
         setupNavHostInitialState(
             mutableStateOf(
                 ContactsListState.Success(
-                    availableContacts = emptyList(),
+                    availableContacts = listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT),
                     selectedContacts = emptyContactsSelection(),
                     isMultiSelectEnabled = false,
                     callingAppName = null,

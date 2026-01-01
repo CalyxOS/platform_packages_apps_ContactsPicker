@@ -48,7 +48,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.contactspicker.Flags.FLAG_ENABLE_ACTION_PICK_TAKEOVER_IN_DROIDFOOD
-import com.android.contactspicker.data.model.DisplayNameContact
+import com.android.contactspicker.testdata.IntegrationTestContactData
 import com.android.contactspicker.data.model.contactsSelectionOf
 import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.inject.ActivityModule
@@ -109,14 +109,7 @@ class ContactsPickerActivityTest {
 
     private val testUri = Uri.parse("content://contacts/1")
     private val testUri2 = Uri.parse("content://data/10")
-    private val testContact =
-        DisplayNameContact(
-            id = 1,
-            displayName = "Test",
-            isFavorite = false,
-            profilePictureUri = null,
-            lookupKey = "test_lookup",
-        )
+    private val testContact = IntegrationTestContactData.GENERIC_DISPLAY_NAME_CONTACT
 
     @Before
     fun setUp() {
@@ -477,7 +470,7 @@ class ContactsPickerActivityTest {
         val successState =
             MutableStateFlow(
                 ContactsListState.Success(
-                    availableContacts = emptyList(),
+                    availableContacts = listOf(testContact),
                     selectedContacts = emptyContactsSelection(),
                     isMultiSelectEnabled = false,
                     callingAppName = testAppName,
@@ -509,7 +502,7 @@ class ContactsPickerActivityTest {
         val successState =
             MutableStateFlow(
                 ContactsListState.Success(
-                    availableContacts = emptyList(),
+                    availableContacts = listOf(testContact),
                     selectedContacts = emptyContactsSelection(),
                     isMultiSelectEnabled = false,
                     callingAppName = testAppName,
