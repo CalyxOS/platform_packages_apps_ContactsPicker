@@ -81,6 +81,7 @@ class ContactsPickerBottomSheetTest {
             callingAppName = null,
             showPrivacyBanner = false,
             requestedMimeTypes = emptyList(),
+            showProfileSwitcher = false,
         )
 
     private val context: Context = ApplicationProvider.getApplicationContext()
@@ -172,6 +173,7 @@ class ContactsPickerBottomSheetTest {
                                 callingAppName = null,
                                 showPrivacyBanner = false,
                                 requestedMimeTypes = emptyList(),
+                                showProfileSwitcher = false,
                             )
                         ),
                     snackbarEvents = flowOf(),
@@ -220,6 +222,7 @@ class ContactsPickerBottomSheetTest {
                                 callingAppName = null,
                                 showPrivacyBanner = false,
                                 requestedMimeTypes = emptyList(),
+                                showProfileSwitcher = false,
                             )
                         ),
                     snackbarEvents = flowOf(),
@@ -284,6 +287,7 @@ class ContactsPickerBottomSheetTest {
                                 callingAppName = null,
                                 requestedMimeTypes = emptyList(),
                                 showPrivacyBanner = false,
+                                showProfileSwitcher = false,
                             )
                         ),
                     snackbarEvents = flowOf(),
@@ -335,6 +339,7 @@ class ContactsPickerBottomSheetTest {
                             callingAppName = null,
                             requestedMimeTypes = emptyList(),
                             showPrivacyBanner = false,
+                            showProfileSwitcher = false,
                         )
                     ),
                 snackbarEvents = events,
@@ -416,6 +421,7 @@ class ContactsPickerBottomSheetTest {
                                 callingAppName = null,
                                 showPrivacyBanner = false,
                                 requestedMimeTypes = emptyList(),
+                                showProfileSwitcher = false,
                             )
                         ),
                     snackbarEvents = flowOf(),

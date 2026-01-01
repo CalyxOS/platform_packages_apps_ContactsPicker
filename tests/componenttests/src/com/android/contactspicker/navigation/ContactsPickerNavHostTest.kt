@@ -76,6 +76,7 @@ class ContactsPickerNavHostTest {
                     callingAppName = null,
                     showPrivacyBanner = true,
                     requestedMimeTypes = emptyList(),
+                    showProfileSwitcher = false,
                 )
             )
         )
@@ -97,6 +98,7 @@ class ContactsPickerNavHostTest {
                     callingAppName = null,
                     showPrivacyBanner = true,
                     requestedMimeTypes = emptyList(),
+                    showProfileSwitcher = false,
                 )
             )
         )

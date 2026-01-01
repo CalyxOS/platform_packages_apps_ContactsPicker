@@ -85,6 +85,7 @@ class ContactsListContentTest {
                         callingAppName = null,
                         requestedMimeTypes = emptyList(),
                         showPrivacyBanner = true,
+                        showProfileSwitcher = false,
                     ),
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},

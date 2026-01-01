@@ -138,6 +138,10 @@ constructor(
     /** Clears all currently selected contacts. */
     fun clearSelection() = checkNotNull(selectionHandler).clearSelection()
 
+    /** Show profile switcher only for ACTION_PICK_CONTACTS (b/467225596). */
+    private val shouldShowProfileSwitcher: Boolean
+        get() = pickerConfig?.pickerAction == ContactsPickerAction.ACTION_PICK_CONTACTS
+
     /**
      * Determines the display mode based on the intent. Should only be called from the Activity to
      * trigger the ViewModel's logic, as it changes the [ContactsUiState].
@@ -224,6 +228,7 @@ constructor(
                             callingAppName = callingAppName,
                             requestedMimeTypes = config.requestedMimeTypes,
                             showPrivacyBanner = showPrivacyBanner,
+                            showProfileSwitcher = shouldShowProfileSwitcher,
                         )
                 } catch (e: Exception) {
                     // TODO(b/444459883): iterate on error handling and error messages
@@ -420,6 +425,7 @@ constructor(
                     callingAppName = callingAppName,
                     requestedMimeTypes = config.requestedMimeTypes,
                     showPrivacyBanner = showPrivacyBanner,
+                    showProfileSwitcher = shouldShowProfileSwitcher,
                 )
             } else {
                 currentState
