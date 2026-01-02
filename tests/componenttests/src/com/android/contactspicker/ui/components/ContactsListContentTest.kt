@@ -24,6 +24,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.data.model.emptyContactsSelection
@@ -95,5 +96,31 @@ class ContactsListContentTest {
         composeTestRule.onNodeWithTag(CONTACTS_LIST_TEST_TAG).assertIsDisplayed()
         composeTestRule.onNodeWithText(testContact.displayName).assertIsDisplayed()
         composeTestRule.onNodeWithTag(PRIVACY_BANNER_TEST_TAG).assertIsDisplayed()
+    }
+
+    @Test
+    fun pickerContent_successState_emptyList_showsEmptyScreen() {
+        composeTestRule.setContent {
+            ContactsListContent(
+                uiState =
+                    ContactsListState.Success(
+                        availableContacts = emptyList(),
+                        selectedContacts = emptyContactsSelection(),
+                        isMultiSelectEnabled = false,
+                        callingAppName = null,
+                        requestedMimeTypes = emptyList(),
+                        showPrivacyBanner = true,
+                    ),
+                onPrivacyBannerMoreDetails = {},
+                onPrivacyBannerDismissRequest = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
+            )
+        }
+        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+        composeTestRule.onNodeWithText(context.getString(com.android.contactspicker.R.string.no_contacts_title)).assertIsDisplayed()
+        // Even if showPrivacyBanner is true, the EmptyScreen does NOT show it.
+        composeTestRule.onNodeWithTag(PRIVACY_BANNER_TEST_TAG).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(CONTACTS_LIST_TEST_TAG).assertDoesNotExist()
     }
 }

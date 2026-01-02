@@ -69,17 +69,22 @@ fun ContactsListContent(
         }
 
         is ContactsListState.Success -> {
-            ContactsPickerBody(
-                contacts = uiState.availableContacts,
-                callingAppName = uiState.callingAppName,
-                showPrivacyBanner = uiState.showPrivacyBanner,
-                selectedContacts = uiState.selectedContacts,
-                isMultiSelectEnabled = uiState.isMultiSelectEnabled,
-                onToggleContactSelection = onToggleContactSelection,
-                onToggleEntrySelection = onToggleEntrySelection,
-                onPrivacyBannerMoreDetails = onPrivacyBannerMoreDetails,
-                onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
-            )
+            if (uiState.availableContacts.isEmpty()) {
+                EmptyContactsScreen()
+            } else {
+                ContactsPickerBody(
+                    contacts = uiState.availableContacts,
+                    callingAppName = uiState.callingAppName,
+                    showPrivacyBanner = uiState.showPrivacyBanner,
+                    selectedContacts = uiState.selectedContacts,
+                    isMultiSelectEnabled = uiState.isMultiSelectEnabled,
+                    onToggleContactSelection = onToggleContactSelection,
+                    onToggleEntrySelection = onToggleEntrySelection,
+                    onPrivacyBannerMoreDetails = onPrivacyBannerMoreDetails,
+                    onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
+                )
+            }
         }
     }
 }
+
