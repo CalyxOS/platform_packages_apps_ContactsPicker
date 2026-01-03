@@ -22,11 +22,13 @@ import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTopPositionInRootIsEqualTo
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.unit.dp
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsListState
@@ -257,6 +259,17 @@ class ContactsPickerScreenTest {
         // The list should now be hidden
         composeTestRule.onNodeWithTag(CONTACTS_LIST_TEST_TAG).assertDoesNotExist()
         composeTestRule.onNodeWithText(testContact.displayName).assertDoesNotExist()
+    }
+
+    @Test
+    fun contactsPickerScreen_hasNoVerticalPadding() {
+        setContentWithDefaultSuccessState()
+
+        // The root Column of the screen should not have any vertical padding.
+        // This is to verify the fix for the extra space above the search bar.
+        composeTestRule
+            .onNodeWithTag(CONTACTS_PICKER_SCREEN_TEST_TAG)
+            .assertTopPositionInRootIsEqualTo(0.dp)
     }
 
     private fun setContentWithDefaultSuccessState() {
