@@ -35,8 +35,7 @@
     <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"फास्ट स्क्रोलर ह्यान्डल"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"कन्ट्याक्टको प्रोफाइल फोटो"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"कन्ट्याक्टको नामको सुरुको अक्षर"</string>
-    <!-- no translation found for no_name_placeholder (491336212594465933) -->
-    <skip />
+    <string name="no_name_placeholder" msgid="491336212594465933">"(कुनै पनि नाम छैन)"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"एक्स्पान्ड गर्नुहोस्"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"कोल्याप्स गर्नुहोस्"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"फोन नम्बर"</string>
@@ -52,10 +51,14 @@
     <string name="selection_bottom_bar_back_button_label" msgid="6447375742968584743">"पछाडि"</string>
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"भयो"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s ले तपाईंले चयन गरेका कन्ट्याक्टहरूको जानकारी मात्र एक्सेस गर्न सक्ने छ"</string>
-    <string name="privacy_banner_more_details" msgid="1028945565826552764">"थप विवरणहरू"</string>
+    <string name="privacy_banner_more_details" msgid="2567058099706516908">"थप विवरणहरू"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"बन्द गर्नुहोस्"</string>
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"पछाडि"</string>
     <string name="preview_screen_title" msgid="2852036336424026274">"प्रिभ्यू हेर्नुहोस्"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"यो एप"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"तपाईंका कन्ट्याक्टको गोपनीयता"</string>
+    <!-- no translation found for no_contacts_title (9093698629001614808) -->
+    <skip />
+    <!-- no translation found for no_contacts_description (2146615362021064099) -->
+    <skip />
 </resources>

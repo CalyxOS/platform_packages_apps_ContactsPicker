@@ -35,8 +35,7 @@
     <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"Ročica za hitro pomikanje"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Profilna slika stika"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"Začetnica stika"</string>
-    <!-- no translation found for no_name_placeholder (491336212594465933) -->
-    <skip />
+    <string name="no_name_placeholder" msgid="491336212594465933">"(Ni imena)"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"Razširi"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Strni"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefon"</string>
@@ -52,10 +51,14 @@
     <string name="selection_bottom_bar_back_button_label" msgid="6447375742968584743">"Nazaj"</string>
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"Končano"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"Aplikacija %1$s bo imela dostop samo do podatkov za stike, ki jih izberete"</string>
-    <string name="privacy_banner_more_details" msgid="1028945565826552764">"Več podrobnosti"</string>
+    <string name="privacy_banner_more_details" msgid="2567058099706516908">"Več podrobnosti"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"Opusti"</string>
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"Nazaj"</string>
     <string name="preview_screen_title" msgid="2852036336424026274">"Predogled"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"Ta aplikacija"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Zasebnost vaših stikov"</string>
+    <!-- no translation found for no_contacts_title (9093698629001614808) -->
+    <skip />
+    <!-- no translation found for no_contacts_description (2146615362021064099) -->
+    <skip />
 </resources>

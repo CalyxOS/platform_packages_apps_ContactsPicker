@@ -35,8 +35,7 @@
     <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"ಫಾಸ್ಟ್ ಸ್ಕ್ರಾಲರ್ ಹ್ಯಾಂಡಲ್"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"ಸಂಪರ್ಕದ ಪ್ರೊಫೈಲ್ ಚಿತ್ರ"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"ಸಂಪರ್ಕದ ಮೊದಲ ಅಕ್ಷರ"</string>
-    <!-- no translation found for no_name_placeholder (491336212594465933) -->
-    <skip />
+    <string name="no_name_placeholder" msgid="491336212594465933">"(ಯಾವುದೇ ಹೆಸರಿಲ್ಲ)"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"ವಿಸ್ತೃತಗೊಳಿಸಿ"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"ಕುಗ್ಗಿಸಿ"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ಫೋನ್"</string>
@@ -52,10 +51,14 @@
     <string name="selection_bottom_bar_back_button_label" msgid="6447375742968584743">"ಹಿಂದಕ್ಕೆ"</string>
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"ಮುಗಿದಿದೆ"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"ನೀವು ಆಯ್ಕೆ ಮಾಡಿದ ಸಂಪರ್ಕಗಳ ಮಾಹಿತಿಗೆ ಮಾತ್ರ %1$s ಆ್ಯಕ್ಸೆಸ್ ಅನ್ನು ಹೊಂದಿರುತ್ತದೆ"</string>
-    <string name="privacy_banner_more_details" msgid="1028945565826552764">"ಇನ್ನಷ್ಟು ವಿವರಗಳು"</string>
+    <string name="privacy_banner_more_details" msgid="2567058099706516908">"ಇನ್ನಷ್ಟು ವಿವರಗಳು"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"ವಜಾಗೊಳಿಸಿ"</string>
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"ಹಿಂದಕ್ಕೆ"</string>
     <string name="preview_screen_title" msgid="2852036336424026274">"ಪೂರ್ವವೀಕ್ಷಣೆ"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"ಈ ಆ್ಯಪ್"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"ನಿಮ್ಮ ಸಂಪರ್ಕಗಳ ಗೌಪ್ಯತೆ"</string>
+    <!-- no translation found for no_contacts_title (9093698629001614808) -->
+    <skip />
+    <!-- no translation found for no_contacts_description (2146615362021064099) -->
+    <skip />
 </resources>
