@@ -46,6 +46,7 @@ import com.android.contactspicker.ui.scrubber.ScrubberController
 import com.android.contactspicker.ui.scrubber.ScrubberLabel
 import com.android.contactspicker.ui.scrubber.rememberScrubberController
 import java.util.TreeMap
+import kotlin.math.absoluteValue
 import kotlinx.coroutines.flow.collectLatest
 
 const val CONTACTS_LIST_TEST_TAG = "contacts_list"
@@ -179,11 +180,49 @@ private fun ScrubberListSynchronizationEffects(
         scrubberController.scrollRequests.collectLatest { index -> listState.scrollToItem(index) }
     }
 
-    // List -> Scrubber: Syncs the scrubber position to the [LazyListState.firstVisibleItemIndex]
+    // List -> Scrubber: Tracks index of the first visible item plus the fraction of that item that
+    // has been scrolled past the top edge of the viewport and updates the scrubber handle position
+    // based on that.
     LaunchedEffect(scrubberController, listState) {
-        snapshotFlow { listState.firstVisibleItemIndex }
-            .collect { listIndex -> scrubberController.updateVerticalOffsetFraction(listIndex) }
+        snapshotFlow { listState.getFractionalFirstVisibleItemIndex() }
+            .collectLatest { fractionalFirstVisibleItemIndex ->
+                scrubberController.updateVerticalOffsetFraction(
+                    preciseListIndex = fractionalFirstVisibleItemIndex
+                )
+            }
     }
+}
+
+/**
+ * Calculates the precise scroll position of the list as a fractional index.
+ *
+ * This value represents the index of the first visible item plus the fraction of that item that has
+ * been scrolled past the top edge of the viewport.
+ *
+ * For example:
+ * - If the item at index 2 is aligned with the top edge, the result is `2.0f`.
+ * - If the item at index 2 is scrolled halfway off the screen, the result is `2.5f`.
+ *
+ * This is useful for synchronizing UI elements (like a scrubber or scrollbar) with the list's exact
+ * scroll position.
+ *
+ * @return A [Float] representing the fractional index, or `0f` if the list is empty.
+ */
+private fun LazyListState.getFractionalFirstVisibleItemIndex(): Float {
+    val visibleItems = layoutInfo.visibleItemsInfo
+    if (visibleItems.isEmpty()) return 0f
+
+    val firstItem = visibleItems.find { it.index == firstVisibleItemIndex } ?: return 0f
+
+    val firstItemSize = firstItem.size
+    val offsetFraction =
+        if (firstItemSize > 0) {
+            firstItem.offset.absoluteValue.toFloat() / firstItemSize
+        } else {
+            0f
+        }
+
+    return firstItem.index + offsetFraction
 }
 
 @Composable
