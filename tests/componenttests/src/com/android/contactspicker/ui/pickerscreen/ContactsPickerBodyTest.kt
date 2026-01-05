@@ -265,7 +265,8 @@ class ContactsPickerBodyTest {
 
     @Test
     fun scrubberHandle_isDisplayed_whenListIsScrolled() {
-        val contacts = ContactTestDataFactory.createContactList(50)
+        val contacts =
+            ContactTestDataFactory.createContactList(MIN_CONTACTS_COUNT_FOR_SCRUBBER_ACTIVATION)
         setContentWithContactsPickerBody(contacts)
         composeTestRule.onNodeWithTag(SCRUBBER_HANDLE_TEST_TAG).assertIsNotDisplayed()
         // Wake up scrubber handle
@@ -276,7 +277,8 @@ class ContactsPickerBodyTest {
 
     @Test
     fun scrubberHandle_isNotDisplayed_afterScrollAndDelay() {
-        val contacts = ContactTestDataFactory.createContactList(50)
+        val contacts =
+            ContactTestDataFactory.createContactList(MIN_CONTACTS_COUNT_FOR_SCRUBBER_ACTIVATION)
         setContentWithContactsPickerBody(contacts)
 
         performListScroll()
@@ -288,7 +290,8 @@ class ContactsPickerBodyTest {
 
     @Test
     fun scrubberHandle_positionChanges_whenListIsScrolled() {
-        val contacts = ContactTestDataFactory.createContactList(50)
+        val contacts =
+            ContactTestDataFactory.createContactList(MIN_CONTACTS_COUNT_FOR_SCRUBBER_ACTIVATION)
         setContentWithContactsPickerBody(contacts)
         // Wake up scrubber handle
         performListScroll(duration = 1000)
@@ -336,7 +339,8 @@ class ContactsPickerBodyTest {
 
     @Test
     fun scrubberLabel_appearsDuringDrag_andDisappearsOnRelease() {
-        val contacts = ContactTestDataFactory.createContactList(50)
+        val contacts =
+            ContactTestDataFactory.createContactList(MIN_CONTACTS_COUNT_FOR_SCRUBBER_ACTIVATION)
         setContentWithContactsPickerBody(contacts)
 
         // Wake up scrubber handle
@@ -354,6 +358,23 @@ class ContactsPickerBodyTest {
 
         // The label is no longer displayed after the drag is released.
         composeTestRule.onNodeWithTag(SCRUBBER_LABEL_TEST_TAG).assertIsNotDisplayed()
+    }
+
+    @Test
+    fun scrubber_isNotDisplayed_whenContactsAreLessThanMinimum() {
+        val contacts =
+            ContactTestDataFactory.createContactList(MIN_CONTACTS_COUNT_FOR_SCRUBBER_ACTIVATION - 1)
+        setContentWithContactsPickerBody(contacts)
+        composeTestRule.onNodeWithTag(SCRUBBER_HANDLE_TEST_TAG).assertDoesNotExist()
+    }
+
+    @Test
+    fun scrubber_isDisplayed_whenContactsAreMoreThanOrEqualToMinimum() {
+        val contacts =
+            ContactTestDataFactory.createContactList(MIN_CONTACTS_COUNT_FOR_SCRUBBER_ACTIVATION)
+        setContentWithContactsPickerBody(contacts)
+        performListScroll()
+        composeTestRule.onNodeWithTag(SCRUBBER_HANDLE_TEST_TAG).assertIsDisplayed()
     }
 
     private fun setContentWithContactsPickerBody(contacts: List<Contact>) {
