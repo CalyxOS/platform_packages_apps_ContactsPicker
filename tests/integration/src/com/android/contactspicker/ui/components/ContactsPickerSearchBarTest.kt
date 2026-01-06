@@ -82,6 +82,7 @@ class ContactsPickerSearchBarTest {
         val clientAppPackageName = context.packageName
         val appInfo = ApplicationInfo().apply { targetSdkVersion = 37 }
         whenever(mockPackageManager.getApplicationInfo(clientAppPackageName, 0)).doReturn(appInfo)
+        whenever(mockPackageManager.getApplicationLabel(appInfo)).doReturn("Test App")
         whenever(mockCallingPackageProvider.get()).doReturn(clientAppPackageName)
         val intent =
             Intent(context, ContactsPickerActivity::class.java).apply {

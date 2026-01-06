@@ -25,7 +25,6 @@ android_test {
     srcs: [
         "src/**/*.kt",
     ],
-    instrumentation_for: "ContactsPicker",
     manifest: "AndroidManifest.xml",
     static_libs: [
         "android.content.flags-aconfig-java",
