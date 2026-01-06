@@ -134,6 +134,7 @@ class ContactsPickerActivityTest {
         )
         val appInfo = ApplicationInfo().apply { targetSdkVersion = 37 }
         whenever(mockPackageManager.getApplicationInfo(testPackageName, 0)).doReturn(appInfo)
+        whenever(mockPackageManager.getApplicationLabel(any())).doReturn("Test App")
         whenever(mockCallingPackageProvider.get()).doReturn(testPackageName)
         baseIntent =
             Intent(context, ContactsPickerActivity::class.java).apply {

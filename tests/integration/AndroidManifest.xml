@@ -23,7 +23,7 @@
     <instrumentation
         android:name="com.android.contactspicker.HiltTestRunner"
         android:label="Contacts Picker Tests"
-        android:targetPackage="com.android.contactspicker" />
+        android:targetPackage="com.android.contactspicker.integrationtests" />
 
     <uses-sdk android:minSdkVersion="37" android:targetSdkVersion="37" />
 </manifest>
