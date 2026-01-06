@@ -49,10 +49,6 @@ fun PrivacyDetailsScreen(onBackPressed: () -> Unit, uiState: State<ContactsUiSta
         TitleTopBar(
             onBackPressed = onBackPressed,
             title = stringResource(id = R.string.privacy_details_top_bar_header),
-            backIconDescription =
-                stringResource(
-                    id = R.string.privacy_details_top_bar_back_button_content_description
-                ),
             modifier =
                 Modifier.padding(TOPBAR_PADDING).testTag(PRIVACY_DETAILS_SCREEN_TOP_BAR_TEST_TAG),
         )
