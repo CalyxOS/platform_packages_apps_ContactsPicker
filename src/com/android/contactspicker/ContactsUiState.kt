@@ -45,6 +45,7 @@ sealed interface ContactsListState : ContactsUiState {
         val showPrivacyBanner: Boolean,
         val callingAppName: String?,
         val requestedMimeTypes: List<MimeType>,
+        val showProfileSwitcher: Boolean,
     ) : ContactsListState
 
     /**

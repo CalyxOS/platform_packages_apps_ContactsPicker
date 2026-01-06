@@ -142,6 +142,7 @@ class ContactsPickerActivityTest {
                     callingAppName = null,
                     requestedMimeTypes = emptyList(),
                     showPrivacyBanner = false,
+                    showProfileSwitcher = false,
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successState)
@@ -266,6 +267,7 @@ class ContactsPickerActivityTest {
                     callingAppName = null,
                     requestedMimeTypes = emptyList(),
                     showPrivacyBanner = false,
+                    showProfileSwitcher = false,
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successStateSingleSelect)
@@ -318,6 +320,7 @@ class ContactsPickerActivityTest {
                     callingAppName = null,
                     requestedMimeTypes = emptyList(),
                     showPrivacyBanner = false,
+                    showProfileSwitcher = false,
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successStateMultiSelect)
@@ -370,6 +373,7 @@ class ContactsPickerActivityTest {
                     callingAppName = null,
                     requestedMimeTypes = emptyList(),
                     showPrivacyBanner = false,
+                    showProfileSwitcher = false,
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successStateSingleSelect)
@@ -476,6 +480,7 @@ class ContactsPickerActivityTest {
                     callingAppName = testAppName,
                     requestedMimeTypes = emptyList(),
                     showPrivacyBanner = true,
+                    showProfileSwitcher = false,
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successState)
@@ -508,6 +513,7 @@ class ContactsPickerActivityTest {
                     callingAppName = testAppName,
                     requestedMimeTypes = emptyList(),
                     showPrivacyBanner = true,
+                    showProfileSwitcher = false,
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successState)
