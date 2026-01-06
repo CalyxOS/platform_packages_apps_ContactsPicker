@@ -66,14 +66,6 @@ fun ContactsPickerTopBar(
     onShowPrivacyDetailsClick: () -> Unit,
 ) {
     val isSearchExpanded by remember { derivedStateOf { uiState.value is SearchState } }
-    val showProfileSwitcher by remember {
-        derivedStateOf {
-            when (val state = uiState.value) {
-                is com.android.contactspicker.ContactsListState.Success -> state.showProfileSwitcher
-                else -> false
-            }
-        }
-    }
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -90,9 +82,7 @@ fun ContactsPickerTopBar(
             onExitSearch = onExitSearch,
         )
         if (!isSearchExpanded) {
-            if (showProfileSwitcher) {
-                ProfileSwitcher()
-            }
+            ProfileSwitcher()
             OverflowMenu(onClickPrivacyDetailsMenuItem = onShowPrivacyDetailsClick)
         }
     }

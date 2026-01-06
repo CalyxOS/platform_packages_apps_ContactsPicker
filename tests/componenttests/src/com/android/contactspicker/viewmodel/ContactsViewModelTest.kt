@@ -121,7 +121,6 @@ class ContactsViewModelTest {
                     callingAppName = "TestApp",
                     requestedMimeTypes = listOf(MimeType.PHONE),
                     showPrivacyBanner = true,
-                    showProfileSwitcher = false,
                 ),
             )
             .inOrder()
@@ -661,7 +660,6 @@ class ContactsViewModelTest {
                     callingAppName = "TestApp",
                     requestedMimeTypes = listOf(MimeType.PHONE),
                     showPrivacyBanner = true,
-                    showProfileSwitcher = false,
                 ), // Initial state after processIntent
                 SearchState.Success(
                     searchQuery,
