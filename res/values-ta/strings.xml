@@ -35,8 +35,7 @@
     <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"விரைவாக ஸ்க்ரோல் செய்வதற்கான ஹேண்டில்"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"தொடர்பின் சுயவிவரப் படம்"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"தொடர்பின் முதல் எழுத்து"</string>
-    <!-- no translation found for no_name_placeholder (491336212594465933) -->
-    <skip />
+    <string name="no_name_placeholder" msgid="491336212594465933">"(பெயர் இல்லை)"</string>
     <string name="contact_item_expand_button_content_description" msgid="6128012837692026993">"விரிவாக்கும்"</string>
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"சுருக்கும்"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ஃபோன்"</string>
@@ -52,10 +51,14 @@
     <string name="selection_bottom_bar_back_button_label" msgid="6447375742968584743">"பின்செல்"</string>
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"முடிந்தது"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"நீங்கள் தேர்ந்தெடுக்கும் தொடர்புகளின் தகவல்களை மட்டுமே %1$s அணுக முடியும்"</string>
-    <string name="privacy_banner_more_details" msgid="1028945565826552764">"கூடுதல் விவரங்கள்"</string>
+    <string name="privacy_banner_more_details" msgid="2567058099706516908">"கூடுதல் விவரங்கள்"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"நிராகரி"</string>
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"பின்செல்லும்"</string>
     <string name="preview_screen_title" msgid="2852036336424026274">"மாதிரிக்காட்சி"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"இந்த ஆப்ஸ்"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"உங்கள் தொடர்புகளின் தனியுரிமை"</string>
+    <!-- no translation found for no_contacts_title (9093698629001614808) -->
+    <skip />
+    <!-- no translation found for no_contacts_description (2146615362021064099) -->
+    <skip />
 </resources>
