@@ -237,7 +237,8 @@ class ContactsRepositoryImplTest {
 
         val expectedUri =
             ContactsContract.AUTHORITY_URI.buildUpon()
-                .appendPath("contacts_data/filter")
+                .appendPath("contacts_data")
+                .appendPath("filter")
                 .appendPath(query)
                 .appendQueryParameter(
                     Contacts.REQUESTED_MIMETYPES_PARAM_KEY,

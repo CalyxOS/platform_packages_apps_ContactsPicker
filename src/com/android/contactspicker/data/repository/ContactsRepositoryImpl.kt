@@ -42,7 +42,7 @@ import kotlinx.coroutines.withContext
 
 // TODO(b/463918621): Define these inside CP2 as hidden APIs
 private const val CONTACTS_DATA_URI_PATH = "contacts_data"
-private const val CONTACTS_DATA_FILTER_URI_PATH = "contacts_data/filter"
+private const val CONTACTS_DATA_FILTER_URI_PATH = "filter"
 
 @Singleton
 class ContactsRepositoryImpl
@@ -342,6 +342,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         // TODO(467326511#comment3): consider fix in the CP2 matcher and change the used URI
         val uri =
             ContactsContract.AUTHORITY_URI.buildUpon()
+                .appendPath(CONTACTS_DATA_URI_PATH)
                 .appendPath(CONTACTS_DATA_FILTER_URI_PATH)
                 .appendPath(query)
                 .appendQueryParameter(

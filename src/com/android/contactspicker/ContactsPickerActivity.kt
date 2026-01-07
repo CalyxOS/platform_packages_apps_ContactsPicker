@@ -116,7 +116,7 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
 
         try {
             val appInfo = appPackageManager.getApplicationInfo(callingPackage, 0)
-            val callingAppName = appPackageManager.getApplicationLabel(appInfo)?.toString()
+            val callingAppName = appPackageManager.getApplicationLabel(appInfo).toString()
             if (
                 intent.getBooleanExtra(Intent.EXTRA_USE_SYSTEM_CONTACTS_PICKER, false) ||
                     appInfo.targetSdkVersion >= ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD ||
