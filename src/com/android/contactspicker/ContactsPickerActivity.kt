@@ -26,6 +26,7 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Trace
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
@@ -85,6 +86,7 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
     private val contactsViewModel: ContactsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Trace.beginSection("$TAG#coldStart")
         super.onCreate(savedInstanceState)
 
         if (savedInstanceState != null) {
@@ -93,12 +95,15 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
         }
 
         routeIntent(intent)
+        Trace.endSection()
     }
 
     override fun onNewIntent(intent: Intent) {
+        Trace.beginSection("$TAG#onNewIntent")
         super.onNewIntent(intent)
         setIntent(intent)
         routeIntent(intent)
+        Trace.endSection()
     }
 
     /**
