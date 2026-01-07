@@ -24,9 +24,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsListState
@@ -162,5 +164,32 @@ class ContactsPickerTopBarTest {
         composeTestRule.onAllNodes(isRoot())[1].performClick()
         privacyMenuItem.assertDoesNotExist()
         overflowButton.assertExists()
+    }
+
+    @Test
+    fun longClickMoreVertIcon_showsTooltip() {
+        composeTestRule.setContent {
+            ContactsPickerTopBar(
+                uiState = mutableStateOf(ContactsListState.Loading),
+                onSearchBarToggled = {},
+                onQueryChange = {},
+                onToggleContactSelection = {},
+                onToggleEntrySelection = { _, _ -> },
+                onExitSearch = {},
+                onShowPrivacyDetailsClick = {},
+            )
+        }
+
+        // Perform a long click on the more options icon to trigger the tooltip.
+        composeTestRule
+            .onNodeWithTag(CONTACTS_PICKER_TOP_BAR_MORE_VERTICAL_ICON_TEST_TAG)
+            .performTouchInput { longClick() }
+
+        // Assert that the tooltip with the correct content description is displayed.
+        composeTestRule
+            .onNodeWithText(
+                context.getString(R.string.contacts_picker_top_bar_more_options_content_description)
+            )
+            .assertIsDisplayed()
     }
 }
