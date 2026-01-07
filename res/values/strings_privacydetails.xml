@@ -17,9 +17,6 @@
  */
  -->
 <resources>
-    <!-- Content description for the back button in the privacy details top bar -->
-    <string name="privacy_details_top_bar_back_button_content_description">Back</string>
-
     <!-- Header text for the privacy details top bar -->
     <string name="privacy_details_top_bar_header">Your contacts\' privacy</string>
 
