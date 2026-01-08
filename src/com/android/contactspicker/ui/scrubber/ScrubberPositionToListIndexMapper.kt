@@ -117,15 +117,19 @@ internal class ScrubberPositionToListIndexMapper(
      * Converts the `LazyColumn`'s list index into a fractional vertical offset for the scrubber
      * handle.
      *
-     * @param listIndex The index of item in the `LazyColumn`.
-     * @return The corresponding vertical offset for the scrubber handle, from 0.0f to 1.0f.
+     * Note: The [preciseListIndex] represents the index of the first visible item plus the fraction
+     * of that item that has been scrolled past the top edge of the viewport. This ensures that the
+     * scrubber position is updated continuously as the user scrolls, rather than jumping between
+     * item indices.
+     *
+     * @param preciseListIndex The fractional index of the first visible item in the `LazyColumn`.
+     *   For example, `5.5f` indicates the list is scrolled halfway through the item at index 5.
+     * @return A fraction between 0.0 (top) and 1.0 (bottom) representing the scrubber's position.
      */
-    fun toVerticalOffsetFraction(listIndex: Int): Float {
+    fun toVerticalOffsetFraction(preciseListIndex: Float): Float {
         if (contactCount <= 1) return 0f
-
-        val sectionIndex = findSectionIndex(listIndex)
-
-        // If listIndex is before contact rows and sticky header (e.g., on the banner).
+        val sectionIndex = findSectionIndexForListIndex(preciseListIndex.roundToInt())
+        // If preciseIndex is before contact rows and sticky header (e.g., on the banner).
         // we will not find it's section as section tracks only contacts, in that case
         // we assume the input index is at the top of the list and map it to top position with 0f
         if (sectionIndex == -1) {
@@ -133,9 +137,9 @@ internal class ScrubberPositionToListIndexMapper(
         }
         val maxContactIndex = contactCount - 1
         val listOffset = nonContactItemsBeforeSection[sectionIndex]
-        val contactIndex = (listIndex - listOffset).coerceIn(0, maxContactIndex)
-
-        return contactIndex.toFloat() / maxContactIndex
+        val preciseContactIndex =
+            (preciseListIndex - listOffset).coerceIn(0f, maxContactIndex.toFloat())
+        return preciseContactIndex / maxContactIndex
     }
 
     /**
@@ -153,7 +157,7 @@ internal class ScrubberPositionToListIndexMapper(
         return (maxIndex * verticalOffsetFraction).roundToInt().coerceIn(0, maxIndex)
     }
 
-    private fun findSectionIndex(listIndex: Int) =
+    private fun findSectionIndexForListIndex(listIndex: Int) =
         lazyColumnSectionStartIndices.binarySearchFloor(listIndex)
 
     private fun getListIndexFromContactIndex(contactIndex: Int): Int {

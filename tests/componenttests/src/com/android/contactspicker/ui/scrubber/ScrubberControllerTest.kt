@@ -93,7 +93,9 @@ class ScrubberControllerTest {
             sortedMapOf(SectionKey.LetterKey('A') to contacts)
         setContent(contactSections)
 
-        composeTestRule.runOnUiThread { controller.updateVerticalOffsetFraction(listIndex = 10) }
+        composeTestRule.runOnUiThread {
+            controller.updateVerticalOffsetFraction(preciseListIndex = 10f)
+        }
         composeTestRule.waitForIdle()
         // Expected: (listIndex- 1 for header) / (totalContacts - 1) = (9/24) = 0.375
         assertThat(controller.scrubberState.verticalOffsetFraction).isEqualTo(0.375f)
@@ -110,7 +112,9 @@ class ScrubberControllerTest {
         startScrubberDragAt(0.0f)
 
         // 2. Attempt to update offset from List
-        composeTestRule.runOnUiThread { controller.updateVerticalOffsetFraction(listIndex = 100) }
+        composeTestRule.runOnUiThread {
+            controller.updateVerticalOffsetFraction(preciseListIndex = 100f)
+        }
         composeTestRule.waitForIdle()
 
         // 3. Assert that Scrubber stayed at 0.0f
