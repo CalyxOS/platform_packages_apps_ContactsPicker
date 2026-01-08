@@ -43,23 +43,23 @@ import com.android.contactspicker.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TitleTopBar(
-    onBackPressed: () -> Unit,
-    title: String,
-    backIconDescription: String? =
-        stringResource(id = R.string.title_top_bar_back_button_content_description),
-    modifier: Modifier = Modifier,
-) {
+fun TitleTopBar(onBackPressed: () -> Unit, title: String, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         TooltipBox(
-            positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
-                positioning = TooltipAnchorPosition.Above
-            ),
-            tooltip = { Text(text = backIconDescription ?: "") },
+            positionProvider =
+                TooltipDefaults.rememberTooltipPositionProvider(
+                    positioning = TooltipAnchorPosition.Above
+                ),
+            tooltip = {
+                Text(
+                    text =
+                        stringResource(id = R.string.title_top_bar_back_button_content_description)
+                )
+            },
             state = rememberTooltipState(),
         ) {
             IconButton(
@@ -74,7 +74,8 @@ fun TitleTopBar(
                 Icon(
                     modifier = Modifier.size(24.dp),
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = backIconDescription,
+                    contentDescription =
+                        stringResource(id = R.string.title_top_bar_back_button_content_description),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
