@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"Atgal"</string>
     <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"Jūsų kontaktų privatumas"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Kai pasirenkate kontaktą, „%1$s“ galės pasiekti toliau nurodytą informaciją iš įrenginio kontaktų.\n\nJei atnaujinsite kontaktinę informaciją, „%1$s“ negalės pasiekti pakeitimų."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Kontaktinė informacija gali apimti tokią išsamią informaciją, kaip nurodyta toliau."</string>

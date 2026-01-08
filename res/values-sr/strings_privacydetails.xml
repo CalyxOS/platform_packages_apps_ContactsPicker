@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"Назад"</string>
     <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"Приватност ваших контаката"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Кад изаберете контакт, %1$s ће имати приступ следећим информацијама из контаката на уређају.\n\nАко ажурирате контакт информације, %1$s неће имати приступ променама."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Контакт информације могу да обухватају детаље као што су:"</string>
