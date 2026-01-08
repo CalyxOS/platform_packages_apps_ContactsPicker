@@ -57,8 +57,6 @@
     <string name="preview_screen_title" msgid="2852036336424026274">"Toleo la kukagua"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"Programu hii"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Faragha ya anwani zako"</string>
-    <!-- no translation found for no_contacts_title (9093698629001614808) -->
-    <skip />
-    <!-- no translation found for no_contacts_description (2146615362021064099) -->
-    <skip />
+    <string name="no_contacts_title" msgid="9093698629001614808">"Bado hakuna anwani"</string>
+    <string name="no_contacts_description" msgid="2146615362021064099">"Anwani unazoweka au kupakia kwenye kifaa chako zitaonekana hapa"</string>
 </resources>

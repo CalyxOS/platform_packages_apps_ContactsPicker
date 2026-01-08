@@ -57,8 +57,6 @@
     <string name="preview_screen_title" msgid="2852036336424026274">"पूर्वावलोकन"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"हे ॲप"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"तुमच्या संपर्कांची गोपनीयता"</string>
-    <!-- no translation found for no_contacts_title (9093698629001614808) -->
-    <skip />
-    <!-- no translation found for no_contacts_description (2146615362021064099) -->
-    <skip />
+    <string name="no_contacts_title" msgid="9093698629001614808">"अद्याप कोणतेही संपर्क नाहीत"</string>
+    <string name="no_contacts_description" msgid="2146615362021064099">"तुम्ही तुमच्या डिव्हाइसवर तयार केलेले किंवा इंपोर्ट केलेले संपर्क इथे दिसतील"</string>
 </resources>
