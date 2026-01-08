@@ -20,6 +20,7 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -53,6 +54,7 @@ class SelectionBottomBarTest {
                 onClearSelection = {},
                 isPreviewMode = false,
                 onBackFromPreview = {},
+                modifier = Modifier,
             )
         }
 
@@ -70,6 +72,7 @@ class SelectionBottomBarTest {
                 onClearSelection = { clearClicked = true },
                 isPreviewMode = false,
                 onBackFromPreview = {},
+                modifier = Modifier,
             )
         }
 
@@ -91,6 +94,7 @@ class SelectionBottomBarTest {
                 onClearSelection = {},
                 isPreviewMode = false,
                 onBackFromPreview = {},
+                modifier = Modifier,
             )
         }
 
