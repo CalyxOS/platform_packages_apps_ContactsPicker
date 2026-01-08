@@ -23,10 +23,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.union
@@ -156,9 +158,9 @@ fun ContactsPickerBottomSheet(
         BottomSheetScaffold(
             modifier =
                 Modifier.windowInsetsPadding(
-                    WindowInsets.statusBars
-                        .union(WindowInsets.displayCutout)
-                        .union(WindowInsets.navigationBars)
+                    WindowInsets.statusBars.union(
+                        WindowInsets.displayCutout.only(WindowInsetsSides.Vertical)
+                    )
                 ),
             scaffoldState = scaffoldState,
             sheetPeekHeight = peekHeight,
