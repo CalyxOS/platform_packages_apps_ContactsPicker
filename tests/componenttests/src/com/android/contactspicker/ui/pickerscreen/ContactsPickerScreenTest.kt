@@ -191,6 +191,7 @@ class ContactsPickerScreenTest {
                             callingAppName = null,
                             showPrivacyBanner = false,
                             requestedMimeTypes = emptyList(),
+                            showProfileSwitcher = false,
                         )
                     ),
                 onNavigateToPrivacyDetails = {},
@@ -230,6 +231,7 @@ class ContactsPickerScreenTest {
                     callingAppName = null,
                     showPrivacyBanner = false,
                     requestedMimeTypes = emptyList(),
+                    showProfileSwitcher = false,
                 )
             )
         composeTestRule.setContent {
@@ -284,6 +286,7 @@ class ContactsPickerScreenTest {
                             callingAppName = null,
                             showPrivacyBanner = false,
                             requestedMimeTypes = emptyList(),
+                            showProfileSwitcher = true,
                         )
                     ),
                 onNavigateToPrivacyDetails = {},
