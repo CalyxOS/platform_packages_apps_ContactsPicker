@@ -56,9 +56,10 @@ fun SelectionBottomBar(
     onDoneClick: () -> Unit,
     onClearSelection: () -> Unit,
     onBackFromPreview: () -> Unit,
+    modifier: Modifier,
 ) {
     Surface(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         shape = CircleShape,
         color = MaterialTheme.colorScheme.surfaceContainerHighest,
         tonalElevation = 4.dp,
