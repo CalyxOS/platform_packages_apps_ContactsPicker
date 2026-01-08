@@ -374,17 +374,15 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             val profilePictureUri = cursor.getString(profilePictureUriIndex)
             val isFavorite = cursor.getInt(starredIndex) == 1
             val lookupKey = cursor.getString(lookupKeyIndex)
-            if (name != null) {
-                contacts.add(
-                    DisplayNameContact(
-                        id = id,
-                        displayName = name,
-                        profilePictureUri = profilePictureUri,
-                        isFavorite = isFavorite,
-                        lookupKey = lookupKey,
-                    )
+            contacts.add(
+                DisplayNameContact(
+                    id = id,
+                    displayName = name,
+                    profilePictureUri = profilePictureUri,
+                    isFavorite = isFavorite,
+                    lookupKey = lookupKey,
                 )
-            }
+            )
         }
         return contacts
     }
