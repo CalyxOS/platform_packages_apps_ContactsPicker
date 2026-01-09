@@ -518,7 +518,6 @@ private fun SearchState.Success.getAggregatedContacts(queryMode: ContactsQueryMo
                         .copy(phones = contacts.flatMap { it.phones }.distinctBy { it.id })
                 }
         }
-        ContactsQueryMode.DisplayNamesOnly -> searchResults
-        // TODO(b/452020367): handle action pick contacts
-        is ContactsQueryMode.Custom -> throw IllegalArgumentException("Not yet supported")
+        ContactsQueryMode.DisplayNamesOnly,
+        is ContactsQueryMode.Custom -> searchResults
     }

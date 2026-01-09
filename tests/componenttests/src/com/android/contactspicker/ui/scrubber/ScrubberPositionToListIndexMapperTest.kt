@@ -128,7 +128,7 @@ class ScrubberPositionToListIndexMapperTest {
     @Test
     fun toVerticalOffsetFraction_noContacts_returnsZero() {
         val mapper = ScrubberPositionToListIndexMapper(sortedMapOf(), showPrivacyBanner = false)
-        assertThat(mapper.toVerticalOffsetFraction(10)).isEqualTo(0f)
+        assertThat(mapper.toVerticalOffsetFraction(10f)).isEqualTo(0f)
     }
 
     @Test
@@ -140,7 +140,7 @@ class ScrubberPositionToListIndexMapperTest {
             )
 
         val mapper = ScrubberPositionToListIndexMapper(sections, showPrivacyBanner = false)
-        assertThat(mapper.toVerticalOffsetFraction(10)).isEqualTo(0f)
+        assertThat(mapper.toVerticalOffsetFraction(10f)).isEqualTo(0f)
     }
 
     @Test
@@ -153,19 +153,19 @@ class ScrubberPositionToListIndexMapperTest {
             )
         val mapper = ScrubberPositionToListIndexMapper(sections, showPrivacyBanner = false)
         // First section sticky header maps to 0f verticalOffsetFraction
-        assertThat(mapper.toVerticalOffsetFraction(0)).isEqualTo(0f)
+        assertThat(mapper.toVerticalOffsetFraction(0f)).isEqualTo(0f)
         // First contact in first section maps to 0f verticalOffsetFraction
-        assertThat(mapper.toVerticalOffsetFraction(1)).isEqualTo(0f)
+        assertThat(mapper.toVerticalOffsetFraction(1f)).isEqualTo(0f)
         // Expected value is (listIndex - stickyHeader(1)) / (11 - 1)
-        assertThat(mapper.toVerticalOffsetFraction(2)).isEqualTo(1f / 10f)
-        assertThat(mapper.toVerticalOffsetFraction(5)).isWithin(0.01f).of(4f / 10f)
+        assertThat(mapper.toVerticalOffsetFraction(2f)).isEqualTo(1f / 10f)
+        assertThat(mapper.toVerticalOffsetFraction(5f)).isWithin(0.01f).of(4f / 10f)
         // Second section sticky header maps to same position as first contact in second section
-        assertThat(mapper.toVerticalOffsetFraction(6)).isWithin(0.01f).of(5f / 10f)
+        assertThat(mapper.toVerticalOffsetFraction(6f)).isWithin(0.01f).of(5f / 10f)
         // Expected value is (listIndex - stickyHeader(2)) / (11 - 1)
-        assertThat(mapper.toVerticalOffsetFraction(7)).isWithin(0.01f).of(5f / 10f)
-        assertThat(mapper.toVerticalOffsetFraction(9)).isWithin(0.01f).of(7f / 10f)
-        assertThat(mapper.toVerticalOffsetFraction(11)).isWithin(0.01f).of(9f / 10f)
-        assertThat(mapper.toVerticalOffsetFraction(12)).isEqualTo(1f)
+        assertThat(mapper.toVerticalOffsetFraction(7f)).isWithin(0.01f).of(5f / 10f)
+        assertThat(mapper.toVerticalOffsetFraction(9f)).isWithin(0.01f).of(7f / 10f)
+        assertThat(mapper.toVerticalOffsetFraction(11f)).isWithin(0.01f).of(9f / 10f)
+        assertThat(mapper.toVerticalOffsetFraction(12f)).isEqualTo(1f)
     }
 
     @Test
@@ -179,21 +179,41 @@ class ScrubberPositionToListIndexMapperTest {
         val mapper = ScrubberPositionToListIndexMapper(sections, showPrivacyBanner = true)
 
         // First item is PrivacyBanner
-        assertThat(mapper.toVerticalOffsetFraction(0)).isEqualTo(0f)
+        assertThat(mapper.toVerticalOffsetFraction(0f)).isEqualTo(0f)
         // First section sticky header maps to 0f verticalOffsetFraction
-        assertThat(mapper.toVerticalOffsetFraction(1)).isEqualTo(0f)
+        assertThat(mapper.toVerticalOffsetFraction(1f)).isEqualTo(0f)
         // First contact in first section maps to 0f verticalOffsetFraction
-        assertThat(mapper.toVerticalOffsetFraction(2)).isEqualTo(0f)
+        assertThat(mapper.toVerticalOffsetFraction(2f)).isEqualTo(0f)
         // Expected value is (listIndex - stickyHeader(1) - PrivacyBanner(1)) / (11 - 1)
-        assertThat(mapper.toVerticalOffsetFraction(3)).isEqualTo(1f / 10f)
-        assertThat(mapper.toVerticalOffsetFraction(5)).isWithin(0.01f).of(3f / 10f)
-        assertThat(mapper.toVerticalOffsetFraction(6)).isWithin(0.01f).of(4f / 10f)
+        assertThat(mapper.toVerticalOffsetFraction(3f)).isEqualTo(1f / 10f)
+        assertThat(mapper.toVerticalOffsetFraction(5f)).isWithin(0.01f).of(3f / 10f)
+        assertThat(mapper.toVerticalOffsetFraction(6f)).isWithin(0.01f).of(4f / 10f)
         // Second section sticky header maps to same position as first contact in second section
-        assertThat(mapper.toVerticalOffsetFraction(7)).isWithin(0.01f).of(5f / 10f)
+        assertThat(mapper.toVerticalOffsetFraction(7f)).isWithin(0.01f).of(5f / 10f)
         // Expected value is (listIndex - stickyHeader(2) - privacyBanner(1)) / (11 - 1)
-        assertThat(mapper.toVerticalOffsetFraction(8)).isWithin(0.01f).of(5f / 10f)
-        assertThat(mapper.toVerticalOffsetFraction(10)).isWithin(0.01f).of(7f / 10f)
-        assertThat(mapper.toVerticalOffsetFraction(12)).isWithin(0.01f).of(9f / 10f)
-        assertThat(mapper.toVerticalOffsetFraction(13)).isEqualTo(1f)
+        assertThat(mapper.toVerticalOffsetFraction(8f)).isWithin(0.01f).of(5f / 10f)
+        assertThat(mapper.toVerticalOffsetFraction(10f)).isWithin(0.01f).of(7f / 10f)
+        assertThat(mapper.toVerticalOffsetFraction(12f)).isWithin(0.01f).of(9f / 10f)
+        assertThat(mapper.toVerticalOffsetFraction(13f)).isEqualTo(1f)
+    }
+
+    @Test
+    fun toVerticalOffsetFraction_preciseListIndex_mapsCorrectly() {
+        val contacts = ContactTestDataFactory.createContactList(11)
+        val sections: SortedMap<SectionKey, List<Contact>> =
+            sortedMapOf(
+                SectionKey.LetterKey('A') to contacts.subList(0, 5),
+                SectionKey.LetterKey('B') to contacts.subList(5, 11),
+            )
+        val mapper = ScrubberPositionToListIndexMapper(sections, showPrivacyBanner = false)
+
+        // The scrubber's fraction is based on the contact index, not the layout index. This means
+        // we must subtract non-contact items (headers, banners) from the calculation.
+        //
+        // Formula: (preciseListIndex - nonContactOffset) / totalContacts
+        //
+        // Example (1 header, 10 contacts, preciseListIndex of 1.5f):
+        // (1.5f - 1) / 10 = 0.5f / 10 = 0.05f
+        assertThat(mapper.toVerticalOffsetFraction(1.5f)).isWithin(0.01f).of(0.05f)
     }
 }

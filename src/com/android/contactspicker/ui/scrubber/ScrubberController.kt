@@ -23,9 +23,12 @@ import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.ui.pickerscreen.SectionKey
 import com.android.contactspicker.ui.pickerscreen.getSectionKeyForNonFavorite
 import java.util.SortedMap
+import kotlin.math.abs
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
+
+private const val SCRUBBER_VERTICAL_OFFSET_FRACTION_UPDATE_THRESHOLD = 0.001f
 
 /**
  * A state holder and controller for the scrubber, responsible for managing the interaction with the
@@ -92,14 +95,33 @@ class ScrubberController(
     }
 
     /**
-     * Allows updating the scrubber position based on the list index if user is not dragging the
-     * scrubber
+     * Updates the scrubber's vertical offset fraction to reflect the current list scroll position.
+     * It converts the [preciseListIndex] into a vertical fraction (0.0 to 1.0) and updates the
+     * [scrubberState] if the change exceeds [SCRUBBER_VERTICAL_OFFSET_FRACTION_UPDATE_THRESHOLD].
+     *
+     * To prevent conflicting state updates, this operation is skipped while the user is dragging
+     * the scrubber. The scrubber's position is either driven by the user's drag gesture or by the
+     * list's scroll position, but never both simultaneously.
+     *
+     * Note: The [preciseListIndex] represents the index of the first visible item plus the fraction
+     * of that item that has been scrolled past the top edge of the viewport. This ensures that the
+     * scrubber position is updated continuously as the user scrolls, rather than jumping between
+     * item indices.
+     *
+     * @param preciseListIndex The fractional index of the first visible item in the list.
      */
-    internal fun updateVerticalOffsetFraction(listIndex: Int) {
+    internal fun updateVerticalOffsetFraction(preciseListIndex: Float) {
         if (!scrubberState.isDragging) {
-            scrubberState.setVerticalOffsetFraction(
-                scrubberPositionToListIndexMapper.toVerticalOffsetFraction(listIndex)
-            )
+            val targetFraction =
+                scrubberPositionToListIndexMapper.toVerticalOffsetFraction(
+                    preciseListIndex = preciseListIndex
+                )
+            if (
+                abs(targetFraction - scrubberState.verticalOffsetFraction) >
+                    SCRUBBER_VERTICAL_OFFSET_FRACTION_UPDATE_THRESHOLD
+            ) {
+                scrubberState.setVerticalOffsetFraction(targetFraction)
+            }
         }
     }
 }

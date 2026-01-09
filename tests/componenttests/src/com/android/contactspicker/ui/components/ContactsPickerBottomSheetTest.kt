@@ -31,13 +31,16 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onParent
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
 import androidx.compose.ui.test.swipeUp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.height
+import androidx.compose.ui.unit.width
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsListState
@@ -470,6 +473,62 @@ class ContactsPickerBottomSheetTest {
         composeTestRule
             .onNodeWithText(context.getString(R.string.selection_bottom_bar_back_button_label))
             .assertIsDisplayed()
+    }
+
+    @Test
+    fun selectionBar_isAlignedWithBottomSheet() {
+        // GIVEN the bottom sheet is visible with a selectable contact
+        selectedContacts = emptyContactsSelection()
+        composeTestRule.setContent {
+            ContactsPickerAppTheme {
+                ContactsPickerBottomSheet(
+                    onDismissRequest = {},
+                    uiState =
+                        mutableStateOf(
+                            ContactsListState.Success(
+                                availableContacts = listOf(testContact),
+                                selectedContacts = selectedContacts,
+                                isMultiSelectEnabled = true,
+                                callingAppName = null,
+                                showPrivacyBanner = false,
+                                requestedMimeTypes = emptyList(),
+                            )
+                        ),
+                    snackbarEvents = flowOf(),
+                    onToggleContactSelection = {},
+                    onToggleEntrySelection = { _, _ -> },
+                    onClearSelection = {},
+                    onDoneClicked = {},
+                    onQueryChange = {},
+                    onExitSearch = {},
+                    onPreviewClicked = {},
+                    onBackFromPreview = {},
+                    onPrivacyBannerDismissRequest = {},
+                )
+            }
+        }
+
+        // WHEN a contact is selected, making the selection bar visible
+        selectedContacts = contactsSelectionOf(testContact.id, setOf(testContact.id))
+        composeTestRule.waitForIdle()
+
+        // THEN the selection bar should be aligned with the bottom sheet
+        val bottomSheetBounds =
+            composeTestRule.onNodeWithTag(BOTTOM_SHEET_TEST_TAG).getUnclippedBoundsInRoot()
+
+        val clearButtonNode =
+            composeTestRule.onNodeWithContentDescription(
+                context.getString(R.string.selection_bottom_bar_clear_button_content_description)
+            )
+
+        // The parent of the clear button is the SelectionBottomBar (a Row)
+        val selectionBarBounds = clearButtonNode.onParent().getUnclippedBoundsInRoot()
+
+        // Assert that the selection bar is horizontally inset within the bottom sheet.
+        // This is more resilient to refactoring than checking for exact padding values.
+        assertThat(selectionBarBounds.left).isGreaterThan(bottomSheetBounds.left)
+        assertThat(selectionBarBounds.right).isLessThan(bottomSheetBounds.right)
+        assertThat(selectionBarBounds.width).isLessThan(bottomSheetBounds.width)
     }
 
     private fun setupBottomSheet(

@@ -46,9 +46,11 @@ import com.android.contactspicker.ui.scrubber.ScrubberController
 import com.android.contactspicker.ui.scrubber.ScrubberLabel
 import com.android.contactspicker.ui.scrubber.rememberScrubberController
 import java.util.TreeMap
+import kotlin.math.absoluteValue
 import kotlinx.coroutines.flow.collectLatest
 
 const val CONTACTS_LIST_TEST_TAG = "contacts_list"
+const val MIN_CONTACTS_COUNT_FOR_SCRUBBER_ACTIVATION = 100
 
 /**
  * Displays the main content of the contact picker, including a privacy banner and a vertically
@@ -99,71 +101,108 @@ fun ContactsPickerBody(
         }
 
     val listState = rememberLazyListState()
+    val showScrubber = contacts.size >= MIN_CONTACTS_COUNT_FOR_SCRUBBER_ACTIVATION
     val scrubberController =
         rememberScrubberController(sortedAllSectionsMap, favorites.size, showPrivacyBanner)
-    ScrubberListSynchronizationEffects(scrubberController, listState)
+
+    val isListScrollEnabled =
+        if (showScrubber) {
+            scrubberController.isListScrollEnabledForUser
+        } else {
+            true
+        }
 
     Box(modifier = Modifier.fillMaxWidth()) {
-        LazyColumn(
-            state = listState,
-            userScrollEnabled = scrubberController.isListScrollEnabledForUser,
-            modifier = Modifier.fillMaxWidth().testTag(CONTACTS_LIST_TEST_TAG),
-            contentPadding = WindowInsets.navigationBars.asPaddingValues(),
-        ) {
-            if (showPrivacyBanner) {
-                item(key = "privacy_banner") {
-                    PrivacyBanner(
-                        callingAppName = callingAppName,
-                        onMoreDetails = onPrivacyBannerMoreDetails,
-                        onDismissRequest = onPrivacyBannerDismissRequest,
+        ContactsList(
+            listState = listState,
+            sortedAllSectionsMap = sortedAllSectionsMap,
+            userScrollEnabled = isListScrollEnabled,
+            showPrivacyBanner = showPrivacyBanner,
+            callingAppName = callingAppName,
+            onPrivacyBannerMoreDetails = onPrivacyBannerMoreDetails,
+            onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
+            selectedContacts = selectedContacts,
+            isMultiSelectEnabled = isMultiSelectEnabled,
+            onToggleContactSelection = onToggleContactSelection,
+            onToggleEntrySelection = onToggleEntrySelection,
+        )
+        if (showScrubber) {
+            ScrubberListSynchronizationEffects(scrubberController, listState)
+
+            AnimatedScrubber(
+                scrubberController.scrubberState,
+                listState,
+                Modifier.fillMaxHeight(),
+                label = { ScrubberLabel(scrubberController.labelSectionKey) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun ContactsList(
+    listState: LazyListState,
+    sortedAllSectionsMap: TreeMap<SectionKey, List<Contact>>,
+    userScrollEnabled: Boolean,
+    showPrivacyBanner: Boolean,
+    callingAppName: String?,
+    onPrivacyBannerMoreDetails: () -> Unit,
+    onPrivacyBannerDismissRequest: () -> Unit,
+    selectedContacts: ContactsSelection,
+    isMultiSelectEnabled: Boolean,
+    onToggleContactSelection: (Contact) -> Unit,
+    onToggleEntrySelection: (Long, Long) -> Unit,
+) {
+    LazyColumn(
+        state = listState,
+        userScrollEnabled = userScrollEnabled,
+        modifier = Modifier.fillMaxWidth().testTag(CONTACTS_LIST_TEST_TAG),
+        contentPadding = WindowInsets.navigationBars.asPaddingValues(),
+    ) {
+        if (showPrivacyBanner) {
+            item(key = "privacy_banner") {
+                PrivacyBanner(
+                    callingAppName = callingAppName,
+                    onDismissRequest = onPrivacyBannerDismissRequest,
+                    onMoreDetails = onPrivacyBannerMoreDetails,
+                )
+            }
+        }
+        sortedAllSectionsMap.forEach { (sectionKey, contactsInGroup) ->
+            stickyHeader(key = "header_${sectionKey.uniqueId}") { SectionHeaderForKey(sectionKey) }
+
+            val groupSize = contactsInGroup.size
+            itemsIndexed(
+                items = contactsInGroup,
+                // The key must be unique across the entire list.
+                // Since a contact that appears in 'Favorites' will appear in another
+                // section, prefix the key with the section ID.
+                key = { _, contact -> "${sectionKey.uniqueId}_${contact.id}" },
+            ) { index, contact ->
+                val position = itemPosition(index, groupSize)
+                val bottomPadding =
+                    if (position == ItemPosition.LAST || position == ItemPosition.ONLY) 8.dp
+                    else 1.dp
+
+                Row(
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = bottomPadding),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    ContactItem(
+                        contact = contact,
+                        position = position,
+                        selectedEntries = selectedContacts[contact.id],
+                        isMultiSelectEnabled = isMultiSelectEnabled,
+                        isSearchMode = false,
+                        onToggleContactSelection = onToggleContactSelection,
+                        onToggleEntrySelection = onToggleEntrySelection,
                     )
                 }
             }
-            sortedAllSectionsMap.forEach { (sectionKey, contactsInGroup) ->
-                stickyHeader(key = "header_${sectionKey.uniqueId}") {
-                    SectionHeaderForKey(sectionKey)
-                }
-
-                val groupSize = contactsInGroup.size
-                itemsIndexed(
-                    items = contactsInGroup,
-                    // The key must be unique across the entire list.
-                    // Since a contact that appears in 'Favorites' will appear in another
-                    // section, prefix the key with the section ID.
-                    key = { _, contact -> "${sectionKey.uniqueId}_${contact.id}" },
-                ) { index, contact ->
-                    val position = itemPosition(index, groupSize)
-
-                    val bottomPadding =
-                        if (position == ItemPosition.LAST || position == ItemPosition.ONLY) 8.dp
-                        else 1.dp
-
-                    Row(
-                        modifier =
-                            Modifier.fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .padding(bottom = bottomPadding),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        ContactItem(
-                            contact = contact,
-                            position = position,
-                            selectedEntries = selectedContacts[contact.id],
-                            isMultiSelectEnabled = isMultiSelectEnabled,
-                            isSearchMode = false,
-                            onToggleContactSelection = onToggleContactSelection,
-                            onToggleEntrySelection = onToggleEntrySelection,
-                        )
-                    }
-                }
-            }
         }
-        AnimatedScrubber(
-            scrubberController.scrubberState,
-            listState,
-            Modifier.fillMaxHeight(),
-            label = { ScrubberLabel(scrubberController.labelSectionKey) },
-        )
     }
 }
 
@@ -179,11 +218,49 @@ private fun ScrubberListSynchronizationEffects(
         scrubberController.scrollRequests.collectLatest { index -> listState.scrollToItem(index) }
     }
 
-    // List -> Scrubber: Syncs the scrubber position to the [LazyListState.firstVisibleItemIndex]
+    // List -> Scrubber: Tracks index of the first visible item plus the fraction of that item that
+    // has been scrolled past the top edge of the viewport and updates the scrubber handle position
+    // based on that.
     LaunchedEffect(scrubberController, listState) {
-        snapshotFlow { listState.firstVisibleItemIndex }
-            .collect { listIndex -> scrubberController.updateVerticalOffsetFraction(listIndex) }
+        snapshotFlow { listState.getFractionalFirstVisibleItemIndex() }
+            .collectLatest { fractionalFirstVisibleItemIndex ->
+                scrubberController.updateVerticalOffsetFraction(
+                    preciseListIndex = fractionalFirstVisibleItemIndex
+                )
+            }
     }
+}
+
+/**
+ * Calculates the precise scroll position of the list as a fractional index.
+ *
+ * This value represents the index of the first visible item plus the fraction of that item that has
+ * been scrolled past the top edge of the viewport.
+ *
+ * For example:
+ * - If the item at index 2 is aligned with the top edge, the result is `2.0f`.
+ * - If the item at index 2 is scrolled halfway off the screen, the result is `2.5f`.
+ *
+ * This is useful for synchronizing UI elements (like a scrubber or scrollbar) with the list's exact
+ * scroll position.
+ *
+ * @return A [Float] representing the fractional index, or `0f` if the list is empty.
+ */
+private fun LazyListState.getFractionalFirstVisibleItemIndex(): Float {
+    val visibleItems = layoutInfo.visibleItemsInfo
+    if (visibleItems.isEmpty()) return 0f
+
+    val firstItem = visibleItems.find { it.index == firstVisibleItemIndex } ?: return 0f
+
+    val firstItemSize = firstItem.size
+    val offsetFraction =
+        if (firstItemSize > 0) {
+            firstItem.offset.absoluteValue.toFloat() / firstItemSize
+        } else {
+            0f
+        }
+
+    return firstItem.index + offsetFraction
 }
 
 @Composable
