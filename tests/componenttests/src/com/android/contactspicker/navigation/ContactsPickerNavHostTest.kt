@@ -133,6 +133,8 @@ class ContactsPickerNavHostTest {
                     onExitSearch = {},
                     onBackFromPreview = {},
                     onPrivacyBannerDismissRequest = {},
+                    onProfileClicked = {},
+                    onDismissProfileBlockedDialog = {},
                 )
             }
         }

@@ -47,6 +47,7 @@ fun ContactsPickerScreen(
     onExitSearch: () -> Unit,
     onBackFromPreview: () -> Unit,
     onProfileClicked: (UserProfile) -> Unit,
+    onDismissProfileBlockedDialog: () -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxSize().testTag(CONTACTS_PICKER_SCREEN_TEST_TAG),
@@ -87,6 +88,13 @@ fun ContactsPickerScreen(
                     onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
                     onToggleContactSelection = onToggleContactSelection,
                     onToggleEntrySelection = onToggleEntrySelection,
+                )
+            }
+
+            if (userStates?.profileBlockedDialogData != null) {
+                ProfileBlockedDialog(
+                    data = userStates.profileBlockedDialogData,
+                    onDismissRequest = onDismissProfileBlockedDialog,
                 )
             }
         }

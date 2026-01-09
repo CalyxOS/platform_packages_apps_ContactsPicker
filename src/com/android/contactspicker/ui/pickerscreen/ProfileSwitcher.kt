@@ -135,7 +135,6 @@ fun ProfileSwitcher(
                                 tint = iconColor,
                             )
                         },
-                        enabled = true,
                         onClick = {
                             expanded = false
                             onProfileClicked(userProfile)

@@ -243,6 +243,9 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
                         onExitSearch = contactsViewModel::exitSearch,
                         onPreviewClicked = contactsViewModel::onPreviewClicked,
                         onBackFromPreview = contactsViewModel::onBackFromPreview,
+                        onProfileClicked = contactsViewModel::onProfileClicked,
+                        onDismissProfileBlockedDialog =
+                            contactsViewModel::dismissProfileBlockedDialog,
                     )
                 }
             }

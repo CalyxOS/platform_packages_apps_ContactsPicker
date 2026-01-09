@@ -35,7 +35,12 @@ import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.MimeType
+import com.android.contactspicker.data.model.PausedProfileInfo
+import com.android.contactspicker.data.model.PausedReason
 import com.android.contactspicker.data.model.PickerUserStates
+import com.android.contactspicker.data.model.SwitchableProfileInfo
+import com.android.contactspicker.data.model.UserProfile
+import com.android.contactspicker.data.model.UserType
 import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.data.repository.UserRepository
 import com.android.contactspicker.fakes.FakeContactsPickerSessionProviderRepository
@@ -47,7 +52,7 @@ import dagger.Lazy
 import kotlin.test.assertFailsWith
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -70,6 +75,51 @@ import org.mockito.kotlin.whenever
 @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
 class ContactsViewModelTest {
 
+    companion object {
+        private const val TEST_CONTACT_LOOKUP_KEY = "key"
+        private const val TEST_CONTACT_DISPLAY_NAME = "Test Name"
+        private const val PAUSED_WORK_APPS_TITLE = "Work apps are paused"
+        private const val TEST_APP_NAME = "TestApp"
+        private const val TEST_CALLING_UID = 12345
+        private const val USER_ID_PERSONAL = 0
+        private const val USER_ID_WORK = 10
+        private const val USER_ID_SECONDARY = 12
+
+        private val PERSONAL_PROFILE =
+            UserProfile(
+                userId = USER_ID_PERSONAL,
+                userIdToQueryContacts = USER_ID_PERSONAL,
+                userType = UserType.PERSONAL,
+                switchableInfo = SwitchableProfileInfo("Personal", null),
+            )
+
+        private val WORK_PROFILE =
+            UserProfile(
+                userId = USER_ID_WORK,
+                userIdToQueryContacts = USER_ID_WORK,
+                userType = UserType.WORK,
+                switchableInfo = SwitchableProfileInfo("Work", null),
+            )
+
+        private val PAUSED_WORK_PROFILE =
+            UserProfile(
+                userId = USER_ID_WORK,
+                userIdToQueryContacts = USER_ID_WORK,
+                userType = UserType.WORK,
+                switchableInfo = SwitchableProfileInfo("Work", null),
+                pausedInfo = PausedProfileInfo(PausedReason.QUIET_MODE),
+            )
+
+        private val BLOCKED_WORK_PROFILE =
+            UserProfile(
+                userId = USER_ID_WORK,
+                userIdToQueryContacts = USER_ID_WORK,
+                userType = UserType.WORK,
+                switchableInfo = SwitchableProfileInfo("Work", null),
+                pausedInfo = PausedProfileInfo(PausedReason.MANAGED_PROFILE_CONTACTS_BLOCKED),
+            )
+    }
+
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var fakeContactsRepository: FakeContactsRepository
@@ -79,6 +129,13 @@ class ContactsViewModelTest {
     private lateinit var fakePrivacyBannerRepository: FakePrivacyBannerRepository
     private lateinit var mockUserRepository: UserRepository
     private lateinit var viewModel: ContactsViewModel
+    private val userStatesFlow =
+        MutableStateFlow(
+            PickerUserStates(
+                userIdToAvailableUsersMap = emptyMap(),
+                selectedUserId = USER_ID_PERSONAL,
+            )
+        )
 
     @Before
     fun setUp() {
@@ -87,11 +144,13 @@ class ContactsViewModelTest {
         fakeContactsPickerSessionProviderRepository = FakeContactsPickerSessionProviderRepository()
         fakePrivacyBannerRepository = FakePrivacyBannerRepository()
         mockUserRepository = mock()
-        val defaultUserStates =
-            PickerUserStates(userIdToAvailableUsersMap = emptyMap(), selectedUserId = 0)
+        userStatesFlow.value =
+            PickerUserStates(
+                userIdToAvailableUsersMap = emptyMap(),
+                selectedUserId = USER_ID_PERSONAL,
+            )
         runBlocking {
-            whenever(mockUserRepository.getUserStates(anyInt()))
-                .thenReturn(flowOf(defaultUserStates))
+            whenever(mockUserRepository.getUserStates(anyInt())).thenReturn(userStatesFlow)
         }
 
         val fakeFactory =
@@ -125,8 +184,8 @@ class ContactsViewModelTest {
             intentAction = Intent.ACTION_PICK,
             intentType = Phone.CONTENT_TYPE,
             intentExtras = null,
-            callingAppName = "TestApp",
-            callingAppUid = 12345,
+            callingAppName = TEST_APP_NAME,
+            callingAppUid = TEST_CALLING_UID,
         )
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -138,7 +197,7 @@ class ContactsViewModelTest {
                     testContacts,
                     emptyContactsSelection(),
                     false,
-                    callingAppName = "TestApp",
+                    callingAppName = TEST_APP_NAME,
                     requestedMimeTypes = listOf(MimeType.PHONE),
                     showPrivacyBanner = true,
                 ),
@@ -167,8 +226,8 @@ class ContactsViewModelTest {
             intentAction = Intent.ACTION_PICK,
             intentType = Phone.CONTENT_TYPE,
             intentExtras = null,
-            callingAppName = "TestApp",
-            callingAppUid = 123,
+            callingAppName = TEST_APP_NAME,
+            callingAppUid = TEST_CALLING_UID,
         )
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -182,8 +241,8 @@ class ContactsViewModelTest {
             intentAction = "INVALID_ACTION",
             intentType = null,
             intentExtras = null,
-            callingAppName = "TestApp",
-            callingAppUid = 12345,
+            callingAppName = TEST_APP_NAME,
+            callingAppUid = TEST_CALLING_UID,
         )
     }
 
@@ -261,7 +320,6 @@ class ContactsViewModelTest {
 
     @Test
     fun selectionLimitExceeded_eventsPropagateToViewModel() = runTest {
-        // Integration test: Ensure handler events bubble up to ViewModel's snackbarEvents
         val selectionLimit = 1
         val contacts = ContactTestDataFactory.createContactList(2)
         initializeViewModelForLegacyActionPickWithInitialContactsAndSelectionLimit(
@@ -273,10 +331,10 @@ class ContactsViewModelTest {
         val job = launch { viewModel.snackbarEvents.collect { emittedEvents.add(it) } }
 
         viewModel.toggleContactSelection(contacts[0])
-        testDispatcher.scheduler.advanceUntilIdle() // Wait for update
+        testDispatcher.scheduler.advanceUntilIdle()
 
-        viewModel.toggleContactSelection(contacts[1]) // Trigger limit
-        testDispatcher.scheduler.advanceUntilIdle() // Wait for event emission
+        viewModel.toggleContactSelection(contacts[1])
+        testDispatcher.scheduler.advanceUntilIdle()
 
         assertThat(emittedEvents).hasSize(1)
         assertThat(emittedEvents.first())
@@ -288,8 +346,14 @@ class ContactsViewModelTest {
     @Test
     fun processIntent_privacyBannerShownBefore_shouldNotShowBannerAgain() = runTest {
         val testContacts = listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT)
-        fakePrivacyBannerRepository.markPrivacyBannerAsShown(12345, listOf(MimeType.PHONE))
-        initializeViewModelForLegacyActionPick(contacts = testContacts, callingAppUid = 12345)
+        fakePrivacyBannerRepository.markPrivacyBannerAsShown(
+            TEST_CALLING_UID,
+            listOf(MimeType.PHONE),
+        )
+        initializeViewModelForLegacyActionPick(
+            contacts = testContacts,
+            callingAppUid = TEST_CALLING_UID,
+        )
 
         val successState = viewModel.uiState.value as ContactsListState.Success
         assertThat(successState.showPrivacyBanner).isFalse()
@@ -298,7 +362,7 @@ class ContactsViewModelTest {
     @Test
     fun processIntent_privacyBannerShownFirstTime_shouldShowBanner() = runTest {
         val testContacts = listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT)
-        initializeViewModelForLegacyActionPick(testContacts, callingAppUid = 12345)
+        initializeViewModelForLegacyActionPick(testContacts, callingAppUid = TEST_CALLING_UID)
 
         val successState = viewModel.uiState.value as ContactsListState.Success
         assertThat(successState.showPrivacyBanner).isTrue()
@@ -324,8 +388,8 @@ class ContactsViewModelTest {
             intentAction = Intent.ACTION_PICK,
             intentType = Phone.CONTENT_TYPE,
             intentExtras = null,
-            callingAppName = "TestApp",
-            callingAppUid = 123,
+            callingAppName = TEST_APP_NAME,
+            callingAppUid = TEST_CALLING_UID,
         )
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -539,17 +603,16 @@ class ContactsViewModelTest {
     fun onDoneClicked_actionPickContacts_emailOnly() = runTest {
         val contact1 = ContactTestDataFactory.createEmailContact(1L, "A")
         val expectedSessionUri = Uri.parse("content://session/emails_mode")
-        val callingUid = 123
 
         fakeContactsPickerSessionProviderRepository.setSessionResult(
             dataIds = listOf(contact1.emails.first().id),
-            callingUid = callingUid,
+            callingUid = TEST_CALLING_UID,
             resultUri = expectedSessionUri,
         )
         initializeViewModelForActionPickContacts(
             initialContacts = listOf(contact1),
             requestedMimeTypes = listOf(Email.CONTENT_ITEM_TYPE),
-            callingUid = callingUid,
+            callingUid = TEST_CALLING_UID,
         )
 
         viewModel.toggleEntrySelection(contact1.id, contact1.emails.first().id)
@@ -566,7 +629,6 @@ class ContactsViewModelTest {
         val expectedSessionUri = Uri.parse("content://session/custom_mode")
         val expectedDataIds = listOf(101L, 102L, 123L, 111L)
         val mimeTypes = ArrayList(listOf(Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE))
-        val callingUid = 123
         fakeContactsRepository.setDataRowIdsResult(
             contactIds = listOf(contact1.id, contact2.id),
             mimeTypes = mimeTypes.map { MimeType.fromString(it) },
@@ -574,7 +636,7 @@ class ContactsViewModelTest {
         )
         fakeContactsPickerSessionProviderRepository.setSessionResult(
             dataIds = expectedDataIds,
-            callingUid = callingUid,
+            callingUid = TEST_CALLING_UID,
             resultUri = expectedSessionUri,
         )
 
@@ -582,7 +644,7 @@ class ContactsViewModelTest {
             initialContacts = listOf(contact1, contact2),
             requestedMimeTypes = mimeTypes,
             isMultiSelect = true,
-            callingUid = callingUid,
+            callingUid = TEST_CALLING_UID,
         )
 
         viewModel.toggleContactSelection(contact1)
@@ -1005,7 +1067,7 @@ class ContactsViewModelTest {
         initialContacts: List<Contact>,
         requestedMimeTypes: List<String>,
         isMultiSelect: Boolean = false,
-        callingUid: Int = 123,
+        callingUid: Int = TEST_CALLING_UID,
     ) {
         fakeContactsRepository.setInitialContacts(initialContacts)
 
@@ -1024,7 +1086,7 @@ class ContactsViewModelTest {
             intentAction = ContactsPickerSessionContract.ACTION_PICK_CONTACTS,
             intentType = null,
             intentExtras = extras,
-            callingAppName = "TestApp",
+            callingAppName = TEST_APP_NAME,
             callingAppUid = callingUid,
         )
         testDispatcher.scheduler.advanceUntilIdle()
@@ -1036,14 +1098,14 @@ class ContactsViewModelTest {
     private fun initializeViewModelForLegacyActionPick(
         contacts: List<Contact>,
         intentExtras: Bundle? = null,
-        callingAppUid: Int = 12345,
+        callingAppUid: Int = TEST_CALLING_UID,
     ) {
         fakeContactsRepository.setInitialContacts(contacts)
         viewModel.processIntent(
             intentAction = Intent.ACTION_PICK,
             intentType = Phone.CONTENT_TYPE,
             intentExtras = intentExtras,
-            callingAppName = "TestApp",
+            callingAppName = TEST_APP_NAME,
             callingAppUid = callingAppUid,
         )
         testDispatcher.scheduler.advanceUntilIdle()
@@ -1158,6 +1220,36 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun processIntent_actionPick_doesNotClearSelectedUser() = runTest {
+        initializeViewModelForLegacyActionPick(emptyList())
+
+        verify(mockUserRepository, never()).clearSelectedUser()
+    }
+
+    @Test
+    fun userStates_updatesReflectInViewModel() = runTest {
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+        val newUserStates = PickerUserStates(emptyMap(), USER_ID_WORK)
+
+        userStatesFlow.emit(newUserStates)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(viewModel.userStates.value).isEqualTo(newUserStates)
+    }
+
+    @Test
+    fun userStatesChange_reloadsContactsWithCorrectUserId() = runTest {
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+        val newUserId = USER_ID_WORK
+        val newUserStates = PickerUserStates(emptyMap(), newUserId)
+
+        userStatesFlow.emit(newUserStates)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(fakeContactsRepository.getContactsInvocationsCount()).isEqualTo(2)
+    }
+
+    @Test
     fun processIntent_actionPickContacts_clearsSelectedUser() = runTest {
         initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
 
@@ -1165,10 +1257,231 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun processIntent_actionPick_doesNotClearSelectedUser() = runTest {
-        initializeViewModelForLegacyActionPick(emptyList())
+    fun onProfileSelected_callsRepositorySetSelectedUser() = runTest {
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+        val newUserId = USER_ID_WORK
 
-        verify(mockUserRepository, never()).clearSelectedUser()
+        viewModel.onProfileSelected(newUserId)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        verify(mockUserRepository).setSelectedUser(newUserId)
+    }
+
+    @Test
+    fun onProfileSelected_sameUser_doesNotCallRepository() = runTest {
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+        val currentUserId = USER_ID_PERSONAL
+
+        viewModel.onProfileSelected(currentUserId)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        verify(mockUserRepository, never()).setSelectedUser(anyInt())
+    }
+
+    @Test
+    fun onProfileClicked_switchableProfile_switchesUser() = runTest {
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+
+        viewModel.onProfileClicked(WORK_PROFILE)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        verify(mockUserRepository).setSelectedUser(USER_ID_WORK)
+    }
+
+    @Test
+    fun onProfileClicked_pausedProfile_showsBlockedDialog() = runTest {
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+
+        viewModel.onProfileClicked(PAUSED_WORK_PROFILE)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(viewModel.userStates.value?.profileBlockedDialogData).isNotNull()
+    }
+
+    @Test
+    fun dismissProfileBlockedDialog_hidesDialog() = runTest {
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+
+        viewModel.onProfileClicked(PAUSED_WORK_PROFILE)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(viewModel.userStates.value?.profileBlockedDialogData).isNotNull()
+
+        viewModel.dismissProfileBlockedDialog()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(viewModel.userStates.value?.profileBlockedDialogData).isNull()
+    }
+
+    @Test
+    fun performSearch_usesSelectedUserId() = runTest {
+        val selectedUserId = USER_ID_WORK
+        userStatesFlow.value = PickerUserStates(emptyMap(), selectedUserId)
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+
+        val query = "test"
+        fakeContactsRepository.setSearchResults(query, emptyList())
+
+        viewModel.onSearchQueryChanged(query)
+        testDispatcher.scheduler.advanceTimeBy(SEARCH_DEBOUNCE_MS)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(fakeContactsRepository.lastSearchContactsUserId).isEqualTo(selectedUserId)
+    }
+
+    @Test
+    fun onProfileClicked_pausedProfile_adminBlocked_showsAdminDialog() = runTest {
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+
+        viewModel.onProfileClicked(BLOCKED_WORK_PROFILE)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(viewModel.userStates.value?.profileBlockedDialogData).isNotNull()
+    }
+
+    @Test
+    fun onContactsPermissionGranted_reloadsForSelectedUser() = runTest {
+        val selectedUserId = USER_ID_WORK
+        userStatesFlow.value = PickerUserStates(emptyMap(), selectedUserId)
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+        val initialCount = fakeContactsRepository.getContactsInvocationsCount()
+
+        viewModel.onContactsPermissionGranted()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(fakeContactsRepository.getContactsInvocationsCount()).isEqualTo(initialCount + 1)
+    }
+
+    @Test
+    fun onDoneClicked_usesSelectedUserIdForSession() = runTest {
+        val selectedUserId = USER_ID_SECONDARY
+        userStatesFlow.value = PickerUserStates(emptyMap(), selectedUserId)
+
+        val contact = ContactTestDataFactory.createEmailContact(1L, "A")
+
+        fakeContactsPickerSessionProviderRepository.setSessionResult(
+            dataIds = listOf(contact.emails.first().id),
+            callingUid = TEST_CALLING_UID,
+            resultUri = Uri.parse("content://session"),
+        )
+
+        initializeViewModelForActionPickContacts(
+            initialContacts = listOf(contact),
+            requestedMimeTypes = listOf(Email.CONTENT_ITEM_TYPE),
+            callingUid = TEST_CALLING_UID,
+        )
+
+        viewModel.toggleEntrySelection(contact.id, contact.emails.first().id)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.onDoneClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(fakeContactsPickerSessionProviderRepository.lastSourceUserId)
+            .isEqualTo(selectedUserId)
+    }
+
+    @Test
+    fun userStatesChange_repoThrows_setsErrorState() = runTest {
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+        val newUserId = USER_ID_WORK
+        val newUserStates = PickerUserStates(emptyMap(), newUserId)
+
+        fakeContactsRepository.setException(RuntimeException("Failed to load"))
+        userStatesFlow.emit(newUserStates)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertThat(state).isInstanceOf(ContactsListState.Error::class.java)
+        assertThat((state as ContactsListState.Error).message).isEqualTo("Failed to load")
+    }
+
+    @Test
+    fun userStatesChange_emptyContacts_setsSuccessWithEmptyList() = runTest {
+        initializeViewModelForActionPickContacts(
+            listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT),
+            listOf(Email.CONTENT_ITEM_TYPE),
+        )
+        val newUserId = USER_ID_WORK
+        val newUserStates = PickerUserStates(emptyMap(), newUserId)
+
+        // Set next call to return empty list
+        fakeContactsRepository.setInitialContacts(emptyList())
+        userStatesFlow.emit(newUserStates)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertThat(state).isInstanceOf(ContactsListState.Success::class.java)
+        assertThat((state as ContactsListState.Success).availableContacts).isEmpty()
+    }
+
+    @Test
+    fun onDoneClicked_customQueryMode_passesUserIdToGetContacts() = runTest {
+        val selectedUserId = USER_ID_WORK
+        userStatesFlow.value = PickerUserStates(emptyMap(), selectedUserId)
+        val customMimeTypes = listOf(Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE)
+        val contact =
+            ContactTestDataFactory.createDisplayNameContact(
+                id = 1L,
+                lookupKey = TEST_CONTACT_LOOKUP_KEY,
+                displayName = TEST_CONTACT_DISPLAY_NAME,
+            )
+
+        initializeViewModelForActionPickContacts(
+            initialContacts = listOf(contact),
+            requestedMimeTypes = customMimeTypes,
+            callingUid = TEST_CALLING_UID,
+        )
+
+        viewModel.toggleContactSelection(contact)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.onDoneClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(fakeContactsRepository.lastGetDataRowIdsUserId).isEqualTo(selectedUserId)
+    }
+
+    @Test
+    fun onProfileClicked_pausedProfile_undefinedReason_showsGenericDialog() = runTest {
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+
+        val undefinedPausedProfile =
+            UserProfile(
+                userId = 11,
+                userIdToQueryContacts = 11,
+                userType = UserType.WORK,
+                switchableInfo = SwitchableProfileInfo("Work", null),
+                pausedInfo = PausedProfileInfo(PausedReason.UNDEFINED),
+            )
+
+        viewModel.onProfileClicked(undefinedPausedProfile)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val dialogData = viewModel.userStates.value?.profileBlockedDialogData
+        assertThat(dialogData).isNotNull()
+
+        assertThat(dialogData?.title).isEqualTo(PAUSED_WORK_APPS_TITLE)
+    }
+
+    @Test
+    fun onProfileClicked_neitherPausedNorSwitchable_doesNothing() = runTest {
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+
+        val inertProfile =
+            UserProfile(
+                userId = 10,
+                userIdToQueryContacts = 10,
+                userType = UserType.PERSONAL,
+                switchableInfo = null,
+                pausedInfo = null,
+            )
+
+        viewModel.onProfileClicked(inertProfile)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        verify(mockUserRepository, never()).setSelectedUser(anyInt())
+        assertThat(viewModel.userStates.value?.profileBlockedDialogData).isNull()
     }
 
     /** Helper to trigger [onDoneClicked] and capture the emitted result event. */
@@ -1183,5 +1496,107 @@ class ContactsViewModelTest {
         } finally {
             job.cancel()
         }
+    }
+
+    @Test
+    fun userStatesChange_irrelevantChange_doesNotReloadContacts() = runTest {
+        val initialUserStates =
+            PickerUserStates(
+                userIdToAvailableUsersMap =
+                    mapOf(USER_ID_PERSONAL to PERSONAL_PROFILE, USER_ID_WORK to WORK_PROFILE),
+                selectedUserId = USER_ID_PERSONAL,
+            )
+        userStatesFlow.value = initialUserStates
+
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+        val initialLoadCount = fakeContactsRepository.getContactsInvocationsCount()
+
+        val newUserStates =
+            initialUserStates.copy(
+                userIdToAvailableUsersMap =
+                    mapOf(USER_ID_PERSONAL to PERSONAL_PROFILE, USER_ID_WORK to PAUSED_WORK_PROFILE)
+            )
+
+        userStatesFlow.emit(newUserStates)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(fakeContactsRepository.getContactsInvocationsCount()).isEqualTo(initialLoadCount)
+    }
+
+    @Test
+    fun userStatesChange_currentProfilePaused_reloadsContacts() = runTest {
+        val initialUserStates =
+            PickerUserStates(
+                userIdToAvailableUsersMap = mapOf(USER_ID_WORK to WORK_PROFILE),
+                selectedUserId = USER_ID_WORK,
+            )
+        userStatesFlow.value = initialUserStates
+
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+        val initialLoadCount = fakeContactsRepository.getContactsInvocationsCount()
+
+        val newUserStates =
+            initialUserStates.copy(
+                userIdToAvailableUsersMap = mapOf(USER_ID_WORK to PAUSED_WORK_PROFILE)
+            )
+
+        userStatesFlow.emit(newUserStates)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(fakeContactsRepository.getContactsInvocationsCount())
+            .isEqualTo(initialLoadCount + 1)
+    }
+
+    @Test
+    fun userStatesChange_switchingProfile_clearsSelection() = runTest {
+        val initialUserStates =
+            PickerUserStates(
+                userIdToAvailableUsersMap =
+                    mapOf(USER_ID_PERSONAL to PERSONAL_PROFILE, USER_ID_WORK to WORK_PROFILE),
+                selectedUserId = USER_ID_PERSONAL,
+            )
+        userStatesFlow.value = initialUserStates
+
+        val contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
+        initializeViewModelForActionPickContacts(
+            initialContacts = listOf(contact),
+            requestedMimeTypes = listOf(Email.CONTENT_ITEM_TYPE),
+        )
+
+        viewModel.toggleContactSelection(contact)
+        testDispatcher.scheduler.advanceUntilIdle()
+        assertThat(viewModel.currentSuccessState.selectedContacts.isEmpty()).isFalse()
+
+        val newUserStates = initialUserStates.copy(selectedUserId = USER_ID_WORK)
+        userStatesFlow.emit(newUserStates)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(viewModel.currentSuccessState.selectedContacts.isEmpty()).isTrue()
+    }
+
+    @Test
+    fun userStatesChange_volatileProfileActive_reloadsContacts() = runTest {
+        val initialUserStates =
+            PickerUserStates(
+                userIdToAvailableUsersMap = mapOf(USER_ID_WORK to WORK_PROFILE),
+                selectedUserId = USER_ID_WORK,
+            )
+        userStatesFlow.value = initialUserStates
+
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+        val initialLoadCount = fakeContactsRepository.getContactsInvocationsCount()
+
+        val updatedWorkProfile =
+            WORK_PROFILE.copy(switchableInfo = SwitchableProfileInfo("Work Updated", null))
+        val updatedUserStates =
+            initialUserStates.copy(
+                userIdToAvailableUsersMap = mapOf(USER_ID_WORK to updatedWorkProfile)
+            )
+
+        userStatesFlow.emit(updatedUserStates)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(fakeContactsRepository.getContactsInvocationsCount())
+            .isEqualTo(initialLoadCount + 1)
     }
 }

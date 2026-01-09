@@ -187,6 +187,8 @@ class ContactsPickerBottomSheetTest {
                     onPreviewClicked = {},
                     onBackFromPreview = {},
                     onPrivacyBannerDismissRequest = {},
+                    onProfileClicked = {},
+                    onDismissProfileBlockedDialog = {},
                 )
             }
         }
@@ -236,6 +238,8 @@ class ContactsPickerBottomSheetTest {
                     onPreviewClicked = {},
                     onBackFromPreview = {},
                     onPrivacyBannerDismissRequest = {},
+                    onProfileClicked = {},
+                    onDismissProfileBlockedDialog = {},
                 )
             }
         }
@@ -301,6 +305,8 @@ class ContactsPickerBottomSheetTest {
                     onPreviewClicked = {},
                     onBackFromPreview = {},
                     onPrivacyBannerDismissRequest = {},
+                    onProfileClicked = {},
+                    onDismissProfileBlockedDialog = {},
                 )
             }
         }
@@ -353,6 +359,8 @@ class ContactsPickerBottomSheetTest {
                 onPreviewClicked = {},
                 onBackFromPreview = {},
                 onPrivacyBannerDismissRequest = {},
+                onProfileClicked = {},
+                onDismissProfileBlockedDialog = {},
             )
         }
 
@@ -395,6 +403,8 @@ class ContactsPickerBottomSheetTest {
                     onPreviewClicked = {},
                     onBackFromPreview = { onBackFromPreview = true },
                     onPrivacyBannerDismissRequest = {},
+                    onProfileClicked = {},
+                    onDismissProfileBlockedDialog = {},
                 )
             }
         }
@@ -436,6 +446,8 @@ class ContactsPickerBottomSheetTest {
                     onPreviewClicked = {},
                     onBackFromPreview = { onBackFromPreview = true },
                     onPrivacyBannerDismissRequest = {},
+                    onProfileClicked = {},
+                    onDismissProfileBlockedDialog = {},
                 )
             }
         }
@@ -510,6 +522,8 @@ class ContactsPickerBottomSheetTest {
                     onPreviewClicked = {},
                     onBackFromPreview = {},
                     onPrivacyBannerDismissRequest = {},
+                    onProfileClicked = {},
+                    onDismissProfileBlockedDialog = {},
                 )
             }
         }
@@ -557,6 +571,8 @@ class ContactsPickerBottomSheetTest {
                     onPreviewClicked = {},
                     onBackFromPreview = {},
                     onPrivacyBannerDismissRequest = {},
+                    onProfileClicked = {},
+                    onDismissProfileBlockedDialog = {},
                 )
             }
         }

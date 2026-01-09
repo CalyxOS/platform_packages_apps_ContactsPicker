@@ -24,6 +24,7 @@ import androidx.navigation.compose.composable
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.PickerUserStates
+import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.ui.pickerscreen.ContactsPickerScreen
 import com.android.contactspicker.ui.privacydetails.PrivacyDetailsScreen
 
@@ -40,6 +41,8 @@ fun ContactsPickerNavHost(
     onExitSearch: () -> Unit,
     modifier: Modifier = Modifier,
     onBackFromPreview: () -> Unit,
+    onProfileClicked: (UserProfile) -> Unit,
+    onDismissProfileBlockedDialog: () -> Unit,
 ) {
     AnimatedNavHost(
         navController = navController,
@@ -60,9 +63,8 @@ fun ContactsPickerNavHost(
                 onQueryChange = onQueryChange,
                 onExitSearch = onExitSearch,
                 onBackFromPreview = onBackFromPreview,
-                onProfileClicked = {
-                    /* TODO(b/449960997): Wire up to ViewModel */
-                },
+                onProfileClicked = onProfileClicked,
+                onDismissProfileBlockedDialog = onDismissProfileBlockedDialog,
             )
         }
 

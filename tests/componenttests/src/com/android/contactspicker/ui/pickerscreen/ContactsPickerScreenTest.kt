@@ -73,6 +73,7 @@ class ContactsPickerScreenTest {
                 onBackFromPreview = {},
                 onPrivacyBannerDismissRequest = {},
                 onProfileClicked = {},
+                onDismissProfileBlockedDialog = {},
             )
         }
         composeTestRule
@@ -97,6 +98,7 @@ class ContactsPickerScreenTest {
                 onBackFromPreview = {},
                 onPrivacyBannerDismissRequest = {},
                 onProfileClicked = {},
+                onDismissProfileBlockedDialog = {},
             )
         }
 
@@ -136,6 +138,7 @@ class ContactsPickerScreenTest {
                 onBackFromPreview = {},
                 onPrivacyBannerDismissRequest = {},
                 onProfileClicked = {},
+                onDismissProfileBlockedDialog = {},
             )
         }
         composeTestRule
@@ -160,6 +163,7 @@ class ContactsPickerScreenTest {
                 onBackFromPreview = {},
                 onPrivacyBannerDismissRequest = {},
                 onProfileClicked = {},
+                onDismissProfileBlockedDialog = {},
             )
         }
         composeTestRule
@@ -215,6 +219,7 @@ class ContactsPickerScreenTest {
                 onBackFromPreview = {},
                 onPrivacyBannerDismissRequest = {},
                 onProfileClicked = {},
+                onDismissProfileBlockedDialog = {},
             )
         }
 
@@ -261,6 +266,7 @@ class ContactsPickerScreenTest {
                 onBackFromPreview = {},
                 onPrivacyBannerDismissRequest = {},
                 onProfileClicked = {},
+                onDismissProfileBlockedDialog = {},
             )
         }
 
@@ -312,6 +318,7 @@ class ContactsPickerScreenTest {
                 onBackFromPreview = {},
                 onPrivacyBannerDismissRequest = {},
                 onProfileClicked = {},
+                onDismissProfileBlockedDialog = {},
             )
         }
     }
@@ -340,6 +347,7 @@ class ContactsPickerScreenTest {
                 onBackFromPreview = {},
                 onPrivacyBannerDismissRequest = {},
                 onProfileClicked = {},
+                onDismissProfileBlockedDialog = {},
             )
         }
     }
