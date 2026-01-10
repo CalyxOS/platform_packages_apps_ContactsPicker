@@ -61,6 +61,43 @@ class MimeTypeConverterTest {
     }
 
     @Test
+    fun fromMimeTypeList_emptyList_returnsZeroBitmask() {
+        // Verifies that converting an empty list of MimeTypes results in a bitmask of 0.
+        val bitmask = mimeTypeConverter.fromMimeTypeList(emptyList())
+        // An empty list should produce a bitmask with no bits set.
+        assertThat(bitmask).isEqualTo(0)
+    }
+
+    @Test
+    fun fromMimeTypeList_duplicateTypes_handledCorrectly() {
+        // Verifies that duplicate MimeTypes in the input list are handled gracefully.
+        val mimeTypes =
+            listOf(
+                MimeType.PHONE, // bit 1
+                MimeType.EMAIL, // bit 2
+                MimeType.PHONE, // duplicate
+            )
+        // The expected bitmask should be the same as if there were no duplicates.
+        val expectedBitmask = (1 shl 1) or (1 shl 2)
+        val bitmask = mimeTypeConverter.fromMimeTypeList(mimeTypes)
+        // The conversion should correctly produce the bitmask for PHONE and EMAIL.
+        assertThat(bitmask).isEqualTo(expectedBitmask)
+    }
+
+    @Test
+    fun toMimeTypeList_bitmaskWithUnusedBits_ignoresUnusedBits() {
+        // Verifies that bits in the bitmask that do not correspond to any known MimeType are
+        // ignored.
+        val unusedBitPosition = 30
+        // Create a bitmask with a known type (EMAIL, bit 2) and an unknown bit.
+        val bitmask = (1 shl 2) or (1 shl unusedBitPosition)
+        val expectedMimeTypes = listOf(MimeType.EMAIL)
+        val mimeTypes = mimeTypeConverter.toMimeTypeList(bitmask)
+        // The result should only contain the MimeType for the known bit.
+        assertThat(mimeTypes).containsExactlyElementsIn(expectedMimeTypes)
+    }
+
+    @Test
     fun toMimeTypeList_zeroBitmask_returnsEmptyList() {
         val mimeTypes = mimeTypeConverter.toMimeTypeList(0)
         assertThat(mimeTypes).isEmpty()

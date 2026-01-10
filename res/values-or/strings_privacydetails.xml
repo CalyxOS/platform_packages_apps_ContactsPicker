@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"ପଛକୁ ଫେରନ୍ତୁ"</string>
     <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"ଆପଣଙ୍କ କଣ୍ଟାକ୍ଟର ଗୋପନୀୟତା"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"ଆପଣ ଏକ କଣ୍ଟାକ୍ଟ ଚୟନ କଲେ, %1$s ପାଖରେ ଆପଣଙ୍କ ଡିଭାଇସ କଣ୍ଟାକ୍ଟଗୁଡ଼ିକରୁ ନିମ୍ନୋକ୍ତ ସୂଚନାକୁ ଆକ୍ସେସ ରହିବ।\n\nଯଦି ଆପଣ କଣ୍ଟାକ୍ଟ ସୂଚନାରେ କୌଣସି ଅପଡେଟ କରନ୍ତି, ତେବେ %1$s ପାଖରେ ପରିବର୍ତ୍ତନଗୁଡ଼ିକୁ ଆକ୍ସେସ ରହିବ ନାହିଁ।"</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"କଣ୍ଟାକ୍ଟ ସୂଚନାରେ ଏସବୁ ପରି ବିବରଣୀ ଅନ୍ତର୍ଭୁକ୍ତ ହୋଇପାରେ:"</string>

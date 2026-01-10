@@ -57,8 +57,6 @@
     <string name="preview_screen_title" msgid="2852036336424026274">"পূৰ্বদৰ্শন কৰক"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"এই এপ্‌টো"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"আপোনাৰ সম্পৰ্কসমূহৰ গোপনীয়তা"</string>
-    <!-- no translation found for no_contacts_title (9093698629001614808) -->
-    <skip />
-    <!-- no translation found for no_contacts_description (2146615362021064099) -->
-    <skip />
+    <string name="no_contacts_title" msgid="9093698629001614808">"এতিয়ালৈকে কোনো সম্পৰ্ক নাই"</string>
+    <string name="no_contacts_description" msgid="2146615362021064099">"আপুনি সৃষ্টি কৰা বা আপোনাৰ ডিভাইচলৈ আমদানি কৰা সম্পৰ্কসমূহ ইয়াত দেখুওৱা হ’ব"</string>
 </resources>

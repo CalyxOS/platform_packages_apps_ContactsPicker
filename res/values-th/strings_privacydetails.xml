@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"กลับ"</string>
     <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"ความเป็นส่วนตัวของรายชื่อติดต่อ"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"เมื่อคุณเลือกรายชื่อติดต่อ %1$s จะมีสิทธิ์เข้าถึงข้อมูลต่อไปนี้จากรายชื่อติดต่อในอุปกรณ์\n\nหากคุณอัปเดตข้อมูลติดต่อ %1$s จะไม่มีสิทธิ์เข้าถึงการเปลี่ยนแปลง"</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"ข้อมูลติดต่ออาจรวมถึงรายละเอียดต่อไปนี้"</string>

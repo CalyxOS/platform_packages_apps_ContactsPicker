@@ -19,7 +19,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="privacy_details_top_bar_back_button_content_description" msgid="814362367246064228">"ಹಿಂದಕ್ಕೆ"</string>
     <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"ನಿಮ್ಮ ಸಂಪರ್ಕಗಳ ಗೌಪ್ಯತೆ"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"ನೀವು ಸಂಪರ್ಕವನ್ನು ಆಯ್ಕೆ ಮಾಡಿದಾಗ, ನಿಮ್ಮ ಸಾಧನದ ಸಂಪರ್ಕಗಳಿಂದ ಈ ಕೆಳಗಿನ ಮಾಹಿತಿಗೆ %1$s ಆ್ಯಕ್ಸೆಸ್ ಅನ್ನು ಹೊಂದಿರುತ್ತದೆ.\n\nನೀವು ಸಂಪರ್ಕ ಮಾಹಿತಿಗೆ ಯಾವುದೇ ಅಪ್‌ಡೇಟ್‌ಗಳನ್ನು ಮಾಡಿದರೆ, %1$s ಬದಲಾವಣೆಗಳಿಗೆ ಆ್ಯಕ್ಸೆಸ್ ಅನ್ನು ಹೊಂದಿರುವುದಿಲ್ಲ."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"ಸಂಪರ್ಕದ ಮಾಹಿತಿಯು ಈ ಕೆಳಗಿನಂತಹ ವಿವರಗಳನ್ನು ಒಳಗೊಂಡಿರಬಹುದು:"</string>
