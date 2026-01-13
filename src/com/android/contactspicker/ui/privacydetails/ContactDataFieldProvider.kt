@@ -40,7 +40,6 @@ object ContactDataFieldProvider {
         ContactDataFieldItem(
             icon = Vector(Icons.Outlined.Person),
             headerTextResId = R.string.privacy_details_data_field_name_header,
-            contentDescriptionResId = R.string.privacy_details_data_field_name_content_description,
         )
 
     private val PREFERENCES_DATA_FIELD_ITEM =
@@ -48,8 +47,6 @@ object ContactDataFieldProvider {
             icon = Vector(Icons.Outlined.ManageAccounts),
             headerTextResId = R.string.privacy_details_data_field_preferences_header,
             descriptionTextResId = R.string.privacy_details_data_field_preferences_description,
-            contentDescriptionResId =
-                R.string.privacy_details_data_field_preferences_content_description,
         )
 
     // Defines the custom sort order for the data fields.
@@ -115,79 +112,59 @@ object ContactDataFieldProvider {
                 ContactDataFieldItem(
                     icon = Vector(Icons.Outlined.Phone),
                     headerTextResId = R.string.privacy_details_data_field_phone_header,
-                    contentDescriptionResId =
-                        R.string.privacy_details_data_field_phone_content_description,
                 )
 
             MimeType.EMAIL ->
                 ContactDataFieldItem(
                     icon = Vector(Icons.Outlined.Email),
                     headerTextResId = R.string.privacy_details_data_field_email_header,
-                    contentDescriptionResId =
-                        R.string.privacy_details_data_field_email_content_description,
                 )
 
             MimeType.STRUCTURED_POSTAL ->
                 ContactDataFieldItem(
                     icon = Vector(Icons.Outlined.Map),
                     headerTextResId = R.string.privacy_details_data_field_address_header,
-                    contentDescriptionResId =
-                        R.string.privacy_details_data_field_address_content_description,
                 )
 
             MimeType.ORGANIZATION ->
                 ContactDataFieldItem(
                     icon = Vector(Icons.Outlined.Business),
                     headerTextResId = R.string.privacy_details_data_field_organization_header,
-                    contentDescriptionResId =
-                        R.string.privacy_details_data_field_organization_content_description,
                 )
 
             MimeType.RELATION ->
                 ContactDataFieldItem(
                     icon = Painter(R.drawable.related_people),
                     headerTextResId = R.string.privacy_details_data_field_related_people_header,
-                    contentDescriptionResId =
-                        R.string.privacy_details_data_field_related_people_content_description,
                 )
 
             MimeType.EVENT ->
                 ContactDataFieldItem(
                     icon = Vector(Icons.Outlined.Cake),
                     headerTextResId = R.string.privacy_details_data_field_birthday_header,
-                    contentDescriptionResId =
-                        R.string.privacy_details_data_field_birthday_content_description,
                 )
 
             MimeType.WEBSITE ->
                 ContactDataFieldItem(
                     icon = Vector(Icons.Outlined.Link),
                     headerTextResId = R.string.privacy_details_data_field_website_header,
-                    contentDescriptionResId =
-                        R.string.privacy_details_data_field_website_content_description,
                 )
 
             MimeType.NICKNAME ->
                 ContactDataFieldItem(
                     icon = Vector(Icons.Outlined.Person),
                     headerTextResId = R.string.privacy_details_data_field_nickname_header,
-                    contentDescriptionResId =
-                        R.string.privacy_details_data_field_nickname_content_description,
                 )
             MimeType.PHOTO ->
                 ContactDataFieldItem(
                     icon = Vector(Icons.Outlined.AccountBox),
                     headerTextResId = R.string.privacy_details_data_field_photo_header,
-                    contentDescriptionResId =
-                        R.string.privacy_details_data_field_photo_content_description,
                 )
 
             MimeType.GROUP_MEMBERSHIP ->
                 ContactDataFieldItem(
                     icon = Vector(Icons.Outlined.Group),
                     headerTextResId = R.string.privacy_details_data_field_group_header,
-                    contentDescriptionResId =
-                        R.string.privacy_details_data_field_group_content_description,
                 )
 
             MimeType.STRUCTURED_NAME,
