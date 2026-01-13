@@ -57,8 +57,6 @@
     <string name="preview_screen_title" msgid="2852036336424026274">"미리보기"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"이 앱"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"연락처 개인 정보 보호"</string>
-    <!-- no translation found for no_contacts_title (9093698629001614808) -->
-    <skip />
-    <!-- no translation found for no_contacts_description (2146615362021064099) -->
-    <skip />
+    <string name="no_contacts_title" msgid="9093698629001614808">"연락처 없음"</string>
+    <string name="no_contacts_description" msgid="2146615362021064099">"이 기기에서 생성하거나 기기로 가져온 연락처가 여기에 표시됩니다."</string>
 </resources>

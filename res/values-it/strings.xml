@@ -57,8 +57,6 @@
     <string name="preview_screen_title" msgid="2852036336424026274">"Anteprima"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"Questa app"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Privacy dei tuoi contatti"</string>
-    <!-- no translation found for no_contacts_title (9093698629001614808) -->
-    <skip />
-    <!-- no translation found for no_contacts_description (2146615362021064099) -->
-    <skip />
+    <string name="no_contacts_title" msgid="9093698629001614808">"Ancora nessun contatto"</string>
+    <string name="no_contacts_description" msgid="2146615362021064099">"I contatti che crei o importi sul tuo dispositivo verranno visualizzati qui"</string>
 </resources>

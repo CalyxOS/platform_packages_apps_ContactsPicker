@@ -57,8 +57,6 @@
     <string name="preview_screen_title" msgid="2852036336424026274">"Преглед"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"Оваа апликација"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Приватноста на вашите контакти"</string>
-    <!-- no translation found for no_contacts_title (9093698629001614808) -->
-    <skip />
-    <!-- no translation found for no_contacts_description (2146615362021064099) -->
-    <skip />
+    <string name="no_contacts_title" msgid="9093698629001614808">"Сѐ уште нема контакти"</string>
+    <string name="no_contacts_description" msgid="2146615362021064099">"Контактите што ќе ги создадете или ќе ги увезете на вашиот уред ќе се прикажат тука"</string>
 </resources>
