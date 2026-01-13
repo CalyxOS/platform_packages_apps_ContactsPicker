@@ -89,7 +89,10 @@ fun ContactsPickerSearchBar(
                 expanded = expanded,
                 onExpandedChange = onExpandedChange,
                 placeholder = {
-                    Text(stringResource(R.string.contacts_picker_top_bar_search_placeholder_hint))
+                    val hintRes =
+                        if (expanded) R.string.contacts_picker_search_expanded_hint
+                        else R.string.contacts_picker_top_bar_search_placeholder_hint
+                    Text(stringResource(hintRes))
                 },
                 leadingIcon = {
                     SearchBarLeadingIcon(
@@ -101,7 +104,7 @@ fun ContactsPickerSearchBar(
                     )
                 },
                 trailingIcon = {
-                    if (expanded) {
+                    if (expanded && query.isNotEmpty()) {
                         IconButton(onClick = { query = "" }) {
                             Icon(
                                 Icons.Filled.Close,
@@ -165,7 +168,10 @@ private fun SearchResultsList(
         // Whenever the query changes, scroll to the top
         listState.scrollToItem(0)
     }
-    LazyColumn(modifier = Modifier.fillMaxWidth().imePadding(), state = listState) {
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth().imePadding().padding(horizontal = 16.dp),
+        state = listState,
+    ) {
         val searchResults = searchState.searchResults
         itemsIndexed(
             items = searchResults,
