@@ -43,7 +43,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,6 +53,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.contactspicker.provider.CallingPackageProvider
 import com.android.contactspicker.ui.components.ContactsPickerBottomSheet
 import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
@@ -220,7 +220,7 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
                 }
             }
 
-            val uiState = contactsViewModel.uiState.collectAsState()
+            val uiState = contactsViewModel.uiState.collectAsStateWithLifecycle()
             ContactsPickerAppTheme {
                 ReadContactsPermissionCheckedContent(contactsViewModel) {
                     ContactsPickerBottomSheet(
