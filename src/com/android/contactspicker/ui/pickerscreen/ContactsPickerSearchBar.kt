@@ -186,7 +186,8 @@ private fun SearchResultsList(
                 }
             val bottomPadding =
                 if (position == ItemPosition.LAST || position == ItemPosition.ONLY) 8.dp else 1.dp
-            val topPadding = if (position == ItemPosition.FIRST) 8.dp else 0.dp
+            val topPadding =
+                if (position == ItemPosition.FIRST || position == ItemPosition.ONLY) 24.dp else 0.dp
             Row(
                 modifier =
                     Modifier.fillMaxWidth().padding(bottom = bottomPadding, top = topPadding),
