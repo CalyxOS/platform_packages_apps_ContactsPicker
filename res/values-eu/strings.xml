@@ -57,8 +57,6 @@
     <string name="preview_screen_title" msgid="2852036336424026274">"Aurreikusi"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"Aplikazio hau"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Zure kontaktuen pribatutasuna"</string>
-    <!-- no translation found for no_contacts_title (9093698629001614808) -->
-    <skip />
-    <!-- no translation found for no_contacts_description (2146615362021064099) -->
-    <skip />
+    <string name="no_contacts_title" msgid="9093698629001614808">"Oraindik ez duzu kontakturik"</string>
+    <string name="no_contacts_description" msgid="2146615362021064099">"Gailuan sortzen edo gailura inportatzen dituzun kontaktuak hemen agertuko dira"</string>
 </resources>

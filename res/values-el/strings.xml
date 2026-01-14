@@ -57,8 +57,6 @@
     <string name="preview_screen_title" msgid="2852036336424026274">"Προεπισκόπηση"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"Αυτή η εφαρμογή"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Το απόρρητο των επαφών σας"</string>
-    <!-- no translation found for no_contacts_title (9093698629001614808) -->
-    <skip />
-    <!-- no translation found for no_contacts_description (2146615362021064099) -->
-    <skip />
+    <string name="no_contacts_title" msgid="9093698629001614808">"Δεν υπάρχουν ακόμα επαφές"</string>
+    <string name="no_contacts_description" msgid="2146615362021064099">"Οι επαφές που δημιουργείτε ή εισάγετε στη συσκευή σας θα εμφανίζονται εδώ"</string>
 </resources>

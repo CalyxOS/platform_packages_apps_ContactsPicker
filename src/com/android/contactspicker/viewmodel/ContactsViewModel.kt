@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Trace
 import android.util.Log
 import androidx.annotation.OpenForTesting
 import androidx.lifecycle.ViewModel
@@ -204,10 +205,12 @@ constructor(
             viewModelScope.launch {
                 _uiState.value = ContactsListState.Loading
                 try {
+                    Trace.beginSection("$TAG#loadingContacts")
                     // load contacts data
                     initialContacts = contactsRepository.getContacts(config.queryMode)
                     // Only show the privacy banner if user hasn't seen it before for this
                     // combination of uid and MIME types.
+                    Trace.endSection()
                     showPrivacyBanner =
                         !privacyBannerRepository.wasPrivacyBannerShown(
                             callingAppUid,
@@ -280,10 +283,13 @@ constructor(
                         createActionPickResult(finalUris, config.isMultiSelectEnabled)
                     }
                     ContactsPickerAction.ACTION_PICK_CONTACTS -> {
+                        Trace.beginSection("$TAG#finishingPickerSession")
                         // TODO(b/37307800): consider setting _uiState.update {
                         // it.copy(isLoading = true) }
                         val selectedIds = handler.getSelectedIds()
-                        createActionPickContactsResult(selectedIds, config.queryMode)
+                        val intent = createActionPickContactsResult(selectedIds, config.queryMode)
+                        Trace.endSection()
+                        intent
                     }
                 }
 
@@ -373,6 +379,7 @@ constructor(
     private suspend fun performSearch(query: String) {
         val config = checkNotNull(pickerConfig)
         try {
+            Trace.beginSection("$TAG#searchingContacts")
             val results = contactsRepository.searchContacts(query, config.queryMode)
             _uiState.update { currentState ->
                 val selectedContacts =
@@ -387,6 +394,7 @@ constructor(
                     selectedContacts = selectedContacts,
                 )
             }
+            Trace.endSection()
         } catch (e: IllegalArgumentException) {
             Log.e(TAG, "An invalid intent was passed during search.", e)
             _uiState.value = SearchState.Error(e.message ?: "Invalid intent for search.")
