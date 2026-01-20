@@ -15,7 +15,9 @@
  */
 package com.android.democontactspickerclientapp37
 
+import android.graphics.BitmapFactory
 import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +25,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -39,6 +42,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -214,15 +219,32 @@ fun SessionContactTile(contact: SessionContact) {
                 val label =
                     MimeType.entries.find { it.mimeTypeString == row.mimeType }?.label
                         ?: row.mimeType.substringAfterLast("/")
-
-                Row(modifier = Modifier.padding(vertical = 2.dp)) {
+                Row(
+                    modifier = Modifier.padding(vertical = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Text(
                         text = "$label: ",
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary,
                     )
-                    Text(text = row.value ?: "null", style = MaterialTheme.typography.bodySmall)
+                    if (row.mimeType == MimeType.PHOTO.mimeTypeString && row.value is ByteArray) {
+                        val bitmap: ImageBitmap = remember {
+                            val bytes = row.value as ByteArray
+                            BitmapFactory.decodeByteArray(bytes, 0, bytes.size).asImageBitmap()
+                        }
+                        Image(
+                            bitmap = bitmap,
+                            contentDescription = "Contact Photo",
+                            modifier = Modifier.size(48.dp),
+                        )
+                    } else {
+                        Text(
+                            text = row.value?.toString() ?: "null",
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
                 }
             }
         }
