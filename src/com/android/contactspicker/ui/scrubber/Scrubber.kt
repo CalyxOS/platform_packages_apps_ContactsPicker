@@ -15,14 +15,16 @@
  */
 package com.android.contactspicker.ui.scrubber
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.DraggableState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -113,12 +115,9 @@ fun Scrubber(
  * to vertical drag gestures. It updates the [scrubberState] to indicate when a drag gesture starts
  * and stops.
  */
-// TODO(b/461354410): Update FastScrollHandle UI as per latest figma template
 @Composable
 private fun Handle(draggableState: DraggableState, scrubberState: ScrubberState) {
-    Image(
-        painter = painterResource(id = R.drawable.ic_scrubber_handle),
-        contentDescription = stringResource(id = R.string.fast_scroller_handle_content_description),
+    Box(
         modifier =
             Modifier.size(width = ScrubberHandleWidth, height = ScrubberHandleHeight)
                 .testTag(SCRUBBER_HANDLE_TEST_TAG)
@@ -128,7 +127,21 @@ private fun Handle(draggableState: DraggableState, scrubberState: ScrubberState)
                     onDragStarted = { scrubberState.setDragging(true) },
                     onDragStopped = { scrubberState.setDragging(false) },
                 ),
-    )
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_scrubber_handle_background),
+            contentDescription = stringResource(id = R.string.scrubber_handle_content_description),
+            modifier = Modifier.matchParentSize(),
+            tint = MaterialTheme.colorScheme.surfaceBright,
+        )
+        Icon(
+            painter = painterResource(id = R.drawable.ic_scrubber_handle_arrows),
+            contentDescription = null,
+            modifier = Modifier.matchParentSize(),
+            tint = MaterialTheme.colorScheme.onSurface,
+        )
+    }
 }
 
 internal const val SCRUBBER_HANDLE_TEST_TAG = "scrubber_handle"

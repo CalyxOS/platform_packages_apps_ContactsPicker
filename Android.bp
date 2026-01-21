@@ -56,8 +56,6 @@ android_library {
         "glide-disklrucache-prebuilt",
         "glide-compose-prebuilt",
         "hilt_android",
-        "androidx.room_room-runtime",
-        "androidx.room_room-ktx",
     ],
     plugins: [
         "androidx.room_room-compiler-plugin",
