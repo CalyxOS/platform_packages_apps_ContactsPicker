@@ -78,7 +78,7 @@ internal fun buildActionPickContactsIntent(
     return intent
 }
 
-data class SessionDataRow(val id: Long, val mimeType: String, val value: String?)
+data class SessionDataRow(val id: Long, val mimeType: String, val value: Any?)
 
 data class SessionContact(
     val contactId: Long,
@@ -93,8 +93,8 @@ internal fun parseSessionResult(context: Context, uri: Uri): List<SessionContact
             ContactsContract.Data.CONTACT_ID,
             ContactsContract.Data.DISPLAY_NAME_PRIMARY,
             ContactsContract.Data.MIMETYPE,
-            // TODO(b/452020367): check if DATA1 is sufficient for all mimetypes
             ContactsContract.Data.DATA1,
+            ContactsContract.Data.DATA15,
             ContactsContract.Data._ID,
         )
 
@@ -111,14 +111,21 @@ internal fun parseSessionResult(context: Context, uri: Uri): List<SessionContact
         val nameCol = cursor.getColumnIndexOrThrow(ContactsContract.Data.DISPLAY_NAME_PRIMARY)
         val mimeCol = cursor.getColumnIndexOrThrow(ContactsContract.Data.MIMETYPE)
         val dataCol = cursor.getColumnIndexOrThrow(ContactsContract.Data.DATA1)
+        val data15Col = cursor.getColumnIndexOrThrow(ContactsContract.Data.DATA15)
         val dataIdCol = cursor.getColumnIndexOrThrow(ContactsContract.Data._ID)
 
         while (cursor.moveToNext()) {
             val contactId = cursor.getLong(idCol)
             val name = cursor.getString(nameCol)
             val mimeType = cursor.getString(mimeCol)
-            val value = cursor.getString(dataCol)
             val dataId = cursor.getLong(dataIdCol)
+
+            val value: Any? =
+                if (mimeType.equals(ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE)) {
+                    cursor.getBlob(data15Col)
+                } else {
+                    cursor.getString(dataCol)
+                }
 
             namesMap.putIfAbsent(contactId, name)
             contactsMap
