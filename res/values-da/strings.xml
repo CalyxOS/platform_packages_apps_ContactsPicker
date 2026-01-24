@@ -32,7 +32,7 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"Ikon med smil"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"Skift profil"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"Oplysninger om privatliv"</string>
-    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"Håndtag til hurtig rulning"</string>
+    <string name="scrubber_handle_content_description" msgid="1435669253806161568">"Håndtag til hurtig rulning"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Kontaktens profilbillede"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"Kontaktens initialer"</string>
     <string name="no_name_placeholder" msgid="491336212594465933">"(Intet navn)"</string>

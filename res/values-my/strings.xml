@@ -32,7 +32,7 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"အပြုံးသင်္ကေတ"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"ပရိုဖိုင်ပြောင်းရန်"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"ကိုယ်ရေးအချက်အလက် လုံခြုံမှုအချက်အလက်"</string>
-    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"အမြန်လှိမ့်စရာဘား အထိန်း"</string>
+    <string name="scrubber_handle_content_description" msgid="1435669253806161568">"အမြန်လှိမ့်စရာဘား အထိန်း"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"အဆက်အသွယ် ပရိုဖိုင်ပုံ"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"အဆက်အသွယ် အမည်အတိုကောက်"</string>
     <string name="no_name_placeholder" msgid="491336212594465933">"(အမည်မရှိပါ)"</string>

@@ -32,7 +32,7 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"የፈገግታ አዶ"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"መገለጫ ቀይር"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"የግላዊነት መረጃ"</string>
-    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"የፈጣን መሸብለያ መያዣ"</string>
+    <string name="scrubber_handle_content_description" msgid="1435669253806161568">"የፈጣን መሸብለያ መያዣ"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"የዕውቂያ መገለጫ ሥዕል"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"የዕውቂያ የመጀመሪያ ፊደል"</string>
     <string name="no_name_placeholder" msgid="491336212594465933">"(ስም የለም)"</string>

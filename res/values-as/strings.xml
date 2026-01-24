@@ -32,7 +32,7 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"হাঁহিৰ চিহ্ন"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"প্ৰ’ফাইল সলনি কৰক"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"গোপনীয়তাৰ তথ্য"</string>
-    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"দ্ৰুত স্ক্ৰ’লাৰ হেণ্ডেল"</string>
+    <string name="scrubber_handle_content_description" msgid="1435669253806161568">"দ্ৰুত স্ক্ৰ’লাৰ হেণ্ডেল"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"সম্পৰ্কৰ প্ৰ’ফাইল চিত্ৰ"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"সম্পৰ্কৰ প্ৰাৰম্ভিক তথ্য"</string>
     <string name="no_name_placeholder" msgid="491336212594465933">"(কোনো নাম নাই)"</string>

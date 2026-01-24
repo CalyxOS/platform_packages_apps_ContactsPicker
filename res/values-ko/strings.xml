@@ -32,7 +32,7 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"스마일 아이콘"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"프로필 전환"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"개인 정보 보호 정보"</string>
-    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"빠른 스크롤러 핸들"</string>
+    <string name="scrubber_handle_content_description" msgid="1435669253806161568">"빠른 스크롤러 핸들"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"연락처 프로필 사진"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"연락처 이니셜"</string>
     <string name="no_name_placeholder" msgid="491336212594465933">"(이름 없음)"</string>
