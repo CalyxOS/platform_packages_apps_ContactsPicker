@@ -55,6 +55,8 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.R
@@ -204,6 +206,7 @@ fun ContactItem(
                         text = contact.displayName,
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Medium,
+                        modifier = Modifier.semantics { contentDescription = contact.displayName },
                     )
                     // Secondary text changes based on the type, total count of contact entries, and
                     // count of selected entries.
