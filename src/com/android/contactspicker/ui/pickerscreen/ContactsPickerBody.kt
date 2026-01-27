@@ -50,7 +50,7 @@ import kotlin.math.absoluteValue
 import kotlinx.coroutines.flow.collectLatest
 
 const val CONTACTS_LIST_TEST_TAG = "contacts_list"
-const val MIN_CONTACTS_COUNT_FOR_SCRUBBER_ACTIVATION = 100
+const val MIN_CONTACTS_COUNT_FOR_SCRUBBER_ACTIVATION = 50
 
 /**
  * Displays the main content of the contact picker, including a privacy banner and a vertically
