@@ -116,12 +116,17 @@ class ContactsPickerSearchBarTest {
     fun whenSearchBoxTapped_searchBoxIsExpanded() {
         val placeholderText =
             context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
+        val expandedPlaceholderText =
+            context.getString(R.string.contacts_picker_search_expanded_hint)
         val clearTextContentDescription =
             context.getString(
                 R.string.contacts_picker_top_bar_search_clear_text_content_description
             )
 
         composeTestRule.onNodeWithText(placeholderText).performClick()
+
+        val testQuery = "Test Query"
+        composeTestRule.onNodeWithText(expandedPlaceholderText).performTextInput(testQuery)
 
         composeTestRule.onNodeWithContentDescription(clearTextContentDescription).assertExists()
     }
@@ -130,10 +135,12 @@ class ContactsPickerSearchBarTest {
     fun whenInputEntered_queryIsDisplayed() {
         val placeholderText =
             context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
+        val expandedPlaceholderText =
+            context.getString(R.string.contacts_picker_search_expanded_hint)
         composeTestRule.onNodeWithText(placeholderText).performClick()
 
         val testQuery = "Test Query"
-        composeTestRule.onNodeWithText(placeholderText).performTextInput(testQuery)
+        composeTestRule.onNodeWithText(expandedPlaceholderText).performTextInput(testQuery)
 
         composeTestRule.onNodeWithText(testQuery).assertExists()
     }
@@ -142,18 +149,40 @@ class ContactsPickerSearchBarTest {
     fun whenClearButtonIsTapped_queryIsCleared() {
         val placeholderText =
             context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
+        val expandedPlaceholderText =
+            context.getString(R.string.contacts_picker_search_expanded_hint)
         val clearTextContentDescription =
             context.getString(
                 R.string.contacts_picker_top_bar_search_clear_text_content_description
             )
         composeTestRule.onNodeWithText(placeholderText).performClick()
         val testQuery = "Test Query"
-        composeTestRule.onNodeWithText(placeholderText).performTextInput(testQuery)
+        composeTestRule.onNodeWithText(expandedPlaceholderText).performTextInput(testQuery)
         composeTestRule.onNodeWithText(testQuery).assertExists()
 
         composeTestRule.onNodeWithContentDescription(clearTextContentDescription).performClick()
 
         composeTestRule.onNodeWithText(testQuery).assertDoesNotExist()
-        composeTestRule.onNodeWithText(placeholderText).assertExists()
+        composeTestRule.onNodeWithText(expandedPlaceholderText).assertExists()
+    }
+
+    @Test
+    fun whenSearchBoxExpanded_queryEmpty_clearButtonDoesNotExist() {
+        val placeholderText =
+            context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
+        val clearTextContentDescription =
+            context.getString(
+                R.string.contacts_picker_top_bar_search_clear_text_content_description
+            )
+        composeTestRule.onNodeWithText(placeholderText).performClick()
+
+        composeTestRule
+            .onNodeWithContentDescription(clearTextContentDescription)
+            .assertDoesNotExist()
+
+        val expandedPlaceholderText =
+            context.getString(R.string.contacts_picker_search_expanded_hint)
+        composeTestRule.onNodeWithText(expandedPlaceholderText).performTextInput("A")
+        composeTestRule.onNodeWithContentDescription(clearTextContentDescription).assertExists()
     }
 }

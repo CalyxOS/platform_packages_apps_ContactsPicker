@@ -67,9 +67,11 @@ fun ContactsPickerTopBar(
 ) {
     val isSearchExpanded by remember { derivedStateOf { uiState.value is SearchState } }
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        modifier =
+            Modifier.fillMaxWidth().padding(horizontal = if (isSearchExpanded) 4.dp else 16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement =
+            if (isSearchExpanded) Arrangement.spacedBy(0.dp) else Arrangement.spacedBy(8.dp),
     ) {
         ContactsPickerSearchBar(
             modifier = Modifier.weight(1.0f),
@@ -95,9 +97,10 @@ private fun OverflowMenu(onClickPrivacyDetailsMenuItem: () -> Unit) {
 
     Box {
         TooltipBox(
-            positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
-                positioning = TooltipAnchorPosition.Above
-            ),
+            positionProvider =
+                TooltipDefaults.rememberTooltipPositionProvider(
+                    positioning = TooltipAnchorPosition.Above
+                ),
             tooltip = {
                 Text(
                     text =

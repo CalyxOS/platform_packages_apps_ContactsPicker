@@ -27,6 +27,8 @@
 
     <!-- Placeholder text shown in the search box. [CHAR LIMIT=25] -->
     <string name="contacts_picker_top_bar_search_placeholder_hint">Search</string>
+    <!-- Placeholder text shown in the expanded search box. [CHAR LIMIT=30] -->
+    <string name="contacts_picker_search_expanded_hint">Search your contacts</string>
     <!--Content description for the search icon button in the collapsed search bar. Tapping it
         expands the search top bar. [CHAR LIMIT=NONE] -->
     <string name="contacts_picker_top_bar_search_icon_content_description">Search</string>
