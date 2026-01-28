@@ -32,7 +32,7 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"হাসির আইকন"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"প্রোফাইল পাল্টান"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"গোপনীয়তা সম্পর্কিত তথ্য"</string>
-    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"ফাস্ট স্ক্রলার হ্যান্ডেল"</string>
+    <string name="scrubber_handle_content_description" msgid="1435669253806161568">"ফাস্ট স্ক্রলার হ্যান্ডেল"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"পরিচিতির প্রোফাইল ছবি"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"পরিচিতির নামের আদ্যক্ষর"</string>
     <string name="no_name_placeholder" msgid="491336212594465933">"(কোনও নাম নেই)"</string>

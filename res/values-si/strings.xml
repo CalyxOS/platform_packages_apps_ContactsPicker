@@ -32,7 +32,7 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"සතුටු මුහුණ නිරූපකය"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"පැතිකඩ මාරු කරන්න"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"පෞද්ගලිකත්ව තොරතුරු"</string>
-    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"වේගවත් අනුචලන හසුරුව"</string>
+    <string name="scrubber_handle_content_description" msgid="1435669253806161568">"වේගවත් අනුචලන හසුරුව"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"සම්බන්ධතා පැතිකඩ පින්තූරය"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"සම්බන්ධතා මුලකුරු"</string>
     <string name="no_name_placeholder" msgid="491336212594465933">"(නමක් නැත)"</string>

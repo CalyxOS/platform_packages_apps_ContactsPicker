@@ -32,7 +32,7 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"Brostákn"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"Skipta um prófíl"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"Upplýsingar um persónuvernd"</string>
-    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"Handfang fyrir hraða flettingu"</string>
+    <string name="scrubber_handle_content_description" msgid="1435669253806161568">"Handfang fyrir hraða flettingu"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Prófílmynd tengiliðar"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"Upphafsstafir tengiliðar"</string>
     <string name="no_name_placeholder" msgid="491336212594465933">"(Nafn vantar)"</string>

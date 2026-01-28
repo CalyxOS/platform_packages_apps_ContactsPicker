@@ -32,7 +32,7 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"స్మైల్ చిహ్నం"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"ప్రొఫైల్‌ను మార్చండి"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"గోప్యతా సమాచారం"</string>
-    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"ఫాస్ట్ స్క్రోలర్ హ్యాండిల్"</string>
+    <string name="scrubber_handle_content_description" msgid="1435669253806161568">"ఫాస్ట్ స్క్రోలర్ హ్యాండిల్"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"కాంటాక్ట్ ప్రొఫైల్ ఫోటో"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"కాంటాక్ట్ ఇనిషియల్"</string>
     <string name="no_name_placeholder" msgid="491336212594465933">"(పేరు లేదు)"</string>
