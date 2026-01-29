@@ -128,7 +128,7 @@ class ContactsViewModelTest {
     private lateinit var fakeContactsRepository: FakeContactsRepository
 
     private lateinit var fakeContactsPickerSessionProviderRepository:
-        FakeContactsPickerSessionProviderRepository
+            FakeContactsPickerSessionProviderRepository
     private lateinit var fakePrivacyBannerRepository: FakePrivacyBannerRepository
     private lateinit var mockUserRepository: UserRepository
     private lateinit var viewModel: ContactsViewModel
@@ -1543,30 +1543,6 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun userStatesChange_currentProfilePaused_reloadsContacts() = runTest {
-        val initialUserStates =
-            PickerUserStates(
-                userIdToAvailableUsersMap = mapOf(USER_ID_WORK to WORK_PROFILE),
-                selectedUserId = USER_ID_WORK,
-            )
-        userStatesFlow.value = initialUserStates
-
-        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
-        val initialLoadCount = fakeContactsRepository.getContactsInvocationsCount()
-
-        val newUserStates =
-            initialUserStates.copy(
-                userIdToAvailableUsersMap = mapOf(USER_ID_WORK to PAUSED_WORK_PROFILE)
-            )
-
-        userStatesFlow.emit(newUserStates)
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        assertThat(fakeContactsRepository.getContactsInvocationsCount())
-            .isEqualTo(initialLoadCount + 1)
-    }
-
-    @Test
     fun userStatesChange_switchingProfile_clearsSelection() = runTest {
         val initialUserStates =
             PickerUserStates(
@@ -1591,32 +1567,6 @@ class ContactsViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertThat(viewModel.currentSuccessState.selectedContacts.isEmpty()).isTrue()
-    }
-
-    @Test
-    fun userStatesChange_volatileProfileActive_reloadsContacts() = runTest {
-        val initialUserStates =
-            PickerUserStates(
-                userIdToAvailableUsersMap = mapOf(USER_ID_WORK to WORK_PROFILE),
-                selectedUserId = USER_ID_WORK,
-            )
-        userStatesFlow.value = initialUserStates
-
-        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
-        val initialLoadCount = fakeContactsRepository.getContactsInvocationsCount()
-
-        val updatedWorkProfile =
-            WORK_PROFILE.copy(switchableInfo = SwitchableProfileInfo("Work Updated", null))
-        val updatedUserStates =
-            initialUserStates.copy(
-                userIdToAvailableUsersMap = mapOf(USER_ID_WORK to updatedWorkProfile)
-            )
-
-        userStatesFlow.emit(updatedUserStates)
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        assertThat(fakeContactsRepository.getContactsInvocationsCount())
-            .isEqualTo(initialLoadCount + 1)
     }
 
     @Test

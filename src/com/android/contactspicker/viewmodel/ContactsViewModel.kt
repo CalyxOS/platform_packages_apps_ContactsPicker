@@ -42,7 +42,6 @@ import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.model.PickerUserStates
 import com.android.contactspicker.data.model.ProfileBlockedDialogData
 import com.android.contactspicker.data.model.UserProfile
-import com.android.contactspicker.data.model.UserType
 import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.data.repository.ContactsPickerSessionProviderRepository
 import com.android.contactspicker.data.repository.ContactsRepository
@@ -241,37 +240,20 @@ constructor(
                 userRepository.get().getUserStates(callingAppUid).collect { userStates ->
                     val lastSelectedUserId = _userStates.value?.selectedUserId
                     val currentSelectedUserId = userStates.selectedUserId
-                    val currentSelectedUserProfile =
-                        userStates.userIdToAvailableUsersMap[currentSelectedUserId]
 
                     _userStates.value = userStates
 
-                    if (lastSelectedUserId != currentSelectedUserId) {
-                        // User switched. Clear selection (if not initial load) and reload.
-                        if (lastSelectedUserId != null) {
-                            clearSelection()
-                        }
-                        loadContactsListData(config, userStates)
-                    } else {
-                        // Same user. Only reload for volatile profiles (Work/Private).
-                        // Stable profiles (Personal) don't need background refreshes.
-                        // TODO(478483377): Remove this reload logic once a dedicated
-                        // Paused/Unavailable screen is implemented.
-                        if (shouldReloadVolatileProfile(currentSelectedUserProfile)) {
-                            loadContactsListData(config, userStates)
-                        }
+                    if (lastSelectedUserId == currentSelectedUserId) {
+                        return@collect
                     }
+
+                    // User switched. Clear selection (if not initial load) and reload.
+                    if (lastSelectedUserId != null) {
+                        clearSelection()
+                    }
+                    loadContactsListData(config, userStates)
                 }
             }
-    }
-
-    // TODO(b/479464524): Optimize profile data reload during changes in profiles to only update
-    // the modified profile
-    private fun shouldReloadVolatileProfile(profile: UserProfile?): Boolean {
-        // Always reload Work/Private profiles to handle race conditions where the Contacts Provider
-        // briefly returns stale data after a state change (e.g., Quiet Mode). This ensures the UI
-        // eventually clears when the profile becomes truly unavailable.
-        return profile?.userType == UserType.WORK || profile?.userType == UserType.PRIVATE
     }
 
     private fun loadContactsListData(
