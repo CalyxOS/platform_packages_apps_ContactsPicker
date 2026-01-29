@@ -17,8 +17,12 @@ package com.android.contactspicker.inject
 
 import android.app.Application
 import android.app.ApplicationPackageManager
+import android.app.admin.DevicePolicyManager
 import android.content.pm.PackageManager
+import android.content.pm.UserInfo
+import android.os.UserManager
 import androidx.room.Room
+import com.android.contactspicker.data.repository.utils.UserProfileManagerFactory
 import com.android.contactspicker.room.dao.PrivacyBannerShownDao
 import com.android.contactspicker.room.database.PrivacyBannerDatabase
 import dagger.Module
@@ -76,5 +80,28 @@ object AppModule {
     @Singleton
     fun providePrivacyBannerDao(db: PrivacyBannerDatabase): PrivacyBannerShownDao {
         return db.privacyBannerShownDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserManager(app: Application): UserManager {
+        return app.getSystemService(UserManager::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDevicePolicyManager(app: Application): DevicePolicyManager {
+        return app.getSystemService(DevicePolicyManager::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserProfileManagerFactory(app: Application): UserProfileManagerFactory {
+        return object : UserProfileManagerFactory {
+            override fun getProfileUserManager(userInfo: UserInfo): UserManager? {
+                return app.createContextAsUser(userInfo.userHandle, 0 /* flags */)
+                    .getSystemService(UserManager::class.java)
+            }
+        }
     }
 }

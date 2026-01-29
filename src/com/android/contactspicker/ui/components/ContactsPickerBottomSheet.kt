@@ -72,6 +72,8 @@ import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.PickerUserStates
+import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.model.totalElementCount
 import com.android.contactspicker.navigation.ContactsPickerNavHost
 import com.android.contactspicker.ui.pickerscreen.SelectionBottomBar
@@ -92,6 +94,7 @@ private const val SCRIM_ALPHA = 0.32f
 fun ContactsPickerBottomSheet(
     onDismissRequest: () -> Unit,
     uiState: State<ContactsUiState>,
+    userStates: PickerUserStates?,
     snackbarEvents: Flow<SnackbarEvent>,
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (Long, Long) -> Unit,
@@ -107,6 +110,8 @@ fun ContactsPickerBottomSheet(
     onExitSearch: () -> Unit,
     onPreviewClicked: () -> Unit,
     onBackFromPreview: () -> Unit,
+    onProfileClicked: (UserProfile) -> Unit,
+    onDismissProfileBlockedDialog: () -> Unit,
 ) {
     val peekHeight = LocalConfiguration.current.screenHeightDp.dp * BOTTOM_SHEET_PEEK_HEIGHT_RATIO
     val navController = rememberNavController()
@@ -172,6 +177,7 @@ fun ContactsPickerBottomSheet(
                 ContactsPickerNavHost(
                     navController = navController,
                     uiState = uiState,
+                    userStates = userStates,
                     onToggleContactSelection = onToggleContactSelection,
                     onToggleEntrySelection = onToggleEntrySelection,
                     onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
@@ -185,6 +191,8 @@ fun ContactsPickerBottomSheet(
                     onQueryChange = onQueryChange,
                     onExitSearch = onExitSearch,
                     onBackFromPreview = onBackFromPreview,
+                    onProfileClicked = onProfileClicked,
+                    onDismissProfileBlockedDialog = onDismissProfileBlockedDialog,
                 )
             },
         ) { /* Empty content of the screen that appears behind the bottom sheet. */

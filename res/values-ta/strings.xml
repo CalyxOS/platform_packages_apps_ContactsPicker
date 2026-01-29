@@ -32,7 +32,7 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"புன்னகை ஐகான்"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"சுயவிவரத்தை மாற்றும்"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"தனியுரிமைத் தகவல்கள்"</string>
-    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"விரைவாக ஸ்க்ரோல் செய்வதற்கான ஹேண்டில்"</string>
+    <string name="scrubber_handle_content_description" msgid="1435669253806161568">"விரைவாக ஸ்க்ரோல் செய்வதற்கான ஹேண்டில்"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"தொடர்பின் சுயவிவரப் படம்"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"தொடர்பின் முதல் எழுத்து"</string>
     <string name="no_name_placeholder" msgid="491336212594465933">"(பெயர் இல்லை)"</string>

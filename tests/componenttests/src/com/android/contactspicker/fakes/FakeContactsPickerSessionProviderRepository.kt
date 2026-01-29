@@ -21,6 +21,8 @@ import com.android.contactspicker.data.repository.ContactsPickerSessionProviderR
 class FakeContactsPickerSessionProviderRepository : ContactsPickerSessionProviderRepository {
 
     private val results = mutableMapOf<Pair<List<Long>, Int>, Uri>()
+    var lastSourceUserId: Int? = null
+        private set
 
     /**
      * Registers a specific Session URI to be returned when createSession is called with the exact
@@ -30,7 +32,12 @@ class FakeContactsPickerSessionProviderRepository : ContactsPickerSessionProvide
         results[dataIds to callingUid] = resultUri
     }
 
-    override suspend fun createSession(dataIds: List<Long>, callingUid: Int): Uri {
+    override suspend fun createSession(
+        dataIds: List<Long>,
+        callingUid: Int,
+        sourceUserId: Int,
+    ): Uri {
+        lastSourceUserId = sourceUserId
         return results[dataIds to callingUid] ?: Uri.EMPTY
     }
 }

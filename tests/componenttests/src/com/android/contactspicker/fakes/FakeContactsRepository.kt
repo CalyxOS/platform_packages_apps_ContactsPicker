@@ -29,6 +29,13 @@ class FakeContactsRepository : ContactsRepository {
     private val searchExceptionMap = mutableMapOf<String, Exception>()
     private val searchInvocationsCountMap = mutableMapOf<String, Int>()
     private val dataRowIdsMap = mutableMapOf<Pair<Set<Long>, Set<MimeType>>, List<Long>>()
+    private var getContactsInvocationsCount = 0
+
+    var lastGetDataRowIdsUserId: Int? = null
+        private set
+
+    var lastSearchContactsUserId: Int? = null
+        private set
 
     fun setInitialContacts(contacts: List<Contact>) {
         initialContacts = contacts
@@ -62,7 +69,12 @@ class FakeContactsRepository : ContactsRepository {
         return searchInvocationsCountMap.getOrDefault(query, 0)
     }
 
-    override suspend fun getContacts(queryMode: ContactsQueryMode): List<Contact> {
+    fun getContactsInvocationsCount(): Int {
+        return getContactsInvocationsCount
+    }
+
+    override suspend fun getContacts(queryMode: ContactsQueryMode, userId: Int): List<Contact> {
+        getContactsInvocationsCount++
         exceptionToThrow?.let { throw it }
         return initialContacts
     }
@@ -70,7 +82,9 @@ class FakeContactsRepository : ContactsRepository {
     override suspend fun searchContacts(
         query: String,
         queryMode: ContactsQueryMode,
+        userId: Int,
     ): List<Contact> {
+        lastSearchContactsUserId = userId
         searchInvocationsCountMap[query] = searchInvocationsCountMap.getOrDefault(query, 0) + 1
         searchExceptionMap[query]?.let { throw it }
         return searchResultsMap[query] ?: emptyList()
@@ -79,7 +93,9 @@ class FakeContactsRepository : ContactsRepository {
     override suspend fun getDataRowIds(
         contactIds: List<Long>,
         mimeTypes: List<MimeType>,
+        userId: Int,
     ): List<Long> {
+        lastGetDataRowIdsUserId = userId
         return dataRowIdsMap[contactIds.toSet() to mimeTypes.toSet()] ?: emptyList()
     }
 }

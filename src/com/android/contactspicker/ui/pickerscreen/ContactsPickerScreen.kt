@@ -26,6 +26,8 @@ import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.PickerUserStates
+import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.ui.components.ContactsListContent
 
 internal const val CONTACTS_PICKER_SCREEN_LOADING_INDICATOR_TEST_TAG =
@@ -35,6 +37,7 @@ internal const val CONTACTS_PICKER_SCREEN_TEST_TAG = "contacts_picker_screen"
 @Composable
 fun ContactsPickerScreen(
     uiState: State<ContactsUiState>,
+    userStates: PickerUserStates?,
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (Long, Long) -> Unit,
     onNavigateToPrivacyDetails: () -> Unit,
@@ -43,6 +46,8 @@ fun ContactsPickerScreen(
     onQueryChange: (String) -> Unit,
     onExitSearch: () -> Unit,
     onBackFromPreview: () -> Unit,
+    onProfileClicked: (UserProfile) -> Unit,
+    onDismissProfileBlockedDialog: () -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxSize().testTag(CONTACTS_PICKER_SCREEN_TEST_TAG),
@@ -59,6 +64,7 @@ fun ContactsPickerScreen(
         } else {
             ContactsPickerTopBar(
                 uiState = uiState,
+                userStates = userStates,
                 onSearchBarToggled = { isExpanded ->
                     if (isExpanded) {
                         onExpandRequest()
@@ -72,6 +78,7 @@ fun ContactsPickerScreen(
                 onToggleEntrySelection = onToggleEntrySelection,
                 onExitSearch = onExitSearch,
                 onShowPrivacyDetailsClick = onNavigateToPrivacyDetails,
+                onProfileClicked = onProfileClicked,
             )
 
             if (uiStateValue is ContactsListState) {
@@ -81,6 +88,13 @@ fun ContactsPickerScreen(
                     onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
                     onToggleContactSelection = onToggleContactSelection,
                     onToggleEntrySelection = onToggleEntrySelection,
+                )
+            }
+
+            if (userStates?.profileBlockedDialogData != null) {
+                ProfileBlockedDialog(
+                    data = userStates.profileBlockedDialogData,
+                    onDismissRequest = onDismissProfileBlockedDialog,
                 )
             }
         }

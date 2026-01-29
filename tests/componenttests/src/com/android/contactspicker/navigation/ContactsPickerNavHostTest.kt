@@ -125,6 +125,7 @@ class ContactsPickerNavHostTest {
                 ContactsPickerNavHost(
                     navController = navController,
                     uiState = initialUiState,
+                    userStates = null,
                     onExpandRequest = {},
                     onToggleContactSelection = {},
                     onToggleEntrySelection = { _, _ -> },
@@ -132,6 +133,8 @@ class ContactsPickerNavHostTest {
                     onExitSearch = {},
                     onBackFromPreview = {},
                     onPrivacyBannerDismissRequest = {},
+                    onProfileClicked = {},
+                    onDismissProfileBlockedDialog = {},
                 )
             }
         }

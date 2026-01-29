@@ -32,7 +32,7 @@
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"સ્માઇલનું આઇકન"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"પ્રોફાઇલ સ્વિચ કરો"</string>
     <string name="privacy_info_content_description" msgid="1633879608858355544">"પ્રાઇવસી સંબંધિત માહિતી"</string>
-    <string name="fast_scroller_handle_content_description" msgid="5785781874804788816">"ઝડપી સ્ક્રોલર હૅન્ડલ"</string>
+    <string name="scrubber_handle_content_description" msgid="1435669253806161568">"ઝડપી સ્ક્રોલર હૅન્ડલ"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"સંપર્કનો પ્રોફાઇલ ફોટો"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"સંપર્કના નામનો પહેલો અક્ષર"</string>
     <string name="no_name_placeholder" msgid="491336212594465933">"(કોઈ નામ નથી)"</string>

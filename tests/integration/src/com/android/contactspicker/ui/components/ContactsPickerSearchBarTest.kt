@@ -17,10 +17,12 @@
 package com.android.contactspicker.ui.components
 
 import android.app.ApplicationPackageManager
+import android.app.admin.DevicePolicyManager
 import android.content.Context
 import android.content.Intent
 import android.content.flags.Flags
 import android.content.pm.ApplicationInfo
+import android.os.UserManager
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
@@ -35,6 +37,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.contactspicker.ContactsPickerActivity
 import com.android.contactspicker.R
+import com.android.contactspicker.data.repository.utils.UserProfileManagerFactory
 import com.android.contactspicker.inject.ActivityModule
 import com.android.contactspicker.inject.AppModule
 import com.android.contactspicker.provider.CallingPackageProvider
@@ -66,6 +69,9 @@ class ContactsPickerSearchBarTest {
     private lateinit var scenario: ActivityScenario<ContactsPickerActivity>
 
     @BindValue @JvmField val mockPackageManager: ApplicationPackageManager = mock()
+    @BindValue val mockUserManager: UserManager = mock()
+    @BindValue val mockDevicePolicyManager: DevicePolicyManager = mock()
+    @BindValue val mockUserProfileManagerFactory: UserProfileManagerFactory = mock()
 
     @BindValue @JvmField val mockCallingPackageProvider: CallingPackageProvider = mock()
     @BindValue val mockPrivacyBannerShownDao: PrivacyBannerShownDao = mock()
