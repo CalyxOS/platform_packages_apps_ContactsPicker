@@ -57,16 +57,10 @@ class ProfileChangesMonitorTest {
         val actions = filter.actionsIterator().asSequence().toSet()
         assertThat(actions)
             .containsExactly(
-                Intent.ACTION_MANAGED_PROFILE_ADDED,
-                Intent.ACTION_MANAGED_PROFILE_REMOVED,
-                Intent.ACTION_MANAGED_PROFILE_AVAILABLE,
-                Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE,
                 Intent.ACTION_PROFILE_ADDED,
                 Intent.ACTION_PROFILE_REMOVED,
                 Intent.ACTION_PROFILE_AVAILABLE,
                 Intent.ACTION_PROFILE_UNAVAILABLE,
-                Intent.ACTION_PROFILE_ACCESSIBLE,
-                Intent.ACTION_PROFILE_INACCESSIBLE,
             )
     }
 
