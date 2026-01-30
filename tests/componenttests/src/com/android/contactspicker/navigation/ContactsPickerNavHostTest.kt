@@ -35,6 +35,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
+import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.ui.pickerscreen.CONTACTS_PICKER_SCREEN_TEST_TAG
@@ -125,7 +126,7 @@ class ContactsPickerNavHostTest {
                 ContactsPickerNavHost(
                     navController = navController,
                     uiState = initialUiState,
-                    userStates = null,
+                    userState = PickerUserState.Loading,
                     onExpandRequest = {},
                     onToggleContactSelection = {},
                     onToggleEntrySelection = { _, _ -> },

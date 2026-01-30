@@ -26,7 +26,7 @@ import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.data.model.Contact
-import com.android.contactspicker.data.model.PickerUserStates
+import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.ui.components.ContactsListContent
 
@@ -37,7 +37,7 @@ internal const val CONTACTS_PICKER_SCREEN_TEST_TAG = "contacts_picker_screen"
 @Composable
 fun ContactsPickerScreen(
     uiState: State<ContactsUiState>,
-    userStates: PickerUserStates?,
+    userState: PickerUserState,
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (Long, Long) -> Unit,
     onNavigateToPrivacyDetails: () -> Unit,
@@ -54,6 +54,7 @@ fun ContactsPickerScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         val uiStateValue = uiState.value
+
         if (uiStateValue is ContactsPreviewState) {
             PreviewScreen(
                 onBackPressed = onBackFromPreview,
@@ -64,7 +65,7 @@ fun ContactsPickerScreen(
         } else {
             ContactsPickerTopBar(
                 uiState = uiState,
-                userStates = userStates,
+                userState = userState,
                 onSearchBarToggled = { isExpanded ->
                     if (isExpanded) {
                         onExpandRequest()
@@ -91,9 +92,11 @@ fun ContactsPickerScreen(
                 )
             }
 
-            if (userStates?.profileBlockedDialogData != null) {
+            if (
+                userState is PickerUserState.Success && userState.profileBlockedDialogData != null
+            ) {
                 ProfileBlockedDialog(
-                    data = userStates.profileBlockedDialogData,
+                    data = userState.profileBlockedDialogData,
                     onDismissRequest = onDismissProfileBlockedDialog,
                 )
             }

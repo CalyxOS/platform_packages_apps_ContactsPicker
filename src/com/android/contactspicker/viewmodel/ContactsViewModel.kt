@@ -39,7 +39,7 @@ import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.PausedReason
 import com.android.contactspicker.data.model.PhoneContact
-import com.android.contactspicker.data.model.PickerUserStates
+import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.ProfileBlockedDialogData
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.model.emptyContactsSelection
@@ -60,7 +60,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -112,8 +112,8 @@ constructor(
     private val _uiState = MutableStateFlow<ContactsUiState>(ContactsListState.Loading)
     open val uiState: StateFlow<ContactsUiState> = _uiState.asStateFlow()
 
-    private val _userStates = MutableStateFlow<PickerUserStates?>(null)
-    open val userStates: StateFlow<PickerUserStates?> = _userStates.asStateFlow()
+    private val _userState = MutableStateFlow<PickerUserState>(PickerUserState.Loading)
+    open val userState: StateFlow<PickerUserState> = _userState.asStateFlow()
 
     private val _snackbarEvents = MutableSharedFlow<SnackbarEvent>()
     open val snackbarEvents: Flow<SnackbarEvent> = _snackbarEvents.asSharedFlow()
@@ -123,7 +123,7 @@ constructor(
 
     private var selectionHandler: ContactsSelectionHandler? = null
     private var selectionCollectorJob: Job? = null
-    private var userStatesCollectorJob: Job? = null
+    private var userStateCollectorJob: Job? = null
 
     private var initialContacts: List<Contact> = emptyList()
     private var callingAppName: String? = null
@@ -186,15 +186,15 @@ constructor(
             config.pickerAction == ContactsPickerAction.ACTION_PICK_CONTACTS
         if (isUserSwitchingEnabled) {
             viewModelScope.launch { userRepository.get().clearSelectedUser() }
-            startObservingUserStates(config)
+            startObservingUserState(config)
         } else {
-            val defaultStates =
-                PickerUserStates(
+            val defaultState =
+                PickerUserState.Success(
                     userIdToAvailableUsersMap = emptyMap(),
                     selectedUserId = UserHandle.myUserId(),
                 )
-            _userStates.value = defaultStates
-            loadContactsListData(config, defaultStates)
+            _userState.value = defaultState
+            loadContactsListData(config, defaultState)
         }
 
         selectionHandler =
@@ -236,18 +236,24 @@ constructor(
             }
     }
 
-    private fun startObservingUserStates(config: ContactsPickerRequestConfig) {
-        userStatesCollectorJob?.cancel()
-        userStatesCollectorJob =
+    private fun startObservingUserState(config: ContactsPickerRequestConfig) {
+        userStateCollectorJob?.cancel()
+        userStateCollectorJob =
             viewModelScope.launch {
                 userRepository
                     .get()
-                    .getUserStates(callingPackageName, UserHandle.getUserId(callingAppUid))
-                    .collect { userStates ->
-                        val lastSelectedUserId = _userStates.value?.selectedUserId
-                        val currentSelectedUserId = userStates.selectedUserId
+                    .getUserState(callingPackageName, UserHandle.getUserId(callingAppUid))
+                    .collect { userState ->
+                        if (userState !is PickerUserState.Success) {
+                            _userState.value = userState
+                            return@collect
+                        }
 
-                        _userStates.value = userStates
+                        val lastSelectedUserId =
+                            (_userState.value as? PickerUserState.Success)?.selectedUserId
+                        val currentSelectedUserId = userState.selectedUserId
+
+                        _userState.value = userState
 
                         if (lastSelectedUserId == currentSelectedUserId) {
                             return@collect
@@ -257,14 +263,14 @@ constructor(
                         if (lastSelectedUserId != null) {
                             clearSelection()
                         }
-                        loadContactsListData(config, userStates)
+                        loadContactsListData(config, userState)
                     }
             }
     }
 
     private fun loadContactsListData(
         config: ContactsPickerRequestConfig,
-        userStates: PickerUserStates,
+        userState: PickerUserState.Success,
     ) {
         loadContactsJob?.cancel()
         loadContactsJob =
@@ -275,7 +281,7 @@ constructor(
                     // load contacts data
                     Trace.beginSection("$TAG#contactsRepository.getContacts")
                     initialContacts =
-                        contactsRepository.getContacts(config.queryMode, userStates.selectedUserId)
+                        contactsRepository.getContacts(config.queryMode, userState.selectedUserId)
                     Trace.endSection()
 
                     // Only show the privacy banner if user hasn't seen it before for this
@@ -360,7 +366,9 @@ constructor(
                             // it.copy(isLoading = true) }
                             val selectedIds = handler.getSelectedIds()
 
-                            val userId = _userStates.value?.selectedUserId ?: callingUserId
+                            val userId =
+                                (_userState.value as? PickerUserState.Success)?.selectedUserId
+                                    ?: UserHandle.getUserId(callingAppUid)
                             val intent =
                                 createActionPickContactsResult(
                                     selectedIds,
@@ -442,8 +450,8 @@ constructor(
      * @param userId The ID of the selected user profile.
      */
     fun onProfileSelected(userId: Int) {
-        val userStates = _userStates.value ?: return
-        if (userId == userStates.selectedUserId) return
+        val userState = _userState.value as? PickerUserState.Success ?: return
+        if (userId == userState.selectedUserId) return
 
         viewModelScope.launch { userRepository.get().setSelectedUser(userId) }
     }
@@ -465,15 +473,13 @@ constructor(
     }
 
     private fun showProfilePausedDialog(userProfile: UserProfile, reason: PausedReason? = null) {
-        _userStates.update { currentStates ->
-            if (currentStates != null) {
-                PickerUserStates(
-                    userIdToAvailableUsersMap = currentStates.userIdToAvailableUsersMap,
-                    selectedUserId = currentStates.selectedUserId,
-                    profileBlockedDialogData = createProfilePausedDialogData(userProfile, reason),
+        _userState.update { currentState ->
+            if (currentState is PickerUserState.Success) {
+                currentState.copy(
+                    profileBlockedDialogData = createProfilePausedDialogData(userProfile, reason)
                 )
             } else {
-                null
+                currentState
             }
         }
     }
@@ -525,15 +531,11 @@ constructor(
      * (even if it is paused/blocked).
      */
     fun dismissProfileBlockedDialog() {
-        _userStates.update { currentStates ->
-            if (currentStates != null) {
-                PickerUserStates(
-                    userIdToAvailableUsersMap = currentStates.userIdToAvailableUsersMap,
-                    selectedUserId = currentStates.selectedUserId,
-                    profileBlockedDialogData = null,
-                )
+        _userState.update { currentState ->
+            if (currentState is PickerUserState.Success) {
+                currentState.copy(profileBlockedDialogData = null)
             } else {
-                null
+                currentState
             }
         }
     }
@@ -572,8 +574,8 @@ constructor(
         try {
             Trace.beginSection("$TAG#searchingContacts")
 
-            val userStates = _userStates.filterNotNull().first()
-            val selectedUserId = userStates.selectedUserId
+            val userState = _userState.filterIsInstance<PickerUserState.Success>().first()
+            val selectedUserId = userState.selectedUserId
 
             val results = contactsRepository.searchContacts(query, config.queryMode, selectedUserId)
             _uiState.update { currentState ->
@@ -692,8 +694,8 @@ constructor(
     // TODO(b/12345678): remove once the permission is pregranted
     open fun onContactsPermissionGranted() {
         val config = pickerConfig ?: return
-        val userStates = _userStates.value ?: return
-        loadContactsListData(config, userStates)
+        val userState = _userState.value as? PickerUserState.Success ?: return
+        loadContactsListData(config, userState)
     }
 }
 

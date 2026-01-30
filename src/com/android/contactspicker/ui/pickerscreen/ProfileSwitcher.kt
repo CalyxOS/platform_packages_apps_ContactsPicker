@@ -50,7 +50,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.R
-import com.android.contactspicker.data.model.PickerUserStates
+import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.model.UserType
 
@@ -60,14 +60,16 @@ private val DROPDOWN_MIN_WIDTH = 200.dp
 
 @Composable
 fun ProfileSwitcher(
-    userStates: PickerUserStates?,
+    userState: PickerUserState,
     onProfileClicked: (UserProfile) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val successState = userState as? PickerUserState.Success
+    val userMap = successState?.userIdToAvailableUsersMap
+
     val visibleUsers =
-        remember(userStates) {
-            userStates
-                ?.userIdToAvailableUsersMap
+        remember(userMap) {
+            userMap
                 ?.values
                 ?.mapNotNull { profile -> profile.switchableInfo?.let { info -> profile to info } }
                 ?.sortedBy { (profile, _) -> profile.userType } ?: emptyList()
@@ -79,7 +81,7 @@ fun ProfileSwitcher(
 
     var expanded by rememberSaveable { mutableStateOf(false) }
 
-    val currentUser = userStates?.userIdToAvailableUsersMap?.get(userStates.selectedUserId)
+    val currentUser = successState?.let { it.userIdToAvailableUsersMap[it.selectedUserId] }
     val currentSwitchableInfo = currentUser?.switchableInfo
 
     Box(modifier = modifier, contentAlignment = Alignment.TopEnd) {

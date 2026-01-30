@@ -16,7 +16,7 @@
 
 package com.android.contactspicker.data.repository
 
-import com.android.contactspicker.data.model.PickerUserStates
+import com.android.contactspicker.data.model.PickerUserState
 import kotlinx.coroutines.flow.Flow
 
 /** Repository to manage user profiles and their states. */
@@ -27,7 +27,7 @@ interface UserRepository {
      * @param callingPackageName The package name of the app that invoked the picker.
      * @param callingUserId The user ID of the app that invoked the picker.
      */
-    fun getUserStates(callingPackageName: String?, callingUserId: Int): Flow<PickerUserStates>
+    fun getUserState(callingPackageName: String?, callingUserId: Int): Flow<PickerUserState>
 
     /**
      * Updates the currently selected user profile.

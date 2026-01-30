@@ -20,7 +20,7 @@ import android.content.pm.UserInfo
 import android.os.UserManager
 import com.android.contactspicker.data.model.PausedProfileInfo
 import com.android.contactspicker.data.model.PausedReason
-import com.android.contactspicker.data.model.PickerUserStates
+import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.model.UserType
 import com.android.contactspicker.data.repository.utils.ProfileChangesMonitor
@@ -58,7 +58,7 @@ class UserRepositoryImplTest {
     private val mockProfileChangesMonitor: ProfileChangesMonitor = mock()
     private val profileChangesFlow = MutableSharedFlow<Unit>(replay = 1)
     private val callingUserId = 0
-    private val resultsChannel = Channel<PickerUserStates>(Channel.UNLIMITED)
+    private val resultsChannel = Channel<PickerUserState>(Channel.UNLIMITED)
     private lateinit var userRepository: UserRepositoryImpl
 
     @Before
@@ -70,14 +70,14 @@ class UserRepositoryImplTest {
     }
 
     @Test
-    fun getUserStates_returnsInitialState() = runTest {
+    fun getUserState_returnsInitialState() = runTest {
         val (primaryUser, primaryProfile) = getUserInfoAndProfile(PERSONAL_USER_ID)
         whenever(mockUserManager.getProfiles(any())) doReturn listOf(primaryUser)
         whenever(mockUserProfileFactory.createProfile(primaryUser, TEST_PACKAGE_NAME)) doReturn
             primaryProfile
         startCollecting()
 
-        val result = resultsChannel.receive()
+        val result = receiveSuccessState()
 
         assertThat(result.userIdToAvailableUsersMap).hasSize(1)
         assertThat(result.userIdToAvailableUsersMap[PERSONAL_USER_ID]).isEqualTo(primaryProfile)
@@ -86,13 +86,13 @@ class UserRepositoryImplTest {
     }
 
     @Test
-    fun getUserStates_updatesOnProfileChange() = runTest {
+    fun getUserState_updatesOnProfileChange() = runTest {
         val (primaryUser, primaryProfile) = getUserInfoAndProfile(PERSONAL_USER_ID)
         whenever(mockUserManager.getProfiles(any())) doReturn listOf(primaryUser)
         whenever(mockUserProfileFactory.createProfile(primaryUser, TEST_PACKAGE_NAME)) doReturn
             primaryProfile
         startCollecting()
-        resultsChannel.receive() // Initial state
+        receiveSuccessState() // Initial state
 
         val (workUser, workProfile) = getUserInfoAndProfile(WORK_USER_ID)
         whenever(mockUserManager.getProfiles(any())) doReturn listOf(primaryUser, workUser)
@@ -100,7 +100,7 @@ class UserRepositoryImplTest {
             workProfile
         profileChangesFlow.emit(Unit)
 
-        val result = resultsChannel.receive()
+        val result = receiveSuccessState()
 
         assertThat(result.userIdToAvailableUsersMap).hasSize(2)
         assertThat(result.userIdToAvailableUsersMap[PERSONAL_USER_ID]).isEqualTo(primaryProfile)
@@ -116,22 +116,22 @@ class UserRepositoryImplTest {
         whenever(mockUserProfileFactory.createProfile(any(), any())) doReturn primaryProfile
         startCollecting()
 
-        val first = resultsChannel.receive()
+        val first = receiveSuccessState()
         assertThat(first.selectedUserId).isEqualTo(PERSONAL_USER_ID)
         val (workUser, workProfile) = getUserInfoAndProfile(WORK_USER_ID)
         whenever(mockUserManager.getProfiles(any())) doReturn listOf(primaryUser, workUser)
         whenever(mockUserProfileFactory.createProfile(workUser, TEST_PACKAGE_NAME)) doReturn
-                workProfile
+            workProfile
         profileChangesFlow.emit(Unit)
-        resultsChannel.receive()
+        receiveSuccessState()
 
         userRepository.setSelectedUser(WORK_USER_ID)
-        val third = resultsChannel.receive()
+        val third = receiveSuccessState()
 
         assertThat(third.selectedUserId).isEqualTo(WORK_USER_ID)
 
         userRepository.setSelectedUser(999)
-        val fourth = resultsChannel.receive()
+        val fourth = receiveSuccessState()
 
         assertThat(fourth.selectedUserId).isEqualTo(PERSONAL_USER_ID)
     }
@@ -147,63 +147,63 @@ class UserRepositoryImplTest {
             workProfile
         startCollecting()
 
-        resultsChannel.receive() // Initial state (selected=0)
+        receiveSuccessState() // Initial state (selected=0)
 
         userRepository.setSelectedUser(WORK_USER_ID)
-        val workProfileId = resultsChannel.receive()
+        val workProfileId = receiveSuccessState()
         assertThat(workProfileId.selectedUserId).isEqualTo(WORK_USER_ID)
 
         userRepository.clearSelectedUser()
-        val result = resultsChannel.receive()
+        val result = receiveSuccessState()
         assertThat(result.selectedUserId).isEqualTo(PERSONAL_USER_ID)
     }
 
     @Test
-    fun getUserStates_switchesToDefault_whenSelectedProfileIsPaused() = runTest {
+    fun getUserState_switchesToDefault_whenSelectedProfileIsPaused() = runTest {
         val (primaryUser, primaryProfile) = getUserInfoAndProfile(PERSONAL_USER_ID)
         val (workUser, workProfile) = getUserInfoAndProfile(WORK_USER_ID)
         whenever(mockUserManager.getProfiles(any())) doReturn listOf(primaryUser, workUser)
         whenever(mockUserProfileFactory.createProfile(primaryUser, TEST_PACKAGE_NAME)) doReturn
-                primaryProfile
+            primaryProfile
         whenever(mockUserProfileFactory.createProfile(workUser, TEST_PACKAGE_NAME)) doReturn
-                workProfile
+            workProfile
         startCollecting()
-        resultsChannel.receive() // Initial
+        receiveSuccessState() // Initial
 
         // Select work profile
         userRepository.setSelectedUser(WORK_USER_ID)
-        resultsChannel.receive()
+        receiveSuccessState()
 
         // Make work profile paused
         val pausedWorkProfile =
             workProfile.copy(pausedInfo = PausedProfileInfo(PausedReason.QUIET_MODE))
         whenever(mockUserProfileFactory.createProfile(workUser, TEST_PACKAGE_NAME)) doReturn
-                pausedWorkProfile
+            pausedWorkProfile
 
         // Trigger update
         profileChangesFlow.emit(Unit)
 
-        val result = resultsChannel.receive()
+        val result = receiveSuccessState()
 
         // Should switch back to PERSONAL_USER_ID because WORK_USER_ID is paused
         assertThat(result.selectedUserId).isEqualTo(PERSONAL_USER_ID)
     }
 
     @Test
-    fun getUserStates_switchesToDefault_whenSelectedProfileIsRemoved() = runTest {
+    fun getUserState_switchesToDefault_whenSelectedProfileIsRemoved() = runTest {
         val (primaryUser, primaryProfile) = getUserInfoAndProfile(PERSONAL_USER_ID)
         val (workUser, workProfile) = getUserInfoAndProfile(WORK_USER_ID)
         whenever(mockUserManager.getProfiles(any())) doReturn listOf(primaryUser, workUser)
         whenever(mockUserProfileFactory.createProfile(primaryUser, TEST_PACKAGE_NAME)) doReturn
-                primaryProfile
+            primaryProfile
         whenever(mockUserProfileFactory.createProfile(workUser, TEST_PACKAGE_NAME)) doReturn
-                workProfile
+            workProfile
         startCollecting()
-        resultsChannel.receive() // Initial
+        receiveSuccessState() // Initial
 
         // Select work profile
         userRepository.setSelectedUser(WORK_USER_ID)
-        resultsChannel.receive()
+        receiveSuccessState()
 
         // Remove work profile
         whenever(mockUserManager.getProfiles(any())) doReturn listOf(primaryUser)
@@ -211,46 +211,46 @@ class UserRepositoryImplTest {
         // Trigger update
         profileChangesFlow.emit(Unit)
 
-        val result = resultsChannel.receive()
+        val result = receiveSuccessState()
 
         // Should switch back to PERSONAL_USER_ID because WORK_USER_ID is removed
         assertThat(result.selectedUserId).isEqualTo(PERSONAL_USER_ID)
     }
 
     @Test
-    fun getUserStates_staysOnDefault_whenPausedProfileReturns() = runTest {
+    fun getUserState_staysOnDefault_whenPausedProfileReturns() = runTest {
         val (primaryUser, primaryProfile) = getUserInfoAndProfile(PERSONAL_USER_ID)
         val (workUser, workProfile) = getUserInfoAndProfile(WORK_USER_ID)
         whenever(mockUserManager.getProfiles(any())) doReturn listOf(primaryUser, workUser)
         whenever(mockUserProfileFactory.createProfile(primaryUser, TEST_PACKAGE_NAME)) doReturn
-                primaryProfile
+            primaryProfile
         whenever(mockUserProfileFactory.createProfile(workUser, TEST_PACKAGE_NAME)) doReturn
-                workProfile
+            workProfile
         startCollecting()
-        resultsChannel.receive() // Initial
+        receiveSuccessState() // Initial
 
         // Select work profile
         userRepository.setSelectedUser(WORK_USER_ID)
-        resultsChannel.receive()
+        receiveSuccessState()
 
         // Make work profile paused
         val pausedWorkProfile =
             workProfile.copy(pausedInfo = PausedProfileInfo(PausedReason.QUIET_MODE))
         whenever(mockUserProfileFactory.createProfile(workUser, TEST_PACKAGE_NAME)) doReturn
-                pausedWorkProfile
+            pausedWorkProfile
 
         // Trigger update (Paused)
         profileChangesFlow.emit(Unit)
-        val resultPaused = resultsChannel.receive()
+        val resultPaused = receiveSuccessState()
         assertThat(resultPaused.selectedUserId).isEqualTo(PERSONAL_USER_ID)
 
         // Make work profile available again
         whenever(mockUserProfileFactory.createProfile(workUser, TEST_PACKAGE_NAME)) doReturn
-                workProfile
+            workProfile
 
         // Trigger update (Available)
         profileChangesFlow.emit(Unit)
-        val resultAvailable = resultsChannel.receive()
+        val resultAvailable = receiveSuccessState()
 
         // Should STAY on PERSONAL_USER_ID
         assertThat(resultAvailable.selectedUserId).isEqualTo(PERSONAL_USER_ID)
@@ -258,7 +258,7 @@ class UserRepositoryImplTest {
 
     private fun TestScope.startCollecting() {
         backgroundScope.launch {
-            userRepository.getUserStates(TEST_PACKAGE_NAME, callingUserId).collect {
+            userRepository.getUserState(TEST_PACKAGE_NAME, callingUserId).collect {
                 resultsChannel.send(it)
             }
         }
@@ -274,5 +274,11 @@ class UserRepositoryImplTest {
                 switchableInfo = null,
             )
         return Pair(userInfo, userProfile)
+    }
+
+    private suspend fun receiveSuccessState(): PickerUserState.Success {
+        val state = resultsChannel.receive()
+        assertThat(state).isInstanceOf(PickerUserState.Success::class.java)
+        return state as PickerUserState.Success
     }
 }
