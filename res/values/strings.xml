@@ -151,7 +151,7 @@
     <string name="no_contacts_description">The contacts that you create or import to your device will appear here</string>
 
     <string name="user_type_personal" translation_description="Label for Personal Profile">Personal</string>
-    <string name="user_type_unknown" translation_description="Label for an unknown user profile, includes the user ID for identification.">User %1$d</string>
+    <string name="user_type_unknown_label" translation_description="Label for an unknown user profile">Unknown User</string>
 
     <string name="picker_profile_paused_title" translation_description="Title of the error dialog in Contacts Picker when the user tries to switch to other profile content, but the other profile is off. [CHAR LIMIT=80]">%s apps are paused</string>
     <string name="picker_profile_paused_msg" translation_description="The message of the error dialog in Contacts Picker when the user tries to switch to other profile content, but the other profile is off. [CHAR LIMIT=NONE]">To open %1$s contacts, turn on your %2$s apps then try again</string>
