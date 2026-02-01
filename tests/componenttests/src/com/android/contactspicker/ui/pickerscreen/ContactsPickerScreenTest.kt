@@ -36,6 +36,7 @@ import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.PickerUserStates
+import com.android.contactspicker.data.model.ProfileBlockedDialogData
 import com.android.contactspicker.data.model.SwitchableProfileInfo
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.model.UserType
@@ -230,6 +231,29 @@ class ContactsPickerScreenTest {
     }
 
     @Test
+    fun whenProfileBlockedDialogDataIsPresent_showsDialog() {
+        val dialogTitle = "Profile Paused"
+        val dialogMessage = "Work profile is paused."
+        val mockOnDismissProfileBlockedDialog: () -> Unit = mock()
+
+        setContentWithMockUserStates(
+            userStates =
+                createMockUserStates()
+                    .copy(
+                        profileBlockedDialogData =
+                            ProfileBlockedDialogData(title = dialogTitle, message = dialogMessage)
+                    ),
+            onDismissProfileBlockedDialog = mockOnDismissProfileBlockedDialog,
+        )
+
+        composeTestRule.onNodeWithText(dialogTitle).assertIsDisplayed()
+        composeTestRule.onNodeWithText(dialogMessage).assertIsDisplayed()
+
+        composeTestRule.onNodeWithText(context.getString(android.R.string.ok)).performClick()
+        verify(mockOnDismissProfileBlockedDialog).invoke()
+    }
+
+    @Test
     fun pickerScreen_initialState_showsContactsList() {
         setContentWithDefaultSuccessState()
 
@@ -323,7 +347,10 @@ class ContactsPickerScreenTest {
         }
     }
 
-    private fun setContentWithMockUserStates() {
+    private fun setContentWithMockUserStates(
+        userStates: PickerUserStates = createMockUserStates(),
+        onDismissProfileBlockedDialog: () -> Unit = {},
+    ) {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState =
@@ -337,7 +364,7 @@ class ContactsPickerScreenTest {
                             requestedMimeTypes = emptyList(),
                         )
                     ),
-                userStates = createMockUserStates(),
+                userStates = userStates,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -347,7 +374,7 @@ class ContactsPickerScreenTest {
                 onBackFromPreview = {},
                 onPrivacyBannerDismissRequest = {},
                 onProfileClicked = {},
-                onDismissProfileBlockedDialog = {},
+                onDismissProfileBlockedDialog = onDismissProfileBlockedDialog,
             )
         }
     }
