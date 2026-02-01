@@ -127,6 +127,7 @@ constructor(
 
     private var initialContacts: List<Contact> = emptyList()
     private var callingAppName: String? = null
+    private var callingPackageName: String? = null
     private var searchJob: Job? = null
     private var loadContactsJob: Job? = null
     private var cachedStateBeforePreview: ContactsUiState? = null
@@ -167,9 +168,11 @@ constructor(
         intentType: String?,
         intentExtras: Bundle?,
         callingAppName: String?,
+        callingPackageName: String?,
         callingAppUid: Int,
     ) {
         this.callingAppName = callingAppName
+        this.callingPackageName = callingPackageName
         this.callingAppUid = callingAppUid
 
         val config =
@@ -237,22 +240,25 @@ constructor(
         userStatesCollectorJob?.cancel()
         userStatesCollectorJob =
             viewModelScope.launch {
-                userRepository.get().getUserStates(callingAppUid).collect { userStates ->
-                    val lastSelectedUserId = _userStates.value?.selectedUserId
-                    val currentSelectedUserId = userStates.selectedUserId
+                userRepository
+                    .get()
+                    .getUserStates(callingPackageName, UserHandle.getUserId(callingAppUid))
+                    .collect { userStates ->
+                        val lastSelectedUserId = _userStates.value?.selectedUserId
+                        val currentSelectedUserId = userStates.selectedUserId
 
-                    _userStates.value = userStates
+                        _userStates.value = userStates
 
-                    if (lastSelectedUserId == currentSelectedUserId) {
-                        return@collect
+                        if (lastSelectedUserId == currentSelectedUserId) {
+                            return@collect
+                        }
+
+                        // User switched. Clear selection (if not initial load) and reload.
+                        if (lastSelectedUserId != null) {
+                            clearSelection()
+                        }
+                        loadContactsListData(config, userStates)
                     }
-
-                    // User switched. Clear selection (if not initial load) and reload.
-                    if (lastSelectedUserId != null) {
-                        clearSelection()
-                    }
-                    loadContactsListData(config, userStates)
-                }
             }
     }
 

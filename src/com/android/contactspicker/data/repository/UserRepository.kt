@@ -24,9 +24,10 @@ interface UserRepository {
     /**
      * Gets a flow of states of all profiles associated with the foreground user.
      *
-     * @param callingAppUid The UID of the app that invoked the picker.
+     * @param callingPackageName The package name of the app that invoked the picker.
+     * @param callingUserId The user ID of the app that invoked the picker.
      */
-    fun getUserStates(callingAppUid: Int): Flow<PickerUserStates>
+    fun getUserStates(callingPackageName: String?, callingUserId: Int): Flow<PickerUserStates>
 
     /**
      * Updates the currently selected user profile.

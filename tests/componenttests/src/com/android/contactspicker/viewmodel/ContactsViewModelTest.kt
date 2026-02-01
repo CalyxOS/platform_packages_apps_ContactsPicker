@@ -70,6 +70,7 @@ import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
@@ -82,6 +83,7 @@ class ContactsViewModelTest {
         private const val TEST_CONTACT_DISPLAY_NAME = "Test Name"
         private const val PAUSED_WORK_APPS_TITLE = "Work apps are paused"
         private const val TEST_APP_NAME = "TestApp"
+        private const val TEST_PACKAGE_NAME = "com.test.app"
         private const val TEST_CALLING_UID = 12345
         private const val TEST_APP_ID = 12345
         private const val USER_ID_PERSONAL = 0
@@ -153,7 +155,8 @@ class ContactsViewModelTest {
                 selectedUserId = USER_ID_PERSONAL,
             )
         runBlocking {
-            whenever(mockUserRepository.getUserStates(anyInt())).thenReturn(userStatesFlow)
+            whenever(mockUserRepository.getUserStates(anyOrNull(), anyInt()))
+                .thenReturn(userStatesFlow)
         }
 
         val fakeFactory =
@@ -188,6 +191,7 @@ class ContactsViewModelTest {
             intentType = Phone.CONTENT_TYPE,
             intentExtras = null,
             callingAppName = TEST_APP_NAME,
+            callingPackageName = TEST_PACKAGE_NAME,
             callingAppUid = TEST_CALLING_UID,
         )
         testDispatcher.scheduler.advanceUntilIdle()
@@ -201,6 +205,41 @@ class ContactsViewModelTest {
                     emptyContactsSelection(),
                     false,
                     callingAppName = TEST_APP_NAME,
+                    requestedMimeTypes = listOf(MimeType.PHONE),
+                    showPrivacyBanner = true,
+                ),
+            )
+            .inOrder()
+
+        job.cancel()
+    }
+
+    @Test
+    fun processIntent_withNullCallingPackage_doesNotCrash() = runTest {
+        val testContacts = listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT)
+        fakeContactsRepository.setInitialContacts(testContacts)
+        val collectedStates = mutableListOf<ContactsUiState>()
+        val job = launch { viewModel.uiState.toList(collectedStates) }
+
+        viewModel.processIntent(
+            intentAction = Intent.ACTION_PICK,
+            intentType = Phone.CONTENT_TYPE,
+            intentExtras = null,
+            callingAppName = null,
+            callingPackageName = null,
+            callingAppUid = TEST_CALLING_UID,
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(collectedStates).hasSize(2)
+        assertThat(collectedStates)
+            .containsExactly(
+                ContactsListState.Loading,
+                ContactsListState.Success(
+                    testContacts,
+                    emptyContactsSelection(),
+                    false,
+                    callingAppName = null,
                     requestedMimeTypes = listOf(MimeType.PHONE),
                     showPrivacyBanner = true,
                 ),
@@ -230,6 +269,7 @@ class ContactsViewModelTest {
             intentType = Phone.CONTENT_TYPE,
             intentExtras = null,
             callingAppName = TEST_APP_NAME,
+            callingPackageName = TEST_PACKAGE_NAME,
             callingAppUid = TEST_CALLING_UID,
         )
         testDispatcher.scheduler.advanceUntilIdle()
@@ -245,6 +285,7 @@ class ContactsViewModelTest {
             intentType = null,
             intentExtras = null,
             callingAppName = TEST_APP_NAME,
+            callingPackageName = TEST_PACKAGE_NAME,
             callingAppUid = TEST_CALLING_UID,
         )
     }
@@ -392,6 +433,7 @@ class ContactsViewModelTest {
             intentType = Phone.CONTENT_TYPE,
             intentExtras = null,
             callingAppName = TEST_APP_NAME,
+            callingPackageName = TEST_PACKAGE_NAME,
             callingAppUid = TEST_CALLING_UID,
         )
         testDispatcher.scheduler.advanceUntilIdle()
@@ -1106,6 +1148,7 @@ class ContactsViewModelTest {
             intentType = null,
             intentExtras = extras,
             callingAppName = TEST_APP_NAME,
+            callingPackageName = TEST_PACKAGE_NAME,
             callingAppUid = callingUid,
         )
         testDispatcher.scheduler.advanceUntilIdle()
@@ -1125,6 +1168,7 @@ class ContactsViewModelTest {
             intentType = Phone.CONTENT_TYPE,
             intentExtras = intentExtras,
             callingAppName = TEST_APP_NAME,
+            callingPackageName = TEST_PACKAGE_NAME,
             callingAppUid = callingAppUid,
         )
         testDispatcher.scheduler.advanceUntilIdle()

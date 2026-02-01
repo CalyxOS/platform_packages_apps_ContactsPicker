@@ -16,8 +16,6 @@
 
 package com.android.contactspicker.data.repository
 
-import android.content.Context
-import android.content.pm.PackageManager
 import android.content.pm.UserInfo
 import android.os.UserManager
 import com.android.contactspicker.data.model.PausedProfileInfo
@@ -55,30 +53,20 @@ class UserRepositoryImplTest {
         private const val WORK_USER_ID = 10
     }
 
-    private val mockContext: Context = mock()
     private val mockUserManager: UserManager = mock()
     private val mockUserProfileFactory: UserProfileFactory = mock()
     private val mockProfileChangesMonitor: ProfileChangesMonitor = mock()
-    private val mockPackageManager: PackageManager = mock()
-
     private val profileChangesFlow = MutableSharedFlow<Unit>(replay = 1)
-    private lateinit var userRepository: UserRepositoryImpl
-    private val callingAppUid = 12345
+    private val callingUserId = 0
     private val resultsChannel = Channel<PickerUserStates>(Channel.UNLIMITED)
+    private lateinit var userRepository: UserRepositoryImpl
 
     @Before
     fun setUp() {
-        whenever(mockContext.packageManager) doReturn mockPackageManager
         whenever(mockProfileChangesMonitor.getProfileChangeFlow()) doReturn profileChangesFlow
-        whenever(mockPackageManager.getNameForUid(callingAppUid)) doReturn TEST_PACKAGE_NAME
 
         userRepository =
-            UserRepositoryImpl(
-                mockContext,
-                mockUserManager,
-                mockUserProfileFactory,
-                mockProfileChangesMonitor,
-            )
+            UserRepositoryImpl(mockUserManager, mockUserProfileFactory, mockProfileChangesMonitor)
     }
 
     @Test
@@ -132,7 +120,8 @@ class UserRepositoryImplTest {
         assertThat(first.selectedUserId).isEqualTo(PERSONAL_USER_ID)
         val (workUser, workProfile) = getUserInfoAndProfile(WORK_USER_ID)
         whenever(mockUserManager.getProfiles(any())) doReturn listOf(primaryUser, workUser)
-        whenever(mockUserProfileFactory.createProfile(workUser, null)) doReturn workProfile
+        whenever(mockUserProfileFactory.createProfile(workUser, TEST_PACKAGE_NAME)) doReturn
+                workProfile
         profileChangesFlow.emit(Unit)
         resultsChannel.receive()
 
@@ -269,7 +258,9 @@ class UserRepositoryImplTest {
 
     private fun TestScope.startCollecting() {
         backgroundScope.launch {
-            userRepository.getUserStates(callingAppUid).collect { resultsChannel.send(it) }
+            userRepository.getUserStates(TEST_PACKAGE_NAME, callingUserId).collect {
+                resultsChannel.send(it)
+            }
         }
     }
 

@@ -16,14 +16,12 @@
 
 package com.android.contactspicker.data.repository
 
-import android.content.Context
 import android.os.UserHandle
 import android.os.UserManager
 import com.android.contactspicker.data.model.PickerUserStates
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.repository.utils.ProfileChangesMonitor
 import com.android.contactspicker.data.repository.utils.UserProfileFactory
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +37,6 @@ import kotlinx.coroutines.flow.onStart
 class UserRepositoryImpl
 @Inject
 constructor(
-    @param:ApplicationContext private val context: Context,
     private val userManager: UserManager,
     private val userProfileFactory: UserProfileFactory,
     private val profileChangesMonitor: ProfileChangesMonitor,
@@ -47,10 +44,12 @@ constructor(
 
     private val _selectedUserId = MutableStateFlow<Int?>(null)
 
-    // TODO(b/479443759): Replace manual UID-to-PackageName conversion with CallingPackageProvider
     // TODO(b/479464524): Optimize profile data reload during changes in profiles to only update
     // the modified profile
-    override fun getUserStates(callingAppUid: Int): Flow<PickerUserStates> {
+    override fun getUserStates(
+        callingPackageName: String?,
+        callingUserId: Int,
+    ): Flow<PickerUserStates> {
         val profilesFlow =
             profileChangesMonitor
                 .getProfileChangeFlow()
@@ -58,7 +57,7 @@ constructor(
                 .map {
                     // Invalidate the cache to ensure fresh data when profiles change
                     userProfileFactory.clearCache()
-                    loadAvailableUsersMap(callingAppUid)
+                    loadAvailableUsersMap(callingPackageName)
                 }
                 .onEach { availableUsersMap ->
                     // If the explicitly selected profile becomes paused or unavailable, clear the
@@ -75,7 +74,7 @@ constructor(
                 .flowOn(Dispatchers.IO)
 
         return combine(profilesFlow, _selectedUserId) { availableUsersMap, selectedUserId ->
-            computePickerUserStates(availableUsersMap, callingAppUid, selectedUserId)
+            computePickerUserStates(availableUsersMap, callingUserId, selectedUserId)
         }
     }
 
@@ -87,16 +86,12 @@ constructor(
         _selectedUserId.emit(null)
     }
 
-    private fun loadAvailableUsersMap(callingAppUid: Int): Map<Int, UserProfile> {
+    private fun loadAvailableUsersMap(callingPackageName: String?): Map<Int, UserProfile> {
         val currentProcessUserId = UserHandle.myUserId()
         val allProfiles = userManager.getProfiles(currentProcessUserId)
 
         return allProfiles.associate { userInfo ->
-            userInfo.id to
-                userProfileFactory.createProfile(
-                    userInfo,
-                    context.packageManager.getNameForUid(callingAppUid),
-                )
+            userInfo.id to userProfileFactory.createProfile(userInfo, callingPackageName)
         }
     }
 
@@ -108,10 +103,9 @@ constructor(
      */
     private fun computePickerUserStates(
         userIdToAvailableUsersMap: Map<Int, UserProfile>,
-        callingAppUid: Int,
+        callingUserId: Int,
         userSelectedUserId: Int?,
     ): PickerUserStates {
-        val callingUserId = UserHandle.getUserId(callingAppUid)
         val currentProcessUserId = UserHandle.myUserId()
 
         val selectedProfile = userSelectedUserId?.let { userIdToAvailableUsersMap[it] }
