@@ -16,11 +16,13 @@
 
 package com.android.contactspicker.viewmodel
 
+import android.content.ContentProvider
 import android.content.ContentUris
 import android.content.Intent
 import android.content.flags.Flags
 import android.net.Uri
 import android.os.Bundle
+import android.os.UserHandle
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
@@ -81,6 +83,7 @@ class ContactsViewModelTest {
         private const val PAUSED_WORK_APPS_TITLE = "Work apps are paused"
         private const val TEST_APP_NAME = "TestApp"
         private const val TEST_CALLING_UID = 12345
+        private const val TEST_APP_ID = 12345
         private const val USER_ID_PERSONAL = 0
         private const val USER_ID_WORK = 10
         private const val USER_ID_SECONDARY = 12
@@ -415,11 +418,12 @@ class ContactsViewModelTest {
         val displayNameContact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
         initializeViewModelForLegacyActionPick(listOf(displayNameContact))
         viewModel.toggleContactSelection(displayNameContact)
-        val expectedUri =
+        val baseUri =
             ContactsContract.Contacts.getLookupUri(
                 displayNameContact.id,
                 displayNameContact.lookupKey,
             )
+        val expectedUri = ContentProvider.maybeAddUserId(baseUri, USER_ID_PERSONAL)
 
         val events = callOnDoneAndCaptureEvents()
 
@@ -433,7 +437,8 @@ class ContactsViewModelTest {
         initializeViewModelForLegacyActionPick(listOf(singleEmailContact))
         val entry = singleEmailContact.emails.first()
         viewModel.toggleEntrySelection(singleEmailContact.id, entry.id)
-        val expectedUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, entry.id)
+        val baseUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, entry.id)
+        val expectedUri = ContentProvider.maybeAddUserId(baseUri, USER_ID_PERSONAL)
 
         val events = callOnDoneAndCaptureEvents()
 
@@ -477,12 +482,18 @@ class ContactsViewModelTest {
 
         assertThat(events).hasSize(1)
         val expectedDisplayNameUri =
-            ContactsContract.Contacts.getLookupUri(
-                displayNameContact.id,
-                displayNameContact.lookupKey,
+            ContentProvider.maybeAddUserId(
+                ContactsContract.Contacts.getLookupUri(
+                    displayNameContact.id,
+                    displayNameContact.lookupKey,
+                ),
+                USER_ID_PERSONAL,
             )
         val expectedPhoneUri =
-            ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, entry.id)
+            ContentProvider.maybeAddUserId(
+                ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, entry.id),
+                USER_ID_PERSONAL,
+            )
         assertThat(getUrisFromClipData(events.first()))
             .containsExactly(expectedDisplayNameUri, expectedPhoneUri)
     }
@@ -503,8 +514,8 @@ class ContactsViewModelTest {
 
         assertThat(events).hasSize(1)
         val firstEntry = multiPhoneContact.phones.first()
-        val expectedUri =
-            ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, firstEntry.id)
+        val baseUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, firstEntry.id)
+        val expectedUri = ContentProvider.maybeAddUserId(baseUri, USER_ID_PERSONAL)
 
         assertIntentData(events.first(), expectedUri)
     }
@@ -540,7 +551,8 @@ class ContactsViewModelTest {
         val events = callOnDoneAndCaptureEvents()
 
         assertThat(events).hasSize(1)
-        val expectedUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, entry.id)
+        val baseUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, entry.id)
+        val expectedUri = ContentProvider.maybeAddUserId(baseUri, USER_ID_PERSONAL)
         assertIntentData(events.first(), expectedUri)
     }
 
@@ -576,7 +588,8 @@ class ContactsViewModelTest {
         val events = callOnDoneAndCaptureEvents()
 
         assertThat(events).hasSize(1)
-        val expectedUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, entry.id)
+        val baseUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, entry.id)
+        val expectedUri = ContentProvider.maybeAddUserId(baseUri, USER_ID_PERSONAL)
         assertIntentData(events.first(), expectedUri)
     }
 
@@ -1055,8 +1068,14 @@ class ContactsViewModelTest {
         return (0 until clipData!!.itemCount).map { index -> clipData.getItemAt(index).uri }
     }
 
-    private fun getExpectedDataUris(dataIds: List<Long>): List<Uri> {
-        return dataIds.map { ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, it) }
+    private fun getExpectedDataUris(
+        dataIds: List<Long>,
+        userId: Int = USER_ID_PERSONAL,
+    ): List<Uri> {
+        return dataIds.map {
+            val baseUri = ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, it)
+            ContentProvider.maybeAddUserId(baseUri, userId)
+        }
     }
 
     /**
@@ -1598,5 +1617,58 @@ class ContactsViewModelTest {
 
         assertThat(fakeContactsRepository.getContactsInvocationsCount())
             .isEqualTo(initialLoadCount + 1)
+    }
+
+    @Test
+    fun onDoneClicked_actionPick_appendsUserIdToResultUri() = runTest {
+        val workAppUid = UserHandle.getUid(USER_ID_WORK, TEST_APP_ID)
+
+        val contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
+        initializeViewModelForLegacyActionPick(listOf(contact), callingAppUid = workAppUid)
+        viewModel.toggleContactSelection(contact)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val baseUri = ContactsContract.Contacts.getLookupUri(contact.id, contact.lookupKey)
+        val expectedUri = ContentProvider.maybeAddUserId(baseUri, USER_ID_WORK)
+
+        val events = callOnDoneAndCaptureEvents()
+
+        assertThat(events).hasSize(1)
+        val resultIntent = (events.first() as PickerResultEvent.SetResultAndFinish).intent
+        assertThat(resultIntent.data).isEqualTo(expectedUri)
+        assertThat(ContentProvider.getUserIdFromUri(resultIntent.data)).isEqualTo(USER_ID_WORK)
+    }
+
+    @Test
+    fun onDoneClicked_actionPick_multiSelect_appendsUserIdToResultUris() = runTest {
+        val workAppUid = UserHandle.getUid(USER_ID_WORK, TEST_APP_ID)
+
+        val contact1 = ContactTestDataFactory.createDisplayNameContact(1L, "A")
+        val contact2 = ContactTestDataFactory.createDisplayNameContact(2L, "B")
+
+        initializeViewModelForLegacyActionPick(
+            listOf(contact1, contact2),
+            buildIntentExtrasWithMultiSelect(true),
+            callingAppUid = workAppUid,
+        )
+        viewModel.toggleContactSelection(contact1)
+        viewModel.toggleContactSelection(contact2)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val uri1 =
+            ContentProvider.maybeAddUserId(
+                ContactsContract.Contacts.getLookupUri(contact1.id, contact1.lookupKey),
+                USER_ID_WORK,
+            )
+        val uri2 =
+            ContentProvider.maybeAddUserId(
+                ContactsContract.Contacts.getLookupUri(contact2.id, contact2.lookupKey),
+                USER_ID_WORK,
+            )
+
+        val events = callOnDoneAndCaptureEvents()
+
+        assertThat(events).hasSize(1)
+        assertThat(getUrisFromClipData(events.first())).containsExactly(uri1, uri2)
     }
 }

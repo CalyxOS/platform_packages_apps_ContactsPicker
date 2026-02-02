@@ -132,7 +132,11 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
                     TAG,
                     "Handling ${intent.action} for $callingPackage (targetSDK=${appInfo.targetSdkVersion}) internally.",
                 )
-                processIntentAndSetupUi(intent, callingAppName, appInfo.uid)
+                processIntentAndSetupUi(
+                    intent,
+                    callingAppName,
+                    callingPackageProvider.getCallingAppUid(),
+                )
             } else {
                 Log.d(
                     TAG,
