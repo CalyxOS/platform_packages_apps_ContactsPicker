@@ -90,7 +90,7 @@ class ContactsRepositoryImplTest {
     @Before
     fun setUp() {
         val providerInfo = ProviderInfo().apply { authority = ContactsContract.AUTHORITY }
-        fakeContentProvider.attachInfo(mockContext, providerInfo)
+        fakeContentProvider.attachInfo(context, providerInfo)
 
         mockContentResolver.addProvider(
             "$CURRENT_USER_ID@${ContactsContract.AUTHORITY}",

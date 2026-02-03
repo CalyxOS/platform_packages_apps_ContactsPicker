@@ -56,7 +56,7 @@ class ContactsRepositorySearchTest {
     @Before
     fun setUp() {
         val providerInfo = ProviderInfo().apply { authority = ContactsContract.AUTHORITY }
-        fakeContentProvider.attachInfo(mockContext, providerInfo)
+        fakeContentProvider.attachInfo(context, providerInfo)
 
         mockContentResolver.addProvider(ContactsContract.AUTHORITY, fakeContentProvider)
         mockContentResolver.addProvider(
