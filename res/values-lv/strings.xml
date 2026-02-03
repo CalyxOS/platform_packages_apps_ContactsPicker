@@ -23,6 +23,7 @@
     <string name="contacts_picker_chooser_activity_title" msgid="2187765291094588596">"Kontaktpersonu atlasītājs"</string>
     <string name="contacts_picker_chooser_activity_no_app_can_handle_action" msgid="5179706900892295633">"Šo darbību nevar veikt neviena lietotne."</string>
     <string name="contacts_picker_top_bar_search_placeholder_hint" msgid="327380354282823462">"Meklēt"</string>
+    <string name="contacts_picker_search_expanded_hint" msgid="5748895040745140240">"Meklēt kontaktpersonas"</string>
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"Meklēt"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"Notīrīt meklēšanas laukā ievadīto tekstu"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"Aizvērt meklēšanu"</string>
@@ -59,4 +60,10 @@
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Jūsu kontaktpersonu konfidencialitāte"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Vēl nav nevienas kontaktpersonas"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Šeit tiks rādītas kontaktpersonas, ko izveidojat vai importējat savā ierīcē."</string>
+    <string name="user_type_personal" msgid="45376141973820399">"Personīgs"</string>
+    <string name="user_type_unknown" msgid="8943747357005052121">"%1$d. lietotājs"</string>
+    <string name="picker_profile_paused_title" msgid="4083321530415544679">"Apturēta %s lietotņu darbība"</string>
+    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Lai atvērtu %1$s kontaktpersonas, ieslēdziet savas %2$s lietotnes un pēc tam mēģiniet vēlreiz."</string>
+    <string name="picker_profile_admin_title" msgid="143963419213132290">"Bloķējis jūsu administrators"</string>
+    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"Piekļuve %1$s datiem no %2$s lietotnes nav atļauta."</string>
 </resources>

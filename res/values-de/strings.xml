@@ -23,6 +23,7 @@
     <string name="contacts_picker_chooser_activity_title" msgid="2187765291094588596">"Kontaktauswahl"</string>
     <string name="contacts_picker_chooser_activity_no_app_can_handle_action" msgid="5179706900892295633">"Diese Aktion kann von keiner App ausgeführt werden."</string>
     <string name="contacts_picker_top_bar_search_placeholder_hint" msgid="327380354282823462">"Suchen"</string>
+    <string name="contacts_picker_search_expanded_hint" msgid="5748895040745140240">"Kontakte durchsuchen"</string>
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"Suchen"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"Suchbegriff löschen"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"Suche schließen"</string>
@@ -59,4 +60,10 @@
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Datenschutzeinstellungen deiner Kontakte"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Noch keine Kontakte vorhanden"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Hier werden die Kontakte angezeigt, die du erstellst oder auf dein Gerät importierst"</string>
+    <string name="user_type_personal" msgid="45376141973820399">"privaten"</string>
+    <string name="user_type_unknown" msgid="8943747357005052121">"Nutzer %1$d"</string>
+    <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s Apps sind pausiert"</string>
+    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Wenn du %1$s Kontakte öffnen möchtest, aktiviere deine %2$s Apps und versuche es noch einmal"</string>
+    <string name="picker_profile_admin_title" msgid="143963419213132290">"Vom Administrator blockiert"</string>
+    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"Der Zugriff auf %1$s-Daten aus einer %2$s App ist nicht zulässig"</string>
 </resources>

@@ -23,6 +23,7 @@
     <string name="contacts_picker_chooser_activity_title" msgid="2187765291094588596">"संपर्क पिकर"</string>
     <string name="contacts_picker_chooser_activity_no_app_can_handle_action" msgid="5179706900892295633">"कोणतेही अ‍ॅप्लिकेशन ही कृती हाताळू शकत नाही."</string>
     <string name="contacts_picker_top_bar_search_placeholder_hint" msgid="327380354282823462">"शोधा"</string>
+    <string name="contacts_picker_search_expanded_hint" msgid="5748895040745140240">"तुमचे संपर्क शोधा"</string>
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"शोधा"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"शोध मजकूर साफ करा"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"शोध बंद करा"</string>
@@ -59,4 +60,10 @@
     <string name="privacy_details_menu_label" msgid="497348969731766203">"तुमच्या संपर्कांची गोपनीयता"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"अद्याप कोणतेही संपर्क नाहीत"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"तुम्ही तुमच्या डिव्हाइसवर तयार केलेले किंवा इंपोर्ट केलेले संपर्क इथे दिसतील"</string>
+    <string name="user_type_personal" msgid="45376141973820399">"वैयक्तिक"</string>
+    <string name="user_type_unknown" msgid="8943747357005052121">"वापरकर्ता %1$d"</string>
+    <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s अ‍ॅप्स थांबवली आहेत"</string>
+    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"%1$s संपर्क उघडण्यासाठी, तुमची %2$s ॲप्स सुरू करा, त्यानंतर पुन्हा प्रयत्न करा"</string>
+    <string name="picker_profile_admin_title" msgid="143963419213132290">"तुमच्या ॲडमिनने ब्लॉक केले आहे"</string>
+    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"%2$s ॲपवरून %1$s डेटा ॲक्सेस करण्याची परवानगी नाही"</string>
 </resources>
