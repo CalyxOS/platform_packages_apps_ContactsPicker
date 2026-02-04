@@ -41,10 +41,10 @@ constructor(
 ) {
 
     open fun createProfile(userInfo: UserInfo, callingPackage: String?): UserProfile {
-        return when {
-            userInfo.isManagedProfile -> createWorkProfile(userInfo, callingPackage)
-            userInfo.isCloneProfile -> createCloneProfile(userInfo)
-            userInfo.isPrivateProfile -> createPrivateProfile(userInfo)
+        return when (userInfo.userType) {
+            UserManager.USER_TYPE_PROFILE_MANAGED -> createWorkProfile(userInfo, callingPackage)
+            UserManager.USER_TYPE_PROFILE_CLONE -> createCloneProfile(userInfo)
+            UserManager.USER_TYPE_PROFILE_PRIVATE -> createPrivateProfile(userInfo)
             else -> createPersonalProfile(userInfo)
         }
     }
