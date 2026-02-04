@@ -26,6 +26,7 @@ android_test {
         "src/**/*.kt",
     ],
     static_libs: [
+        "Nene",
         "android.content.flags-aconfig-java",
         "android.test.mock.stubs",
         "androidx.compose.material3_material3",
