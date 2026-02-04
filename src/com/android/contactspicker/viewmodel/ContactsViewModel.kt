@@ -16,6 +16,7 @@
 package com.android.contactspicker.viewmodel
 
 import android.content.ClipData
+import android.content.ContentProvider
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -131,6 +132,8 @@ constructor(
     private var loadContactsJob: Job? = null
     private var cachedStateBeforePreview: ContactsUiState? = null
     private var callingAppUid: Int = -1
+    private val callingUserId: Int
+        get() = UserHandle.getUserId(callingAppUid)
 
     private var pickerConfig: ContactsPickerRequestConfig? = null
 
@@ -369,9 +372,7 @@ constructor(
                             // it.copy(isLoading = true) }
                             val selectedIds = handler.getSelectedIds()
 
-                            val userId =
-                                _userStates.value?.selectedUserId
-                                    ?: UserHandle.getUserId(callingAppUid)
+                            val userId = _userStates.value?.selectedUserId ?: callingUserId
                             val intent =
                                 createActionPickContactsResult(
                                     selectedIds,
@@ -398,15 +399,17 @@ constructor(
             return null
         }
 
+        val resultUris = uris.map { ContentProvider.maybeAddUserId(it, callingUserId) }
+
         return Intent().apply {
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             if (isMultiSelectEnabled) {
                 clipData =
-                    ClipData.newUri(contentResolver, "uri", uris.first()).apply {
-                        uris.drop(1).forEach { addItem(ClipData.Item(it)) }
+                    ClipData.newUri(contentResolver, "uri", resultUris.first()).apply {
+                        resultUris.drop(1).forEach { addItem(ClipData.Item(it)) }
                     }
             } else {
-                data = uris.first()
+                data = resultUris.first()
             }
         }
     }
