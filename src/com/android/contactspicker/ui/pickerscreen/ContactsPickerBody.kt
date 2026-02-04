@@ -15,10 +15,14 @@
  */
 package com.android.contactspicker.ui.pickerscreen
 
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
@@ -33,6 +37,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -51,6 +57,9 @@ import kotlinx.coroutines.flow.collectLatest
 
 const val CONTACTS_LIST_TEST_TAG = "contacts_list"
 const val MIN_CONTACTS_COUNT_FOR_SCRUBBER_ACTIVATION = 50
+
+// SelectionBottomBar height (56dp) + bottom padding (24dp) + clearance (16dp)
+private val SELECTION_BAR_HEIGHT_SPACE = 96.dp
 
 /**
  * Displays the main content of the contact picker, including a privacy banner and a vertically
@@ -111,6 +120,18 @@ fun ContactsPickerBody(
         } else {
             true
         }
+    val density = LocalDensity.current
+    // TODO(b/464529057): Verify the animation when deselecting the last contact.
+    LaunchedEffect(selectedContacts.isNotEmpty()) {
+        if (selectedContacts.isNotEmpty()) {
+            // Only auto-scroll if the user has scrolled down a bit (is not at the very top).
+            // This prevents the UI from "jumping" if the user selects the very first item.
+            if (listState.canScrollBackward) {
+                val scrollPixelAmount = with(density) { SELECTION_BAR_HEIGHT_SPACE.toPx() }
+                listState.animateScrollBy(scrollPixelAmount)
+            }
+        }
+    }
 
     Box(modifier = Modifier.fillMaxWidth()) {
         ContactsList(
@@ -153,11 +174,27 @@ private fun ContactsList(
     onToggleContactSelection: (Contact) -> Unit,
     onToggleEntrySelection: (Long, Long) -> Unit,
 ) {
+
+    val layoutDirection = LocalLayoutDirection.current
+    val navBarsPadding = WindowInsets.navigationBars.asPaddingValues()
+
+    // Calculate the total bottom padding: System Bars + Selection Bar (if visible)
+    val extraBottomPadding = if (selectedContacts.isNotEmpty()) SELECTION_BAR_HEIGHT_SPACE else 0.dp
+    val totalBottomPadding = navBarsPadding.calculateBottomPadding() + extraBottomPadding
+
+    val listContentPadding =
+        PaddingValues(
+            start = navBarsPadding.calculateStartPadding(layoutDirection),
+            end = navBarsPadding.calculateEndPadding(layoutDirection),
+            top = navBarsPadding.calculateTopPadding(),
+            bottom = totalBottomPadding,
+        )
+
     LazyColumn(
         state = listState,
         userScrollEnabled = userScrollEnabled,
         modifier = Modifier.fillMaxWidth().testTag(CONTACTS_LIST_TEST_TAG),
-        contentPadding = WindowInsets.navigationBars.asPaddingValues(),
+        contentPadding = listContentPadding,
     ) {
         if (showPrivacyBanner) {
             item(key = "privacy_banner") {
