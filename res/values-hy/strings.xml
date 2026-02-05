@@ -23,6 +23,7 @@
     <string name="contacts_picker_chooser_activity_title" msgid="2187765291094588596">"Կոնտակտների ընտրիչ"</string>
     <string name="contacts_picker_chooser_activity_no_app_can_handle_action" msgid="5179706900892295633">"Ոչ մի հավելված չի կարող կատարել այս գործողությունը։"</string>
     <string name="contacts_picker_top_bar_search_placeholder_hint" msgid="327380354282823462">"Որոնել"</string>
+    <string name="contacts_picker_search_expanded_hint" msgid="5748895040745140240">"Որոնեք կոնտակտներ"</string>
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"Որոնել"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"Մաքրել որոնման դաշտը"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"Փակել որոնումը"</string>
@@ -59,4 +60,10 @@
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Ձեր կոնտակտների գաղտնիությունը"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Կոնտակտներ դեռ չկան"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Այստեղ կցուցադրվեն ձեր ստեղծած կամ ձեր սարք ներմուծված կոնտակտները"</string>
+    <string name="user_type_personal" msgid="45376141973820399">"Անձնական"</string>
+    <string name="user_type_unknown" msgid="8943747357005052121">"Օգտատեր %1$d"</string>
+    <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s հավելվածները դադարեցված են"</string>
+    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Որպեսզի բացեք %1$s կոնտակտները, միացրեք ձեր %2$s հավելվածները, այնուհետև նորից փորձեք"</string>
+    <string name="picker_profile_admin_title" msgid="143963419213132290">"Արգելափակված է ձեր ադմինիստրատորի կողմից"</string>
+    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"%2$s հավելվածում %1$s տվյալների հասանելիությունն արգելված է"</string>
 </resources>
