@@ -1414,19 +1414,6 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun onContactsPermissionGranted_reloadsForSelectedUser() = runTest {
-        val selectedUserId = USER_ID_WORK
-        userStateFlow.value = PickerUserState.Success(emptyMap(), selectedUserId)
-        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
-        val initialCount = fakeContactsRepository.getContactsInvocationsCount()
-
-        viewModel.onContactsPermissionGranted()
-        testDispatcher.scheduler.advanceUntilIdle()
-
-        assertThat(fakeContactsRepository.getContactsInvocationsCount()).isEqualTo(initialCount + 1)
-    }
-
-    @Test
     fun onDoneClicked_usesSelectedUserIdForSession() = runTest {
         val selectedUserId = USER_ID_SECONDARY
         userStateFlow.value = PickerUserState.Success(emptyMap(), selectedUserId)

@@ -690,13 +690,6 @@ constructor(
             }
         cachedStateBeforePreview = null
     }
-
-    // TODO(b/12345678): remove once the permission is pregranted
-    open fun onContactsPermissionGranted() {
-        val config = pickerConfig ?: return
-        val userState = _userState.value as? PickerUserState.Success ?: return
-        loadContactsListData(config, userState)
-    }
 }
 
 /** Aggregates search results into a list of unique contacts, grouping entries by contact ID. */
