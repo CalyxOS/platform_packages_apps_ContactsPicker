@@ -23,6 +23,7 @@
     <string name="contacts_picker_chooser_activity_title" msgid="2187765291094588596">"Сродак выбару кантактаў"</string>
     <string name="contacts_picker_chooser_activity_no_app_can_handle_action" msgid="5179706900892295633">"Няма праграмы для апрацоўкі дзеяння."</string>
     <string name="contacts_picker_top_bar_search_placeholder_hint" msgid="327380354282823462">"Пошук"</string>
+    <string name="contacts_picker_search_expanded_hint" msgid="5748895040745140240">"Пошук кантактаў"</string>
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"Пошук"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"Выдаліць тэкст пошуку"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"Закрыць пошук"</string>
@@ -59,4 +60,10 @@
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Прыватнасць вашых кантактаў"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Пакуль кантактаў няма"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Тут будуць паказвацца кантакты, якія вы ствараеце або імпартуеце на прыладу"</string>
+    <string name="user_type_personal" msgid="45376141973820399">"Асабісты"</string>
+    <string name="user_type_unknown" msgid="8943747357005052121">"Карыстальнік %1$d"</string>
+    <string name="picker_profile_paused_title" msgid="4083321530415544679">"Праграмы з профілю \"%s\" прыпынены"</string>
+    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Каб адкрыць кантакты з профілю \"%1$s,\" уключыце праграмы з профілю \"%2$s\" і паўтарыце спробу"</string>
+    <string name="picker_profile_admin_title" msgid="143963419213132290">"Заблакіравана вашым адміністратарам"</string>
+    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"Праграма з профілю \"%2$s\" не можа выкарыстоўваць даныя з профілю \"%1$s\""</string>
 </resources>

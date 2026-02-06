@@ -24,6 +24,7 @@ import android.os.UserHandle
 import android.os.UserManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.contactspicker.R
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -50,11 +51,11 @@ class ProfileInfoCacheTest {
         private const val USER_ID_PERSONAL = 0
         private const val USER_ID_WORK = 10
         private const val USER_ID_PRIVATE = 12
-        private const val USER_ID_GUEST = 11
+        private const val USER_ID_CLONE = 11
         private const val USER_NAME_PERSONAL = "Personal"
         private const val USER_NAME_WORK = "Work"
         private const val USER_NAME_PRIVATE = "Private"
-        private const val USER_NAME_GUEST = "Guest"
+        private const val USER_NAME_CLONE = "Clone"
         private const val LABEL_WORK = "Work Profile Label"
         private const val LABEL_PRIVATE = "Private Profile Label"
         private const val LABEL_PERSONAL = "Personal"
@@ -137,14 +138,14 @@ class ProfileInfoCacheTest {
 
     @Test
     fun getSwitchableProfileInfo_returnsUnknownLabel_ifNotSupported() {
-        val userId = USER_ID_GUEST
-        val userInfo = UserInfo(userId, USER_NAME_GUEST, 0)
+        val userId = USER_ID_CLONE
+        val userInfo = UserInfo(userId, USER_NAME_CLONE, 0)
         whenever(mockUserManager.getProfileParent(userInfo.userHandle)) doReturn
             UserHandle.of(USER_ID_PERSONAL)
 
         val result = profileInfoCache.getSwitchableProfileInfo(userInfo)
 
-        assertThat(result.label).isEqualTo("User $USER_ID_GUEST")
+        assertThat(result.label).isEqualTo(context.getString(R.string.user_type_unknown_label))
     }
 
     @Test

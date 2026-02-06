@@ -25,6 +25,8 @@ import javax.inject.Inject
  */
 interface CallingPackageProvider {
     fun get(): String?
+
+    fun getCallingAppUid(): Int
 }
 
 /** Production implementation that retrieves the real calling package from the Activity. */
@@ -32,4 +34,6 @@ interface CallingPackageProvider {
 class CallingPackageProviderImpl @Inject constructor(private val activity: Activity) :
     CallingPackageProvider {
     override fun get(): String? = activity.callingPackage
+
+    override fun getCallingAppUid(): Int = activity.launchedFromUid
 }

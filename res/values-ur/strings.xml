@@ -23,6 +23,7 @@
     <string name="contacts_picker_chooser_activity_title" msgid="2187765291094588596">"رابطے منتخب کنندہ"</string>
     <string name="contacts_picker_chooser_activity_no_app_can_handle_action" msgid="5179706900892295633">"کوئی ایپلیکیشن اس کارروائی کو ہینڈل نہیں کر سکتی۔"</string>
     <string name="contacts_picker_top_bar_search_placeholder_hint" msgid="327380354282823462">"تلاش کریں"</string>
+    <string name="contacts_picker_search_expanded_hint" msgid="5748895040745140240">"اپنے رابطوں کو تلاش کریں"</string>
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"تلاش کریں"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"تلاش کا ٹیکسٹ صاف کریں"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"تلاش بند کریں"</string>
@@ -59,4 +60,10 @@
     <string name="privacy_details_menu_label" msgid="497348969731766203">"آپ کے رابطوں کی رازداری"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"اب تک کوئی رابطے نہیں"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"آپ کے تخلیق کردہ یا آپ کے آلہ میں درآمد کردہ رابطے یہاں ظاہر ہوں گے"</string>
+    <string name="user_type_personal" msgid="45376141973820399">"ذاتی"</string>
+    <string name="user_type_unknown" msgid="8943747357005052121">"‏صارف ‎%1$d"</string>
+    <string name="picker_profile_paused_title" msgid="4083321530415544679">"‏‫‎%s ایپس موقوف ہیں"</string>
+    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"‏‫%1$s کے رابطے کھولنے کیلئے، اپنی ‎%2$s ایپس کو آن کریں، پھر دوبارہ کوشش کریں"</string>
+    <string name="picker_profile_admin_title" msgid="143963419213132290">"آپ کے منتظم کے ذریعے مسدود کردہ"</string>
+    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"‏‫%2$s ایپ سے ‎%1$s ڈیٹا تک رسائی کی اجازت نہیں ہے"</string>
 </resources>

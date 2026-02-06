@@ -16,6 +16,7 @@
 package com.android.contactspicker.viewmodel
 
 import android.content.ClipData
+import android.content.ContentProvider
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -41,7 +42,6 @@ import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.model.PickerUserStates
 import com.android.contactspicker.data.model.ProfileBlockedDialogData
 import com.android.contactspicker.data.model.UserProfile
-import com.android.contactspicker.data.model.UserType
 import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.data.repository.ContactsPickerSessionProviderRepository
 import com.android.contactspicker.data.repository.ContactsRepository
@@ -127,10 +127,13 @@ constructor(
 
     private var initialContacts: List<Contact> = emptyList()
     private var callingAppName: String? = null
+    private var callingPackageName: String? = null
     private var searchJob: Job? = null
     private var loadContactsJob: Job? = null
     private var cachedStateBeforePreview: ContactsUiState? = null
     private var callingAppUid: Int = -1
+    private val callingUserId: Int
+        get() = UserHandle.getUserId(callingAppUid)
 
     private var pickerConfig: ContactsPickerRequestConfig? = null
 
@@ -165,9 +168,11 @@ constructor(
         intentType: String?,
         intentExtras: Bundle?,
         callingAppName: String?,
+        callingPackageName: String?,
         callingAppUid: Int,
     ) {
         this.callingAppName = callingAppName
+        this.callingPackageName = callingPackageName
         this.callingAppUid = callingAppUid
 
         val config =
@@ -235,40 +240,26 @@ constructor(
         userStatesCollectorJob?.cancel()
         userStatesCollectorJob =
             viewModelScope.launch {
-                userRepository.get().getUserStates(callingAppUid).collect { userStates ->
-                    val lastSelectedUserId = _userStates.value?.selectedUserId
-                    val currentSelectedUserId = userStates.selectedUserId
-                    val currentSelectedUserProfile =
-                        userStates.userIdToAvailableUsersMap[currentSelectedUserId]
+                userRepository
+                    .get()
+                    .getUserStates(callingPackageName, UserHandle.getUserId(callingAppUid))
+                    .collect { userStates ->
+                        val lastSelectedUserId = _userStates.value?.selectedUserId
+                        val currentSelectedUserId = userStates.selectedUserId
 
-                    _userStates.value = userStates
+                        _userStates.value = userStates
 
-                    if (lastSelectedUserId != currentSelectedUserId) {
+                        if (lastSelectedUserId == currentSelectedUserId) {
+                            return@collect
+                        }
+
                         // User switched. Clear selection (if not initial load) and reload.
                         if (lastSelectedUserId != null) {
                             clearSelection()
                         }
                         loadContactsListData(config, userStates)
-                    } else {
-                        // Same user. Only reload for volatile profiles (Work/Private).
-                        // Stable profiles (Personal) don't need background refreshes.
-                        // TODO(478483377): Remove this reload logic once a dedicated
-                        // Paused/Unavailable screen is implemented.
-                        if (shouldReloadVolatileProfile(currentSelectedUserProfile)) {
-                            loadContactsListData(config, userStates)
-                        }
                     }
-                }
             }
-    }
-
-    // TODO(b/479464524): Optimize profile data reload during changes in profiles to only update
-    // the modified profile
-    private fun shouldReloadVolatileProfile(profile: UserProfile?): Boolean {
-        // Always reload Work/Private profiles to handle race conditions where the Contacts Provider
-        // briefly returns stale data after a state change (e.g., Quiet Mode). This ensures the UI
-        // eventually clears when the profile becomes truly unavailable.
-        return profile?.userType == UserType.WORK || profile?.userType == UserType.PRIVATE
     }
 
     private fun loadContactsListData(
@@ -369,9 +360,7 @@ constructor(
                             // it.copy(isLoading = true) }
                             val selectedIds = handler.getSelectedIds()
 
-                            val userId =
-                                _userStates.value?.selectedUserId
-                                    ?: UserHandle.getUserId(callingAppUid)
+                            val userId = _userStates.value?.selectedUserId ?: callingUserId
                             val intent =
                                 createActionPickContactsResult(
                                     selectedIds,
@@ -398,15 +387,17 @@ constructor(
             return null
         }
 
+        val resultUris = uris.map { ContentProvider.maybeAddUserId(it, callingUserId) }
+
         return Intent().apply {
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             if (isMultiSelectEnabled) {
                 clipData =
-                    ClipData.newUri(contentResolver, "uri", uris.first()).apply {
-                        uris.drop(1).forEach { addItem(ClipData.Item(it)) }
+                    ClipData.newUri(contentResolver, "uri", resultUris.first()).apply {
+                        resultUris.drop(1).forEach { addItem(ClipData.Item(it)) }
                     }
             } else {
-                data = uris.first()
+                data = resultUris.first()
             }
         }
     }

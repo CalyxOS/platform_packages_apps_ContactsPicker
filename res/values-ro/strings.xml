@@ -23,6 +23,7 @@
     <string name="contacts_picker_chooser_activity_title" msgid="2187765291094588596">"Selector de contacte"</string>
     <string name="contacts_picker_chooser_activity_no_app_can_handle_action" msgid="5179706900892295633">"Nicio aplicație nu poate gestiona această acțiune."</string>
     <string name="contacts_picker_top_bar_search_placeholder_hint" msgid="327380354282823462">"Căutați"</string>
+    <string name="contacts_picker_search_expanded_hint" msgid="5748895040745140240">"Caută în agendă"</string>
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"Căutați"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"Ștergeți textul căutării"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"Închideți căutarea"</string>
@@ -59,4 +60,10 @@
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Confidențialitatea agendei dvs."</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Nicio persoană de contact"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Persoanele de contact pe care le creați sau le importați pe dispozitiv vor apărea aici"</string>
+    <string name="user_type_personal" msgid="45376141973820399">"Personal"</string>
+    <string name="user_type_unknown" msgid="8943747357005052121">"Utilizator %1$d"</string>
+    <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s aplicații sunt întrerupte"</string>
+    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Pentru a deschide persoanele de contact din %1$s, activați aplicațiile %2$s și încercați din nou"</string>
+    <string name="picker_profile_admin_title" msgid="143963419213132290">"Blocat de administrator"</string>
+    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"Nu se permite accesarea datelor despre %1$s dintr-o aplicație cu profil %2$s"</string>
 </resources>

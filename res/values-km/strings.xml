@@ -23,6 +23,7 @@
     <string name="contacts_picker_chooser_activity_title" msgid="2187765291094588596">"ផ្ទាំងជ្រើសរើស​ទំនាក់ទំនង"</string>
     <string name="contacts_picker_chooser_activity_no_app_can_handle_action" msgid="5179706900892295633">"គ្មានកម្មវិធី​ដែលអាច​គ្រប់គ្រង​សកម្មភាពនេះ​បានទេ។"</string>
     <string name="contacts_picker_top_bar_search_placeholder_hint" msgid="327380354282823462">"ស្វែងរក"</string>
+    <string name="contacts_picker_search_expanded_hint" msgid="5748895040745140240">"ស្វែងរក​ទំនាក់ទំនង​របស់អ្នក"</string>
     <string name="contacts_picker_top_bar_search_icon_content_description" msgid="176636737534343950">"ស្វែងរក"</string>
     <string name="contacts_picker_top_bar_search_clear_text_content_description" msgid="5304568529121015922">"សម្អាត​អក្សរ​ស្វែងរក"</string>
     <string name="contacts_picker_top_bar_search_arrow_back_content_description" msgid="5352118000652542537">"បិទ​ការ​ស្វែងរក"</string>
@@ -59,4 +60,10 @@
     <string name="privacy_details_menu_label" msgid="497348969731766203">"ឯកជនភាព​របស់​ទំនាក់ទំនង​អ្នក"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"មិន​ទាន់​មាន​ទំនាក់ទំនង​ទេ"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"ទំនាក់ទំនង​ដែលអ្នក​បង្កើត ឬនាំចូល​ទៅឧបករណ៍​របស់អ្នក​នឹង​បង្ហាញ​នៅទីនេះ"</string>
+    <string name="user_type_personal" msgid="45376141973820399">"ផ្ទាល់ខ្លួន"</string>
+    <string name="user_type_unknown" msgid="8943747357005052121">"អ្នកប្រើប្រាស់​ទី %1$d"</string>
+    <string name="picker_profile_paused_title" msgid="4083321530415544679">"កម្មវិធី %s ត្រូវបាន​ផ្អាក"</string>
+    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"ដើម្បីបើក​ទំនាក់ទំនង %1$s សូមបើក​កម្មវិធី %2$s របស់អ្នក រួច​ព្យាយាម​ម្ដងទៀត"</string>
+    <string name="picker_profile_admin_title" msgid="143963419213132290">"បាន​ទប់ស្កាត់​ដោយ​អ្នកគ្រប់គ្រង​របស់អ្នក"</string>
+    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"មិនអនុញ្ញាត​ឱ្យ​ចូលប្រើ​ទិន្នន័យ %1$s ពីកម្មវិធី %2$s ទេ"</string>
 </resources>

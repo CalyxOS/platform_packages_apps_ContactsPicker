@@ -81,7 +81,7 @@ constructor(
             return context.getString(R.string.user_type_personal)
         }
 
-        val unknownUserLabel = context.getString(R.string.user_type_unknown, userInfo.id)
+        val unknownUserLabel = context.getString(R.string.user_type_unknown_label)
         val isLabelSupported = userInfo.isManagedProfile || userInfo.isPrivateProfile
         if (isLabelSupported) {
             return userProfileManager?.profileLabel ?: unknownUserLabel

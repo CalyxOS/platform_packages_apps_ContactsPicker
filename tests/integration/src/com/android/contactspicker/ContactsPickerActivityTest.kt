@@ -150,7 +150,14 @@ class ContactsPickerActivityTest {
         whenever(mockViewModel.snackbarEvents).thenReturn(emptyFlow())
         doNothing()
             .whenever(mockViewModel)
-            .processIntent(anyOrNull(), anyOrNull(), anyOrNull(), anyOrNull(), anyInt())
+            .processIntent(
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyOrNull(),
+                anyInt(),
+            )
         doNothing().whenever(mockViewModel).onDoneClicked()
         whenever(mockViewModel.pickerResultEvents).thenReturn(mockEventsFlow)
     }
@@ -538,6 +545,7 @@ class ContactsPickerActivityTest {
     fun processIntent_throwsIllegalArgumentException_finishesWithResultCanceled() {
         whenever(
                 mockViewModel.processIntent(
+                    anyOrNull(),
                     anyOrNull(),
                     anyOrNull(),
                     anyOrNull(),

@@ -134,7 +134,7 @@ fun ContactDataFieldRow(
                         modifier = Modifier.padding(8.dp).size(24.dp),
                         imageVector = iconData.imageVector,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        contentDescription = stringResource(id = data.contentDescriptionResId),
+                        contentDescription = null, // disregard for accessibility
                     )
                 }
                 is IconResource.Painter -> {
@@ -142,7 +142,7 @@ fun ContactDataFieldRow(
                         modifier = Modifier.padding(8.dp).size(24.dp),
                         painter = painterResource(id = iconData.id),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        contentDescription = stringResource(id = data.contentDescriptionResId),
+                        contentDescription = null, // disregard for accessibility
                     )
                 }
             }

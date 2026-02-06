@@ -16,14 +16,12 @@
 
 package com.android.contactspicker.data.repository
 
-import android.content.Context
 import android.os.UserHandle
 import android.os.UserManager
 import com.android.contactspicker.data.model.PickerUserStates
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.repository.utils.ProfileChangesMonitor
 import com.android.contactspicker.data.repository.utils.UserProfileFactory
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
@@ -32,13 +30,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 
 @Singleton
 class UserRepositoryImpl
 @Inject
 constructor(
-    @param:ApplicationContext private val context: Context,
     private val userManager: UserManager,
     private val userProfileFactory: UserProfileFactory,
     private val profileChangesMonitor: ProfileChangesMonitor,
@@ -46,8 +44,12 @@ constructor(
 
     private val _selectedUserId = MutableStateFlow<Int?>(null)
 
-    // TODO(b/479443759): Replace manual UID-to-PackageName conversion with CallingPackageProvider
-    override fun getUserStates(callingAppUid: Int): Flow<PickerUserStates> {
+    // TODO(b/479464524): Optimize profile data reload during changes in profiles to only update
+    // the modified profile
+    override fun getUserStates(
+        callingPackageName: String?,
+        callingUserId: Int,
+    ): Flow<PickerUserStates> {
         val profilesFlow =
             profileChangesMonitor
                 .getProfileChangeFlow()
@@ -55,12 +57,24 @@ constructor(
                 .map {
                     // Invalidate the cache to ensure fresh data when profiles change
                     userProfileFactory.clearCache()
-                    loadAvailableUsersMap(callingAppUid)
+                    loadAvailableUsersMap(callingPackageName)
+                }
+                .onEach { availableUsersMap ->
+                    // If the explicitly selected profile becomes paused or unavailable, clear the
+                    // explicit selection so the picker falls back permanently and doesn't jump back
+                    // unexpectedly when the profile unpauses.
+                    val currentSelected = _selectedUserId.value
+                    if (currentSelected != null) {
+                        val profile = availableUsersMap[currentSelected]
+                        if (profile == null || profile.pausedInfo != null) {
+                            _selectedUserId.value = null
+                        }
+                    }
                 }
                 .flowOn(Dispatchers.IO)
 
         return combine(profilesFlow, _selectedUserId) { availableUsersMap, selectedUserId ->
-            computePickerUserStates(availableUsersMap, callingAppUid, selectedUserId)
+            computePickerUserStates(availableUsersMap, callingUserId, selectedUserId)
         }
     }
 
@@ -72,39 +86,40 @@ constructor(
         _selectedUserId.emit(null)
     }
 
-    private fun loadAvailableUsersMap(callingAppUid: Int): Map<Int, UserProfile> {
+    private fun loadAvailableUsersMap(callingPackageName: String?): Map<Int, UserProfile> {
         val currentProcessUserId = UserHandle.myUserId()
         val allProfiles = userManager.getProfiles(currentProcessUserId)
 
         return allProfiles.associate { userInfo ->
-            userInfo.id to
-                userProfileFactory.createProfile(
-                    userInfo,
-                    context.packageManager.getNameForUid(callingAppUid),
-                )
+            userInfo.id to userProfileFactory.createProfile(userInfo, callingPackageName)
         }
     }
 
+    /**
+     * Computes the user states for the picker, determining the selected user ID.
+     *
+     * If an explicit selection exists, is valid (in the map), and is not paused, use it. If the
+     * profile is paused (e.g. Quiet Mode), fallback to the default profile.
+     */
     private fun computePickerUserStates(
         userIdToAvailableUsersMap: Map<Int, UserProfile>,
-        callingAppUid: Int,
+        callingUserId: Int,
         userSelectedUserId: Int?,
     ): PickerUserStates {
-        val callingUserId = UserHandle.getUserId(callingAppUid)
         val currentProcessUserId = UserHandle.myUserId()
 
-        // If an explicit selection exists and is valid, use it.
-        // Otherwise, default to the calling user's profile (mapped via logic in factory/map) or
-        // current process user.
+        val selectedProfile = userSelectedUserId?.let { userIdToAvailableUsersMap[it] }
+        val isSelectionValid = selectedProfile != null && selectedProfile.pausedInfo == null
+
         val targetUserId =
-            if (
-                userSelectedUserId != null &&
-                    userIdToAvailableUsersMap.containsKey(userSelectedUserId)
-            ) {
+            if (userSelectedUserId != null && isSelectionValid) {
                 userSelectedUserId
             } else {
-                userIdToAvailableUsersMap[callingUserId]?.userIdToQueryContacts
-                    ?: currentProcessUserId
+                // Ensure the fallback profile is also not paused before defaulting to it.
+                // If the calling app's profile is paused, fallback to the current process user.
+                userIdToAvailableUsersMap[callingUserId]
+                    ?.takeIf { it.pausedInfo == null }
+                    ?.userIdToQueryContacts ?: currentProcessUserId
             }
 
         return PickerUserStates(
