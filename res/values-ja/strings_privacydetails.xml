@@ -23,28 +23,16 @@
     <string name="privacy_details_description" msgid="4299567306628059441">"連絡先を選択すると、%1$s はデバイスの連絡先に登録した次の情報にアクセスできるようになります。\n\n連絡先情報に変更を加えた場合、%1$s は変更内容にはアクセスできません。"</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"連絡先情報には、次の情報が含まれます。"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"名前"</string>
-    <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"名前"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"電話番号"</string>
-    <string name="privacy_details_data_field_phone_content_description" msgid="7843235752923563779">"電話番号"</string>
     <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"メールアドレス"</string>
-    <string name="privacy_details_data_field_email_content_description" msgid="5002819855544687265">"メールアドレス"</string>
     <string name="privacy_details_data_field_address_header" msgid="8063949263754924922">"住所"</string>
-    <string name="privacy_details_data_field_address_content_description" msgid="2723907988123079718">"住所"</string>
     <string name="privacy_details_data_field_organization_header" msgid="5452268926445159613">"会社"</string>
-    <string name="privacy_details_data_field_organization_content_description" msgid="2435135718533739414">"会社"</string>
     <string name="privacy_details_data_field_related_people_header" msgid="3252437046458903319">"関係のあるユーザー"</string>
-    <string name="privacy_details_data_field_related_people_content_description" msgid="8100743003973095458">"関係のあるユーザー"</string>
     <string name="privacy_details_data_field_birthday_header" msgid="2191861462895006673">"誕生日"</string>
-    <string name="privacy_details_data_field_birthday_content_description" msgid="2538948189452868325">"誕生日"</string>
     <string name="privacy_details_data_field_website_header" msgid="5699958653736095218">"ウェブサイト"</string>
-    <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"ウェブサイト"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"ニックネーム"</string>
-    <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"ニックネーム"</string>
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"プロフィール写真"</string>
-    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"プロフィール写真"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"連絡先グループ"</string>
-    <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"連絡先グループ"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"連絡先の設定の一部"</string>
-    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"連絡先の設定の一部"</string>
     <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"連絡先のお気に入りのステータスと、ボイスメールに転送されるかどうかが含まれます"</string>
 </resources>

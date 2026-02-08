@@ -23,28 +23,16 @@
     <string name="privacy_details_description" msgid="4299567306628059441">"Wenn du einen Kontakt auswählst, erhält %1$s Zugriff auf die folgenden Informationen aus deinen auf dem Gerät gespeicherten Kontakten:\n\nWenn du die Kontaktdaten aktualisierst, hat %1$s keinen Zugriff auf die Änderungen."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Kontaktdaten können Folgendes umfassen:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Name"</string>
-    <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"Name"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Telefonnummern"</string>
-    <string name="privacy_details_data_field_phone_content_description" msgid="7843235752923563779">"Telefonnummern"</string>
     <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"E‑Mail-Adressen"</string>
-    <string name="privacy_details_data_field_email_content_description" msgid="5002819855544687265">"E‑Mail-Adressen"</string>
     <string name="privacy_details_data_field_address_header" msgid="8063949263754924922">"Adressen"</string>
-    <string name="privacy_details_data_field_address_content_description" msgid="2723907988123079718">"Adressen"</string>
     <string name="privacy_details_data_field_organization_header" msgid="5452268926445159613">"Unternehmen"</string>
-    <string name="privacy_details_data_field_organization_content_description" msgid="2435135718533739414">"Unternehmen"</string>
     <string name="privacy_details_data_field_related_people_header" msgid="3252437046458903319">"Verbundene Personen"</string>
-    <string name="privacy_details_data_field_related_people_content_description" msgid="8100743003973095458">"Verbundene Personen"</string>
     <string name="privacy_details_data_field_birthday_header" msgid="2191861462895006673">"Geburtstag"</string>
-    <string name="privacy_details_data_field_birthday_content_description" msgid="2538948189452868325">"Geburtstag"</string>
     <string name="privacy_details_data_field_website_header" msgid="5699958653736095218">"Website"</string>
-    <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"Website"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"Alias"</string>
-    <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"Alias"</string>
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"Profilbild"</string>
-    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"Profilbild"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Kontaktgruppe"</string>
-    <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Kontaktgruppe"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"Einige Kontakteinstellungen"</string>
-    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"Einige Kontakteinstellungen"</string>
     <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Umfasst den Favoritenstatus eines Kontakts und ob er an die Mailbox weitergeleitet wird"</string>
 </resources>

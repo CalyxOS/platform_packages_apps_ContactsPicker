@@ -23,28 +23,16 @@
     <string name="privacy_details_description" msgid="4299567306628059441">"Apabila anda memilih kenalan, %1$s akan mempunyai akses kepada maklumat yang berikut daripada kenalan peranti anda.\n\nJika anda membuat sebarang kemaskinian pada maklumat hubungan, %1$s tidak akan mempunyai akses kepada perubahan tersebut."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Maklumat hubungan boleh merangkumi butiran seperti:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Nama"</string>
-    <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"Nama"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Nombor telefon"</string>
-    <string name="privacy_details_data_field_phone_content_description" msgid="7843235752923563779">"Nombor telefon"</string>
     <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"Alamat e-mel"</string>
-    <string name="privacy_details_data_field_email_content_description" msgid="5002819855544687265">"Alamat e-mel"</string>
     <string name="privacy_details_data_field_address_header" msgid="8063949263754924922">"Alamat"</string>
-    <string name="privacy_details_data_field_address_content_description" msgid="2723907988123079718">"Alamat"</string>
     <string name="privacy_details_data_field_organization_header" msgid="5452268926445159613">"Syarikat"</string>
-    <string name="privacy_details_data_field_organization_content_description" msgid="2435135718533739414">"Syarikat"</string>
     <string name="privacy_details_data_field_related_people_header" msgid="3252437046458903319">"Orang berkaitan"</string>
-    <string name="privacy_details_data_field_related_people_content_description" msgid="8100743003973095458">"Orang berkaitan"</string>
     <string name="privacy_details_data_field_birthday_header" msgid="2191861462895006673">"Hari Lahir"</string>
-    <string name="privacy_details_data_field_birthday_content_description" msgid="2538948189452868325">"Hari Lahir"</string>
     <string name="privacy_details_data_field_website_header" msgid="5699958653736095218">"Laman web"</string>
-    <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"Laman web"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"Nama panggilan"</string>
-    <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"Nama panggilan"</string>
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"Gambar profil"</string>
-    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"Gambar profil"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Kumpulan kenalan"</string>
-    <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Kumpulan kenalan"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"Beberapa pilihan hubungan"</string>
-    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"Beberapa pilihan hubungan"</string>
     <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Termasuk status kegemaran kenalan dan sama ada panggilan mereka dihantar kepada mel suara atau tidak"</string>
 </resources>

@@ -23,28 +23,16 @@
     <string name="privacy_details_description" msgid="4299567306628059441">"Όταν επιλέγετε μια επαφή, η εφαρμογή %1$s θα έχει πρόσβαση στις ακόλουθες πληροφορίες από τις επαφές στη συσκευή σας.\n\nΑν ενημερώσετε τα στοιχεία επικοινωνίας, η εφαρμογή %1$s δεν θα έχει πρόσβαση στις αλλαγές."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Τα στοιχεία επικοινωνίας μπορεί να περιλαμβάνουν λεπτομέρειες όπως:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Όνομα"</string>
-    <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"Όνομα"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Αριθμοί τηλεφώνου"</string>
-    <string name="privacy_details_data_field_phone_content_description" msgid="7843235752923563779">"Αριθμοί τηλεφώνου"</string>
     <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"Διευθύνσεις ηλεκτρονικού ταχυδρομείου"</string>
-    <string name="privacy_details_data_field_email_content_description" msgid="5002819855544687265">"Διευθύνσεις ηλεκτρονικού ταχυδρομείου"</string>
     <string name="privacy_details_data_field_address_header" msgid="8063949263754924922">"Διευθύνσεις"</string>
-    <string name="privacy_details_data_field_address_content_description" msgid="2723907988123079718">"Διευθύνσεις"</string>
     <string name="privacy_details_data_field_organization_header" msgid="5452268926445159613">"Εταιρεία"</string>
-    <string name="privacy_details_data_field_organization_content_description" msgid="2435135718533739414">"Εταιρεία"</string>
     <string name="privacy_details_data_field_related_people_header" msgid="3252437046458903319">"Σχετικά άτομα"</string>
-    <string name="privacy_details_data_field_related_people_content_description" msgid="8100743003973095458">"Σχετικά άτομα"</string>
     <string name="privacy_details_data_field_birthday_header" msgid="2191861462895006673">"Γενέθλια"</string>
-    <string name="privacy_details_data_field_birthday_content_description" msgid="2538948189452868325">"Γενέθλια"</string>
     <string name="privacy_details_data_field_website_header" msgid="5699958653736095218">"Ιστότοπος"</string>
-    <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"Ιστότοπος"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"Ψευδώνυμο"</string>
-    <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"Ψευδώνυμο"</string>
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"Φωτογραφία προφίλ"</string>
-    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"Φωτογραφία προφίλ"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Ομάδα επαφών"</string>
-    <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Ομάδα επαφών"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"Ορισμένες προτιμήσεις επικοινωνίας"</string>
-    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"Ορισμένες προτιμήσεις επικοινωνίας"</string>
     <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Περιλαμβάνει την αγαπημένη κατάσταση μιας επαφής και αν οι κλήσεις της δρομολογούνται στον αυτόματο τηλεφωνητή"</string>
 </resources>
