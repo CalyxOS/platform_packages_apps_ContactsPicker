@@ -61,9 +61,11 @@
     <string name="no_contacts_title" msgid="9093698629001614808">"មិន​ទាន់​មាន​ទំនាក់ទំនង​ទេ"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"ទំនាក់ទំនង​ដែលអ្នក​បង្កើត ឬនាំចូល​ទៅឧបករណ៍​របស់អ្នក​នឹង​បង្ហាញ​នៅទីនេះ"</string>
     <string name="user_type_personal" msgid="45376141973820399">"ផ្ទាល់ខ្លួន"</string>
-    <string name="user_type_unknown" msgid="8943747357005052121">"អ្នកប្រើប្រាស់​ទី %1$d"</string>
+    <string name="user_type_unknown_label" msgid="7034460972310129198">"មិន​ស្គាល់​អ្នកប្រើប្រាស់"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"កម្មវិធី %s ត្រូវបាន​ផ្អាក"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"ដើម្បីបើក​ទំនាក់ទំនង %1$s សូមបើក​កម្មវិធី %2$s របស់អ្នក រួច​ព្យាយាម​ម្ដងទៀត"</string>
-    <string name="picker_profile_admin_title" msgid="143963419213132290">"បាន​ទប់ស្កាត់​ដោយ​អ្នកគ្រប់គ្រង​របស់អ្នក"</string>
-    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"មិនអនុញ្ញាត​ឱ្យ​ចូលប្រើ​ទិន្នន័យ %1$s ពីកម្មវិធី %2$s ទេ"</string>
+    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
+    <skip />
+    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
+    <skip />
 </resources>

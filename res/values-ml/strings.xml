@@ -61,9 +61,11 @@
     <string name="no_contacts_title" msgid="9093698629001614808">"ഇതുവരെ കോൺടാക്റ്റുകളൊന്നുമില്ല"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"നിങ്ങൾ സൃഷ്ടിക്കുന്നതോ ഉപകരണത്തിലേക്ക് ഇമ്പോർട്ട് ചെയ്യുന്നതോ ആയ കോൺടാക്റ്റുകൾ ഇവിടെ ദൃശ്യമാകും"</string>
     <string name="user_type_personal" msgid="45376141973820399">"വ്യക്തിപരം"</string>
-    <string name="user_type_unknown" msgid="8943747357005052121">"ഉപയോക്താവ് %1$d"</string>
+    <string name="user_type_unknown_label" msgid="7034460972310129198">"അജ്ഞാതമായ ഉപയോക്താവ്"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s ആപ്പുകൾ താൽക്കാലികമായി നിർത്തി"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"%1$s കോൺടാക്റ്റുകൾ തുറക്കാൻ, നിങ്ങളുടെ %2$s ആപ്പുകൾ ഓണാക്കിയ ശേഷം വീണ്ടും ശ്രമിക്കുക"</string>
-    <string name="picker_profile_admin_title" msgid="143963419213132290">"നിങ്ങളുടെ അഡ്‌മിൻ ബ്ലോക്ക് ചെയ്തിരിക്കുന്നു"</string>
-    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"%2$s ആപ്പിൽ നിന്ന് %1$s ഡാറ്റ ആക്‌സസ് ചെയ്യുന്നത് അനുവദനീയമല്ല"</string>
+    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
+    <skip />
+    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
+    <skip />
 </resources>

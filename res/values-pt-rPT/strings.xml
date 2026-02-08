@@ -61,9 +61,12 @@
     <string name="no_contacts_title" msgid="9093698629001614808">"Ainda não tem contactos"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Os contactos que criar ou importar para o seu dispositivo aparecem aqui"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Pessoal"</string>
-    <string name="user_type_unknown" msgid="8943747357005052121">"Utilizador %1$d"</string>
+    <!-- no translation found for user_type_unknown_label (7034460972310129198) -->
+    <skip />
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"As apps %s estão pausadas"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Para abrir os contactos de %1$s, ative as suas apps %2$s e tente novamente"</string>
-    <string name="picker_profile_admin_title" msgid="143963419213132290">"Bloqueado pelo administrador"</string>
-    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"O acesso aos dados de %1$s a partir de uma app %2$s não é permitido"</string>
+    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
+    <skip />
+    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
+    <skip />
 </resources>

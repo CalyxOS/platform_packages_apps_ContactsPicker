@@ -61,9 +61,12 @@
     <string name="no_contacts_title" msgid="9093698629001614808">"연락처 없음"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"이 기기에서 생성하거나 기기로 가져온 연락처가 여기에 표시됩니다."</string>
     <string name="user_type_personal" msgid="45376141973820399">"개인"</string>
-    <string name="user_type_unknown" msgid="8943747357005052121">"사용자 %1$d"</string>
+    <!-- no translation found for user_type_unknown_label (7034460972310129198) -->
+    <skip />
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"앱 %s개가 일시중지됨"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"%1$s 연락처를 열려면 %2$s 앱을 사용 설정한 후 다시 시도하세요."</string>
-    <string name="picker_profile_admin_title" msgid="143963419213132290">"관리자가 차단함"</string>
-    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"%2$s 앱에서 %1$s 데이터에 액세스하는 것은 허용되지 않습니다."</string>
+    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
+    <skip />
+    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
+    <skip />
 </resources>

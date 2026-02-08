@@ -61,9 +61,12 @@
     <string name="no_contacts_title" msgid="9093698629001614808">"هنوز مخاطبی وجود ندارد"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"مخاطبینی که ایجاد یا به دستگاهتان وارد می‌کنید در اینجا نشان داده می‌شوند"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Personal"</string>
-    <string name="user_type_unknown" msgid="8943747357005052121">"‏کاربر %1$d"</string>
+    <!-- no translation found for user_type_unknown_label (7034460972310129198) -->
+    <skip />
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"‏‫%s برنامه موقتاً متوقف شده است"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"‏برای باز کردن مخاطبین %1$s، برنامه‌های %2$s را روشن کنید و سپس، دوباره امتحان کنید"</string>
-    <string name="picker_profile_admin_title" msgid="143963419213132290">"سرپرست شما مسدود کرده است"</string>
-    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"‏دسترسی به داده‌های %1$s ازطریق برنامه %2$s مجاز نیست"</string>
+    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
+    <skip />
+    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
+    <skip />
 </resources>

@@ -61,9 +61,12 @@
     <string name="no_contacts_title" msgid="9093698629001614808">"Ühtegi kontakti pole veel."</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Siin kuvatakse teie seadmesse loodud või imporditud kontaktid."</string>
     <string name="user_type_personal" msgid="45376141973820399">"Isiklik"</string>
-    <string name="user_type_unknown" msgid="8943747357005052121">"Kasutaja %1$d"</string>
+    <!-- no translation found for user_type_unknown_label (7034460972310129198) -->
+    <skip />
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"Profiili %s rakendused on peatatud"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Profiili %1$s kontaktide avamiseks lülitage sisse profiili %2$s rakendused ja proovige uuesti"</string>
-    <string name="picker_profile_admin_title" msgid="143963419213132290">"Blokeeris teie administraator"</string>
-    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"Juurdepääs profiili %1$s andmetele profiili %2$s rakenduse kaudu pole lubatud"</string>
+    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
+    <skip />
+    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
+    <skip />
 </resources>

@@ -61,9 +61,11 @@
     <string name="no_contacts_title" msgid="9093698629001614808">"Bado hakuna anwani"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Anwani unazoweka au kupakia kwenye kifaa chako zitaonekana hapa"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Binafsi"</string>
-    <string name="user_type_unknown" msgid="8943747357005052121">"Mtumiaji wa %1$d"</string>
+    <string name="user_type_unknown_label" msgid="7034460972310129198">"Mtumiaji Asiyejulikana"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"Programu %s zimesitishwa"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Ili ufungue anwani %1$s, washa programu zako za %2$s kisha ujaribu tena"</string>
-    <string name="picker_profile_admin_title" msgid="143963419213132290">"Msimamizi wako amekuzuia"</string>
-    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"Huruhusiwi kufikia data ya %1$s kutoka kwenye programu ya %2$s"</string>
+    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
+    <skip />
+    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
+    <skip />
 </resources>

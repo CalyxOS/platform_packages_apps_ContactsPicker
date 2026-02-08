@@ -61,9 +61,11 @@
     <string name="no_contacts_title" msgid="9093698629001614808">"ยังไม่มีรายชื่อติดต่อ"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"รายชื่อติดต่อที่คุณสร้างหรือนำเข้าในอุปกรณ์จะปรากฏที่นี่"</string>
     <string name="user_type_personal" msgid="45376141973820399">"ส่วนตัว"</string>
-    <string name="user_type_unknown" msgid="8943747357005052121">"ผู้ใช้ %1$d"</string>
+    <string name="user_type_unknown_label" msgid="7034460972310129198">"ผู้ใช้ที่ไม่รู้จัก"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"แอป %s หยุดชั่วคราว"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"หากต้องการเปิดรายชื่อติดต่อ %1$s ให้เปิดแอป %2$s แล้วลองอีกครั้ง"</string>
-    <string name="picker_profile_admin_title" msgid="143963419213132290">"ผู้ดูแลระบบบล็อกไว้"</string>
-    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"ไม่อนุญาตให้เข้าถึงข้อมูลของ %1$s จากแอป %2$s"</string>
+    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
+    <skip />
+    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
+    <skip />
 </resources>

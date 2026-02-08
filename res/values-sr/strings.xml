@@ -61,9 +61,11 @@
     <string name="no_contacts_title" msgid="9093698629001614808">"Још нема контаката"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Контакти које направите или увезете на уређај приказују се овде"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Личнo"</string>
-    <string name="user_type_unknown" msgid="8943747357005052121">"%1$d. корисник"</string>
+    <string name="user_type_unknown_label" msgid="7034460972310129198">"Непознат корисник"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"Паузиране су апликације (%s)"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Да бисте отворили контакте (%1$s), укључите апликације (%2$s) и пробајте поново"</string>
-    <string name="picker_profile_admin_title" msgid="143963419213132290">"Блокира администратор"</string>
-    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"Није дозвољен приступ подацима (%1$s) из апликације (%2$s)"</string>
+    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
+    <skip />
+    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
+    <skip />
 </resources>
