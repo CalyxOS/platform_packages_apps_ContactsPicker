@@ -31,12 +31,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.contactspicker.provider.CallingPackageProvider
 import com.android.contactspicker.ui.components.ContactsPickerBottomSheet
 import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
+import com.android.contactspicker.viewmodel.ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD
 import com.android.contactspicker.viewmodel.ContactsViewModel
 import com.android.contactspicker.viewmodel.PickerResultEvent
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,13 +48,6 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
 
     companion object {
         private const val TAG = "ContactsPickerActivity"
-
-        /**
-         * The minimum target SDK of the caller app that will be handled by the app. Intents from
-         * callers with target SDK below will be resent to the system with explicitly excluding the
-         * current activity to prevent loops.
-         */
-        private const val ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD = 37
     }
 
     @Inject lateinit var appPackageManager: ApplicationPackageManager
@@ -98,45 +90,52 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
             return
         }
 
-        try {
-            val appInfo = appPackageManager.getApplicationInfo(callingPackage, 0)
-            val callingAppName = appPackageManager.getApplicationLabel(appInfo).toString()
-            if (
-                intent.getBooleanExtra(Intent.EXTRA_USE_SYSTEM_CONTACTS_PICKER, false) ||
-                    appInfo.targetSdkVersion >= ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD ||
-                    Flags.enableActionPickTakeoverInDroidfood()
-            ) {
-                // It's safe to handle internally. Process the data and show the UI.
-                Log.d(
-                    TAG,
-                    "Handling ${intent.action} for $callingPackage (targetSDK=${appInfo.targetSdkVersion}) internally.",
-                )
-                processIntentAndSetupUi(
-                    intent,
-                    callingAppName,
-                    callingPackage,
+        val (callingAppName, callingAppUid, callingAppTargetSdk) =
+            try {
+                val appInfo = appPackageManager.getApplicationInfo(callingPackage, 0)
+                Triple(
+                    appPackageManager.getApplicationLabel(appInfo).toString(),
                     callingPackageProvider.getCallingAppUid(),
+                    appInfo.targetSdkVersion,
                 )
-            } else {
-                Log.d(
-                    TAG,
-                    "Forwarding ACTION_PICK for $callingPackage (targetSDK=${appInfo.targetSdkVersion}) to system.",
-                )
-                val targetIntent =
-                    Intent(intent).apply {
-                        component = null // Ensure it's implicit
-                    }
-                // First forward to a preferred handler if set
-                if (forwardToPreferredActionPickHandler(targetIntent)) {
-                    return
-                }
-                // Otherwise forward to *all* handlers (except this app). Chooser Activity will be
-                // started in case more than one handler (except this app) is present.
-                forwardToOtherActionPickHandlersWithChooser(targetIntent)
+            } catch (e: PackageManager.NameNotFoundException) {
+                Log.e(TAG, "Calling package not found: $callingPackage", e)
+                Triple(null, -1, ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD)
             }
-        } catch (e: PackageManager.NameNotFoundException) {
-            Log.e(TAG, "Calling package not found: $callingPackage", e)
-            processIntentAndSetupUi(intent, null, null, -1)
+
+        try {
+            val handleInternally =
+                contactsViewModel.handleIntent(
+                    intentAction = intent.action,
+                    intentType = intent.resolveType(this),
+                    intentExtras = intent.extras,
+                    callingAppName = callingAppName,
+                    callingPackageName = callingPackage,
+                    callingAppUid = callingAppUid,
+                    callingAppTargetSdk = callingAppTargetSdk,
+                )
+
+            if (handleInternally) {
+                setupComposeUi()
+            } else {
+                executeForwardingLogic()
+            }
+        } catch (e: IllegalArgumentException) {
+            // TODO(b/473814215) Display a toast with error message before finishing the activity.
+            Log.e(TAG, "Error processing intent", e)
+            setResult(RESULT_CANCELED)
+            finish()
+        }
+    }
+
+    private fun executeForwardingLogic() {
+        val forwardIntent =
+            Intent(intent).apply {
+                component = null
+                setPackage(null)
+            }
+        if (!forwardToPreferredActionPickHandler(forwardIntent)) {
+            forwardToOtherActionPickHandlersWithChooser(forwardIntent)
         }
     }
 
@@ -173,31 +172,6 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
 
         Log.d(TAG, "No PreferredActivity Found")
         return false
-    }
-
-    // Processes the intent which will trigger querying CP2 for contacts and sets up the UI.
-    private fun processIntentAndSetupUi(
-        intent: Intent,
-        appName: String?,
-        packageName: String?,
-        appUid: Int,
-    ) {
-        try {
-            contactsViewModel.processIntent(
-                intentAction = intent.action,
-                intentType = intent.resolveType(this),
-                intentExtras = intent.extras,
-                callingAppName = appName,
-                callingPackageName = packageName,
-                callingAppUid = appUid,
-            )
-            setupComposeUi()
-        } catch (e: IllegalArgumentException) {
-            // TODO(b/473814215) Display a toast with error message before finishing the activity.
-            Log.e(TAG, "Error processing intent", e)
-            setResult(RESULT_CANCELED)
-            finish()
-        }
     }
 
     // Sets up the Compose UI. Should be used only when the contacts are already loaded, e.g. on
