@@ -23,28 +23,16 @@
     <string name="privacy_details_description" msgid="4299567306628059441">"ඔබ සම්බන්ධතාවක් තෝරන විට, %1$s හට ඔබේ උපාංග සම්බන්ධතා වලින් පහත තතු වෙත ප්‍රවේශය ඇත.\n\nඔබ සම්බන්ධතා තතු වෙත යම් යාවත්කාලීන කිරීමක් කරන්නේ නම්, %1$s හට වෙනස්කම් වෙත ප්‍රවේශය නොමැත."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"සම්බන්ධතා තතු වලට මෙවැනි විස්තර ඇතුළත් විය හැක:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"නම"</string>
-    <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"නම"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"දුරකථන අංක"</string>
-    <string name="privacy_details_data_field_phone_content_description" msgid="7843235752923563779">"දුරකථන අංක"</string>
     <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"ඉ-තැපැල් ලිපින"</string>
-    <string name="privacy_details_data_field_email_content_description" msgid="5002819855544687265">"ඉ-තැපැල් ලිපින"</string>
     <string name="privacy_details_data_field_address_header" msgid="8063949263754924922">"ලිපින"</string>
-    <string name="privacy_details_data_field_address_content_description" msgid="2723907988123079718">"ලිපින"</string>
     <string name="privacy_details_data_field_organization_header" msgid="5452268926445159613">"සමාගම"</string>
-    <string name="privacy_details_data_field_organization_content_description" msgid="2435135718533739414">"සමාගම"</string>
     <string name="privacy_details_data_field_related_people_header" msgid="3252437046458903319">"අදාළ පුද්ගලයින්"</string>
-    <string name="privacy_details_data_field_related_people_content_description" msgid="8100743003973095458">"අදාළ පුද්ගලයින්"</string>
     <string name="privacy_details_data_field_birthday_header" msgid="2191861462895006673">"උපන් දිනය"</string>
-    <string name="privacy_details_data_field_birthday_content_description" msgid="2538948189452868325">"උපන් දිනය"</string>
     <string name="privacy_details_data_field_website_header" msgid="5699958653736095218">"වෙබ් අඩවිය"</string>
-    <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"වෙබ් අඩවිය"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"අපනාමය"</string>
-    <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"අපනාමය"</string>
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"පැතිකඩ පින්තූරය"</string>
-    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"පැතිකඩ පින්තූරය"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"සම්බන්ධතා සමූහය"</string>
-    <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"සම්බන්ධතා සමූහය"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"සමහර සම්බන්ධතා මනාප"</string>
-    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"සමහර සම්බන්ධතා මනාප"</string>
     <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"සම්බන්ධතාවක ප්‍රියතම තත්ත්වය සහ ඒවා හඬ තැපෑලට යවා තිබේද යන්න ඇතුළත් වේ"</string>
 </resources>

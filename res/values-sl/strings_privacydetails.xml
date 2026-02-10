@@ -23,28 +23,16 @@
     <string name="privacy_details_description" msgid="4299567306628059441">"Ko izberete stik, bo imela aplikacija %1$s dostop do naslednjih podatkov za stike v napravi.\n\nČe posodobite podatke za stik, aplikacija %1$s ne bo imela dostopa do sprememb."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Podatki za stik lahko vključujejo podrobnosti, kot so:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Ime"</string>
-    <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"Ime"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Telefonske številke"</string>
-    <string name="privacy_details_data_field_phone_content_description" msgid="7843235752923563779">"Telefonske številke"</string>
     <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"E-poštni naslovi"</string>
-    <string name="privacy_details_data_field_email_content_description" msgid="5002819855544687265">"E-poštni naslovi"</string>
     <string name="privacy_details_data_field_address_header" msgid="8063949263754924922">"Naslovi"</string>
-    <string name="privacy_details_data_field_address_content_description" msgid="2723907988123079718">"Naslovi"</string>
     <string name="privacy_details_data_field_organization_header" msgid="5452268926445159613">"Podjetje"</string>
-    <string name="privacy_details_data_field_organization_content_description" msgid="2435135718533739414">"Podjetje"</string>
     <string name="privacy_details_data_field_related_people_header" msgid="3252437046458903319">"Sorodne osebe"</string>
-    <string name="privacy_details_data_field_related_people_content_description" msgid="8100743003973095458">"Sorodne osebe"</string>
     <string name="privacy_details_data_field_birthday_header" msgid="2191861462895006673">"Rojstni dan"</string>
-    <string name="privacy_details_data_field_birthday_content_description" msgid="2538948189452868325">"Rojstni dan"</string>
     <string name="privacy_details_data_field_website_header" msgid="5699958653736095218">"Spletno mesto"</string>
-    <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"Spletno mesto"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"Vzdevek"</string>
-    <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"Vzdevek"</string>
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"Profilna slika"</string>
-    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"Profilna slika"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Skupina stikov"</string>
-    <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Skupina stikov"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"Nekatere nastavitve stika"</string>
-    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"Nekatere nastavitve stika"</string>
     <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Vključuje podatke, ali je stik med priljubljenimi in ali so klici preusmerjeni v predal za glasovno pošto"</string>
 </resources>

@@ -23,28 +23,16 @@
     <string name="privacy_details_description" msgid="4299567306628059441">"Kai pasirenkate kontaktą, „%1$s“ galės pasiekti toliau nurodytą informaciją iš įrenginio kontaktų.\n\nJei atnaujinsite kontaktinę informaciją, „%1$s“ negalės pasiekti pakeitimų."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Kontaktinė informacija gali apimti tokią išsamią informaciją, kaip nurodyta toliau."</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Vardas"</string>
-    <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"Vardas"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Telefonų numeriai"</string>
-    <string name="privacy_details_data_field_phone_content_description" msgid="7843235752923563779">"Telefonų numeriai"</string>
     <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"El. pašto adresai"</string>
-    <string name="privacy_details_data_field_email_content_description" msgid="5002819855544687265">"El. pašto adresai"</string>
     <string name="privacy_details_data_field_address_header" msgid="8063949263754924922">"Adresai"</string>
-    <string name="privacy_details_data_field_address_content_description" msgid="2723907988123079718">"Adresai"</string>
     <string name="privacy_details_data_field_organization_header" msgid="5452268926445159613">"Įmonė"</string>
-    <string name="privacy_details_data_field_organization_content_description" msgid="2435135718533739414">"Įmonė"</string>
     <string name="privacy_details_data_field_related_people_header" msgid="3252437046458903319">"Susiję žmonės"</string>
-    <string name="privacy_details_data_field_related_people_content_description" msgid="8100743003973095458">"Susiję žmonės"</string>
     <string name="privacy_details_data_field_birthday_header" msgid="2191861462895006673">"Gimimo data"</string>
-    <string name="privacy_details_data_field_birthday_content_description" msgid="2538948189452868325">"Gimimo data"</string>
     <string name="privacy_details_data_field_website_header" msgid="5699958653736095218">"Svetainė"</string>
-    <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"Svetainė"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"Slapyvardis"</string>
-    <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"Slapyvardis"</string>
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"Profilio nuotrauka"</string>
-    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"Profilio nuotrauka"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Kontaktų grupė"</string>
-    <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Kontaktų grupė"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"Kai kurios kontaktų nuostatos"</string>
-    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"Kai kurios kontaktų nuostatos"</string>
     <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Apima kontakto mėgstamiausių būseną ir informaciją, ar skambučiai siunčiami į balso paštą"</string>
 </resources>

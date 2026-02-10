@@ -23,28 +23,16 @@
     <string name="privacy_details_description" msgid="4299567306628059441">"เมื่อคุณเลือกรายชื่อติดต่อ %1$s จะมีสิทธิ์เข้าถึงข้อมูลต่อไปนี้จากรายชื่อติดต่อในอุปกรณ์\n\nหากคุณอัปเดตข้อมูลติดต่อ %1$s จะไม่มีสิทธิ์เข้าถึงการเปลี่ยนแปลง"</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"ข้อมูลติดต่ออาจรวมถึงรายละเอียดต่อไปนี้"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"ชื่อ"</string>
-    <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"ชื่อ"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"หมายเลขโทรศัพท์"</string>
-    <string name="privacy_details_data_field_phone_content_description" msgid="7843235752923563779">"หมายเลขโทรศัพท์"</string>
     <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"อีเมล"</string>
-    <string name="privacy_details_data_field_email_content_description" msgid="5002819855544687265">"อีเมล"</string>
     <string name="privacy_details_data_field_address_header" msgid="8063949263754924922">"ที่อยู่"</string>
-    <string name="privacy_details_data_field_address_content_description" msgid="2723907988123079718">"ที่อยู่"</string>
     <string name="privacy_details_data_field_organization_header" msgid="5452268926445159613">"บริษัท"</string>
-    <string name="privacy_details_data_field_organization_content_description" msgid="2435135718533739414">"บริษัท"</string>
     <string name="privacy_details_data_field_related_people_header" msgid="3252437046458903319">"บุคคลที่เกี่ยวข้อง"</string>
-    <string name="privacy_details_data_field_related_people_content_description" msgid="8100743003973095458">"บุคคลที่เกี่ยวข้อง"</string>
     <string name="privacy_details_data_field_birthday_header" msgid="2191861462895006673">"วันเกิด"</string>
-    <string name="privacy_details_data_field_birthday_content_description" msgid="2538948189452868325">"วันเกิด"</string>
     <string name="privacy_details_data_field_website_header" msgid="5699958653736095218">"เว็บไซต์"</string>
-    <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"เว็บไซต์"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"ชื่อเล่น"</string>
-    <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"ชื่อเล่น"</string>
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"รูปโปรไฟล์"</string>
-    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"รูปโปรไฟล์"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"กลุ่มรายชื่อติดต่อ"</string>
-    <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"กลุ่มรายชื่อติดต่อ"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"ค่ากำหนดรายชื่อติดต่อบางรายการ"</string>
-    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"ค่ากำหนดรายชื่อติดต่อบางรายการ"</string>
     <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"รวมถึงสถานะรายการโปรดของรายชื่อติดต่อและข้อมูลว่าระบบส่งไปยังข้อความเสียงหรือไม่"</string>
 </resources>

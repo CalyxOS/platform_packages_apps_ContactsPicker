@@ -23,28 +23,16 @@
     <string name="privacy_details_description" msgid="4299567306628059441">"நீங்கள் ஒரு தொடர்பைத் தேர்ந்தெடுக்கும்போது, உங்கள் சாதனத் தொடர்புகளில் உள்ள பின்வரும் தகவல்களுக்கான அணுகல் %1$s ஆப்ஸுக்குக் கிடைக்கும்.\n\nதொடர்புத் தகவலில் நீங்கள் ஏதேனும் மாற்றங்களைச் செய்தால், அந்த மாற்றங்களுக்கான அணுகல் %1$s ஆப்ஸுக்குக் கிடைக்காது."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"தொடர்புத் தகவலில் இவை போன்ற விவரங்கள் இருக்கலாம்:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"பெயர்"</string>
-    <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"பெயர்"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"ஃபோன் எண்கள்"</string>
-    <string name="privacy_details_data_field_phone_content_description" msgid="7843235752923563779">"ஃபோன் எண்கள்"</string>
     <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"மின்னஞ்சல் முகவரிகள்"</string>
-    <string name="privacy_details_data_field_email_content_description" msgid="5002819855544687265">"மின்னஞ்சல் முகவரிகள்"</string>
     <string name="privacy_details_data_field_address_header" msgid="8063949263754924922">"முகவரிகள்"</string>
-    <string name="privacy_details_data_field_address_content_description" msgid="2723907988123079718">"முகவரிகள்"</string>
     <string name="privacy_details_data_field_organization_header" msgid="5452268926445159613">"நிறுவனம்"</string>
-    <string name="privacy_details_data_field_organization_content_description" msgid="2435135718533739414">"நிறுவனம்"</string>
     <string name="privacy_details_data_field_related_people_header" msgid="3252437046458903319">"வேண்டிய நபர்கள்"</string>
-    <string name="privacy_details_data_field_related_people_content_description" msgid="8100743003973095458">"வேண்டிய நபர்கள்"</string>
     <string name="privacy_details_data_field_birthday_header" msgid="2191861462895006673">"பிறந்தநாள்"</string>
-    <string name="privacy_details_data_field_birthday_content_description" msgid="2538948189452868325">"பிறந்தநாள்"</string>
     <string name="privacy_details_data_field_website_header" msgid="5699958653736095218">"இணையதளம்"</string>
-    <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"இணையதளம்"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"புனைப்பெயர்"</string>
-    <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"புனைப்பெயர்"</string>
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"சுயவிவரப் படம்"</string>
-    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"சுயவிவரப் படம்"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"தொடர்புக் குழு"</string>
-    <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"தொடர்புக் குழு"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"தொடர்புக்கான சில விருப்பத்தேர்வுகள்"</string>
-    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"தொடர்புக்கான சில விருப்பத்தேர்வுகள்"</string>
     <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"தொடர்பு விருப்பமானதாகக் குறிக்கப்பட்டதா என்ற விவரமும், தொடர்பின் அழைப்புகள் குரலஞ்சலுக்கு அனுப்பப்படுகிறதா என்ற விவரமும் இதிலடங்கும்"</string>
 </resources>

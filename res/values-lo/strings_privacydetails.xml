@@ -23,28 +23,16 @@
     <string name="privacy_details_description" msgid="4299567306628059441">"ເມື່ອທ່ານເລືອກລາຍຊື່ຜູ້ຕິດຕໍ່, %1$s ຈະມີສິດເຂົ້າເຖິງຂໍ້ມູນຕໍ່ໄປນີ້ຈາກລາຍຊື່ຜູ້ຕິດຕໍ່ອຸປະກອນຂອງທ່ານ.\n\nຫາກທ່ານອັບເດດຂໍ້ມູນຜູ້ຕິດຕໍ່, %1$s ຈະບໍ່ມີສິດເຂົ້າເຖິງການປ່ຽນແປງ."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"ຂໍ້ມູນຜູ້ຕິດຕໍ່ອາດຮວມທັງລາຍລະອຽດຕ່າງໆ ເຊັ່ນ:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"ຊື່"</string>
-    <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"ຊື່"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"ເບີໂທລະສັບ"</string>
-    <string name="privacy_details_data_field_phone_content_description" msgid="7843235752923563779">"ເບີໂທລະສັບ"</string>
     <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"ທີ່ຢູ່ອີເມວ"</string>
-    <string name="privacy_details_data_field_email_content_description" msgid="5002819855544687265">"ທີ່ຢູ່ອີເມວ"</string>
     <string name="privacy_details_data_field_address_header" msgid="8063949263754924922">"ທີ່ຢູ່"</string>
-    <string name="privacy_details_data_field_address_content_description" msgid="2723907988123079718">"ທີ່ຢູ່"</string>
     <string name="privacy_details_data_field_organization_header" msgid="5452268926445159613">"ບໍລິສັດ"</string>
-    <string name="privacy_details_data_field_organization_content_description" msgid="2435135718533739414">"ບໍລິສັດ"</string>
     <string name="privacy_details_data_field_related_people_header" msgid="3252437046458903319">"ບຸກຄົນທີ່ກ່ຽວຂ້ອງ"</string>
-    <string name="privacy_details_data_field_related_people_content_description" msgid="8100743003973095458">"ບຸກຄົນທີ່ກ່ຽວຂ້ອງ"</string>
     <string name="privacy_details_data_field_birthday_header" msgid="2191861462895006673">"ວັນເກີດ"</string>
-    <string name="privacy_details_data_field_birthday_content_description" msgid="2538948189452868325">"ວັນເກີດ"</string>
     <string name="privacy_details_data_field_website_header" msgid="5699958653736095218">"ເວັບໄຊ"</string>
-    <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"ເວັບໄຊ"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"ຊື່ຫຼິ້ນ"</string>
-    <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"ຊື່ຫຼິ້ນ"</string>
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"ຮູບໂປຣໄຟລ໌"</string>
-    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"ຮູບໂປຣໄຟລ໌"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"ກຸ່ມລາຍຊື່ຜູ້ຕິດຕໍ່"</string>
-    <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"ກຸ່ມລາຍຊື່ຜູ້ຕິດຕໍ່"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"ຄ່າກຳນົດລາຍຊື່ຜູ້ຕິດຕໍ່ບາງລາຍການ"</string>
-    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"ຄ່າກຳນົດລາຍຊື່ຜູ້ຕິດຕໍ່ບາງລາຍການ"</string>
     <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"ຮວມທັງສະຖານະລາຍຊື່ຜູ້ຕິດຕໍ່ທີ່ມັກ ແລະ ຂໍ້ມູນວ່າລະບົບສົ່ງໄປຫາຂໍ້ຄວາມສຽງຫຼືບໍ່"</string>
 </resources>
