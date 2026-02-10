@@ -104,7 +104,12 @@ fun ContactsPickerSearchBar(
                 },
                 trailingIcon = {
                     if (expanded && query.isNotEmpty()) {
-                        IconButton(onClick = { query = "" }) {
+                        IconButton(
+                            onClick = {
+                                query = ""
+                                onQueryChange("")
+                            }
+                        ) {
                             Icon(
                                 Icons.Filled.Close,
                                 contentDescription =
