@@ -61,9 +61,12 @@
     <string name="no_contacts_title" msgid="9093698629001614808">"Կոնտակտներ դեռ չկան"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Այստեղ կցուցադրվեն ձեր ստեղծած կամ ձեր սարք ներմուծված կոնտակտները"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Անձնական"</string>
-    <string name="user_type_unknown" msgid="8943747357005052121">"Օգտատեր %1$d"</string>
+    <!-- no translation found for user_type_unknown_label (7034460972310129198) -->
+    <skip />
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s հավելվածները դադարեցված են"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Որպեսզի բացեք %1$s կոնտակտները, միացրեք ձեր %2$s հավելվածները, այնուհետև նորից փորձեք"</string>
-    <string name="picker_profile_admin_title" msgid="143963419213132290">"Արգելափակված է ձեր ադմինիստրատորի կողմից"</string>
-    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"%2$s հավելվածում %1$s տվյալների հասանելիությունն արգելված է"</string>
+    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
+    <skip />
+    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
+    <skip />
 </resources>

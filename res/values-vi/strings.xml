@@ -61,9 +61,12 @@
     <string name="no_contacts_title" msgid="9093698629001614808">"Không có người liên hệ nào"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Những người liên hệ mà bạn tạo hoặc nhập vào thiết bị của mình sẽ xuất hiện tại đây"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Cá nhân"</string>
-    <string name="user_type_unknown" msgid="8943747357005052121">"Người dùng %1$d"</string>
+    <!-- no translation found for user_type_unknown_label (7034460972310129198) -->
+    <skip />
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"Đã tạm dừng các ứng dụng %s"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Để mở danh bạ %1$s, hãy bật các ứng dụng %2$s rồi thử lại"</string>
-    <string name="picker_profile_admin_title" msgid="143963419213132290">"Bị quản trị viên chặn"</string>
-    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"Không được phép truy cập dữ liệu %1$s từ một ứng dụng %2$s"</string>
+    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
+    <skip />
+    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
+    <skip />
 </resources>

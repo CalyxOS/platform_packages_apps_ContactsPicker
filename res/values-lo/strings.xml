@@ -61,9 +61,11 @@
     <string name="no_contacts_title" msgid="9093698629001614808">"ຍັງບໍ່ມີລາຍຊື່ຜູ້ຕິດຕໍ່"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"ລາຍຊື່ຜູ້ຕິດຕໍ່ທີ່ທ່ານສ້າງ ຫຼື ນຳເຂົ້າໃສ່ອຸປະກອນຂອງທ່ານຈະປາກົດບ່ອນນີ້"</string>
     <string name="user_type_personal" msgid="45376141973820399">"ສ່ວນຕົວ"</string>
-    <string name="user_type_unknown" msgid="8943747357005052121">"ຜູ້ໃຊ້ %1$d"</string>
+    <string name="user_type_unknown_label" msgid="7034460972310129198">"ຜູ້ໃຊ້ທີ່ບໍ່ຮູ້ຈັກ"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"ແອັບ %s ຢຸດຊົ່ວຄາວ"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"ເພື່ອເປີດລາຍຊື່ຜູ້ຕິດຕໍ່ %1$s, ໃຫ້ເປີດແອັບ %2$s ຂອງທ່ານແລ້ວລອງໃໝ່"</string>
-    <string name="picker_profile_admin_title" msgid="143963419213132290">"ຜູ້ເບິ່ງແຍງລະບົບຂອງທ່ານບລັອກໄວ້"</string>
-    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"ບໍ່ອະນຸຍາດໃຫ້ເຂົ້າເຖິງຂໍ້ມູນຂອງ %1$s ຈາກແອັບ %2$s"</string>
+    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
+    <skip />
+    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
+    <skip />
 </resources>

@@ -61,9 +61,12 @@
     <string name="no_contacts_title" msgid="9093698629001614808">"Δεν υπάρχουν ακόμα επαφές"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Οι επαφές που δημιουργείτε ή εισάγετε στη συσκευή σας θα εμφανίζονται εδώ"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Προσωπικός"</string>
-    <string name="user_type_unknown" msgid="8943747357005052121">"Χρήστης %1$d"</string>
+    <!-- no translation found for user_type_unknown_label (7034460972310129198) -->
+    <skip />
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"Οι εφαρμογές του προφίλ %s έχουν τεθεί σε παύση"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Για να ανοίξετε επαφές του προφίλ %1$s, ενεργοποιήστε τις εφαρμογές του προφίλ %2$s και έπειτα δοκιμάστε ξανά"</string>
-    <string name="picker_profile_admin_title" msgid="143963419213132290">"Αποκλείστηκε από τον διαχειριστή σας"</string>
-    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"Δεν επιτρέπεται η πρόσβαση σε δεδομένα του προφίλ %1$s από μια εφαρμογή του προφίλ %2$s"</string>
+    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
+    <skip />
+    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
+    <skip />
 </resources>
