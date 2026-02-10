@@ -103,4 +103,23 @@ class SelectionBottomBarTest {
 
         assertThat(previewClicked).isTrue()
     }
+
+    @Test
+    fun previewButton_hasContentDescription() {
+        composeTestRule.setContent {
+            SelectionBottomBar(
+                selectedCount = 1,
+                onPreviewClicked = {},
+                onDoneClick = {},
+                onClearSelection = {},
+                isPreviewMode = false,
+                onBackFromPreview = {},
+                modifier = Modifier,
+            )
+        }
+
+        val previewContentDesc =
+            context.getString(R.string.selection_bottom_bar_preview_button_content_description)
+        composeTestRule.onNodeWithContentDescription(previewContentDesc).assertIsDisplayed()
+    }
 }

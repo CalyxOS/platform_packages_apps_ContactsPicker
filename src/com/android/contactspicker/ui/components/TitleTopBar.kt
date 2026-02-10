@@ -36,6 +36,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -43,7 +45,12 @@ import com.android.contactspicker.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TitleTopBar(onBackPressed: () -> Unit, title: String, modifier: Modifier = Modifier) {
+fun TitleTopBar(
+    onBackPressed: () -> Unit,
+    title: String,
+    modifier: Modifier = Modifier,
+    titleContentDescription: String? = null,
+) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -87,7 +94,12 @@ fun TitleTopBar(onBackPressed: () -> Unit, title: String, modifier: Modifier = M
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Medium),
-            modifier = Modifier.weight(1.0f),
+            modifier =
+                Modifier.weight(1.0f).semantics {
+                    if (titleContentDescription != null) {
+                        contentDescription = titleContentDescription
+                    }
+                },
         )
     }
 }
