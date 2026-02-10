@@ -136,15 +136,20 @@ class UserProfileFactoryTest {
         type: UserType = UserType.PERSONAL,
         isQuietMode: Boolean = false,
     ): UserInfo {
-        return object : UserInfo(id, "User $id", 0) {
-            override fun isManagedProfile(): Boolean = type == UserType.WORK
-
-            override fun isCloneProfile(): Boolean = type == UserType.CLONE
-
-            override fun isPrivateProfile(): Boolean = type == UserType.PRIVATE
-
-            override fun isQuietModeEnabled(): Boolean = isQuietMode
+        var flags = 0
+        if (isQuietMode) {
+            flags = flags or UserInfo.FLAG_QUIET_MODE
         }
+
+        val userTypeString =
+            when (type) {
+                UserType.PERSONAL -> UserManager.USER_TYPE_FULL_SYSTEM
+                UserType.WORK -> UserManager.USER_TYPE_PROFILE_MANAGED
+                UserType.CLONE -> UserManager.USER_TYPE_PROFILE_CLONE
+                UserType.PRIVATE -> UserManager.USER_TYPE_PROFILE_PRIVATE
+            }
+
+        return UserInfo(id, "User $id", null, flags, userTypeString)
     }
 
     companion object {
