@@ -144,4 +144,26 @@ class PreviewScreenTest {
         // Check if the selected entry is shown for PhoneContact
         composeTestRule.onNodeWithText(selectedContact2.phones.first().number).assertIsDisplayed()
     }
+
+    @Test
+    fun previewScreen_hasContentDescription() {
+        composeTestRule.setContent {
+            ContactsPickerAppTheme {
+                PreviewScreen(
+                    onBackPressed = {},
+                    uiState =
+                        ContactsPreviewState(
+                            emptyList(),
+                            emptyContactsSelection(),
+                            isMultiSelectEnabled = false,
+                        ),
+                    onToggleContactSelection = {},
+                    onToggleEntrySelection = { _, _ -> },
+                )
+            }
+        }
+
+        val screenContentDesc = context.getString(R.string.preview_screen_content_description)
+        composeTestRule.onNodeWithContentDescription(screenContentDesc).assertIsDisplayed()
+    }
 }

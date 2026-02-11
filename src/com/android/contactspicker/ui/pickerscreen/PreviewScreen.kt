@@ -70,6 +70,7 @@ fun PreviewScreen(
             onBackPressed = onBackPressed,
             title = stringResource(id = R.string.preview_screen_title),
             modifier = Modifier.padding(TOPBAR_PADDING).testTag(PREVIEW_SCREEN_TOP_BAR_TEST_TAG),
+            titleContentDescription = stringResource(R.string.preview_screen_content_description),
         )
 
         LazyColumn(modifier = Modifier.padding(PREVIEW_BODY_PADDING)) {
