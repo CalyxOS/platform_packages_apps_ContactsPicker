@@ -84,6 +84,36 @@ fun ActionPickContactsConfiguration(
     onMimeTypesChange: (Set<MimeType>) -> Unit,
 ) {
     SectionTitle("Configure ACTION_PICK_CONTACTS")
+
+    val allMimeTypes = MimeType.entries.toSet()
+    val isAllSelected = selectedMimeTypes.containsAll(allMimeTypes)
+
+    // "Select All" checkbox row
+    Row(
+        Modifier.fillMaxWidth()
+            .height(48.dp)
+            .toggleable(
+                value = isAllSelected,
+                onValueChange = {
+                    if (isAllSelected) {
+                        onMimeTypesChange(emptySet())
+                    } else {
+                        onMimeTypesChange(allMimeTypes)
+                    }
+                },
+                role = Role.Checkbox,
+            )
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Checkbox(checked = isAllSelected, onCheckedChange = null)
+        Text(
+            text = "SELECT ALL",
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(start = 16.dp),
+        )
+    }
     MimeType.entries.forEach { mimeType ->
         Row(
             Modifier.fillMaxWidth()
