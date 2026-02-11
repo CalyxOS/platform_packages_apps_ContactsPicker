@@ -61,9 +61,11 @@
     <string name="no_contacts_title" msgid="9093698629001614808">"अद्याप कोणतेही संपर्क नाहीत"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"तुम्ही तुमच्या डिव्हाइसवर तयार केलेले किंवा इंपोर्ट केलेले संपर्क इथे दिसतील"</string>
     <string name="user_type_personal" msgid="45376141973820399">"वैयक्तिक"</string>
-    <string name="user_type_unknown" msgid="8943747357005052121">"वापरकर्ता %1$d"</string>
+    <string name="user_type_unknown_label" msgid="7034460972310129198">"अज्ञात वापरकर्ता"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s अ‍ॅप्स थांबवली आहेत"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"%1$s संपर्क उघडण्यासाठी, तुमची %2$s ॲप्स सुरू करा, त्यानंतर पुन्हा प्रयत्न करा"</string>
-    <string name="picker_profile_admin_title" msgid="143963419213132290">"तुमच्या ॲडमिनने ब्लॉक केले आहे"</string>
-    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"%2$s ॲपवरून %1$s डेटा ॲक्सेस करण्याची परवानगी नाही"</string>
+    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
+    <skip />
+    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
+    <skip />
 </resources>

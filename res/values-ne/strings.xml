@@ -61,9 +61,11 @@
     <string name="no_contacts_title" msgid="9093698629001614808">"अहिलेसम्म कुनै पनि कन्ट्याक्ट छैन"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"तपाईंले आफ्नो डिभाइसमा बनाउने वा इम्पोर्ट गर्ने कन्ट्याक्टहरू यहाँ देखिने छन्"</string>
     <string name="user_type_personal" msgid="45376141973820399">"व्यक्तिगत"</string>
-    <string name="user_type_unknown" msgid="8943747357005052121">"प्रयोगकर्ता %1$d"</string>
+    <string name="user_type_unknown_label" msgid="7034460972310129198">"अज्ञात प्रयोगकर्ता"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s एपहरू पज गरिएका छन्"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"%1$s कन्ट्याक्टहरू खोल्न %2$s एपहरू अन गर्नुहोस् अनि फेरि प्रयास गर्नुहोस्"</string>
-    <string name="picker_profile_admin_title" msgid="143963419213132290">"तपाईंका एड्मिनले ब्लक गर्नुभएको छ"</string>
-    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"%2$s एपबाट %1$s डेटा एक्सेस गर्ने अनुमति दिइएको छैन"</string>
+    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
+    <skip />
+    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
+    <skip />
 </resources>

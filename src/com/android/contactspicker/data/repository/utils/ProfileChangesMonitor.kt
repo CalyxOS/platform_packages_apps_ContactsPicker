@@ -45,19 +45,12 @@ constructor(@param:ApplicationContext private val context: Context) {
                 }
             }
 
-        // TODO(b/478826510): Only listen to add/remove and available/unavailable profile broadcasts
         val filter =
             IntentFilter().apply {
-                addAction(Intent.ACTION_MANAGED_PROFILE_ADDED)
-                addAction(Intent.ACTION_MANAGED_PROFILE_REMOVED)
-                addAction(Intent.ACTION_MANAGED_PROFILE_AVAILABLE)
-                addAction(Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE)
                 addAction(Intent.ACTION_PROFILE_ADDED)
                 addAction(Intent.ACTION_PROFILE_REMOVED)
                 addAction(Intent.ACTION_PROFILE_AVAILABLE)
                 addAction(Intent.ACTION_PROFILE_UNAVAILABLE)
-                addAction(Intent.ACTION_PROFILE_ACCESSIBLE)
-                addAction(Intent.ACTION_PROFILE_INACCESSIBLE)
             }
 
         // Register receiver across all users to ensure we get updates even if the app is running

@@ -61,9 +61,11 @@
     <string name="no_contacts_title" msgid="9093698629001614808">"未有任何聯絡人"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"你建立或匯入至裝置的聯絡人會在這裡顯示"</string>
     <string name="user_type_personal" msgid="45376141973820399">"個人"</string>
-    <string name="user_type_unknown" msgid="8943747357005052121">"使用者 %1$d"</string>
+    <string name="user_type_unknown_label" msgid="7034460972310129198">"不明的使用者"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"已暫停 %s 個應用程式"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"如要開啟「%1$s」的通訊錄，請開啟%2$s應用程式，然後再試一次"</string>
-    <string name="picker_profile_admin_title" msgid="143963419213132290">"管理員已禁止此操作"</string>
-    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"不允許使用%2$s應用程式存取%1$s的資料"</string>
+    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
+    <skip />
+    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
+    <skip />
 </resources>

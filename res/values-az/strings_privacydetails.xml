@@ -23,28 +23,16 @@
     <string name="privacy_details_description" msgid="4299567306628059441">"Kontakt seçdiyiniz zaman %1$s cihazınızdakı kontaktlardan aşağıdakı məlumatlara giriş əldə edəcək.\n\nƏlaqə məlumatlarında hər hansı yeniləmə etsəniz, %1$s dəyişikliklərə giriş əldə etməyəcək."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Kontakt məlumatlarına aşağıdakı kimi detallar daxil ola bilər:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Ad"</string>
-    <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"Ad"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Telefon nömrələri"</string>
-    <string name="privacy_details_data_field_phone_content_description" msgid="7843235752923563779">"Telefon nömrələri"</string>
     <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"E-poçt ünvanları"</string>
-    <string name="privacy_details_data_field_email_content_description" msgid="5002819855544687265">"E-poçt ünvanları"</string>
     <string name="privacy_details_data_field_address_header" msgid="8063949263754924922">"Ünvanlar"</string>
-    <string name="privacy_details_data_field_address_content_description" msgid="2723907988123079718">"Ünvanlar"</string>
     <string name="privacy_details_data_field_organization_header" msgid="5452268926445159613">"Şirkət"</string>
-    <string name="privacy_details_data_field_organization_content_description" msgid="2435135718533739414">"Şirkət"</string>
     <string name="privacy_details_data_field_related_people_header" msgid="3252437046458903319">"Əlaqədar şəxslər"</string>
-    <string name="privacy_details_data_field_related_people_content_description" msgid="8100743003973095458">"Əlaqədar şəxslər"</string>
     <string name="privacy_details_data_field_birthday_header" msgid="2191861462895006673">"Doğum günü"</string>
-    <string name="privacy_details_data_field_birthday_content_description" msgid="2538948189452868325">"Doğum günü"</string>
     <string name="privacy_details_data_field_website_header" msgid="5699958653736095218">"Veb-sayt"</string>
-    <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"Veb-sayt"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"Ləqəb"</string>
-    <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"Ləqəb"</string>
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"Profil şəkli"</string>
-    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"Profil şəkli"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Kontakt qrupu"</string>
-    <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"Kontakt qrupu"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"Bəzi kontakt tərcihləri"</string>
-    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"Bəzi kontakt tərcihləri"</string>
     <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Kontaktın sevimlilər statusu və səsli poçta yönləndirilib-yönləndirilməməsinə dair məlumatlar daxildir"</string>
 </resources>

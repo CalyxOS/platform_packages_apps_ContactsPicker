@@ -23,28 +23,16 @@
     <string name="privacy_details_description" msgid="4299567306628059441">"ਜਦੋਂ ਤੁਸੀਂ ਕਿਸੇ ਸੰਪਰਕ ਨੂੰ ਚੁਣਦੇ ਹੋ, ਤਾਂ %1$s ਕੋਲ ਤੁਹਾਡੇ ਡੀਵਾਈਸ ਸੰਪਰਕਾਂ ਤੋਂ ਹੇਠਾਂ ਦਿੱਤੀ ਜਾਣਕਾਰੀ ਤੱਕ ਪਹੁੰਚ ਹੋਵੇਗੀ।\n\nਜੇ ਤੁਸੀਂ ਸੰਪਰਕ ਜਾਣਕਾਰੀ ਵਿੱਚ ਕੋਈ ਅੱਪਡੇਟ ਕਰਦੇ ਹੋ, ਤਾਂ %1$s ਕੋਲ ਤਬਦੀਲੀਆਂ ਤੱਕ ਪਹੁੰਚ ਨਹੀਂ ਹੋਵੇਗੀ।"</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"ਸੰਪਰਕ ਜਾਣਕਾਰੀ ਵਿੱਚ ਇਹ ਵੇਰਵੇ ਸ਼ਾਮਲ ਹੋ ਸਕਦੇ ਹਨ:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"ਨਾਮ"</string>
-    <string name="privacy_details_data_field_name_content_description" msgid="6369039808144822060">"ਨਾਮ"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"ਫ਼ੋਨ ਨੰਬਰ"</string>
-    <string name="privacy_details_data_field_phone_content_description" msgid="7843235752923563779">"ਫ਼ੋਨ ਨੰਬਰ"</string>
     <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"ਈਮੇਲ ਪਤੇ"</string>
-    <string name="privacy_details_data_field_email_content_description" msgid="5002819855544687265">"ਈਮੇਲ ਪਤੇ"</string>
     <string name="privacy_details_data_field_address_header" msgid="8063949263754924922">"ਪਤੇ"</string>
-    <string name="privacy_details_data_field_address_content_description" msgid="2723907988123079718">"ਪਤੇ"</string>
     <string name="privacy_details_data_field_organization_header" msgid="5452268926445159613">"ਕੰਪਨੀ"</string>
-    <string name="privacy_details_data_field_organization_content_description" msgid="2435135718533739414">"ਕੰਪਨੀ"</string>
     <string name="privacy_details_data_field_related_people_header" msgid="3252437046458903319">"ਸੰਬੰਧਿਤ ਲੋਕ"</string>
-    <string name="privacy_details_data_field_related_people_content_description" msgid="8100743003973095458">"ਸੰਬੰਧਿਤ ਲੋਕ"</string>
     <string name="privacy_details_data_field_birthday_header" msgid="2191861462895006673">"ਜਨਮਦਿਨ"</string>
-    <string name="privacy_details_data_field_birthday_content_description" msgid="2538948189452868325">"ਜਨਮਦਿਨ"</string>
     <string name="privacy_details_data_field_website_header" msgid="5699958653736095218">"ਵੈੱਬਸਾਈਟ"</string>
-    <string name="privacy_details_data_field_website_content_description" msgid="661183060924935206">"ਵੈੱਬਸਾਈਟ"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"ਉਪਨਾਮ"</string>
-    <string name="privacy_details_data_field_nickname_content_description" msgid="6403099554468107886">"ਉਪਨਾਮ"</string>
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"ਪ੍ਰੋਫਾਈਲ ਤਸਵੀਰ"</string>
-    <string name="privacy_details_data_field_photo_content_description" msgid="2209493479248305017">"ਪ੍ਰੋਫਾਈਲ ਤਸਵੀਰ"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"ਸੰਪਰਕ ਗਰੁੱਪ"</string>
-    <string name="privacy_details_data_field_group_content_description" msgid="8403921121635771587">"ਸੰਪਰਕ ਗਰੁੱਪ"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"ਕੁਝ ਸੰਪਰਕ ਤਰਜੀਹਾਂ"</string>
-    <string name="privacy_details_data_field_preferences_content_description" msgid="3107688495414679200">"ਕੁਝ ਸੰਪਰਕ ਤਰਜੀਹਾਂ"</string>
     <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"ਇਸ ਵਿੱਚ ਸੰਪਰਕ ਦੀ ਮਨਪਸੰਦ ਸਥਿਤੀ ਅਤੇ ਇਹ ਜਾਣਕਾਰੀ ਸ਼ਾਮਲ ਹੁੰਦੀ ਹੈ ਕਿ ਉਨ੍ਹਾਂ ਨੂੰ ਵੌਇਸਮੇਲ ਭੇਜੀ ਗਈ ਹੈ ਜਾਂ ਨਹੀਂ"</string>
 </resources>

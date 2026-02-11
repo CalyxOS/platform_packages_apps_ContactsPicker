@@ -61,9 +61,12 @@
     <string name="no_contacts_title" msgid="9093698629001614808">"尚无联系人"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"您在设备上创建或导入的联系人将显示在此处"</string>
     <string name="user_type_personal" msgid="45376141973820399">"个人"</string>
-    <string name="user_type_unknown" msgid="8943747357005052121">"用户 %1$d"</string>
+    <!-- no translation found for user_type_unknown_label (7034460972310129198) -->
+    <skip />
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"已暂停 %s 个应用"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"若要打开“%1$s”联系人，请先打开“%2$s”应用，然后重试"</string>
-    <string name="picker_profile_admin_title" msgid="143963419213132290">"已被您的管理员禁止"</string>
-    <string name="picker_profile_admin_msg" msgid="3568803258401767467">"不允许通过“%2$s”应用访问“%1$s”数据"</string>
+    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
+    <skip />
+    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
+    <skip />
 </resources>
