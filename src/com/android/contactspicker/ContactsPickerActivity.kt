@@ -177,7 +177,11 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
         if (preferredActivity != null) {
             val (_, component) = preferredActivity
             Log.d(TAG, "Starting Preferred activity. Component: $component")
-            val preferredActivityIntent = Intent(intent).apply { this.component = component }
+            val preferredActivityIntent =
+                Intent(intent).apply {
+                    this.component = component
+                    addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
+                }
             startActivity(preferredActivityIntent)
             finish()
             return true
@@ -261,7 +265,6 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
                 )
                 .apply {
                     putExtra(EXTRA_EXCLUDE_COMPONENTS, excludedComponents)
-
                     addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
 
                     if (targetIntent.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION != 0) {
