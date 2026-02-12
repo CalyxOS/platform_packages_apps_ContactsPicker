@@ -19,6 +19,8 @@ package com.android.contactspicker.ui.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Group
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,8 +28,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.ContactsListState
+import com.android.contactspicker.R
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.ui.pickerscreen.CONTACTS_PICKER_SCREEN_LOADING_INDICATOR_TEST_TAG
 import com.android.contactspicker.ui.pickerscreen.ContactsPickerBody
@@ -70,7 +74,11 @@ fun ContactsListContent(
 
         is ContactsListState.Success -> {
             if (uiState.availableContacts.isEmpty()) {
-                EmptyContactsScreen()
+                EmptyContactsScreen(
+                    title = stringResource(id = R.string.no_contacts_title),
+                    description = stringResource(id = R.string.no_contacts_description),
+                    icon = Icons.Outlined.Group,
+                )
             } else {
                 ContactsPickerBody(
                     contacts = uiState.availableContacts,
@@ -87,4 +95,3 @@ fun ContactsListContent(
         }
     }
 }
-

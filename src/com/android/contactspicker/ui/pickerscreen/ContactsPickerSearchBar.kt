@@ -27,6 +27,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.PersonOff
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -54,6 +55,7 @@ import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.PhoneContact
+import com.android.contactspicker.ui.components.EmptyContactsScreen
 
 private val CollapsedSearchBarPaddingValues = PaddingValues(start = 8.dp, end = 8.dp)
 
@@ -152,11 +154,19 @@ fun ContactsPickerSearchBar(
 
         val uiStateValue = uiState.value
         if (expanded && uiStateValue is SearchState.Success) {
-            SearchResultsList(
-                searchState = uiStateValue,
-                onToggleContactSelection = onToggleContactSelection,
-                onToggleEntrySelection = onToggleEntrySelection,
-            )
+            if (uiStateValue.query.isNotEmpty() && uiStateValue.searchResults.isEmpty()) {
+                EmptyContactsScreen(
+                    title = stringResource(id = R.string.no_results_found),
+                    description = stringResource(id = R.string.no_results_found_description),
+                    icon = Icons.Outlined.PersonOff,
+                )
+            } else {
+                SearchResultsList(
+                    searchState = uiStateValue,
+                    onToggleContactSelection = onToggleContactSelection,
+                    onToggleEntrySelection = onToggleEntrySelection,
+                )
+            }
         }
     }
 }
