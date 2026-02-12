@@ -35,7 +35,7 @@ import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
 import com.android.contactspicker.SearchState
-import com.android.contactspicker.data.model.PickerUserStates
+import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.ProfileBlockedDialogData
 import com.android.contactspicker.data.model.SwitchableProfileInfo
 import com.android.contactspicker.data.model.UserProfile
@@ -64,7 +64,7 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = mutableStateOf(ContactsListState.Loading),
-                userStates = null,
+                userState = PickerUserState.Loading,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -89,7 +89,7 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = mutableStateOf(ContactsListState.Error(errorMessage)),
-                userStates = null,
+                userState = PickerUserState.Loading,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -129,7 +129,7 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = mutableStateOf(ContactsListState.Error(errorMessage)),
-                userStates = null,
+                userState = PickerUserState.Loading,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -154,7 +154,7 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = mutableStateOf(ContactsListState.Loading),
-                userStates = null,
+                userState = PickerUserState.Loading,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -176,7 +176,7 @@ class ContactsPickerScreenTest {
 
     @Test
     fun whenStateIsSuccess_showsProfileSelector() {
-        setContentWithMockUserStates()
+        setContentWithMockUserState()
 
         composeTestRule
             .onNodeWithContentDescription(
@@ -210,7 +210,7 @@ class ContactsPickerScreenTest {
                             requestedMimeTypes = emptyList(),
                         )
                     ),
-                userStates = null,
+                userState = PickerUserState.Loading,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = mockOnExpandRequest,
                 onToggleContactSelection = {},
@@ -236,9 +236,9 @@ class ContactsPickerScreenTest {
         val dialogMessage = "Work profile is paused."
         val mockOnDismissProfileBlockedDialog: () -> Unit = mock()
 
-        setContentWithMockUserStates(
-            userStates =
-                createMockUserStates()
+        setContentWithMockUserState(
+            userState =
+                createMockUserState()
                     .copy(
                         profileBlockedDialogData =
                             ProfileBlockedDialogData(title = dialogTitle, message = dialogMessage)
@@ -278,7 +278,7 @@ class ContactsPickerScreenTest {
         composeTestRule.setContent {
             ContactsPickerScreen(
                 uiState = uiState,
-                userStates = null,
+                userState = PickerUserState.Loading,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {
                     uiState.value = SearchState.Success("", emptyList(), emptyContactsSelection())
@@ -332,7 +332,7 @@ class ContactsPickerScreenTest {
                             requestedMimeTypes = emptyList(),
                         )
                     ),
-                userStates = null,
+                userState = PickerUserState.Loading,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -347,8 +347,8 @@ class ContactsPickerScreenTest {
         }
     }
 
-    private fun setContentWithMockUserStates(
-        userStates: PickerUserStates = createMockUserStates(),
+    private fun setContentWithMockUserState(
+        userState: PickerUserState = createMockUserState(),
         onDismissProfileBlockedDialog: () -> Unit = {},
     ) {
         composeTestRule.setContent {
@@ -364,7 +364,7 @@ class ContactsPickerScreenTest {
                             requestedMimeTypes = emptyList(),
                         )
                     ),
-                userStates = userStates,
+                userState = userState,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
                 onToggleContactSelection = {},
@@ -379,7 +379,7 @@ class ContactsPickerScreenTest {
         }
     }
 
-    private fun createMockUserStates(): PickerUserStates {
+    private fun createMockUserState(): PickerUserState.Success {
         val personalProfile =
             UserProfile(
                 userId = 0,
@@ -397,7 +397,7 @@ class ContactsPickerScreenTest {
                 pausedInfo = null,
             )
 
-        return PickerUserStates(
+        return PickerUserState.Success(
             userIdToAvailableUsersMap = mapOf(0 to personalProfile, 10 to workProfile),
             selectedUserId = 0,
         )

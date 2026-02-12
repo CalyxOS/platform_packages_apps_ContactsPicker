@@ -50,7 +50,7 @@ import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
-import com.android.contactspicker.data.model.PickerUserStates
+import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.ui.components.PrivacyShieldIcon
 
@@ -60,7 +60,7 @@ const val CONTACTS_PICKER_TOP_BAR_MORE_VERTICAL_ICON_TEST_TAG =
 @Composable
 fun ContactsPickerTopBar(
     uiState: State<ContactsUiState>,
-    userStates: PickerUserStates?,
+    userState: PickerUserState,
     onSearchBarToggled: (isExpanded: Boolean) -> Unit,
     onQueryChange: (String) -> Unit,
     onToggleContactSelection: (Contact) -> Unit,
@@ -88,7 +88,7 @@ fun ContactsPickerTopBar(
             onExitSearch = onExitSearch,
         )
         if (!isSearchExpanded) {
-            ProfileSwitcher(userStates = userStates, onProfileClicked = onProfileClicked)
+            ProfileSwitcher(userState = userState, onProfileClicked = onProfileClicked)
             OverflowMenu(onClickPrivacyDetailsMenuItem = onShowPrivacyDetailsClick)
         }
     }

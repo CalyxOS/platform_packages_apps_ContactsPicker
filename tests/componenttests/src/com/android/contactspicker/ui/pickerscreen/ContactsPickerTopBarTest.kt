@@ -35,7 +35,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
-import com.android.contactspicker.data.model.PickerUserStates
+import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.SwitchableProfileInfo
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.model.UserType
@@ -157,14 +157,14 @@ class ContactsPickerTopBarTest {
 
     @Test
     fun showsProfileSwitcher_whenMultipleUsers() {
-        val userStates =
-            PickerUserStates(
+        val userState =
+            PickerUserState.Success(
                 userIdToAvailableUsersMap =
                     mapOf(primaryUser.userId to primaryUser, workUser.userId to workUser),
                 selectedUserId = primaryUser.userId,
             )
 
-        setContactsPickerTopBarContent(userStates = userStates)
+        setContactsPickerTopBarContent(userState = userState)
 
         composeTestRule
             .onNodeWithContentDescription(
@@ -175,13 +175,13 @@ class ContactsPickerTopBarTest {
 
     @Test
     fun hidesProfileSwitcher_whenSingleUser() {
-        val userStates =
-            PickerUserStates(
+        val userState =
+            PickerUserState.Success(
                 userIdToAvailableUsersMap = mapOf(primaryUser.userId to primaryUser),
                 selectedUserId = primaryUser.userId,
             )
 
-        setContactsPickerTopBarContent(userStates = userStates)
+        setContactsPickerTopBarContent(userState = userState)
 
         composeTestRule
             .onNodeWithContentDescription(
@@ -191,13 +191,13 @@ class ContactsPickerTopBarTest {
     }
 
     private fun setContactsPickerTopBarContent(
-        userStates: PickerUserStates? = null,
+        userState: PickerUserState = PickerUserState.Loading,
         onShowPrivacyDetailsClick: () -> Unit = {},
     ) {
         composeTestRule.setContent {
             ContactsPickerTopBar(
                 uiState = mutableStateOf<ContactsUiState>(ContactsListState.Loading),
-                userStates = userStates,
+                userState = userState,
                 onSearchBarToggled = {},
                 onQueryChange = {},
                 onToggleContactSelection = {},
