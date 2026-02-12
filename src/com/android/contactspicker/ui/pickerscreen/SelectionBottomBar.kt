@@ -34,6 +34,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.R
 
@@ -86,8 +88,14 @@ fun SelectionBottomBar(
                     Text(stringResource(R.string.selection_bottom_bar_back_button_label))
                 }
             } else {
+                val previewContentDescription =
+                    stringResource(R.string.selection_bottom_bar_preview_button_content_description)
                 TextButton(onClick = onPreviewClicked) {
-                    Text(stringResource(R.string.selection_bottom_bar_preview_button_label))
+                    Text(
+                        text = stringResource(R.string.selection_bottom_bar_preview_button_label),
+                        modifier =
+                            Modifier.semantics { contentDescription = previewContentDescription },
+                    )
                 }
             }
             Button(onClick = onDoneClick) {
