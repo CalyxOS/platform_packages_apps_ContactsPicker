@@ -24,8 +24,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Group
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,10 +31,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.android.contactspicker.R
 
 private const val TOP_SPACER_WEIGHT = 1f
 private const val BOTTOM_SPACER_WEIGHT = 3f
@@ -46,43 +43,34 @@ private val TITLE_TOP_PADDING = 24.dp
 private val TEXT_WIDTH = 312.dp
 private val DESCRIPTION_TOP_PADDING = 8.dp
 
-/**
- * Composable function to display the empty state screen when no contacts are available.
- */
+/** Composable function to display the empty state screen. */
 @Composable
-fun EmptyContactsScreen() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
+fun EmptyContactsScreen(title: String, description: String, icon: ImageVector) {
+    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.weight(TOP_SPACER_WEIGHT))
         Icon(
-            imageVector = Icons.Outlined.Group,
+            imageVector = icon,
             contentDescription = null, // Decorative icon
-            modifier = Modifier
-                .size(ICON_SIZE)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.secondaryContainer)
-                .padding(ICON_PADDING),
-            tint = MaterialTheme.colorScheme.onSecondaryContainer
+            modifier =
+                Modifier.size(ICON_SIZE)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
+                    .padding(ICON_PADDING),
+            tint = MaterialTheme.colorScheme.onSecondaryContainer,
         )
         Text(
-            text = stringResource(id = R.string.no_contacts_title),
+            text = title,
             style = MaterialTheme.typography.headlineSmall,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center,
-            modifier = Modifier
-                .padding(top = TITLE_TOP_PADDING)
-                .width(TEXT_WIDTH)
+            modifier = Modifier.padding(top = TITLE_TOP_PADDING).width(TEXT_WIDTH),
         )
         Text(
-            text = stringResource(id = R.string.no_contacts_description),
+            text = description,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
-            modifier = Modifier
-                .padding(top = DESCRIPTION_TOP_PADDING)
-                .width(TEXT_WIDTH)
+            modifier = Modifier.padding(top = DESCRIPTION_TOP_PADDING).width(TEXT_WIDTH),
         )
         Spacer(modifier = Modifier.weight(BOTTOM_SPACER_WEIGHT))
     }
