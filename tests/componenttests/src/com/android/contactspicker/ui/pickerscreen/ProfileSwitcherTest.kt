@@ -28,7 +28,7 @@ import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.contactspicker.R
-import com.android.contactspicker.data.model.PickerUserStates
+import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.SwitchableProfileInfo
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.model.UserType
@@ -54,10 +54,10 @@ class ProfileSwitcherTest {
 
     @Test
     fun profileSwitcher_whenSingleUser_isHidden() {
-        val singleUserStates = createPickerUserStates(listOf(personalProfile))
+        val singleUserState = createPickerUserState(listOf(personalProfile))
 
         composeTestRule.setContent {
-            ProfileSwitcher(userStates = singleUserStates, onProfileClicked = {})
+            ProfileSwitcher(userState = singleUserState, onProfileClicked = {})
         }
 
         composeTestRule
@@ -66,11 +66,11 @@ class ProfileSwitcherTest {
     }
 
     @Test
-    fun profileSwitcher_whenUserStatesNull_isHidden() {
-        val nullUserStates: PickerUserStates? = null
+    fun profileSwitcher_whenUserStateLoading_isHidden() {
+        val loadingUserState = PickerUserState.Loading
 
         composeTestRule.setContent {
-            ProfileSwitcher(userStates = nullUserStates, onProfileClicked = {})
+            ProfileSwitcher(userState = loadingUserState, onProfileClicked = {})
         }
 
         composeTestRule
@@ -80,10 +80,10 @@ class ProfileSwitcherTest {
 
     @Test
     fun profileSwitcher_whenMultipleUsers_isDisplayed() {
-        val multiUserStates = createPickerUserStates(listOf(personalProfile, workProfile))
+        val multiUserState = createPickerUserState(listOf(personalProfile, workProfile))
 
         composeTestRule.setContent {
-            ProfileSwitcher(userStates = multiUserStates, onProfileClicked = {})
+            ProfileSwitcher(userState = multiUserState, onProfileClicked = {})
         }
 
         composeTestRule.onNodeWithContentDescription(switcherContentDescription).assertIsDisplayed()
@@ -91,9 +91,9 @@ class ProfileSwitcherTest {
 
     @Test
     fun profileSwitcher_whenClicked_showsDropdownWithAllProfiles() {
-        val multiUserStates = createPickerUserStates(listOf(personalProfile, workProfile))
+        val multiUserState = createPickerUserState(listOf(personalProfile, workProfile))
         composeTestRule.setContent {
-            ProfileSwitcher(userStates = multiUserStates, onProfileClicked = {})
+            ProfileSwitcher(userState = multiUserState, onProfileClicked = {})
         }
 
         composeTestRule.onNodeWithContentDescription(switcherContentDescription).performClick()
@@ -105,13 +105,10 @@ class ProfileSwitcherTest {
     @Test
     fun profileSwitcher_whenProfileSelected_invokesCallback() {
         var clickedProfile: UserProfile? = null
-        val multiUserStates = createPickerUserStates(listOf(personalProfile, workProfile))
+        val multiUserState = createPickerUserState(listOf(personalProfile, workProfile))
 
         composeTestRule.setContent {
-            ProfileSwitcher(
-                userStates = multiUserStates,
-                onProfileClicked = { clickedProfile = it },
-            )
+            ProfileSwitcher(userState = multiUserState, onProfileClicked = { clickedProfile = it })
         }
 
         composeTestRule.onNodeWithContentDescription(switcherContentDescription).performClick()
@@ -130,8 +127,8 @@ class ProfileSwitcherTest {
         )
     }
 
-    private fun createPickerUserStates(profiles: List<UserProfile>): PickerUserStates {
-        return PickerUserStates(
+    private fun createPickerUserState(profiles: List<UserProfile>): PickerUserState {
+        return PickerUserState.Success(
             userIdToAvailableUsersMap = profiles.associateBy { it.userId },
             selectedUserId = profiles.firstOrNull()?.userId ?: 0,
         )

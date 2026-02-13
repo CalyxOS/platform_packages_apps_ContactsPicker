@@ -27,7 +27,9 @@ import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import android.provider.ContactsContract
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -190,5 +192,27 @@ class ContactsPickerSearchBarTest {
             context.getString(R.string.contacts_picker_search_expanded_hint)
         composeTestRule.onNodeWithText(expandedPlaceholderText).performTextInput("A")
         composeTestRule.onNodeWithContentDescription(clearTextContentDescription).assertExists()
+    }
+
+    @Test
+    fun whenSearchQueryHasNoResults_noResultsScreenIsDisplayed() {
+        val placeholderText =
+            context.getString(R.string.contacts_picker_top_bar_search_placeholder_hint)
+        val expandedPlaceholderText =
+            context.getString(R.string.contacts_picker_search_expanded_hint)
+        composeTestRule.onNodeWithText(placeholderText).performClick()
+
+        val testQuery = "UnlikelyContactNameXYZ123"
+        composeTestRule.onNodeWithText(expandedPlaceholderText).performTextInput(testQuery)
+
+        val noResultsTitle = context.getString(R.string.no_results_found)
+        val noResultsDescription = context.getString(R.string.no_results_found_description)
+
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule.onAllNodesWithText(noResultsTitle).fetchSemanticsNodes().isNotEmpty()
+        }
+
+        composeTestRule.onNodeWithText(noResultsTitle).assertIsDisplayed()
+        composeTestRule.onNodeWithText(noResultsDescription).assertIsDisplayed()
     }
 }

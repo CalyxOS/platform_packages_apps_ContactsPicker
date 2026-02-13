@@ -47,6 +47,7 @@ import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
 import com.android.contactspicker.data.model.ContactsSelection
+import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.contactsSelectionOf
 import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.testdata.ContactTestDataFactory
@@ -176,7 +177,7 @@ class ContactsPickerBottomSheetTest {
                                 requestedMimeTypes = emptyList(),
                             )
                         ),
-                    userStates = null,
+                    userState = PickerUserState.Loading,
                     snackbarEvents = flowOf(),
                     onToggleContactSelection = {},
                     onToggleEntrySelection = { _, _ -> },
@@ -227,7 +228,7 @@ class ContactsPickerBottomSheetTest {
                                 requestedMimeTypes = emptyList(),
                             )
                         ),
-                    userStates = null,
+                    userState = PickerUserState.Loading,
                     snackbarEvents = flowOf(),
                     onToggleContactSelection = {},
                     onToggleEntrySelection = { _, _ -> },
@@ -294,7 +295,7 @@ class ContactsPickerBottomSheetTest {
                                 showPrivacyBanner = false,
                             )
                         ),
-                    userStates = null,
+                    userState = PickerUserState.Loading,
                     snackbarEvents = flowOf(),
                     onToggleEntrySelection = { _, _ -> },
                     onToggleContactSelection = {},
@@ -348,7 +349,7 @@ class ContactsPickerBottomSheetTest {
                             showPrivacyBanner = false,
                         )
                     ),
-                userStates = null,
+                userState = PickerUserState.Loading,
                 snackbarEvents = events,
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
@@ -392,7 +393,7 @@ class ContactsPickerBottomSheetTest {
                                 isMultiSelectEnabled = false,
                             )
                         ),
-                    userStates = null,
+                    userState = PickerUserState.Loading,
                     snackbarEvents = flowOf(),
                     onToggleContactSelection = {},
                     onToggleEntrySelection = { _, _ -> },
@@ -435,7 +436,7 @@ class ContactsPickerBottomSheetTest {
                                 requestedMimeTypes = emptyList(),
                             )
                         ),
-                    userStates = null,
+                    userState = PickerUserState.Loading,
                     snackbarEvents = flowOf(),
                     onToggleContactSelection = {},
                     onToggleEntrySelection = { _, _ -> },
@@ -511,7 +512,7 @@ class ContactsPickerBottomSheetTest {
                                 requestedMimeTypes = emptyList(),
                             )
                         ),
-                    userStates = null,
+                    userState = PickerUserState.Loading,
                     snackbarEvents = flowOf(),
                     onToggleContactSelection = {},
                     onToggleEntrySelection = { _, _ -> },
@@ -560,7 +561,7 @@ class ContactsPickerBottomSheetTest {
                 ContactsPickerBottomSheet(
                     onDismissRequest = onDismissRequest,
                     uiState = mutableStateOf(uiState),
-                    userStates = null,
+                    userState = PickerUserState.Loading,
                     snackbarEvents = flowOf(),
                     onToggleContactSelection = {},
                     onToggleEntrySelection = { _, _ -> },

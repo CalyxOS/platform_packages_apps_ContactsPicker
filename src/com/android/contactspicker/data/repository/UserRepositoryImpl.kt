@@ -18,7 +18,7 @@ package com.android.contactspicker.data.repository
 
 import android.os.UserHandle
 import android.os.UserManager
-import com.android.contactspicker.data.model.PickerUserStates
+import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.repository.utils.ProfileChangesMonitor
 import com.android.contactspicker.data.repository.utils.UserProfileFactory
@@ -46,10 +46,10 @@ constructor(
 
     // TODO(b/479464524): Optimize profile data reload during changes in profiles to only update
     // the modified profile
-    override fun getUserStates(
+    override fun getUserState(
         callingPackageName: String?,
         callingUserId: Int,
-    ): Flow<PickerUserStates> {
+    ): Flow<PickerUserState> {
         val profilesFlow =
             profileChangesMonitor
                 .getProfileChangeFlow()
@@ -74,7 +74,7 @@ constructor(
                 .flowOn(Dispatchers.IO)
 
         return combine(profilesFlow, _selectedUserId) { availableUsersMap, selectedUserId ->
-            computePickerUserStates(availableUsersMap, callingUserId, selectedUserId)
+            computePickerUserState(availableUsersMap, callingUserId, selectedUserId)
         }
     }
 
@@ -96,16 +96,16 @@ constructor(
     }
 
     /**
-     * Computes the user states for the picker, determining the selected user ID.
+     * Computes the user state for the picker, determining the selected user ID.
      *
      * If an explicit selection exists, is valid (in the map), and is not paused, use it. If the
      * profile is paused (e.g. Quiet Mode), fallback to the default profile.
      */
-    private fun computePickerUserStates(
+    private fun computePickerUserState(
         userIdToAvailableUsersMap: Map<Int, UserProfile>,
         callingUserId: Int,
         userSelectedUserId: Int?,
-    ): PickerUserStates {
+    ): PickerUserState.Success {
         val currentProcessUserId = UserHandle.myUserId()
 
         val selectedProfile = userSelectedUserId?.let { userIdToAvailableUsersMap[it] }
@@ -122,7 +122,7 @@ constructor(
                     ?.userIdToQueryContacts ?: currentProcessUserId
             }
 
-        return PickerUserStates(
+        return PickerUserState.Success(
             userIdToAvailableUsersMap = userIdToAvailableUsersMap,
             selectedUserId = targetUserId,
         )

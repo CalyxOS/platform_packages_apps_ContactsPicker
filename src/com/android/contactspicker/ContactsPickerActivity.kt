@@ -124,8 +124,8 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
             val callingAppName = appPackageManager.getApplicationLabel(appInfo).toString()
             if (
                 intent.getBooleanExtra(Intent.EXTRA_USE_SYSTEM_CONTACTS_PICKER, false) ||
-                appInfo.targetSdkVersion >= ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD ||
-                Flags.enableActionPickTakeoverInDroidfood()
+                    appInfo.targetSdkVersion >= ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD ||
+                    Flags.enableActionPickTakeoverInDroidfood()
             ) {
                 // It's safe to handle internally. Process the data and show the UI.
                 Log.d(
@@ -237,13 +237,13 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
             }
 
             val uiState = contactsViewModel.uiState.collectAsStateWithLifecycle()
-            val userStates = contactsViewModel.userStates.collectAsStateWithLifecycle()
+            val userState = contactsViewModel.userState.collectAsStateWithLifecycle()
             ContactsPickerAppTheme {
                 ReadContactsPermissionCheckedContent(contactsViewModel) {
                     ContactsPickerBottomSheet(
                         onDismissRequest = { finish() },
                         uiState = uiState,
-                        userStates = userStates.value,
+                        userState = userState.value,
                         snackbarEvents = contactsViewModel.snackbarEvents,
                         onToggleContactSelection = contactsViewModel::toggleContactSelection,
                         onToggleEntrySelection = contactsViewModel::toggleEntrySelection,
@@ -267,9 +267,9 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
         val excludedComponents = arrayOf(ComponentName(this, ContactsPickerActivity::class.java))
         val chooserIntent =
             Intent.createChooser(
-                targetIntent,
-                getString(R.string.contacts_picker_chooser_activity_title),
-            )
+                    targetIntent,
+                    getString(R.string.contacts_picker_chooser_activity_title),
+                )
                 .apply {
                     putExtra(EXTRA_EXCLUDE_COMPONENTS, excludedComponents)
 
@@ -288,10 +288,10 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
         } catch (e: ActivityNotFoundException) {
             Log.e(TAG, "No Activity found to handle the intent: $targetIntent", e)
             Toast.makeText(
-                this,
-                getString(R.string.contacts_picker_chooser_activity_no_app_can_handle_action),
-                Toast.LENGTH_SHORT,
-            )
+                    this,
+                    getString(R.string.contacts_picker_chooser_activity_no_app_can_handle_action),
+                    Toast.LENGTH_SHORT,
+                )
                 .show()
             setResult(RESULT_CANCELED)
         }
@@ -301,7 +301,7 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
     // TODO(b/12345678): remove once the permission is pregranted
     private fun hasReadContactsPermission(context: Context): Boolean {
         return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) ==
-                PackageManager.PERMISSION_GRANTED
+            PackageManager.PERMISSION_GRANTED
     }
 
     @Composable
@@ -315,7 +315,8 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
         var permissionResultProcessed by remember { mutableStateOf(hasPermission) }
 
         val launcher =
-            rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
+                isGranted ->
                 val newlyGranted = isGranted && !hasPermission
                 hasPermission = isGranted
                 permissionResultProcessed = true

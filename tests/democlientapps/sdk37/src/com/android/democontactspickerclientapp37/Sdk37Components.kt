@@ -31,6 +31,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -84,30 +85,80 @@ fun ActionPickContactsConfiguration(
     onMimeTypesChange: (Set<MimeType>) -> Unit,
 ) {
     SectionTitle("Configure ACTION_PICK_CONTACTS")
-    MimeType.entries.forEach { mimeType ->
-        Row(
-            Modifier.fillMaxWidth()
-                .height(48.dp)
-                .toggleable(
-                    value = selectedMimeTypes.contains(mimeType),
-                    onValueChange = { isSelected ->
-                        val newMimeTypes = selectedMimeTypes.toMutableSet()
-                        if (isSelected) newMimeTypes.add(mimeType)
-                        else newMimeTypes.remove(mimeType)
-                        onMimeTypesChange(newMimeTypes)
-                    },
-                    role = Role.Checkbox,
-                )
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Checkbox(checked = selectedMimeTypes.contains(mimeType), onCheckedChange = null)
-            Text(
-                text = mimeType.label,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(start = 16.dp),
+
+    val (supported, unsupported) = MimeType.entries.partition { it.isSupported }
+    val isAllSelected = selectedMimeTypes.containsAll(supported)
+
+    // "Select All" checkbox row
+    Row(
+        Modifier.fillMaxWidth()
+            .height(48.dp)
+            .toggleable(
+                value = isAllSelected,
+                onValueChange = {
+                    if (isAllSelected) {
+                        onMimeTypesChange(emptySet())
+                    } else {
+                        onMimeTypesChange(supported.toSet())
+                    }
+                },
+                role = Role.Checkbox,
             )
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Checkbox(checked = isAllSelected, onCheckedChange = null)
+        Text(
+            text = "SELECT ALL (Supported)",
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(start = 16.dp),
+        )
+    }
+    supported.forEach { mimeType -> MimeTypeRow(mimeType, selectedMimeTypes, onMimeTypesChange) }
+
+    if (unsupported.isNotEmpty()) {
+        Spacer(modifier = Modifier.height(8.dp))
+        HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+
+        unsupported.forEach { mimeType ->
+            MimeTypeRow(mimeType, selectedMimeTypes, onMimeTypesChange)
         }
+    }
+}
+
+@Composable
+private fun MimeTypeRow(
+    mimeType: MimeType,
+    selectedMimeTypes: Set<MimeType>,
+    onMimeTypesChange: (Set<MimeType>) -> Unit,
+) {
+    Row(
+        Modifier.fillMaxWidth()
+            .height(48.dp)
+            .toggleable(
+                value = selectedMimeTypes.contains(mimeType),
+                onValueChange = { isSelected ->
+                    val newMimeTypes = selectedMimeTypes.toMutableSet()
+                    if (isSelected) newMimeTypes.add(mimeType) else newMimeTypes.remove(mimeType)
+                    onMimeTypesChange(newMimeTypes)
+                },
+                role = Role.Checkbox,
+            )
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Checkbox(checked = selectedMimeTypes.contains(mimeType), onCheckedChange = null)
+        Text(
+            text = mimeType.label,
+            style = MaterialTheme.typography.bodyLarge,
+            // Dim the unsupported items slightly to further distinguish them
+            color =
+                if (mimeType.isSupported) MaterialTheme.colorScheme.onSurface
+                else MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(start = 16.dp),
+        )
     }
 }
 

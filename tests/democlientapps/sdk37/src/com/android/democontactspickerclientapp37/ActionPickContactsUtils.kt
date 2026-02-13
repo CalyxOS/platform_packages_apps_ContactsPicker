@@ -23,7 +23,11 @@ import android.provider.ContactsPickerSessionContract
 import android.widget.Toast
 
 // TODO(b/442397528): support all mime types for ACTION_PICK_CONTACTS
-enum class MimeType(val label: String, val mimeTypeString: String) {
+enum class MimeType(
+    val label: String,
+    val mimeTypeString: String,
+    val isSupported: Boolean = true,
+) {
     STRUCTURED_NAME("Name", ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE),
     EMAIL("Email Addresses", ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE),
     PHONE("Phone Numbers", ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE),
@@ -38,6 +42,12 @@ enum class MimeType(val label: String, val mimeTypeString: String) {
     ),
     WEBSITE("Website", ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE),
     NICKNAME("Nickname", ContactsContract.CommonDataKinds.Nickname.CONTENT_ITEM_TYPE),
+    // The unsupported mime type
+    NOTE(
+        "Notes (Unsupported)",
+        ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE,
+        isSupported = false,
+    ),
 }
 
 internal fun buildActionPickContactsIntent(

@@ -21,14 +21,15 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Group
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.R
-import com.android.contactspicker.data.model.emptyContactsSelection
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,10 +45,18 @@ class EmptyContactsScreenTest {
     @Test
     fun emptyContactsScreen_showsEmptyScreenElements() {
         composeTestRule.setContent {
-            EmptyContactsScreen()
+            EmptyContactsScreen(
+                title = stringResource(id = R.string.no_contacts_title),
+                description = stringResource(id = R.string.no_contacts_description),
+                icon = Icons.Outlined.Group,
+            )
         }
 
-        composeTestRule.onNodeWithText(context.getString(R.string.no_contacts_title)).assertIsDisplayed()
-        composeTestRule.onNodeWithText(context.getString(R.string.no_contacts_description)).assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.no_contacts_title))
+            .assertIsDisplayed()
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.no_contacts_description))
+            .assertIsDisplayed()
     }
 }

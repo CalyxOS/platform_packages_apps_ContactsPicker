@@ -48,6 +48,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.contactspicker.Flags.FLAG_ENABLE_ACTION_PICK_TAKEOVER_IN_DROIDFOOD
+import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.contactsSelectionOf
 import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.inject.ActivityModule
@@ -146,7 +147,7 @@ class ContactsPickerActivityTest {
                 )
             )
         whenever(mockViewModel.uiState).thenReturn(successState)
-        whenever(mockViewModel.userStates).thenReturn(MutableStateFlow(null))
+        whenever(mockViewModel.userState).thenReturn(MutableStateFlow(PickerUserState.Loading))
         whenever(mockViewModel.snackbarEvents).thenReturn(emptyFlow())
         doNothing()
             .whenever(mockViewModel)
