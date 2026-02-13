@@ -31,6 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -54,7 +55,8 @@ fun Avatar(displayName: String, profilePictureUri: String?) {
         modifier =
             Modifier.size(40.dp)
                 .clip(CircleShape) // Clip the whole container
-                .testTag(AVATAR_TEST_TAG),
+                .testTag(AVATAR_TEST_TAG)
+                .semantics { hideFromAccessibility() },
         contentAlignment = Alignment.Center,
     ) {
         if (!profilePictureUri.isNullOrBlank()) {
