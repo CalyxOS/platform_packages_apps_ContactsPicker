@@ -64,7 +64,12 @@ fun SectionHeader(letter: Char) {
  * @param text Optional text. If present it will be displayed in the same line after the icon.
  */
 @Composable
-fun SectionHeader(imageVector: ImageVector, iconContentDescription: String, text: String? = null) {
+fun SectionHeader(
+    imageVector: ImageVector,
+    iconContentDescription: String,
+    text: String? = null,
+    modifier: Modifier = Modifier,
+) {
     Row(
         modifier =
             Modifier.fillMaxWidth()
@@ -78,7 +83,7 @@ fun SectionHeader(imageVector: ImageVector, iconContentDescription: String, text
         Icon(
             imageVector = imageVector,
             contentDescription = iconContentDescription,
-            modifier = Modifier.size(iconSize),
+            modifier = modifier.size(iconSize),
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Spacer(modifier = Modifier.width(8.dp))
