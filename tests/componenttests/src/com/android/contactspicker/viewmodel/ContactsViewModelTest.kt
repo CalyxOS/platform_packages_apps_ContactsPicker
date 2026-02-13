@@ -37,6 +37,7 @@ import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.Flags.FLAG_ENABLE_ACTION_PICK_TAKEOVER_IN_DROIDFOOD
 import com.android.contactspicker.SearchState
+import com.android.contactspicker.config.ContactsPickerAction
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.MimeType
 import com.android.contactspicker.data.model.PausedProfileInfo
@@ -50,6 +51,7 @@ import com.android.contactspicker.data.repository.UserRepository
 import com.android.contactspicker.fakes.FakeContactsPickerSessionProviderRepository
 import com.android.contactspicker.fakes.FakeContactsRepository
 import com.android.contactspicker.fakes.FakePrivacyBannerRepository
+import com.android.contactspicker.logging.ContactsPickerLogger
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.google.common.truth.Truth.assertThat
 import dagger.Lazy
@@ -135,6 +137,8 @@ class ContactsViewModelTest {
         FakeContactsPickerSessionProviderRepository
     private lateinit var fakePrivacyBannerRepository: FakePrivacyBannerRepository
     private lateinit var mockUserRepository: UserRepository
+
+    private lateinit var mockContactsPickerLogger: ContactsPickerLogger
     private lateinit var viewModel: ContactsViewModel
     private val userStateFlow =
         MutableStateFlow(
@@ -151,6 +155,7 @@ class ContactsViewModelTest {
         fakeContactsPickerSessionProviderRepository = FakeContactsPickerSessionProviderRepository()
         fakePrivacyBannerRepository = FakePrivacyBannerRepository()
         mockUserRepository = mock()
+        mockContactsPickerLogger = mock()
         userStateFlow.value =
             PickerUserState.Success(
                 userIdToAvailableUsersMap = emptyMap(),
@@ -173,6 +178,7 @@ class ContactsViewModelTest {
                 fakePrivacyBannerRepository,
                 Lazy { mockUserRepository },
                 fakeFactory,
+                mockContactsPickerLogger,
             )
     }
 
@@ -377,6 +383,31 @@ class ContactsViewModelTest {
             intentExtras = buildIntentExtrasWithMultiSelect(isMultiSelectEnabled = true),
         )
         assertThat(viewModel.currentSuccessState.isMultiSelectEnabled).isTrue()
+    }
+
+    @Test
+    fun handleIntent_logsSessionStarted() = runTest {
+        val intentAction = Intent.ACTION_PICK
+        val callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD
+        viewModel.handleIntent(
+            intentAction = intentAction,
+            intentType = Phone.CONTENT_TYPE,
+            intentExtras = null,
+            callingAppName = TEST_APP_NAME,
+            callingPackageName = TEST_PACKAGE_NAME,
+            callingAppUid = TEST_CALLING_UID,
+            callingAppTargetSdk = callingAppTargetSdk,
+        )
+
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionStarted(
+                TEST_CALLING_UID,
+                callingAppTargetSdk,
+                ContactsPickerAction.ACTION_PICK,
+                listOf(MimeType.PHONE),
+                useSystemContactsPicker = false,
+                matchAllRequestedMimeTypes = false,
+            )
     }
 
     @Test

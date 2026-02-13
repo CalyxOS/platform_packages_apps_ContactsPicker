@@ -48,6 +48,7 @@ import com.android.contactspicker.data.repository.ContactsPickerSessionProviderR
 import com.android.contactspicker.data.repository.ContactsRepository
 import com.android.contactspicker.data.repository.PrivacyBannerRepository
 import com.android.contactspicker.data.repository.UserRepository
+import com.android.contactspicker.logging.ContactsPickerLogger
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -113,6 +114,7 @@ constructor(
     private val privacyBannerRepository: PrivacyBannerRepository,
     private val userRepository: Lazy<UserRepository>,
     private val selectionHandlerFactory: ContactsSelectionHandler.Factory,
+    private val contactsPickerLogger: ContactsPickerLogger,
 ) : ViewModel() {
 
     private val contentResolver = context.contentResolver
@@ -190,10 +192,20 @@ constructor(
             ContactsPickerRequestConfig.create(intentAction, intentType, intentExtras).also {
                 pickerConfig = it
             }
+        val useSystemContactsPicker =
+            intentExtras?.getBoolean(Intent.EXTRA_USE_SYSTEM_CONTACTS_PICKER, false) ?: false
 
-        // TODO(b/441483549): Log ContactsPickerSessionStarted
+        contactsPickerLogger.logContactsPickerSessionStarted(
+            callingAppUid = callingAppUid,
+            callingAppTargetSdk = callingAppTargetSdk,
+            pickerIntentAction = config.pickerAction,
+            requestedMimeTypes = config.requestedMimeTypes,
+            useSystemContactsPicker = useSystemContactsPicker,
+            matchAllRequestedMimeTypes = config.matchAllRequestedMimeTypes,
+        )
 
-        if (!shouldHandleIntent(callingAppTargetSdk, intentExtras)) {
+        if (!shouldHandleIntent(callingAppTargetSdk, useSystemContactsPicker)) {
+
             // TODO(b/441483549): Log ContactsPickerSessionFinished with
             //  ContactsPickerSessionResult.SESSION_RESULT_FORWARDED
             return false
@@ -226,9 +238,9 @@ constructor(
     }
 
     /** Returns true if the intent is eligible for internal handling based on SDK and flags. */
-    private fun shouldHandleIntent(targetSdk: Int, intentExtras: Bundle?): Boolean {
+    private fun shouldHandleIntent(targetSdk: Int, useSystemContactsPicker: Boolean): Boolean {
         return targetSdk >= ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD ||
-            intentExtras?.getBoolean(Intent.EXTRA_USE_SYSTEM_CONTACTS_PICKER, false) ?: false ||
+            useSystemContactsPicker ||
             Flags.enableActionPickTakeoverInDroidfood()
     }
 
