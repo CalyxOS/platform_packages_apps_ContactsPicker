@@ -15,45 +15,24 @@
  */
 package com.android.contactspicker
 
-import android.Manifest
 import android.app.ApplicationPackageManager
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.content.Intent.EXTRA_EXCLUDE_COMPONENTS
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.os.Trace
-import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.android.contactspicker.provider.CallingPackageProvider
 import com.android.contactspicker.ui.components.ContactsPickerBottomSheet
@@ -182,7 +161,11 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
         if (preferredActivity != null) {
             val (_, component) = preferredActivity
             Log.d(TAG, "Starting Preferred activity. Component: $component")
-            val preferredActivityIntent = Intent(intent).apply { this.component = component }
+            val preferredActivityIntent =
+                Intent(intent).apply {
+                    this.component = component
+                    addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
+                }
             startActivity(preferredActivityIntent)
             finish()
             return true
@@ -239,26 +222,23 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
             val uiState = contactsViewModel.uiState.collectAsStateWithLifecycle()
             val userState = contactsViewModel.userState.collectAsStateWithLifecycle()
             ContactsPickerAppTheme {
-                ReadContactsPermissionCheckedContent(contactsViewModel) {
-                    ContactsPickerBottomSheet(
-                        onDismissRequest = { finish() },
-                        uiState = uiState,
-                        userState = userState.value,
-                        snackbarEvents = contactsViewModel.snackbarEvents,
-                        onToggleContactSelection = contactsViewModel::toggleContactSelection,
-                        onToggleEntrySelection = contactsViewModel::toggleEntrySelection,
-                        onClearSelection = contactsViewModel::clearSelection,
-                        onPrivacyBannerDismissRequest = contactsViewModel::hidePrivacyBanner,
-                        onDoneClicked = contactsViewModel::onDoneClicked,
-                        onQueryChange = contactsViewModel::onSearchQueryChanged,
-                        onExitSearch = contactsViewModel::exitSearch,
-                        onPreviewClicked = contactsViewModel::onPreviewClicked,
-                        onBackFromPreview = contactsViewModel::onBackFromPreview,
-                        onProfileClicked = contactsViewModel::onProfileClicked,
-                        onDismissProfileBlockedDialog =
-                            contactsViewModel::dismissProfileBlockedDialog,
-                    )
-                }
+                ContactsPickerBottomSheet(
+                    onDismissRequest = { finish() },
+                    uiState = uiState,
+                    userState = userState.value,
+                    snackbarEvents = contactsViewModel.snackbarEvents,
+                    onToggleContactSelection = contactsViewModel::toggleContactSelection,
+                    onToggleEntrySelection = contactsViewModel::toggleEntrySelection,
+                    onClearSelection = contactsViewModel::clearSelection,
+                    onPrivacyBannerDismissRequest = contactsViewModel::hidePrivacyBanner,
+                    onDoneClicked = contactsViewModel::onDoneClicked,
+                    onQueryChange = contactsViewModel::onSearchQueryChanged,
+                    onExitSearch = contactsViewModel::exitSearch,
+                    onPreviewClicked = contactsViewModel::onPreviewClicked,
+                    onBackFromPreview = contactsViewModel::onBackFromPreview,
+                    onProfileClicked = contactsViewModel::onProfileClicked,
+                    onDismissProfileBlockedDialog = contactsViewModel::dismissProfileBlockedDialog,
+                )
             }
         }
     }
@@ -272,7 +252,6 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
                 )
                 .apply {
                     putExtra(EXTRA_EXCLUDE_COMPONENTS, excludedComponents)
-
                     addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT)
 
                     if (targetIntent.flags and Intent.FLAG_GRANT_READ_URI_PERMISSION != 0) {
@@ -296,101 +275,5 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
             setResult(RESULT_CANCELED)
         }
         finish()
-    }
-
-    // TODO(b/12345678): remove once the permission is pregranted
-    private fun hasReadContactsPermission(context: Context): Boolean {
-        return ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CONTACTS) ==
-            PackageManager.PERMISSION_GRANTED
-    }
-
-    @Composable
-    fun ReadContactsPermissionCheckedContent(
-        viewModel: ContactsViewModel,
-        content: @Composable () -> Unit,
-    ) {
-        val context = LocalContext.current as ComponentActivity
-
-        var hasPermission by remember { mutableStateOf(hasReadContactsPermission(context)) }
-        var permissionResultProcessed by remember { mutableStateOf(hasPermission) }
-
-        val launcher =
-            rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
-                isGranted ->
-                val newlyGranted = isGranted && !hasPermission
-                hasPermission = isGranted
-                permissionResultProcessed = true
-
-                if (newlyGranted) {
-                    Log.i(TAG, "Permission newly granted by launcher.")
-                    viewModel.onContactsPermissionGranted()
-                }
-            }
-
-        // Request permission on initial composition if not already granted.
-        LaunchedEffect(Unit) {
-            if (!hasPermission) {
-                launcher.launch(Manifest.permission.READ_CONTACTS)
-            }
-        }
-
-        // Effect to sync permission state when the Activity resumes
-        LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-            val currentSystemPermission = hasReadContactsPermission(context)
-            if (currentSystemPermission != hasPermission) {
-                hasPermission = currentSystemPermission
-                permissionResultProcessed = true
-
-                if (currentSystemPermission) { // newly granted
-                    Log.i(TAG, "Permission newly granted (e.g., in settings).")
-                    viewModel.onContactsPermissionGranted()
-                }
-            }
-        }
-
-        when {
-            hasPermission -> {
-                content() // Display the main content
-            }
-            permissionResultProcessed -> {
-                // Permission is not granted, and the system dialog has been shown at least once.
-                // Show the fallback dialog.
-                PermanentPermissionDeniedDialog(
-                    onOpenSettings = {
-                        Log.i(TAG, "Dialog: Open App Settings")
-                        val intent =
-                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                data = Uri.fromParts("package", context.packageName, null)
-                            }
-                        context.startActivity(intent)
-                    },
-                    onClose = {
-                        Log.i(TAG, "Dialog: Close Picker")
-                        context.finish()
-                    },
-                )
-            }
-            else -> {
-                // Initial load, permission not granted, system dialog is likely being shown.
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            }
-        }
-    }
-
-    @Composable
-    fun PermanentPermissionDeniedDialog(onOpenSettings: () -> Unit, onClose: () -> Unit) {
-        AlertDialog(
-            onDismissRequest = { /* Intentionally non-dismissable by clicking outside */ },
-            title = { Text("Permission Required") },
-            text = {
-                Text(
-                    "You have to grant the Contacts permission to the System Contacts Picker. Please enable it in the app settings."
-                )
-            },
-            confirmButton = { Button(onClick = onOpenSettings) { Text("Open Settings") } },
-            dismissButton = { Button(onClick = onClose) { Text("Close Picker") } },
-        )
     }
 }
