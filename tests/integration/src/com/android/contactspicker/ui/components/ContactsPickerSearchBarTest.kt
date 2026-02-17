@@ -114,7 +114,7 @@ class ContactsPickerSearchBarTest {
                 R.string.contacts_picker_top_bar_search_clear_text_content_description
             )
 
-        composeTestRule.onNodeWithContentDescription(placeholderText).assertExists()
+        composeTestRule.onNodeWithText(placeholderText).assertExists()
         composeTestRule
             .onNodeWithContentDescription(clearTextContentDescription)
             .assertDoesNotExist()
