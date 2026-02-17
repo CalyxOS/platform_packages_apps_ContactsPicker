@@ -62,6 +62,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -216,7 +218,10 @@ fun ContactsPickerBottomSheet(
                 ) {
                     Text(
                         text = data.visuals.message,
-                        modifier = Modifier.padding(vertical = 16.dp, horizontal = 22.dp),
+                        modifier =
+                            Modifier.padding(vertical = 16.dp, horizontal = 22.dp).semantics {
+                                contentDescription = data.visuals.message
+                            },
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }

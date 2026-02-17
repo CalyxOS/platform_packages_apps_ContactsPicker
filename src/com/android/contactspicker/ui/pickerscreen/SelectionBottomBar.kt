@@ -98,8 +98,12 @@ fun SelectionBottomBar(
                     )
                 }
             }
-            Button(onClick = onDoneClick) {
-                Text(stringResource(R.string.selection_bottom_bar_done_button_label))
+            val doneButtonLabel = stringResource(R.string.selection_bottom_bar_done_button_label)
+            Button(
+                onClick = onDoneClick,
+                modifier = Modifier.semantics { contentDescription = doneButtonLabel },
+            ) {
+                Text(doneButtonLabel)
             }
         }
     }
