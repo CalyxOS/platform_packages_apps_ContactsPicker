@@ -41,31 +41,33 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Свернуть"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Телефон"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Электронная почта"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# электронное письмо}one{# электронное письмо}few{# электронных письма}many{# электронных писем}other{# электронных письма}}"</string>
+    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# адрес эл. почты}one{# адрес эл. почты}few{# адреса эл. почты}many{# адресов эл. почты}other{# адреса эл. почты}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# номер телефона}one{# номер телефона}few{# номера телефона}many{# номеров телефона}other{# номера телефона}}"</string>
-    <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} электронное письмо из #}one{{selected_count} электронное письмо из #}few{{selected_count} электронных письма из #}many{{selected_count} электронных писем из #}other{{selected_count} электронных письма из #}}"</string>
+    <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} адрес эл. почты из #}one{{selected_count} адрес эл. почты из #}few{{selected_count} адреса эл. почты из #}many{{selected_count} адресов эл. почты из #}other{{selected_count} адреса эл. почты из #}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} номер телефона из #}one{{selected_count} номер телефона из #}few{{selected_count} номера телефона из #}many{{selected_count} номеров телефона из #}other{{selected_count} номера телефона из #}}"</string>
     <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{За раз можно поделиться только # контактом.}one{За раз можно поделиться только # контактом.}few{За раз можно поделиться только # контактами.}many{За раз можно поделиться только # контактами.}other{За раз можно поделиться только # контакта.}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s (контакт выбран)"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Отменить выбор"</string>
-    <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"Предпросмотр"</string>
+    <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"Посмотреть"</string>
+    <string name="selection_bottom_bar_preview_button_content_description" msgid="3351966150932170916">"Предпросмотр выбранных контактов"</string>
     <string name="selection_bottom_bar_back_button_label" msgid="6447375742968584743">"Назад"</string>
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"Готово"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"У приложения \"%1$s\" будет доступ только к информации из выбранных вами контактов."</string>
     <string name="privacy_banner_more_details" msgid="2567058099706516908">"Дополнительная информация"</string>
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"Закрыть"</string>
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"Назад"</string>
-    <string name="preview_screen_title" msgid="2852036336424026274">"Предпросмотр"</string>
+    <string name="preview_screen_title" msgid="2852036336424026274">"Просмотр контактов"</string>
+    <string name="preview_screen_content_description" msgid="7475368414223967934">"Предпросмотр выбранных контактов"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"Это приложение"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Конфиденциальность ваших контактов"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Пока контактов нет"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Здесь появятся созданные и импортированные на устройство контакты."</string>
+    <string name="no_results_found" msgid="8513853958245248109">"Ничего не найдено"</string>
+    <string name="no_results_found_description" msgid="3316948006890920245">"Попробуйте написать запрос по-другому."</string>
     <string name="user_type_personal" msgid="45376141973820399">"Личный"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Неизвестный пользователь"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"Приложения (%s) приостановлены"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Чтобы открыть контакты профиля \"%1$s\", включите приложения (%2$s) и повторите попытку."</string>
-    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
-    <skip />
-    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
-    <skip />
+    <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"Доступ заблокирован администратором"</string>
+    <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Если у вас есть вопросы, свяжитесь с ним."</string>
 </resources>

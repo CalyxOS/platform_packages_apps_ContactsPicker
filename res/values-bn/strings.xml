@@ -49,6 +49,7 @@
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s-কে বেছে নেওয়া হয়েছে"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"বেছে নেওয়া পরিচিতি মুছে দিন"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"প্রিভিউ দেখুন"</string>
+    <string name="selection_bottom_bar_preview_button_content_description" msgid="3351966150932170916">"বেছে নেওয়া পরিচিতির প্রিভিউ"</string>
     <string name="selection_bottom_bar_back_button_label" msgid="6447375742968584743">"ফিরে যান"</string>
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"হয়ে গেছে"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"আপনি যেসব পরিচিতি বেছে নিয়েছেন, শুধু তাদের থেকে পাওয়া তথ্যই %1$s অ্যাক্সেস করতে পারবে"</string>
@@ -56,16 +57,17 @@
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"বাতিল করুন"</string>
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"ফিরে যান"</string>
     <string name="preview_screen_title" msgid="2852036336424026274">"প্রিভিউ"</string>
+    <string name="preview_screen_content_description" msgid="7475368414223967934">"বেছে নেওয়া পরিচিতির প্রিভিউ"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"এই অ্যাপ"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"আপনার পরিচিতির গোপনীয়তা"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"এখনও কোনও পরিচিতি পাওয়া যায়নি"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"আপনার ডিভাইসে তৈরি করা বা ইমপোর্ট করা পরিচিতি এখানে দেখা যাবে"</string>
+    <string name="no_results_found" msgid="8513853958245248109">"কোনও ফলাফল পাওয়া যায়নি"</string>
+    <string name="no_results_found_description" msgid="3316948006890920245">"অন্য বানান ব্যবহার করে সার্চ করে দেখুন"</string>
     <string name="user_type_personal" msgid="45376141973820399">"ব্যক্তিগত"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"অজানা ব্যবহারকারী"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"%sটি অ্যাপ পজ করা আছে"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"%1$sটি পরিচিতি খুলতে, আপনার %2$s অ্যাপ চালু করে আবার চেষ্টা করুন"</string>
-    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
-    <skip />
-    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
-    <skip />
+    <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"আপনার আইটি অ্যাডমিন অ্যাক্সেস ব্লক করেছেন"</string>
+    <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"আপনার কোনও প্রশ্ন থাকলে, তাদের সাথে যোগাযোগ করুন"</string>
 </resources>

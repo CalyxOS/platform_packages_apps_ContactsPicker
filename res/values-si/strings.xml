@@ -49,6 +49,7 @@
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s තෝරන ලදි"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"තේරීම හිස් කරන්න"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"පෙරදසුන"</string>
+    <string name="selection_bottom_bar_preview_button_content_description" msgid="3351966150932170916">"තෝරාගත් සම්බන්ධතා පෙරදසුන් කරන්න"</string>
     <string name="selection_bottom_bar_back_button_label" msgid="6447375742968584743">"ආපසු"</string>
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"නිමයි"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s හට ඔබ තෝරන සම්බන්ධතා වලින් තතු වෙත පමණක් ප්‍රවේශය ඇත"</string>
@@ -56,17 +57,19 @@
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"අස් කරන්න"</string>
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"ආපසු"</string>
     <string name="preview_screen_title" msgid="2852036336424026274">"පෙරදසුන"</string>
+    <string name="preview_screen_content_description" msgid="7475368414223967934">"තෝරාගත් සම්බන්ධතාවල පෙරදසුන"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"මෙම යෙදුම"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"ඔබේ සම්බන්ධතාවල පෞද්ගලිකත්වය"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"තවම සම්බන්ධතා නොමැත"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"ඔබ ඔබේ උපාංගයට සාදන හෝ ආයාත කරන සම්බන්ධතා මෙහි දිස් වනු ඇත"</string>
-    <string name="user_type_personal" msgid="45376141973820399">"පුද්ගලික"</string>
-    <!-- no translation found for user_type_unknown_label (7034460972310129198) -->
+    <!-- no translation found for no_results_found (8513853958245248109) -->
     <skip />
+    <!-- no translation found for no_results_found_description (3316948006890920245) -->
+    <skip />
+    <string name="user_type_personal" msgid="45376141973820399">"පුද්ගලික"</string>
+    <string name="user_type_unknown_label" msgid="7034460972310129198">"නොදන්නා පරිශීලක"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s යෙදුම් විරාම කර ඇත"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"%1$s සම්බන්ධතා විවෘත කිරීමට, ඔබේ %2$s යෙදුම් ක්‍රියාත්මක කර නැවත උත්සාහ කරන්න"</string>
-    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
-    <skip />
-    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
-    <skip />
+    <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"ඔබේ IT පරිපාලක විසින් ප්‍රවේශය අවහිර කර ඇත"</string>
+    <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"ඔබට කිසියම් ප්‍රශ්නයක් ඇත්නම් ඔවුන්ව සම්බන්ධ කර ගන්න"</string>
 </resources>

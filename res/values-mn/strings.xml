@@ -49,6 +49,7 @@
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s-г сонгосон"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Сонголтыг арилгах"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"Урьдчилан үзэх"</string>
+    <string name="selection_bottom_bar_preview_button_content_description" msgid="3351966150932170916">"Сонгосон харилцагчдыг урьдчилан үзэх"</string>
     <string name="selection_bottom_bar_back_button_label" msgid="6447375742968584743">"Буцах"</string>
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"Болсон"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s зөвхөн таны сонгосон харилцагчдын мэдээлэлд хандах эрхтэй байх болно"</string>
@@ -56,17 +57,19 @@
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"Хаах"</string>
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"Буцах"</string>
     <string name="preview_screen_title" msgid="2852036336424026274">"Урьдчилан үзэх"</string>
+    <string name="preview_screen_content_description" msgid="7475368414223967934">"Сонгосон харилцагчдын урьдчилсан үзэлт"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"Энэ апп"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Таны харилцагчдын нууцлал"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Одоогоор харилцагч алга"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Таны үүсгэсэн эсвэл төхөөрөмж рүүгээ импортолсон харилцагчид энд харагдана"</string>
-    <string name="user_type_personal" msgid="45376141973820399">"Хувийн"</string>
-    <!-- no translation found for user_type_unknown_label (7034460972310129198) -->
+    <!-- no translation found for no_results_found (8513853958245248109) -->
     <skip />
+    <!-- no translation found for no_results_found_description (3316948006890920245) -->
+    <skip />
+    <string name="user_type_personal" msgid="45376141973820399">"Хувийн"</string>
+    <string name="user_type_unknown_label" msgid="7034460972310129198">"Тодорхойгүй хэрэглэгч"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s аппыг түр зогсоосон"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"%1$s харилцагчдыг нээхийн тулд %2$s-н аппуудаа асаагаад, дахин оролдоно уу"</string>
-    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
-    <skip />
-    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
-    <skip />
+    <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"Хандах эрхийг танай IT админ блоклосон"</string>
+    <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Хэрэв танд ямар нэг асуулт байвал түүнтэй холбогдоно уу"</string>
 </resources>

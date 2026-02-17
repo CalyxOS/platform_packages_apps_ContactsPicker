@@ -49,6 +49,7 @@
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"Odabrano: %1$s"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Poništavanje odabira"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"Pregled"</string>
+    <string name="selection_bottom_bar_preview_button_content_description" msgid="3351966150932170916">"Pregled odabranih kontakata"</string>
     <string name="selection_bottom_bar_back_button_label" msgid="6447375742968584743">"Natrag"</string>
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"Gotovo"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s može pristupiti samo podacima kontakata koje odaberete"</string>
@@ -56,16 +57,17 @@
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"Odbaci"</string>
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"Natrag"</string>
     <string name="preview_screen_title" msgid="2852036336424026274">"Pregled"</string>
+    <string name="preview_screen_content_description" msgid="7475368414223967934">"Pregled odabranih kontakata"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"Ova aplikacija"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Privatnost vaših kontakata"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Još nema kontakata"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Ovdje će se prikazivati kontakti koje izradite ili uvezete na uređaj"</string>
+    <string name="no_results_found" msgid="8513853958245248109">"Nema rezultata"</string>
+    <string name="no_results_found_description" msgid="3316948006890920245">"Pokušajte pretražiti s drukčije napisanim pojmom za pretraživanje"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Osobno"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Nepoznati korisnik"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"Pauzirane aplikacije: %s"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Da biste otvorili kontakte profila %1$s, uključite aplikacije profila %2$s i zatim pokušajte ponovo"</string>
-    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
-    <skip />
-    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
-    <skip />
+    <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"Pristup je blokirao vaš IT administrator"</string>
+    <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Obratite mu se ako imate pitanja"</string>
 </resources>
