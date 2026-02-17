@@ -20,7 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"De privacy van je contacten"</string>
-    <string name="privacy_details_description" msgid="4299567306628059441">"Als u een contact selecteert, krijgt %1$s toegang tot de volgende informatie uit uw apparaatcontacten:\n\nAls u de contactgegevens updatet, heeft %1$s geen toegang tot de wijzigingen."</string>
+    <string name="privacy_details_description" msgid="4299567306628059441">"Als je een contact selecteert, krijgt %1$s toegang tot de volgende informatie uit je apparaatcontacten:\n\nAls je de contactgegevens updatet, heeft %1$s geen toegang tot de wijzigingen."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Contactgegevens kunnen informatie bevatten zoals:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Naam"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Telefoonnummers"</string>

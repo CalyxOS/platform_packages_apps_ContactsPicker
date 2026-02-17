@@ -19,8 +19,8 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"आपके संपर्कों की निजता से जुड़ी सेटिंग"</string>
-    <string name="privacy_details_description" msgid="4299567306628059441">"कोई संपर्क चुनने पर, %1$s के पास आपके डिवाइस में सेव किए गए संपर्कों की यह जानकारी ऐक्सेस करने की अनुमति होगी.\n\nअगर संपर्क जानकारी में आपसे कोई बदलाव किया जाता है, तो %1$s के पास उन बदलावों को ऐक्सेस करने की अनुमति नहीं होगी."</string>
+    <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"संपर्कों की निजता से जुड़ी सेटिंग"</string>
+    <string name="privacy_details_description" msgid="4299567306628059441">"कोई संपर्क चुनने पर, %1$s के पास आपके डिवाइस में सेव किए गए संपर्क की वह जानकारी ऐक्सेस करने की अनुमति होगी जिसके बारे में नीचे बताया गया है.\n\nसंपर्क की जानकारी में कोई बदलाव करने पर, %1$s के पास उसको ऐक्सेस करने की अनुमति नहीं होगी."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"संपर्क की जानकारी में ये चीज़ें शामिल हो सकती हैं:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"नाम"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"फ़ोन नंबर"</string>
@@ -33,6 +33,6 @@
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"निकनेम"</string>
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"प्रोफ़ाइल फ़ोटो"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"संपर्क ग्रुप"</string>
-    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"संपर्क की कुछ प्राथमिकताएं"</string>
-    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"इसमें संपर्क का पसंदीदा स्टेटस और यह जानकारी शामिल होती है कि उनके कॉल वॉइसमेल पर भेजे जाएंगे या नहीं"</string>
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"संपर्क की प्राथमिकताएं"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"इसमें संपर्क का पसंदीदा स्टेटस और यह जानकारी शामिल होती है कि उनके कॉल, वॉइसमेल पर भेजे जाएंगे या नहीं"</string>
 </resources>

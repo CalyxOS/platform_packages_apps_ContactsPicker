@@ -20,8 +20,8 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"הפרטיות של אנשי הקשר שלך"</string>
-    <string name="privacy_details_description" msgid="4299567306628059441">"‏אחרי בחירת אנשי הקשר, לאפליקציית %1$s תהיה גישה לפרטים הבאים שלהם ששמורים במכשיר.\n\nאם הפרטים ליצירת קשר ישתנו, לאפליקציית %1$s לא תהיה גישה למידע העדכני."</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"הפרטים ליצירת קשר יכולים להיות:"</string>
+    <string name="privacy_details_description" msgid="4299567306628059441">"‏אחרי בחירת אנשי הקשר, לאפליקציית %1$s תהיה גישה לפרטים הבאים שלהם ששמורים במכשיר.\n\nאם הפרטים של אנשי  הקשר ישתנו, לאפליקציית %1$s לא תהיה גישה למידע העדכני."</string>
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"הפרטים של אנשי הקשר יכולים לכלול:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"שם"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"מספרי טלפון"</string>
     <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"כתובות אימייל"</string>
@@ -34,5 +34,5 @@
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"תמונת הפרופיל"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"קבוצה של אנשי קשר"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"חלק מההעדפות ליצירת קשר"</string>
-    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"כולל אם איש הקשר במועדפים ואם השיחות שלו מועברות לתא הקולי"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"למשל אם הוספת את איש הקשר למועדפים ואם השיחות שלו מועברות לתא הקולי"</string>
 </resources>

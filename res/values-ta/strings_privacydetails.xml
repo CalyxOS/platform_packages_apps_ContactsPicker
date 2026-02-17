@@ -33,6 +33,6 @@
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"புனைப்பெயர்"</string>
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"சுயவிவரப் படம்"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"தொடர்புக் குழு"</string>
-    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"தொடர்புக்கான சில விருப்பத்தேர்வுகள்"</string>
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"சில தொடர்பு விருப்பங்கள்"</string>
     <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"தொடர்பு விருப்பமானதாகக் குறிக்கப்பட்டதா என்ற விவரமும், தொடர்பின் அழைப்புகள் குரலஞ்சலுக்கு அனுப்பப்படுகிறதா என்ற விவரமும் இதிலடங்கும்"</string>
 </resources>

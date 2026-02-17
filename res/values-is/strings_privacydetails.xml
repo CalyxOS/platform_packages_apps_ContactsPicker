@@ -19,7 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"Persónuvernd þinna tengiliða"</string>
+    <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"Persónuvernd tengiliða þinna"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Þegar þú velur tengilið fær %1$s aðgang að eftirfarandi upplýsingum um tengiliðina í tækinu þínu.\n\n%1$s fær ekki aðgang að breytingum sem þú gerir á upplýsingum tengiliða."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Samskiptaupplýsingar geta meðal annars verið:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Nafn"</string>

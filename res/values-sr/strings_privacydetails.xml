@@ -21,7 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"Приватност ваших контаката"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Кад изаберете контакт, %1$s ће имати приступ следећим информацијама из контаката на уређају.\n\nАко ажурирате контакт информације, %1$s неће имати приступ променама."</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Контакт информације могу да обухватају детаље као што су:"</string>
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Контакт информације могу да обухватају следеће:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Име"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Бројеве телефона"</string>
     <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"Имејл адресе"</string>
@@ -31,7 +31,7 @@
     <string name="privacy_details_data_field_birthday_header" msgid="2191861462895006673">"Рођендан"</string>
     <string name="privacy_details_data_field_website_header" msgid="5699958653736095218">"Веб-сајт"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"Надимак"</string>
-    <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"Слика профила"</string>
+    <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"Слику профила"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Групу контаката"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"Нека подешавања за контакт"</string>
     <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Обухвата статус омиљеног контакта и информације о томе да ли се његови позиви преусмеравају на говорну пошту"</string>

@@ -20,7 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"聯絡人的私隱"</string>
-    <string name="privacy_details_description" msgid="4299567306628059441">"選取聯絡人後，「%1$s」將可存取以下的裝置中聯絡資料。\n\n如果你更新聯絡資料，「%1$s」將無法存取有關變更。"</string>
+    <string name="privacy_details_description" msgid="4299567306628059441">"選取聯絡人後，「%1$s」便可在你的裝置中存取以下聯絡人資訊。\n\n如果你更新聯絡人資料，「%1$s」將無法存取有關變更。"</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"聯絡資料可包括以下詳情："</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"名稱"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"電話號碼"</string>

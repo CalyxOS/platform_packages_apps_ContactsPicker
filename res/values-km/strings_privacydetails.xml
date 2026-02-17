@@ -33,6 +33,6 @@
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"ឈ្មោះ​ហៅ​ក្រៅ"</string>
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"រូបភាព​កម្រង​ព័ត៌មាន"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"ក្រុម​ទំនាក់ទំនង"</string>
-    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"ចំណូលចិត្ត​មួយចំនួន​របស់​ទំនាក់ទំនង"</string>
-    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"រួមបញ្ចូល​ស្ថានភាព​ជាសំណព្វ​របស់​ទំនាក់ទំនង និង​ថាតើ​គាត់ត្រូវបាន​បញ្ជូនទៅ​សារ​ជា​សំឡេង​ឬអត់"</string>
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"ចំណូលចិត្ត​មួយចំនួនលើទំនាក់ទំនង"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"រួមមាន​ស្ថានភាព​ជាសំណព្វ​របស់​ទំនាក់ទំនង និង​ថាតើ​បញ្ជូនគាត់ទៅ​សារ​ជា​សំឡេង​ឬអត់"</string>
 </resources>
