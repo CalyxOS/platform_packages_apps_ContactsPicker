@@ -26,6 +26,7 @@ import android.provider.ContactsContract.Contacts
 import android.provider.ContactsContract.Contacts.MATCH_ALL_MIMETYPES_PARAM_KEY
 import android.provider.ContactsContract.Contacts.REQUESTED_MIMETYPES_PARAM_KEY
 import android.provider.ContactsContract.Data
+import androidx.core.net.toUri
 import com.android.contactspicker.R
 import com.android.contactspicker.config.ContactsQueryMode
 import com.android.contactspicker.data.model.Contact
@@ -220,7 +221,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                             EmailContact(
                                 id = id,
                                 displayName = name,
-                                profilePictureUri = profilePictureUri,
+                                profilePictureUri = uriStringWithUserId(profilePictureUri, userId),
                                 isFavorite = isFavorite,
                                 emails = listOf(emailEntry),
                             )
@@ -286,7 +287,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                             PhoneContact(
                                 id = id,
                                 displayName = name,
-                                profilePictureUri = profilePictureUri,
+                                profilePictureUri = uriStringWithUserId(profilePictureUri, userId),
                                 isFavorite = isFavorite,
                                 phones = listOf(phoneEntry),
                             )
@@ -307,7 +308,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 Data.SORT_KEY_PRIMARY + " ASC",
             )
 
-        return cursor?.use(::parseDisplayNameContacts) ?: emptyList()
+        return cursor?.use { parseDisplayNameContacts(it, userId) } ?: emptyList()
     }
 
     private fun getContactsWithMimetypes(
@@ -342,7 +343,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 Contacts.SORT_KEY_PRIMARY + " ASC",
             )
 
-        return cursor?.use(::parseDisplayNameContacts) ?: emptyList()
+        return cursor?.use { parseDisplayNameContacts(it, userId) } ?: emptyList()
     }
 
     private fun searchContactsByMimeTypes(
@@ -377,10 +378,10 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 null,
             )
 
-        return cursor?.use(::parseDisplayNameContacts) ?: emptyList()
+        return cursor?.use { parseDisplayNameContacts(it, userId) } ?: emptyList()
     }
 
-    private fun parseDisplayNameContacts(cursor: Cursor): List<DisplayNameContact> {
+    private fun parseDisplayNameContacts(cursor: Cursor, userId: Int): List<DisplayNameContact> {
         val contacts = mutableListOf<DisplayNameContact>()
         val idIndex = cursor.getColumnIndex(Contacts._ID)
         val nameIndex = cursor.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY)
@@ -400,7 +401,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 DisplayNameContact(
                     id = id,
                     displayName = name,
-                    profilePictureUri = profilePictureUri,
+                    profilePictureUri = uriStringWithUserId(profilePictureUri, userId),
                     isFavorite = isFavorite,
                     lookupKey = lookupKey,
                 )
@@ -420,7 +421,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             PhoneContact(
                 id = id,
                 displayName = displayName,
-                profilePictureUri = profilePictureUri,
+                profilePictureUri = uriStringWithUserId(profilePictureUri, userId),
                 isFavorite = false,
                 phones = listOf(PhoneEntry(dataId, number)),
             )
@@ -438,7 +439,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             EmailContact(
                 id = id,
                 displayName = displayName,
-                profilePictureUri = profilePictureUri,
+                profilePictureUri = uriStringWithUserId(profilePictureUri, userId),
                 isFavorite = false,
                 emails = listOf(EmailEntry(dataId, address)),
             )
@@ -479,7 +480,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                             DisplayNameContact(
                                 id = contactId,
                                 displayName = displayName,
-                                profilePictureUri = profilePictureUri,
+                                profilePictureUri = uriStringWithUserId(profilePictureUri, userId),
                                 isFavorite = false,
                                 lookupKey = lookupKey,
                             )
@@ -533,4 +534,11 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             }
         return contacts
     }
+
+    private fun uriStringWithUserId(photoUriStr: String?, userId: Int): String? =
+        if (!photoUriStr.isNullOrBlank()) {
+            ContentProvider.maybeAddUserId(photoUriStr.toUri(), userId).toString()
+        } else {
+            null
+        }
 }
