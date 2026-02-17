@@ -16,11 +16,11 @@
 
 package com.android.contactspicker.data.repository
 
+import android.app.ActivityManager
 import android.content.Context
 import android.content.flags.Flags
 import android.content.pm.ProviderInfo
 import android.database.MatrixCursor
-import android.os.UserHandle
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
@@ -30,6 +30,7 @@ import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.test.mock.MockContentResolver
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.bedstead.nene.TestApis
 import com.android.contactspicker.config.ContactsQueryMode
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.fakes.FakeContentProvider
@@ -52,20 +53,27 @@ class ContactsRepositorySearchTest {
     private val fakeContentProvider = FakeContentProvider()
     private val mockContentResolver = MockContentResolver()
     private lateinit var repository: ContactsRepository
+    private var userId: Int = 0
 
     @Before
     fun setUp() {
-        val providerInfo = ProviderInfo().apply { authority = ContactsContract.AUTHORITY }
-        fakeContentProvider.attachInfo(context, providerInfo)
+        TestApis.permissions()
+            .withPermission(android.Manifest.permission.INTERACT_ACROSS_USERS)
+            .use { userId = ActivityManager.getCurrentUser() }
 
-        mockContentResolver.addProvider(ContactsContract.AUTHORITY, fakeContentProvider)
-        mockContentResolver.addProvider(
-            "${UserHandle.myUserId()}@${ContactsContract.AUTHORITY}",
-            fakeContentProvider,
-        )
+        whenever(mockContext.userId).thenReturn(userId)
         whenever(mockContext.contentResolver).thenReturn(mockContentResolver)
         whenever(mockContext.resources).thenReturn(context.resources)
         repository = ContactsRepositoryImpl(mockContext)
+
+        val providerInfo = ProviderInfo().apply { authority = ContactsContract.AUTHORITY }
+        fakeContentProvider.attachInfo(mockContext, providerInfo)
+
+        mockContentResolver.addProvider(ContactsContract.AUTHORITY, fakeContentProvider)
+        mockContentResolver.addProvider(
+            "$userId@${ContactsContract.AUTHORITY}",
+            fakeContentProvider,
+        )
     }
 
     @Test
@@ -85,8 +93,7 @@ class ContactsRepositorySearchTest {
         val filterUri = Email.CONTENT_FILTER_URI.buildUpon().appendPath(query).build()
         fakeContentProvider.setCursorForUri(filterUri, cursor)
 
-        val contacts =
-            repository.searchContacts(query, ContactsQueryMode.EmailsOnly, UserHandle.myUserId())
+        val contacts = repository.searchContacts(query, ContactsQueryMode.EmailsOnly, userId)
 
         assertThat(contacts).hasSize(1)
         val contact = contacts.first() as com.android.contactspicker.data.model.EmailContact
@@ -116,8 +123,7 @@ class ContactsRepositorySearchTest {
         val filterUri = Phone.CONTENT_FILTER_URI.buildUpon().appendPath(query).build()
         fakeContentProvider.setCursorForUri(filterUri, cursor)
 
-        val contacts =
-            repository.searchContacts(query, ContactsQueryMode.PhonesOnly, UserHandle.myUserId())
+        val contacts = repository.searchContacts(query, ContactsQueryMode.PhonesOnly, userId)
 
         assertThat(contacts).hasSize(1)
         val contact = contacts.first() as com.android.contactspicker.data.model.PhoneContact
@@ -147,12 +153,7 @@ class ContactsRepositorySearchTest {
             ContactsContract.Contacts.CONTENT_FILTER_URI.buildUpon().appendPath(query).build()
         fakeContentProvider.setCursorForUri(filterUri, cursor)
 
-        val contacts =
-            repository.searchContacts(
-                query,
-                ContactsQueryMode.DisplayNamesOnly,
-                UserHandle.myUserId(),
-            )
+        val contacts = repository.searchContacts(query, ContactsQueryMode.DisplayNamesOnly, userId)
 
         assertThat(contacts).hasSize(1)
         val contact = contacts.first() as DisplayNameContact
@@ -163,16 +164,14 @@ class ContactsRepositorySearchTest {
 
     @Test
     fun searchContacts_emptyQuery_returnsEmptyList() = runTest {
-        val contacts =
-            repository.searchContacts("", ContactsQueryMode.PhonesOnly, UserHandle.myUserId())
+        val contacts = repository.searchContacts("", ContactsQueryMode.PhonesOnly, userId)
 
         assertThat(contacts).isEmpty()
     }
 
     @Test
     fun searchContacts_whitespaceQuery_returnsEmptyList() = runTest {
-        val contacts =
-            repository.searchContacts("   ", ContactsQueryMode.EmailsOnly, UserHandle.myUserId())
+        val contacts = repository.searchContacts("   ", ContactsQueryMode.EmailsOnly, userId)
 
         assertThat(contacts).isEmpty()
     }
@@ -184,8 +183,7 @@ class ContactsRepositorySearchTest {
         val filterUri = Phone.CONTENT_FILTER_URI.buildUpon().appendPath(query).build()
         fakeContentProvider.setCursorForUri(filterUri, cursor)
 
-        val contacts =
-            repository.searchContacts(query, ContactsQueryMode.PhonesOnly, UserHandle.myUserId())
+        val contacts = repository.searchContacts(query, ContactsQueryMode.PhonesOnly, userId)
 
         assertThat(contacts).isEmpty()
     }

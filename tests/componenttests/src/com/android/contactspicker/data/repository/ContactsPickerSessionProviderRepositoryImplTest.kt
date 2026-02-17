@@ -15,12 +15,13 @@
  */
 package com.android.contactspicker.data.repository
 
+import android.app.ActivityManager
 import android.content.Context
 import android.content.pm.ProviderInfo
 import android.net.Uri
-import android.os.UserHandle
 import android.provider.ContactsPickerSessionContract
 import android.test.mock.MockContentResolver
+import com.android.bedstead.nene.TestApis
 import com.android.contactspicker.fakes.FakeContentProvider
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
@@ -38,10 +39,17 @@ class ContactsPickerSessionProviderRepositoryImplTest {
     private val fakeContentProvider = FakeContentProvider()
     private val mockContentResolver = MockContentResolver()
     private lateinit var repository: ContactsPickerSessionProviderRepository
-    private val userId = UserHandle.myUserId()
+    private var userId: Int = 0
 
     @Before
     fun setUp() {
+        TestApis.permissions()
+            .withPermission(android.Manifest.permission.INTERACT_ACROSS_USERS)
+            .use { userId = ActivityManager.getCurrentUser() }
+        whenever(mockContext.userId).thenReturn(userId)
+        whenever(mockContext.contentResolver).thenReturn(mockContentResolver)
+        repository = ContactsPickerSessionProviderRepositoryImpl(mockContext)
+
         val providerInfo =
             ProviderInfo().apply { authority = ContactsPickerSessionContract.AUTHORITY }
         fakeContentProvider.attachInfo(mockContext, providerInfo)
@@ -50,8 +58,6 @@ class ContactsPickerSessionProviderRepositoryImplTest {
             "$userId@" + ContactsPickerSessionContract.AUTHORITY,
             fakeContentProvider,
         )
-        whenever(mockContext.contentResolver).thenReturn(mockContentResolver)
-        repository = ContactsPickerSessionProviderRepositoryImpl(mockContext)
     }
 
     @Test
