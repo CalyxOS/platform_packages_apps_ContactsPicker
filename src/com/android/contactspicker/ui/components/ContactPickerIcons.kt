@@ -19,15 +19,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import com.android.contactspicker.R
+
+internal const val PRIVACY_SHIELD_ICON_TEST_TAG = "privacy_shield_icon_test_tag"
 
 @Composable
 fun PrivacyShieldIcon(modifier: Modifier = Modifier) =
     Icon(
         painter = painterResource(id = R.drawable.android_security_privacy),
-        contentDescription = stringResource(R.string.privacy_info_content_description),
+        contentDescription = null, // disregard for accessibility
         tint = MaterialTheme.colorScheme.onSurface,
-        modifier = modifier,
+        modifier = modifier.testTag(PRIVACY_SHIELD_ICON_TEST_TAG),
     )

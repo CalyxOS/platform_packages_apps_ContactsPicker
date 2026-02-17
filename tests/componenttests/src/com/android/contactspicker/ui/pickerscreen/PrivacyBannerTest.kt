@@ -22,12 +22,13 @@ import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.R
+import com.android.contactspicker.ui.components.PRIVACY_SHIELD_ICON_TEST_TAG
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -44,22 +45,16 @@ class PrivacyBannerTest {
     private val moreDetailsText = context.getString(R.string.privacy_banner_more_details)
     private val dismissText = context.getString(R.string.privacy_banner_dismiss)
     private val testAppName = "Test App"
-    private val bannerDescription =
-        context.getString(R.string.privacy_banner_description, testAppName)
 
     @Test
     fun privacyBanner_displaysAllElements() {
-        val expectedIconContentDescription =
-            context.getString(R.string.privacy_info_content_description)
-
         composeTestRule.setContent {
             PrivacyBanner(callingAppName = testAppName, onMoreDetails = {}, onDismissRequest = {})
         }
 
+        val bannerDescription = context.getString(R.string.privacy_banner_description, testAppName)
         composeTestRule.onNodeWithText(bannerDescription).assertIsDisplayed()
-        composeTestRule
-            .onNodeWithContentDescription(expectedIconContentDescription)
-            .assertIsDisplayed()
+        composeTestRule.onNodeWithTag(PRIVACY_SHIELD_ICON_TEST_TAG).assertIsDisplayed()
         composeTestRule.onNodeWithText(moreDetailsText).assertIsDisplayed()
         composeTestRule.onNodeWithText(dismissText).assertIsDisplayed()
     }
