@@ -49,9 +49,6 @@
     <!--Content description for the profile switcher icon button in the top bar. Tapping it
         expands the profile switcher. [CHAR LIMIT=NONE] -->
     <string name="profile_switcher_content_description">Switch profile</string>
-    <!--Content description for the privacy icon button in the top bar. Tapping it opens the privacy
-        information banner. [CHAR LIMIT=NONE] -->
-    <string name="privacy_info_content_description">Privacy information</string>
     <!--Content description for scrubber's handle, which lets the user scroll quickly through a list.
         [CHAR_LIMIT=NONE] -->
     <string name="scrubber_handle_content_description">Fast scroller handle</string>
