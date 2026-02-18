@@ -23,6 +23,7 @@ import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -53,6 +54,7 @@ class AvatarTest {
         composeTestRule.onNodeWithContentDescription(initialsContentDesc).assertExists()
         composeTestRule.onNodeWithText("A").assertExists()
         composeTestRule.onNodeWithContentDescription(profilePicContentDesc).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(AVATAR_FALLBACK_PERSON_ICON_TEST_TAG).assertDoesNotExist()
     }
 
     @Test
@@ -64,6 +66,7 @@ class AvatarTest {
         composeTestRule.onNodeWithContentDescription(initialsContentDesc).assertExists()
         composeTestRule.onNodeWithText("A").assertExists()
         composeTestRule.onNodeWithContentDescription(profilePicContentDesc).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(AVATAR_FALLBACK_PERSON_ICON_TEST_TAG).assertDoesNotExist()
     }
 
     @Test
@@ -76,5 +79,80 @@ class AvatarTest {
         // Assert that the composable that would host the image is present.
         composeTestRule.onNodeWithContentDescription(profilePicContentDesc).assertExists()
         composeTestRule.onNodeWithContentDescription(initialsContentDesc).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(AVATAR_FALLBACK_PERSON_ICON_TEST_TAG).assertDoesNotExist()
+    }
+
+    @Test
+    fun avatar_noProfilePictureAndDisplayNameStartsWithSmallLetter_showsCapitalizedInitial() {
+        composeTestRule.setContent {
+            Avatar(displayName = "alice Wonderland", profilePictureUri = "")
+        }
+
+        composeTestRule.onNodeWithContentDescription(initialsContentDesc).assertExists()
+        composeTestRule.onNodeWithText("A").assertExists()
+        composeTestRule.onNodeWithText("a").assertDoesNotExist()
+        composeTestRule.onNodeWithContentDescription(profilePicContentDesc).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(AVATAR_FALLBACK_PERSON_ICON_TEST_TAG).assertDoesNotExist()
+    }
+
+    @Test
+    fun avatar_noProfilePictureAndDisplayNameStartsWithEmoji_showsPersonIcon() {
+        composeTestRule.setContent {
+            // Smile emoji
+            Avatar(displayName = "\uD83D\uDE42 Alice", profilePictureUri = "")
+        }
+
+        composeTestRule.onNodeWithTag(AVATAR_FALLBACK_PERSON_ICON_TEST_TAG).assertExists()
+        composeTestRule.onNodeWithContentDescription(initialsContentDesc).assertExists()
+        composeTestRule.onNodeWithText("A").assertDoesNotExist()
+        composeTestRule.onNodeWithContentDescription(profilePicContentDesc).assertDoesNotExist()
+    }
+
+    @Test
+    fun avatar_noProfilePictureAndDisplayNameStartsWithNumber_showsPersonIcon() {
+        composeTestRule.setContent { Avatar(displayName = "1234", profilePictureUri = "") }
+
+        composeTestRule.onNodeWithTag(AVATAR_FALLBACK_PERSON_ICON_TEST_TAG).assertExists()
+        composeTestRule.onNodeWithContentDescription(initialsContentDesc).assertExists()
+        composeTestRule.onNodeWithText("A").assertDoesNotExist()
+        composeTestRule.onNodeWithContentDescription(profilePicContentDesc).assertDoesNotExist()
+    }
+
+    @Test
+    fun avatar_noProfilePictureAndDisplayNameStartsWithSpecialSymbol_showsPersonIcon() {
+        composeTestRule.setContent { Avatar(displayName = "@Name", profilePictureUri = "") }
+
+        composeTestRule.onNodeWithTag(AVATAR_FALLBACK_PERSON_ICON_TEST_TAG).assertExists()
+        composeTestRule.onNodeWithContentDescription(initialsContentDesc).assertExists()
+        composeTestRule.onNodeWithText("A").assertDoesNotExist()
+        composeTestRule.onNodeWithContentDescription(profilePicContentDesc).assertDoesNotExist()
+    }
+
+    @Test
+    fun avatar_noProfilePictureAndDisplayNameNoName_showsPersonIcon() {
+        composeTestRule.setContent {
+            // "(No name)"
+            Avatar(
+                displayName = context.getString(R.string.no_name_placeholder),
+                profilePictureUri = "",
+            )
+        }
+
+        composeTestRule.onNodeWithTag(AVATAR_FALLBACK_PERSON_ICON_TEST_TAG).assertExists()
+        composeTestRule.onNodeWithContentDescription(initialsContentDesc).assertExists()
+        composeTestRule.onNodeWithText("A").assertDoesNotExist()
+        composeTestRule.onNodeWithContentDescription(profilePicContentDesc).assertDoesNotExist()
+    }
+
+    @Test
+    fun avatar_noProfilePictureAndDisplayNameEmpty_showsPersonIcon() {
+        composeTestRule.setContent {
+            Avatar(displayName = "", profilePictureUri = "")
+        }
+
+        composeTestRule.onNodeWithTag(AVATAR_FALLBACK_PERSON_ICON_TEST_TAG).assertExists()
+        composeTestRule.onNodeWithContentDescription(initialsContentDesc).assertExists()
+        composeTestRule.onNodeWithText("A").assertDoesNotExist()
+        composeTestRule.onNodeWithContentDescription(profilePicContentDesc).assertDoesNotExist()
     }
 }
