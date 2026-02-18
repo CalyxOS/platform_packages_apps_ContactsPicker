@@ -49,6 +49,7 @@
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s kiválasztva"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Kijelölés törlése"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"Előnézet"</string>
+    <string name="selection_bottom_bar_preview_button_content_description" msgid="3351966150932170916">"Kiválasztott névjegyek előnézete"</string>
     <string name="selection_bottom_bar_back_button_label" msgid="6447375742968584743">"Vissza"</string>
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"Kész"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"A(z) %1$s csak az Ön által kiválasztott névjegyek adataihoz fér majd hozzá"</string>
@@ -56,16 +57,17 @@
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"Elvetés"</string>
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"Vissza"</string>
     <string name="preview_screen_title" msgid="2852036336424026274">"Előnézet"</string>
+    <string name="preview_screen_content_description" msgid="7475368414223967934">"A kiválasztott névjegyek előnézete"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"Ez az alkalmazás"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Az Ön névjegyeinek adatvédelme"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Még nincsenek névjegyek"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Itt jelennek meg az eszközére létrehozott vagy importált névjegyek"</string>
+    <string name="no_results_found" msgid="8513853958245248109">"Nincs találat"</string>
+    <string name="no_results_found_description" msgid="3316948006890920245">"Próbálkozzon másik helyesírással"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Személyes"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Ismeretlen felhasználó"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s típusú alkalmazások szüneteltetve"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"A(z) %1$s névjegyeinek megnyitásához kapcsolja be %2$s típusú alkalmazásait, majd próbálja újra"</string>
-    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
-    <skip />
-    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
-    <skip />
+    <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"A rendszergazda letiltotta a hozzáférést"</string>
+    <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Ha kérdése van, forduljon hozzá"</string>
 </resources>

@@ -49,6 +49,7 @@
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"Sélection : %1$s"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Effacer la sélection"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"Aperçu"</string>
+    <string name="selection_bottom_bar_preview_button_content_description" msgid="3351966150932170916">"Voir l\'aperçu des contacts sélectionnés"</string>
     <string name="selection_bottom_bar_back_button_label" msgid="6447375742968584743">"Retour"</string>
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"Terminé"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s aura uniquement accès aux coordonnées des contacts que vous sélectionnez"</string>
@@ -56,16 +57,19 @@
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"Fermer"</string>
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"Retour"</string>
     <string name="preview_screen_title" msgid="2852036336424026274">"Aperçu"</string>
+    <string name="preview_screen_content_description" msgid="7475368414223967934">"Aperçu des contacts sélectionnés"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"Cette appli"</string>
-    <string name="privacy_details_menu_label" msgid="497348969731766203">"La confidentialité de vos contacts"</string>
+    <string name="privacy_details_menu_label" msgid="497348969731766203">"Confidentialité de vos contacts"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Aucun contact pour le moment"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Les contacts que vous créez ou importez sur votre appareil s\'afficheront ici"</string>
+    <!-- no translation found for no_results_found (8513853958245248109) -->
+    <skip />
+    <!-- no translation found for no_results_found_description (3316948006890920245) -->
+    <skip />
     <string name="user_type_personal" msgid="45376141973820399">"Personnel"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Utilisateur inconnu"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"Les applis %s sont mises en pause"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Pour ouvrir les contacts %1$s, activez vos applis %2$s, puis réessayez"</string>
-    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
-    <skip />
-    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
-    <skip />
+    <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"Accès bloqué par votre administrateur informatique"</string>
+    <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Communiquer avec l\'administrateur si vous avez des questions"</string>
 </resources>

@@ -49,6 +49,7 @@
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s개 선택됨"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"선택 사항 삭제"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"미리보기"</string>
+    <string name="selection_bottom_bar_preview_button_content_description" msgid="3351966150932170916">"선택한 연락처 미리보기"</string>
     <string name="selection_bottom_bar_back_button_label" msgid="6447375742968584743">"뒤로"</string>
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"완료"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s 앱이 내가 선택한 연락처의 정보에만 액세스합니다."</string>
@@ -56,17 +57,19 @@
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"닫기"</string>
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"뒤로"</string>
     <string name="preview_screen_title" msgid="2852036336424026274">"미리보기"</string>
+    <string name="preview_screen_content_description" msgid="7475368414223967934">"선택한 연락처 미리보기"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"이 앱"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"연락처 개인 정보 보호"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"연락처 없음"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"이 기기에서 생성하거나 기기로 가져온 연락처가 여기에 표시됩니다."</string>
-    <string name="user_type_personal" msgid="45376141973820399">"개인"</string>
-    <!-- no translation found for user_type_unknown_label (7034460972310129198) -->
+    <!-- no translation found for no_results_found (8513853958245248109) -->
     <skip />
+    <!-- no translation found for no_results_found_description (3316948006890920245) -->
+    <skip />
+    <string name="user_type_personal" msgid="45376141973820399">"개인"</string>
+    <string name="user_type_unknown_label" msgid="7034460972310129198">"알 수 없는 사용자"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"앱 %s개가 일시중지됨"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"%1$s 연락처를 열려면 %2$s 앱을 사용 설정한 후 다시 시도하세요."</string>
-    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
-    <skip />
-    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
-    <skip />
+    <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"IT 관리자가 액세스를 차단했습니다"</string>
+    <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"궁금한 점이 있으면 해당 업체에 문의하세요"</string>
 </resources>

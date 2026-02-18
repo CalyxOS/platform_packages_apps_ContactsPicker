@@ -49,6 +49,7 @@
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"បាន​ជ្រើសរើស %1$s"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"សម្អាត​ការ​ជ្រើសរើស"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"មើលសាកល្បង"</string>
+    <string name="selection_bottom_bar_preview_button_content_description" msgid="3351966150932170916">"មើលទំនាក់ទំនងដែលបានជ្រើសរើសសាកល្បង"</string>
     <string name="selection_bottom_bar_back_button_label" msgid="6447375742968584743">"ថយក្រោយ"</string>
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"រួចរាល់"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s នឹងមាន​សិទ្ធិចូលប្រើ​ព័ត៌មានពី​ទំនាក់ទំនង​ដែលអ្នក​ជ្រើសរើស​តែប៉ុណ្ណោះ"</string>
@@ -56,16 +57,17 @@
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"ច្រានចោល"</string>
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"ថយក្រោយ"</string>
     <string name="preview_screen_title" msgid="2852036336424026274">"មើលសាកល្បង"</string>
+    <string name="preview_screen_content_description" msgid="7475368414223967934">"ការមើល​ទំនាក់ទំនង​ដែលបាន​ជ្រើសរើស​សាកល្បង"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"កម្មវិធីនេះ"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"ឯកជនភាព​របស់​ទំនាក់ទំនង​អ្នក"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"មិន​ទាន់​មាន​ទំនាក់ទំនង​ទេ"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"ទំនាក់ទំនង​ដែលអ្នក​បង្កើត ឬនាំចូល​ទៅឧបករណ៍​របស់អ្នក​នឹង​បង្ហាញ​នៅទីនេះ"</string>
+    <string name="no_results_found" msgid="8513853958245248109">"រក​មិន​ឃើញ​លទ្ធផលទេ"</string>
+    <string name="no_results_found_description" msgid="3316948006890920245">"សាកល្បងស្វែងរកដោយប្រើការប្រកបខុសគ្នា"</string>
     <string name="user_type_personal" msgid="45376141973820399">"ផ្ទាល់ខ្លួន"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"មិន​ស្គាល់​អ្នកប្រើប្រាស់"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"កម្មវិធី %s ត្រូវបាន​ផ្អាក"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"ដើម្បីបើក​ទំនាក់ទំនង %1$s សូមបើក​កម្មវិធី %2$s របស់អ្នក រួច​ព្យាយាម​ម្ដងទៀត"</string>
-    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
-    <skip />
-    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
-    <skip />
+    <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"បានទប់ស្កាត់ការចូលប្រើដោយអ្នកគ្រប់គ្រង​ផ្នែកព័ត៌មានវិទ្យារបស់អ្នក"</string>
+    <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"សូមទាក់ទងទៅគាត់ ប្រសិនបើអ្នកមានសំណួរ"</string>
 </resources>
