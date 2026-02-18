@@ -27,4 +27,6 @@ interface ContactsPickerLogger {
         useSystemContactsPicker: Boolean,
         matchAllRequestedMimeTypes: Boolean,
     )
+
+    fun logContactsPickerSessionFinishedSuccessfully(numContactsSelected: Int)
 }

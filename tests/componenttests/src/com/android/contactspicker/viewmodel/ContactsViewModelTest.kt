@@ -887,6 +887,51 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun onDoneClicked_actionPickContacts_logsFinishedSuccessfullyEvent() = runTest {
+        val contact =
+            ContactTestDataFactory.createEmailContact(
+                id = 1,
+                displayName = "Test Contact",
+                emailCount = 5,
+            )
+        initializeViewModelForActionPickContacts(
+            initialContacts = listOf(contact),
+            requestedMimeTypes = listOf(Email.CONTENT_ITEM_TYPE),
+            isMultiSelect = true,
+        )
+        val expectedCount = 3
+        for (i in 0..<expectedCount) {
+            viewModel.toggleEntrySelection(contact.id, contact.emails[i].id)
+        }
+
+        val events = callOnDoneAndCaptureEvents()
+
+        assertThat(events).hasSize(1)
+        assertThat(events.first()).isInstanceOf(PickerResultEvent.SetResultAndFinish::class.java)
+        verify(mockContactsPickerLogger).logContactsPickerSessionFinishedSuccessfully(expectedCount)
+    }
+
+    @Test
+    fun onDoneClicked_actionPick_logsFinishedSuccessfullyEvent() = runTest {
+        val contacts = ContactTestDataFactory.createContactList(count = 10)
+        initializeViewModelForLegacyActionPick(
+            contacts = contacts,
+            intentExtras = buildIntentExtrasWithMultiSelect(true),
+        )
+
+        val expectedCount = 7
+        for (i in 0..<expectedCount) {
+            viewModel.toggleContactSelection(contacts[i])
+        }
+
+        val events = callOnDoneAndCaptureEvents()
+
+        assertThat(events).hasSize(1)
+        assertThat(events.first()).isInstanceOf(PickerResultEvent.SetResultAndFinish::class.java)
+        verify(mockContactsPickerLogger).logContactsPickerSessionFinishedSuccessfully(expectedCount)
+    }
+
+    @Test
     fun onSearchQueryChanged_debouncesSearch() = runTest {
         val searchQuery = "test"
         val searchResult =
