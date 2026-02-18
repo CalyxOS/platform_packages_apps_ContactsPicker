@@ -16,9 +16,12 @@
 package com.android.contactspicker.data.repository
 
 import android.content.ContentProvider
+import android.content.ContentResolver
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.flags.Flags
 import android.content.pm.ProviderInfo
+import android.content.res.Resources
 import android.database.MatrixCursor
 import android.os.UserHandle
 import android.platform.test.annotations.RequiresFlagsEnabled
@@ -45,8 +48,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 
 /**
  * Unit tests for [ContactsRepository].
@@ -58,11 +59,11 @@ import org.mockito.kotlin.whenever
 class ContactsRepositoryImplTest {
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
-    private val context: Context = ApplicationProvider.getApplicationContext()
-    private val mockContext: Context = mock()
-
+    private val realContext: Context = ApplicationProvider.getApplicationContext()
     private val fakeContentProvider = FakeContentProvider()
+
     private val mockContentResolver = MockContentResolver()
+    private lateinit var contextWrapper: Context
     private lateinit var repository: ContactsRepository
 
     companion object {
@@ -91,7 +92,7 @@ class ContactsRepositoryImplTest {
     @Before
     fun setUp() {
         val providerInfo = ProviderInfo().apply { authority = ContactsContract.AUTHORITY }
-        fakeContentProvider.attachInfo(context, providerInfo)
+        fakeContentProvider.attachInfo(realContext, providerInfo)
 
         mockContentResolver.addProvider(
             "$CURRENT_USER_ID@${ContactsContract.AUTHORITY}",
@@ -102,9 +103,17 @@ class ContactsRepositoryImplTest {
             fakeContentProvider,
         )
 
-        whenever(mockContext.contentResolver).thenReturn(mockContentResolver)
-        whenever(mockContext.resources).thenReturn(context.resources)
-        repository = ContactsRepositoryImpl(mockContext)
+        contextWrapper =
+            object : ContextWrapper(realContext) {
+                override fun getContentResolver(): ContentResolver? {
+                    return mockContentResolver
+                }
+
+                override fun getResources(): Resources? {
+                    return realContext.resources
+                }
+            }
+        repository = ContactsRepositoryImpl(contextWrapper)
     }
 
     @Test
