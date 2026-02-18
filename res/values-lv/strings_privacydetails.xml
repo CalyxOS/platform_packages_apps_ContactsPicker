@@ -19,7 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"Jūsu kontaktpersonu konfidencialitāte"</string>
+    <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"Kontaktpersonu konfidencialitāte"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Kad atlasīsiet kādu kontaktpersonu, %1$s varēs piekļūt tālāk norādītajai informācijai no jūsu ierīces kontaktpersonām.\n\nJa mainīsiet kontaktinformāciju, %1$s nevarēs piekļūt šīm izmaiņām."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Kontaktinformācija var ietvert tālāk norādīto informāciju."</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Vārds"</string>

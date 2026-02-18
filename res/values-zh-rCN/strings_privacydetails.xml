@@ -21,7 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"您的通讯录隐私权"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"您选择联系人后，%1$s将有权访问您设备上存储的以下联系信息。\n\n如果您更新了联系信息，%1$s将无法访问这些更改。"</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"联系信息可能包括以下详细信息："</string>
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"联系信息可能包括："</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"名称"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"电话号码"</string>
     <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"邮箱"</string>
@@ -34,5 +34,5 @@
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"个人资料照片"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"联系人群组"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"部分联系人偏好设置"</string>
-    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"包括联系人的“常用联系人”状态及是否将其转入语音信箱"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"包括是否收藏了联系人及是否将其来电转入语音信箱"</string>
 </resources>

@@ -21,7 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"Kişilerinizin gizliliği"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Bir kişi seçtiğinizde %1$s, cihazınızda kayıtlı kişilerden aşağıdaki bilgilere erişebilir.\n\nİletişim bilgilerinde güncelleme yaparsanız %1$s, ilgili değişikliklere erişemez."</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Kişiye ait bilgiler şunları içerebilir:"</string>
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"İletişim bilgileri şunları içerebilir:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Ad"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Telefon numaraları"</string>
     <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"E-posta adresleri"</string>
@@ -32,7 +32,7 @@
     <string name="privacy_details_data_field_website_header" msgid="5699958653736095218">"Web sitesi"</string>
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"Takma ad"</string>
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"Profil resmi"</string>
-    <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Kişi Grubu"</string>
+    <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Kişi grubu"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"Kişiye ait tercihler"</string>
     <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Kişinin favorilerde olup olmadığı ve sesli mesaja yönlendirilip yönlendirilmediği gibi bilgiler içerir."</string>
 </resources>

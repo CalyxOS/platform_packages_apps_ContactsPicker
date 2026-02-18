@@ -19,9 +19,9 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"Personvernet til kontaktene dine"</string>
+    <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"Personvern for kontakter"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Når du velger en kontakt, får %1$s tilgang til følgende kontaktinformasjon på enheten din.\n\nHvis du oppdaterer kontaktinformasjonen, får ikke %1$s tilgang til endringene."</string>
-    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Kontaktinformasjon kan omfatte detaljer som"</string>
+    <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Kontaktinformasjon kan inkludere dette:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Navn"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Telefonnumre"</string>
     <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"E-postadresser"</string>
@@ -34,5 +34,5 @@
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"Profilbilde"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Kontaktgruppe"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"Noen kontaktinnstillinger"</string>
-    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Inkluderer om en kontakt er favorisert og om anrop fra vedkommende sendes til talepost"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Inkluderer om en kontakt er favorisert, og om anrop fra vedkommende sendes til talepost"</string>
 </resources>

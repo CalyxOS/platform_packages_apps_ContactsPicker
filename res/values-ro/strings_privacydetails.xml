@@ -19,8 +19,8 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"Confidențialitatea agendei dvs."</string>
-    <string name="privacy_details_description" msgid="4299567306628059441">"Când selectați o persoană de contact, %1$s va avea acces la următoarele informații din agenda dispozitivului.\n\nDacă actualizați informațiile de contact, %1$s nu va avea acces la modificări."</string>
+    <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"Confidențialitatea persoanelor de contact"</string>
+    <string name="privacy_details_description" msgid="4299567306628059441">"Când selectezi o persoană de contact, %1$s va avea acces la următoarele informații din agenda dispozitivului.\n\nDacă actualizezi informațiile de contact, %1$s nu va avea acces la modificări."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Informațiile de contact pot include detalii precum:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Nume"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"Numere de telefon"</string>

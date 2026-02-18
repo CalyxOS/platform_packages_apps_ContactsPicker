@@ -33,6 +33,6 @@
     <string name="privacy_details_data_field_nickname_header" msgid="1840987586959867318">"نام مستعار"</string>
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"عکس نمایه"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"گروه مخاطبین"</string>
-    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"برخی‌از اولویت‌های مخاطب"</string>
+    <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"برخی‌از اولویت‌های تماس"</string>
     <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"شامل وضعیت دلخواه مخاطب می‌شود و اینکه به پست صوتی ارسال می‌شود یا نه"</string>
 </resources>
