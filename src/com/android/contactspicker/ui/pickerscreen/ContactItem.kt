@@ -279,7 +279,7 @@ private fun Contact.secondaryText(selectedEntries: Set<Long>): AnnotatedString? 
                     context.getString(R.string.contact_item_emails_count),
                 )
             } else {
-                emails.first().address.toVerbatimAnnotatedString()
+                AnnotatedString(emails.first().address)
             }
         }
         is PhoneContact -> {
@@ -413,7 +413,7 @@ private fun ExpandedEmailEntry(
     onCheckedChange: () -> Unit,
 ) {
     ExpandedContactEntry(
-        text = emailEntry.address.toVerbatimAnnotatedString(),
+        text = AnnotatedString(emailEntry.address),
         label = emailEntry.label,
         isChecked = isChecked,
         isMultiSelectEnabled = isMultiSelectEnabled,

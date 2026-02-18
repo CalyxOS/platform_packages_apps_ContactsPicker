@@ -266,7 +266,7 @@ class ContactItemTest {
     }
 
     @Test
-    fun contactItem_secondaryText_hasVerbatimAnnotation() {
+    fun contactItem_phoneContact_secondaryTextHasVerbatimAnnotation() {
         val testSinglePhoneContact = ContactTestDataFactory.GENERIC_PHONE_CONTACT
         createContactItemWithEmptySelection(testSinglePhoneContact)
 
@@ -281,6 +281,24 @@ class ContactItemTest {
         val annotations = annotatedString.getTtsAnnotations(0, phoneNumber.length)
         val hasVerbatimAnnotation = annotations.any { it.item is VerbatimTtsAnnotation }
         assertThat(hasVerbatimAnnotation).isTrue()
+    }
+
+    @Test
+    fun contactItem_emailContact_secondaryTextDoesNotHaveVerbatimAnnotation() {
+        val testSinglePhoneContact = ContactTestDataFactory.GENERIC_EMAIL_CONTACT
+        createContactItemWithEmptySelection(testSinglePhoneContact)
+
+        val email = testSinglePhoneContact.emails.first().address
+        val node = composeTestRule.onNodeWithText(email).fetchSemanticsNode()
+
+        val annotatedString =
+            node.config[SemanticsProperties.Text].find { it.text == email }
+                ?: error("Email address text not found in semantics node")
+
+        // Explicitly verify the VerbatimTtsAnnotation does not exist
+        val annotations = annotatedString.getTtsAnnotations(0, email.length)
+        val hasVerbatimAnnotation = annotations.any { it.item is VerbatimTtsAnnotation }
+        assertThat(hasVerbatimAnnotation).isFalse()
     }
 
     @Test
@@ -301,6 +319,27 @@ class ContactItemTest {
             val annotations = annotatedString.getTtsAnnotations(0, phone.number.length)
             val hasVerbatimAnnotation = annotations.any { it.item is VerbatimTtsAnnotation }
             assertThat(hasVerbatimAnnotation).isTrue()
+        }
+    }
+
+    @Test
+    fun contactItem_withMultipleEmails_doesNotHaveVerbatimAnnotation() {
+        val testMultiEmailContact = ContactTestDataFactory.GENERIC_MULTI_EMAIL_CONTACT
+        createContactItemWithEmptySelection(testMultiEmailContact)
+        // Expand
+        composeTestRule.onNodeWithText(testMultiEmailContact.displayName).performClick()
+
+        testMultiEmailContact.emails.forEach { email ->
+            val node = composeTestRule.onNodeWithText(email.address).fetchSemanticsNode()
+
+            val annotatedString =
+                node.config[SemanticsProperties.Text].find { it.text == email.address }
+                    ?: error("Email address text not found in semantics node")
+
+            // Explicitly verify the VerbatimTtsAnnotation does not exist
+            val annotations = annotatedString.getTtsAnnotations(0, email.address.length)
+            val hasVerbatimAnnotation = annotations.any { it.item is VerbatimTtsAnnotation }
+            assertThat(hasVerbatimAnnotation).isFalse()
         }
     }
 
