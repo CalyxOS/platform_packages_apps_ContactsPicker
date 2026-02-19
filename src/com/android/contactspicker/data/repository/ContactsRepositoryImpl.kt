@@ -165,6 +165,20 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         }
     }
 
+    override suspend fun hasAnyContacts(userId: Int): Boolean {
+        val cursor =
+            contentResolver.query(
+                ContentProvider.maybeAddUserId(Contacts.CONTENT_URI, userId),
+                arrayOf(Contacts._ID), // Minimal projection
+                null, // No selection
+                null, // No selection args
+                "${Contacts._ID} LIMIT 1", // Sort order and limit to 1 row (crucial for performance)
+            )
+
+        // moveToFirst() returns true if the cursor is not empty
+        return cursor?.use { it.moveToFirst() } ?: false
+    }
+
     private fun getEmailContacts(userId: Int): List<Contact> {
         val contacts = mutableMapOf<Long, EmailContact>()
         val projection =

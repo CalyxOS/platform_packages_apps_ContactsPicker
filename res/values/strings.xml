@@ -148,6 +148,12 @@
 
     <!-- Text shown when there are no contacts to display. [CHAR LIMIT=40] -->
     <string name="no_contacts_title">No contacts yet</string>
+    <!-- Text shown when there are no contacts to display. [CHAR LIMIT=40] -->
+    <string name="no_email_contacts_title">No contacts with email addresses</string>
+    <!-- Text shown when there are no contacts to display. [CHAR LIMIT=40] -->
+    <string name="no_phone_contacts_title">No contacts with phone numbers</string>
+    <!-- Text shown when there are no contacts to display. [CHAR LIMIT=40] -->
+    <string name="no_custom_details_contacts_title">No contacts with required info</string>
     <!-- Secondary text shown when there are no contacts to display. [CHAR LIMIT=100] -->
     <string name="no_contacts_description">The contacts that you create or import to your device will appear here</string>
 

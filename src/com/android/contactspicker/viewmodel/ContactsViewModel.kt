@@ -310,26 +310,42 @@ constructor(
                     initialContacts =
                         contactsRepository.getContacts(config.queryMode, userState.selectedUserId)
                     Trace.endSection()
+                    if (initialContacts.isNotEmpty()) {
+                        // Only show the privacy banner if user hasn't seen it before for this
+                        // combination of uid and MIME types.
+                        showPrivacyBanner =
+                            !privacyBannerRepository.wasPrivacyBannerShown(
+                                callingAppUid,
+                                config.requestedMimeTypes,
+                            )
 
-                    // Only show the privacy banner if user hasn't seen it before for this
-                    // combination of uid and MIME types.
-                    showPrivacyBanner =
-                        !privacyBannerRepository.wasPrivacyBannerShown(
-                            callingAppUid,
-                            config.requestedMimeTypes,
-                        )
-
-                    // TODO(b/444459883): check and handle empty list
-                    _uiState.value =
-                        ContactsListState.Success(
-                            availableContacts = initialContacts,
-                            selectedContacts =
-                                checkNotNull(selectionHandler).selectedContacts.value,
-                            isMultiSelectEnabled = config.isMultiSelectEnabled,
-                            callingAppName = callingAppName,
-                            requestedMimeTypes = config.requestedMimeTypes,
-                            showPrivacyBanner = showPrivacyBanner,
-                        )
+                        _uiState.value =
+                            ContactsListState.Success(
+                                availableContacts = initialContacts,
+                                selectedContacts =
+                                    checkNotNull(selectionHandler).selectedContacts.value,
+                                isMultiSelectEnabled = config.isMultiSelectEnabled,
+                                callingAppName = callingAppName,
+                                requestedMimeTypes = config.requestedMimeTypes,
+                                showPrivacyBanner = showPrivacyBanner,
+                            )
+                    } else {
+                        val noContactsMessage =
+                            when (config.queryMode) {
+                                ContactsQueryMode.EmailsOnly ->
+                                    context.getString(R.string.no_email_contacts_title)
+                                ContactsQueryMode.PhonesOnly ->
+                                    context.getString(R.string.no_phone_contacts_title)
+                                ContactsQueryMode.DisplayNamesOnly ->
+                                    context.getString(R.string.no_contacts_title)
+                                is ContactsQueryMode.Custom -> {
+                                    if (contactsRepository.hasAnyContacts(userState.selectedUserId))
+                                        context.getString(R.string.no_custom_details_contacts_title)
+                                    else context.getString(R.string.no_contacts_title)
+                                }
+                            }
+                        _uiState.value = ContactsListState.NoResults(message = noContactsMessage)
+                    }
                 } catch (e: Exception) {
                     // TODO(b/444459883): iterate on error handling and error messages
                     if (e is kotlinx.coroutines.CancellationException) {

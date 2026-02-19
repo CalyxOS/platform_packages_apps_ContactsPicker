@@ -51,15 +51,14 @@ fun ContactsListContent(
     onToggleEntrySelection: (contactId: Long, entryId: Long) -> Unit,
 ) {
     when (uiState) {
-        is ContactsListState.Loading -> {
+        is ContactsListState.Loading ->
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator(
                     modifier = Modifier.testTag(CONTACTS_PICKER_SCREEN_LOADING_INDICATOR_TEST_TAG)
                 )
             }
-        }
 
-        is ContactsListState.Error -> {
+        is ContactsListState.Error ->
             Box(
                 modifier = Modifier.fillMaxSize().padding(16.dp),
                 contentAlignment = Alignment.Center,
@@ -70,28 +69,25 @@ fun ContactsListContent(
                     color = MaterialTheme.colorScheme.error,
                 )
             }
-        }
 
-        is ContactsListState.Success -> {
-            if (uiState.availableContacts.isEmpty()) {
-                EmptyContactsScreen(
-                    title = stringResource(id = R.string.no_contacts_title),
-                    description = stringResource(id = R.string.no_contacts_description),
-                    icon = Icons.Outlined.Group,
-                )
-            } else {
-                ContactsPickerBody(
-                    contacts = uiState.availableContacts,
-                    callingAppName = uiState.callingAppName,
-                    showPrivacyBanner = uiState.showPrivacyBanner,
-                    selectedContacts = uiState.selectedContacts,
-                    isMultiSelectEnabled = uiState.isMultiSelectEnabled,
-                    onToggleContactSelection = onToggleContactSelection,
-                    onToggleEntrySelection = onToggleEntrySelection,
-                    onPrivacyBannerMoreDetails = onPrivacyBannerMoreDetails,
-                    onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
-                )
-            }
-        }
+        is ContactsListState.Success ->
+            ContactsPickerBody(
+                contacts = uiState.availableContacts,
+                callingAppName = uiState.callingAppName,
+                showPrivacyBanner = uiState.showPrivacyBanner,
+                selectedContacts = uiState.selectedContacts,
+                isMultiSelectEnabled = uiState.isMultiSelectEnabled,
+                onToggleContactSelection = onToggleContactSelection,
+                onToggleEntrySelection = onToggleEntrySelection,
+                onPrivacyBannerMoreDetails = onPrivacyBannerMoreDetails,
+                onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
+            )
+
+        is ContactsListState.NoResults ->
+            EmptyContactsScreen(
+                title = uiState.message,
+                description = stringResource(id = R.string.no_contacts_description),
+                icon = Icons.Outlined.Group,
+            )
     }
 }

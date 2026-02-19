@@ -59,4 +59,7 @@ interface ContactsRepository {
         mimeTypes: List<MimeType>,
         userId: Int,
     ): List<Long>
+
+    /** Returns true if the user has at least one contact. */
+    suspend fun hasAnyContacts(userId: Int): Boolean
 }
