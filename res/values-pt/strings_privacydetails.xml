@@ -19,7 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"Privacidade dos seus contatos"</string>
+    <string name="privacy_details_top_bar_header" msgid="5184775104564684612">"Privacidade dos contatos"</string>
     <string name="privacy_details_description" msgid="4299567306628059441">"Quando você selecionar um contato, o app %1$s terá acesso a estas informações dos seus contatos no dispositivo.\n\nSe você fizer alguma atualização nos dados, o app %1$s não terá acesso às mudanças."</string>
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"Os dados de contato incluem detalhes como:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"Nome"</string>
@@ -34,5 +34,5 @@
     <string name="privacy_details_data_field_photo_header" msgid="4627205637502914363">"Foto do perfil"</string>
     <string name="privacy_details_data_field_group_header" msgid="3973522418609162120">"Grupo de contatos"</string>
     <string name="privacy_details_data_field_preferences_header" msgid="6216739370754927166">"Algumas preferências de contato"</string>
-    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Inclui o status de favorito de um contato e informa se ele foi enviado para o correio de voz"</string>
+    <string name="privacy_details_data_field_preferences_description" msgid="3897674838925821716">"Incluem o status de favorito de um contato e informa se ele foi enviado para o correio de voz"</string>
 </resources>

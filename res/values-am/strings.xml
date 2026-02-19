@@ -49,6 +49,7 @@
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s ተመርጧል"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"ምርጫን አጽዳ"</string>
     <string name="selection_bottom_bar_preview_button_label" msgid="2700542796344166696">"ቅድመ ዕይታ"</string>
+    <string name="selection_bottom_bar_preview_button_content_description" msgid="3351966150932170916">"የተመረጡ ዕውቂያዎችን ቅድሚያ ይመልከቱ"</string>
     <string name="selection_bottom_bar_back_button_label" msgid="6447375742968584743">"ተመለስ"</string>
     <string name="selection_bottom_bar_done_button_label" msgid="6954303718344998674">"ተከናውኗል"</string>
     <string name="privacy_banner_description" msgid="8397685763338639247">"%1$s እርስዎ ከመረጧቸው ዕውቂያዎች ላይ ያለ መረጃ ብቻ መዳረሻ ይኖራቸዋል"</string>
@@ -56,17 +57,19 @@
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"አሰናብት"</string>
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"ተመለስ"</string>
     <string name="preview_screen_title" msgid="2852036336424026274">"ቅድመ ዕይታ"</string>
+    <string name="preview_screen_content_description" msgid="7475368414223967934">"የተመረጡ ዕውቂያዎች ቅድመ ዕይታ"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"ይህ መተግበሪያ"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"የዕውቂያዎችዎ ግላዊነት"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"እስካሁን ምንም ዕውቂያዎች የሉም"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"በመሣሪያዎ ላይ የሚፈጥሯቸው ወይም የሚያመጧቸው ዕውቂያዎች እዚህ ይታያሉ"</string>
-    <string name="user_type_personal" msgid="45376141973820399">"Personal"</string>
-    <!-- no translation found for user_type_unknown_label (7034460972310129198) -->
+    <!-- no translation found for no_results_found (8513853958245248109) -->
     <skip />
+    <!-- no translation found for no_results_found_description (3316948006890920245) -->
+    <skip />
+    <string name="user_type_personal" msgid="45376141973820399">"Personal"</string>
+    <string name="user_type_unknown_label" msgid="7034460972310129198">"ያልታወቀ ተጠቃሚ"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"የ%s መተግበሪያዎች ባለበት ቆመዋል"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"የ%1$s ዕውቂያዎችን ለመክፈት የእርስዎን %2$s መተግበሪያዎች ያብሩ ከዚያ እንደገና ይሞክሩ"</string>
-    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
-    <skip />
-    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
-    <skip />
+    <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"መዳረሻ በአይቲ አስተዳዳሪዎ ታግዷል"</string>
+    <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"ማናቸውም ጥያቄዎች ካሉዎት ያነጋግሯቸው"</string>
 </resources>
