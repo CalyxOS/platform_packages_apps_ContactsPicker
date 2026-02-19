@@ -38,7 +38,9 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
@@ -83,6 +85,9 @@ private val ICON_TEXT_SPACING = 8.dp
 private val CARD_OUTER_CORNER_RADIUS = 32.dp
 private val CARD_INNER_CORNER_RADIUS = 4.dp
 
+internal val TOGGLE_ICON_BOX_SIZE = 48.dp
+internal val TOGGLE_ICON_BUTTON_HEIGHT = 40.dp
+internal val TOGGLE_ICON_BUTTON_WIDTH = 32.dp
 internal val TOP_ITEM_SHAPE =
     RoundedCornerShape(
         topStart = CARD_OUTER_CORNER_RADIUS,
@@ -228,16 +233,42 @@ fun ContactItem(
                             targetValue = if (expanded) 180f else 0f,
                             label = "expand_collapse_icon_rotation",
                         )
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription =
-                            stringResource(
-                                if (expanded)
-                                    R.string.contact_item_collapse_button_content_description
-                                else R.string.contact_item_expand_button_content_description
-                            ),
-                        modifier = Modifier.graphicsLayer { rotationZ = rotationAngle },
-                    )
+
+                    Box(
+                        modifier = Modifier.size(TOGGLE_ICON_BOX_SIZE),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        FilledIconToggleButton(
+                            checked = expanded,
+                            onCheckedChange = { expanded = it },
+                            modifier =
+                                Modifier.size(
+                                    width = TOGGLE_ICON_BUTTON_WIDTH,
+                                    height = TOGGLE_ICON_BUTTON_HEIGHT,
+                                ),
+                            shape = CircleShape,
+                            colors =
+                                IconButtonDefaults.filledIconToggleButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    checkedContainerColor =
+                                        MaterialTheme.colorScheme.surfaceContainer,
+                                    checkedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                ),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowDown,
+                                contentDescription =
+                                    stringResource(
+                                        if (expanded)
+                                            R.string
+                                                .contact_item_collapse_button_content_description
+                                        else R.string.contact_item_expand_button_content_description
+                                    ),
+                                modifier = Modifier.graphicsLayer { rotationZ = rotationAngle },
+                            )
+                        }
+                    }
                 }
             }
 
@@ -472,10 +503,12 @@ private fun ExpandedContactEntry(
 
 @Composable
 private fun SelectionControl(selected: Boolean, isMultiSelect: Boolean, onValueChange: () -> Unit) {
-    if (isMultiSelect) {
-        Checkbox(checked = selected, onCheckedChange = { onValueChange() })
-    } else {
-        RadioButton(selected = selected, onClick = onValueChange)
+    Box(modifier = Modifier.size(TOGGLE_ICON_BOX_SIZE), contentAlignment = Alignment.Center) {
+        if (isMultiSelect) {
+            Checkbox(checked = selected, onCheckedChange = { onValueChange() })
+        } else {
+            RadioButton(selected = selected, onClick = onValueChange)
+        }
     }
 }
 
