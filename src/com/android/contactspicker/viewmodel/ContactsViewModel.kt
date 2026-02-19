@@ -30,6 +30,7 @@ import androidx.lifecycle.viewModelScope
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
+import com.android.contactspicker.Flags
 import com.android.contactspicker.R
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.config.ContactsPickerAction
@@ -76,6 +77,13 @@ internal const val DEFAULT_SELECTION_LIMIT = 50
 // [ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_SELECTION_LIMIT] intent extra is higher an
 // exception is thrown.
 internal const val MAX_ALLOWED_SELECTION_LIMIT = 100
+
+/**
+ * The minimum target SDK of the caller app that will be handled by the app. Intents from callers
+ * with target SDK below will be resent to the system with explicitly excluding the current activity
+ * to prevent loops.
+ */
+internal const val ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD = 37
 
 /** Events sent from the ViewModel to the UI to show a Snackbar. */
 sealed interface SnackbarEvent {
@@ -159,18 +167,21 @@ constructor(
     fun clearSelection() = checkNotNull(selectionHandler).clearSelection()
 
     /**
-     * Determines the display mode based on the intent. Should only be called from the Activity to
-     * trigger the ViewModel's logic, as it changes the [ContactsUiState].
+     * Processes the intent fields and, if handled internally, initializes the session and starts
+     * data loading.
+     *
+     * @return true if handled internally; false if the intent should be forwarded.
      */
     @OpenForTesting
-    open fun processIntent(
+    open fun handleIntent(
         intentAction: String?,
         intentType: String?,
         intentExtras: Bundle?,
         callingAppName: String?,
         callingPackageName: String?,
         callingAppUid: Int,
-    ) {
+        callingAppTargetSdk: Int,
+    ): Boolean {
         this.callingAppName = callingAppName
         this.callingPackageName = callingPackageName
         this.callingAppUid = callingAppUid
@@ -179,6 +190,14 @@ constructor(
             ContactsPickerRequestConfig.create(intentAction, intentType, intentExtras).also {
                 pickerConfig = it
             }
+
+        // TODO(b/441483549): Log ContactsPickerSessionStarted
+
+        if (!shouldHandleIntent(callingAppTargetSdk, intentExtras)) {
+            // TODO(b/441483549): Log ContactsPickerSessionFinished with
+            //  ContactsPickerSessionResult.SESSION_RESULT_FORWARDED
+            return false
+        }
 
         // TODO(b/479454402): Refactor isUserSwitchingEnabled into ContactsPickerRequestConfig
         // to decouple from ACTION_PICK_CONTACTS
@@ -203,6 +222,14 @@ constructor(
                 viewModelScope.launch { _snackbarEvents.emit(event) }
             }
         startObservingSelection()
+        return true
+    }
+
+    /** Returns true if the intent is eligible for internal handling based on SDK and flags. */
+    private fun shouldHandleIntent(targetSdk: Int, intentExtras: Bundle?): Boolean {
+        return targetSdk >= ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD ||
+            intentExtras?.getBoolean(Intent.EXTRA_USE_SYSTEM_CONTACTS_PICKER, false) ?: false ||
+            Flags.enableActionPickTakeoverInDroidfood()
     }
 
     private fun startObservingSelection() {
