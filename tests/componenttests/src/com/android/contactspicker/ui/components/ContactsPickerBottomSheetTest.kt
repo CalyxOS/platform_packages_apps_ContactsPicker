@@ -27,7 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -57,7 +57,6 @@ import com.google.common.truth.Truth.assertThat
 import java.util.Locale
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -324,7 +323,7 @@ class ContactsPickerBottomSheetTest {
 
     @Test
     fun selectionLimitSnackbar_appearsWhenEventIsEmitted_andDisappearsAfterTimeout() {
-        val events = MutableSharedFlow<SnackbarEvent>()
+        val events = MutableSharedFlow<SnackbarEvent>(replay = 1)
         val msgFormat =
             MessageFormat(
                 context.getString(R.string.contacts_selection_limit_reached_message),
@@ -368,7 +367,7 @@ class ContactsPickerBottomSheetTest {
         composeTestRule.onNodeWithText(snackbarMessage).assertDoesNotExist()
         composeTestRule.onNodeWithContentDescription(snackbarMessage).assertDoesNotExist()
 
-        runBlocking { events.emit(SnackbarEvent.ShowSelectionLimitReached(2)) }
+        events.tryEmit(SnackbarEvent.ShowSelectionLimitReached(2))
 
         composeTestRule.onNodeWithText(snackbarMessage).assertIsDisplayed()
         composeTestRule.onNodeWithContentDescription(snackbarMessage).assertIsDisplayed()

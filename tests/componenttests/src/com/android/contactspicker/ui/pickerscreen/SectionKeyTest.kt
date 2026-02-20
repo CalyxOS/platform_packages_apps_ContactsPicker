@@ -20,7 +20,7 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ui.pickerscreen.SectionKey.EmojiIconKey
 import com.android.contactspicker.ui.pickerscreen.SectionKey.FavoriteIconKey
