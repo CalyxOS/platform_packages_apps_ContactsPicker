@@ -342,21 +342,30 @@ constructor(
                                 showPrivacyBanner = showPrivacyBanner,
                             )
                     } else {
-                        val noContactsMessage =
+                        val (noContactsTitleText, noContactsDescriptionText) =
                             when (config.queryMode) {
                                 ContactsQueryMode.EmailsOnly ->
-                                    context.getString(R.string.no_email_contacts_title)
+                                    context.getString(R.string.no_email_contacts_title) to null
                                 ContactsQueryMode.PhonesOnly ->
-                                    context.getString(R.string.no_phone_contacts_title)
+                                    context.getString(R.string.no_phone_contacts_title) to null
                                 ContactsQueryMode.DisplayNamesOnly ->
-                                    context.getString(R.string.no_contacts_title)
+                                    context.getString(R.string.no_contacts_title) to
+                                        context.getString(R.string.no_contacts_description)
                                 is ContactsQueryMode.Custom -> {
                                     if (contactsRepository.hasAnyContacts(userState.selectedUserId))
-                                        context.getString(R.string.no_custom_details_contacts_title)
-                                    else context.getString(R.string.no_contacts_title)
+                                        context.getString(
+                                            R.string.no_custom_details_contacts_title
+                                        ) to null
+                                    else
+                                        context.getString(R.string.no_contacts_title) to
+                                            context.getString(R.string.no_contacts_description)
                                 }
                             }
-                        _uiState.value = ContactsListState.NoResults(message = noContactsMessage)
+                        _uiState.value =
+                            ContactsListState.NoResults(
+                                titleText = noContactsTitleText,
+                                descriptionText = noContactsDescriptionText,
+                            )
                     }
                 } catch (e: Exception) {
                     // TODO(b/444459883): iterate on error handling and error messages

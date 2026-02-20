@@ -335,7 +335,10 @@ class ContactsViewModelTest {
         )
 
         val noContactsState = viewModel.uiState.value as ContactsListState.NoResults
-        assertThat(noContactsState.message).isEqualTo(context.getString(R.string.no_contacts_title))
+        assertThat(noContactsState.titleText)
+            .isEqualTo(context.getString(R.string.no_contacts_title))
+        assertThat(noContactsState.descriptionText)
+            .isEqualTo(context.getString(R.string.no_contacts_description))
     }
 
     @Test
@@ -343,8 +346,9 @@ class ContactsViewModelTest {
         initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
 
         val noContactsState = viewModel.uiState.value as ContactsListState.NoResults
-        assertThat(noContactsState.message)
+        assertThat(noContactsState.titleText)
             .isEqualTo(context.getString(R.string.no_email_contacts_title))
+        assertThat(noContactsState.descriptionText).isNull()
     }
 
     @Test
@@ -352,8 +356,9 @@ class ContactsViewModelTest {
         initializeViewModelForActionPickContacts(emptyList(), listOf(Phone.CONTENT_ITEM_TYPE))
 
         val noContactsState = viewModel.uiState.value as ContactsListState.NoResults
-        assertThat(noContactsState.message)
+        assertThat(noContactsState.titleText)
             .isEqualTo(context.getString(R.string.no_phone_contacts_title))
+        assertThat(noContactsState.descriptionText).isNull()
     }
 
     @Test
@@ -364,8 +369,9 @@ class ContactsViewModelTest {
         )
 
         val noContactsState = viewModel.uiState.value as ContactsListState.NoResults
-        assertThat(noContactsState.message)
+        assertThat(noContactsState.titleText)
             .isEqualTo(context.getString(R.string.no_custom_details_contacts_title))
+        assertThat(noContactsState.descriptionText).isNull()
     }
 
     @Test
@@ -378,8 +384,10 @@ class ContactsViewModelTest {
             )
 
             val noContactsState = viewModel.uiState.value as ContactsListState.NoResults
-            assertThat(noContactsState.message)
+            assertThat(noContactsState.titleText)
                 .isEqualTo(context.getString(R.string.no_contacts_title))
+            assertThat(noContactsState.descriptionText)
+                .isEqualTo(context.getString(R.string.no_contacts_description))
         }
 
     @Test

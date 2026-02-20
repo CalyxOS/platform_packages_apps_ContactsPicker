@@ -25,7 +25,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Group
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -58,5 +60,22 @@ class EmptyContactsScreenTest {
         composeTestRule
             .onNodeWithText(context.getString(R.string.no_contacts_description))
             .assertIsDisplayed()
+        composeTestRule.onNodeWithTag(EMPTY_SCREEN_DESCRIPTION_TEXT_TEST_TAG).assertIsDisplayed()
+    }
+
+    @Test
+    fun emptyContactsScreen_whenDescriptionIsNull_doesNotShowSecondaryText() {
+        composeTestRule.setContent {
+            EmptyContactsScreen(
+                title = stringResource(id = R.string.no_contacts_title),
+                description = null,
+                icon = Icons.Outlined.Group,
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.no_contacts_title))
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithTag(EMPTY_SCREEN_DESCRIPTION_TEXT_TEST_TAG).assertIsNotDisplayed()
     }
 }
