@@ -32,7 +32,6 @@
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"星形图标"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"微笑图标"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"切换个人资料"</string>
-    <string name="privacy_info_content_description" msgid="1633879608858355544">"隐私权信息"</string>
     <string name="scrubber_handle_content_description" msgid="1435669253806161568">"快速滚动条手柄"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"联系人的个人资料照片"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"联系人的姓名首字母"</string>
@@ -57,10 +56,16 @@
     <string name="privacy_banner_dismiss" msgid="3453400533805574139">"关闭"</string>
     <string name="title_top_bar_back_button_content_description" msgid="7162880372713819715">"返回"</string>
     <string name="preview_screen_title" msgid="2852036336424026274">"预览"</string>
-    <string name="preview_screen_content_description" msgid="7475368414223967934">"所选联系人预览"</string>
+    <string name="preview_screen_content_description" msgid="7475368414223967934">"所选联系人的预览画面"</string>
     <string name="default_calling_app_name" msgid="5345125341557406609">"此应用"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"您的通讯录隐私权"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"尚无联系人"</string>
+    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
+    <skip />
+    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
+    <skip />
+    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
+    <skip />
     <string name="no_contacts_description" msgid="2146615362021064099">"您在设备上创建或导入的联系人将显示在此处"</string>
     <string name="no_results_found" msgid="8513853958245248109">"未找到任何结果"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"请换种拼写重新搜索试试"</string>

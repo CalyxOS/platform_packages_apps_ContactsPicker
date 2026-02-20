@@ -32,7 +32,6 @@
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"Pictogramă stea"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"Pictogramă zâmbet"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"Schimbați profilul"</string>
-    <string name="privacy_info_content_description" msgid="1633879608858355544">"Informații privind confidențialitatea"</string>
     <string name="scrubber_handle_content_description" msgid="1435669253806161568">"Ghidaj pentru derulare rapidă"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Fotografia de profil a persoanei de contact"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"Inițiala persoanei de contact"</string>
@@ -61,15 +60,19 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Această aplicație"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Confidențialitatea agendei dvs."</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Nicio persoană de contact"</string>
+    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
+    <skip />
+    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
+    <skip />
+    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
+    <skip />
     <string name="no_contacts_description" msgid="2146615362021064099">"Persoanele de contact pe care le creezi sau le imporți pe dispozitiv vor apărea aici"</string>
-    <!-- no translation found for no_results_found (8513853958245248109) -->
-    <skip />
-    <!-- no translation found for no_results_found_description (3316948006890920245) -->
-    <skip />
+    <string name="no_results_found" msgid="8513853958245248109">"Niciun rezultat"</string>
+    <string name="no_results_found_description" msgid="3316948006890920245">"Încearcă să cauți cu altă ortografie"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Personal"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Utilizator necunoscut"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s aplicații sunt întrerupte"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Pentru a deschide persoanele de contact din %1$s, activați aplicațiile %2$s și încercați din nou"</string>
+    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Pentru a deschide persoanele de contact din %1$s, activează aplicațiile %2$s și încearcă din nou"</string>
     <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
     <skip />
     <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
