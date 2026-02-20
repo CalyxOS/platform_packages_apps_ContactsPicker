@@ -48,8 +48,8 @@ class ContactsListContentTest {
                 uiState = ContactsListState.Loading,
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
+                onToggleContactSelection = { _, _ -> },
+                onToggleEntrySelection = { _, _, _ -> },
             )
         }
         composeTestRule
@@ -65,8 +65,8 @@ class ContactsListContentTest {
                 uiState = ContactsListState.Error(errorMessage),
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
+                onToggleContactSelection = { _, _ -> },
+                onToggleEntrySelection = { _, _, _ -> },
             )
         }
         composeTestRule.onNodeWithText(errorMessage).assertIsDisplayed()
@@ -88,8 +88,8 @@ class ContactsListContentTest {
                     ),
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
+                onToggleContactSelection = { _, _ -> },
+                onToggleEntrySelection = { _, _, _ -> },
             )
         }
         composeTestRule.onNodeWithTag(CONTACTS_LIST_TEST_TAG).assertIsDisplayed()
@@ -109,8 +109,8 @@ class ContactsListContentTest {
                     ),
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
+                onToggleContactSelection = { _, _ -> },
+                onToggleEntrySelection = { _, _, _ -> },
             )
         }
         composeTestRule.onNodeWithText(noContactsMessageTitle).assertIsDisplayed()

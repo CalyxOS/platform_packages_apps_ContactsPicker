@@ -51,6 +51,7 @@ import com.android.contactspicker.R
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.PickerUserState
+import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.ui.components.PrivacyShieldIcon
 
@@ -63,8 +64,8 @@ fun ContactsPickerTopBar(
     userState: PickerUserState,
     onSearchBarToggled: (isExpanded: Boolean) -> Unit,
     onQueryChange: (String) -> Unit,
-    onToggleContactSelection: (Contact) -> Unit,
-    onToggleEntrySelection: (Long, Long) -> Unit,
+    onToggleContactSelection: (Contact, SelectionSource) -> Unit,
+    onToggleEntrySelection: (Long, Long, SelectionSource) -> Unit,
     onExitSearch: () -> Unit,
     onShowPrivacyDetailsClick: () -> Unit,
     onProfileClicked: (UserProfile) -> Unit,

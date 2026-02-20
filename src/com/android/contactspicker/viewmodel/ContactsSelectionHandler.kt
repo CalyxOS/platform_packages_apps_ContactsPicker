@@ -19,11 +19,13 @@ import android.content.ContentUris
 import android.net.Uri
 import android.provider.ContactsContract
 import android.util.Log
+import androidx.collection.MutableLongObjectMap
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.ContactsSelection
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.PhoneContact
+import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.data.model.buildContactsSelection
 import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.data.model.totalElementCount
@@ -55,12 +57,15 @@ constructor(
         ): ContactsSelectionHandler
     }
 
-    private val _selectedContacts = MutableStateFlow<ContactsSelection>(emptyContactsSelection())
+    private val _selectedContacts = MutableStateFlow(emptyContactsSelection())
     val selectedContacts: StateFlow<ContactsSelection> = _selectedContacts.asStateFlow()
+
+    private val selectionSources = MutableLongObjectMap<SelectionSource>()
 
     /** Clears all currently selected contacts. */
     fun clearSelection() {
         _selectedContacts.value = emptyContactsSelection()
+        selectionSources.clear()
     }
 
     /**
@@ -70,7 +75,7 @@ constructor(
      * mode, this selects or deselects the contact, replacing any existing selection. An attempt to
      * select a multi-entry contact in single-select will select only its first entry.
      */
-    fun toggleContactSelection(contact: Contact) {
+    fun toggleContactSelection(contact: Contact, source: SelectionSource) {
         _selectedContacts.update { currentSelection ->
             val existingEntryIds = currentSelection[contact.id] ?: emptySet()
             val isAlreadyFullySelected = contact.isFullySelected(existingEntryIds)
@@ -91,12 +96,18 @@ constructor(
                     putAll(currentSelection)
                     if (isAlreadyFullySelected) {
                         remove(contact.id)
+                        entryIdsForSelection.forEach { selectionSources.remove(it) }
                     } else {
                         put(contact.id, entryIdsForSelection)
+                        entryIdsForSelection.forEach {
+                            if (!selectionSources.containsKey(it)) selectionSources[it] = source
+                        }
                     }
                 } else {
+                    selectionSources.clear()
                     if (!isAlreadyFullySelected) {
                         put(contact.id, entryIdsForSelection)
+                        entryIdsForSelection.forEach { selectionSources[it] = source }
                     }
                     // deselecting in single-select, leave an empty map (implicit by creating new
                     // map)
@@ -112,7 +123,7 @@ constructor(
      * mode, this selects or deselects the contact, replacing any existing selection. An attempt to
      * select a multi-entry contact in single-select will select only its first entry.
      */
-    fun toggleEntrySelection(contactId: Long, entryId: Long) {
+    fun toggleEntrySelection(contactId: Long, entryId: Long, source: SelectionSource) {
         _selectedContacts.update { currentSelection ->
             val alreadySelectedEntriesForCurrentContact = currentSelection[contactId] ?: emptySet()
             val isEntryAlreadySelected = entryId in alreadySelectedEntriesForCurrentContact
@@ -134,6 +145,7 @@ constructor(
                     if (!isEntryAlreadySelected) {
                         val newEntryIds = alreadySelectedEntriesForCurrentContact + entryId
                         put(contactId, newEntryIds)
+                        selectionSources.put(entryId, source)
                     } else {
                         val newEntryIds = alreadySelectedEntriesForCurrentContact - entryId
                         if (newEntryIds.isEmpty()) {
@@ -141,11 +153,15 @@ constructor(
                         } else {
                             put(contactId, newEntryIds)
                         }
+                        selectionSources.remove(entryId)
                     }
                 } else {
+                    selectionSources.clear()
                     if (!isEntryAlreadySelected) {
                         put(contactId, setOf(entryId))
+                        selectionSources.put(entryId, source)
                     }
+                    // Deselecting in single select mode -- return empty map.
                 }
             }
         }
@@ -190,6 +206,11 @@ constructor(
             }
         }
         return finalUris
+    }
+
+    /** Returns true if any currently selected entry came from the specified [source]. */
+    fun wasSelectedFrom(source: SelectionSource): Boolean {
+        return selectionSources.containsValue(source)
     }
 
     /**

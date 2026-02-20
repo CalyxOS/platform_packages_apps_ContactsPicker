@@ -42,6 +42,7 @@ import com.android.contactspicker.data.model.PausedReason
 import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.ProfileBlockedDialogData
+import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.data.repository.ContactsPickerSessionProviderRepository
@@ -154,16 +155,16 @@ constructor(
      *
      * Delegates logic to [ContactsSelectionHandler].
      */
-    fun toggleContactSelection(contact: Contact) =
-        checkNotNull(selectionHandler).toggleContactSelection(contact)
+    fun toggleContactSelection(contact: Contact, selectionSource: SelectionSource) =
+        checkNotNull(selectionHandler).toggleContactSelection(contact, selectionSource)
 
     /**
      * Toggles the selection state for a single contact entry (e.g., one email or one phone number).
      *
      * Delegates logic to [ContactsSelectionHandler].
      */
-    fun toggleEntrySelection(contactId: Long, entryId: Long) =
-        checkNotNull(selectionHandler).toggleEntrySelection(contactId, entryId)
+    fun toggleEntrySelection(contactId: Long, entryId: Long, selectionSource: SelectionSource) =
+        checkNotNull(selectionHandler).toggleEntrySelection(contactId, entryId, selectionSource)
 
     /** Clears all currently selected contacts. */
     fun clearSelection() = checkNotNull(selectionHandler).clearSelection()
@@ -410,8 +411,8 @@ constructor(
         ) {
             "onDoneClicked called while not in a Success state."
         }
+        val handler = checkNotNull(selectionHandler)
         viewModelScope.launch {
-            val handler = checkNotNull(selectionHandler)
             if (handler.selectedContacts.value.isEmpty()) {
                 _pickerResultEvents.send(PickerResultEvent.CancelAndFinish)
                 return@launch
@@ -443,7 +444,10 @@ constructor(
 
             if (resultIntent != null) {
                 contactsPickerLogger.logContactsPickerSessionFinishedSuccessfully(
-                    numContactsSelected
+                    numContactsSelected = numContactsSelected,
+                    contactsSelectedFromFavorites =
+                        handler.wasSelectedFrom(SelectionSource.FAVORITES),
+                    contactsSelectedFromSearch = handler.wasSelectedFrom(SelectionSource.SEARCH),
                 )
                 _pickerResultEvents.send(PickerResultEvent.SetResultAndFinish(resultIntent))
             } else {

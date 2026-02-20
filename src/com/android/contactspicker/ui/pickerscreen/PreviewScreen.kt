@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.R
 import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.ui.components.TitleTopBar
 
 internal const val PREVIEW_SCREEN_TEST_TAG = "preview_screen"
@@ -58,8 +59,8 @@ internal const val PREVIEW_SCREEN_TOP_BAR_TEST_TAG = "preview_screen_top_bar"
 fun PreviewScreen(
     uiState: ContactsPreviewState,
     onBackPressed: () -> Unit,
-    onToggleContactSelection: (Contact) -> Unit,
-    onToggleEntrySelection: (Long, Long) -> Unit,
+    onToggleContactSelection: (Contact, SelectionSource) -> Unit,
+    onToggleEntrySelection: (Long, Long, SelectionSource) -> Unit,
 ) {
     val selectedContacts = uiState.selectedContacts
     val contactsToDisplay = uiState.contactsToDisplay
@@ -85,8 +86,12 @@ fun PreviewScreen(
                         selectedEntries = selectedContacts[contact.id],
                         isMultiSelectEnabled = uiState.isMultiSelectEnabled,
                         isSearchMode = false,
-                        onToggleContactSelection = onToggleContactSelection,
-                        onToggleEntrySelection = onToggleEntrySelection,
+                        onToggleContactSelection = { c ->
+                            onToggleContactSelection(c, SelectionSource.PREVIEW)
+                        },
+                        onToggleEntrySelection = { cId, eId ->
+                            onToggleEntrySelection(cId, eId, SelectionSource.PREVIEW)
+                        },
                     )
                 }
             }

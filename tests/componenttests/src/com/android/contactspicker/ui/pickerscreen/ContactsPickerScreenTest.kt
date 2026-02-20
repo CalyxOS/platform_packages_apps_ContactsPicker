@@ -35,8 +35,10 @@ import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
 import com.android.contactspicker.SearchState
+import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.ProfileBlockedDialogData
+import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.data.model.SwitchableProfileInfo
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.model.UserType
@@ -58,6 +60,13 @@ class ContactsPickerScreenTest {
 
     private val testContact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
 
+    private val EMPTY_ON_TOGGLE_CONTACT_SELECTION_CALLBACK: (Contact, SelectionSource) -> Unit =
+        { _, _ ->
+        }
+    private val EMPTY_ON_TOGGLE_ENTRY_SELECTION_CALLBACK: (Long, Long, SelectionSource) -> Unit =
+        { _, _, _ ->
+        }
+
     @Test
     fun whenStateIsLoading_showsLoadingIndicator() {
 
@@ -67,8 +76,8 @@ class ContactsPickerScreenTest {
                 userState = PickerUserState.Loading,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
+                onToggleContactSelection = EMPTY_ON_TOGGLE_CONTACT_SELECTION_CALLBACK,
+                onToggleEntrySelection = EMPTY_ON_TOGGLE_ENTRY_SELECTION_CALLBACK,
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
@@ -92,8 +101,8 @@ class ContactsPickerScreenTest {
                 userState = PickerUserState.Loading,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
+                onToggleContactSelection = EMPTY_ON_TOGGLE_CONTACT_SELECTION_CALLBACK,
+                onToggleEntrySelection = EMPTY_ON_TOGGLE_ENTRY_SELECTION_CALLBACK,
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
@@ -132,8 +141,8 @@ class ContactsPickerScreenTest {
                 userState = PickerUserState.Loading,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
+                onToggleContactSelection = EMPTY_ON_TOGGLE_CONTACT_SELECTION_CALLBACK,
+                onToggleEntrySelection = EMPTY_ON_TOGGLE_ENTRY_SELECTION_CALLBACK,
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
@@ -157,8 +166,8 @@ class ContactsPickerScreenTest {
                 userState = PickerUserState.Loading,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
+                onToggleContactSelection = EMPTY_ON_TOGGLE_CONTACT_SELECTION_CALLBACK,
+                onToggleEntrySelection = EMPTY_ON_TOGGLE_ENTRY_SELECTION_CALLBACK,
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
@@ -213,8 +222,8 @@ class ContactsPickerScreenTest {
                 userState = PickerUserState.Loading,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = mockOnExpandRequest,
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
+                onToggleContactSelection = EMPTY_ON_TOGGLE_CONTACT_SELECTION_CALLBACK,
+                onToggleEntrySelection = EMPTY_ON_TOGGLE_ENTRY_SELECTION_CALLBACK,
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
@@ -283,8 +292,8 @@ class ContactsPickerScreenTest {
                 onExpandRequest = {
                     uiState.value = SearchState.Success("", emptyList(), emptyContactsSelection())
                 },
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
+                onToggleContactSelection = EMPTY_ON_TOGGLE_CONTACT_SELECTION_CALLBACK,
+                onToggleEntrySelection = EMPTY_ON_TOGGLE_ENTRY_SELECTION_CALLBACK,
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
@@ -335,8 +344,8 @@ class ContactsPickerScreenTest {
                 userState = PickerUserState.Loading,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
+                onToggleContactSelection = EMPTY_ON_TOGGLE_CONTACT_SELECTION_CALLBACK,
+                onToggleEntrySelection = EMPTY_ON_TOGGLE_ENTRY_SELECTION_CALLBACK,
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},
@@ -367,8 +376,8 @@ class ContactsPickerScreenTest {
                 userState = userState,
                 onNavigateToPrivacyDetails = {},
                 onExpandRequest = {},
-                onToggleContactSelection = {},
-                onToggleEntrySelection = { _, _ -> },
+                onToggleContactSelection = EMPTY_ON_TOGGLE_CONTACT_SELECTION_CALLBACK,
+                onToggleEntrySelection = EMPTY_ON_TOGGLE_ENTRY_SELECTION_CALLBACK,
                 onQueryChange = {},
                 onExitSearch = {},
                 onBackFromPreview = {},

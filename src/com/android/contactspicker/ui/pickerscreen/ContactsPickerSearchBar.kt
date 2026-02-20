@@ -55,6 +55,7 @@ import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.PhoneContact
+import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.ui.components.EmptyContactsScreen
 
 private val CollapsedSearchBarPaddingValues = PaddingValues(start = 8.dp, end = 8.dp)
@@ -67,8 +68,8 @@ fun ContactsPickerSearchBar(
     uiState: State<ContactsUiState>,
     onExpandedChange: (Boolean) -> Unit,
     onQueryChange: (String) -> Unit,
-    onToggleContactSelection: (Contact) -> Unit,
-    onToggleEntrySelection: (Long, Long) -> Unit,
+    onToggleContactSelection: (Contact, SelectionSource) -> Unit,
+    onToggleEntrySelection: (Long, Long, SelectionSource) -> Unit,
     onExitSearch: () -> Unit,
 ) {
 
@@ -174,8 +175,8 @@ fun ContactsPickerSearchBar(
 @Composable
 private fun SearchResultsList(
     searchState: SearchState.Success,
-    onToggleContactSelection: (Contact) -> Unit,
-    onToggleEntrySelection: (Long, Long) -> Unit,
+    onToggleContactSelection: (Contact, SelectionSource) -> Unit,
+    onToggleEntrySelection: (Long, Long, SelectionSource) -> Unit,
 ) {
     val listState = rememberLazyListState()
     LaunchedEffect(searchState.query) {
@@ -218,9 +219,13 @@ private fun SearchResultsList(
                     position = position,
                     selectedEntries = searchState.selectedContacts[contact.id],
                     isMultiSelectEnabled = false, // Not relevant in search state
-                    onToggleContactSelection = onToggleContactSelection,
-                    onToggleEntrySelection = onToggleEntrySelection,
                     isSearchMode = true,
+                    onToggleContactSelection = { c ->
+                        onToggleContactSelection(c, SelectionSource.SEARCH)
+                    },
+                    onToggleEntrySelection = { cId, eId ->
+                        onToggleEntrySelection(cId, eId, SelectionSource.SEARCH)
+                    },
                 )
             }
         }

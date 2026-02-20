@@ -47,7 +47,7 @@ class ContactsPickerLoggerImplTest {
     private val DEFAULT_TEST_CALLING_APP_UID = 123
     private val DEFAULT_TEST_CALLING_APP_TARGET_SDK = 33
 
-    private val DEFAULT_NUM_SELECTED_CONTACTS = 3
+    private val DEFAULT_NUM_CONTACTS_SELECTED = 3
 
     private val registry = ExtensionRegistryLite.newInstance()
     private val logger = ContactsPickerLoggerImpl()
@@ -150,15 +150,19 @@ class ContactsPickerLoggerImplTest {
     @Test
     fun logContactsPickerSessionFinished_noSessionStartedCalled_doesNotLog() {
         capturedSessionFinishedAtoms.clear()
-        logger.logContactsPickerSessionFinishedSuccessfully(DEFAULT_NUM_SELECTED_CONTACTS)
+        logger.logContactsPickerSessionFinishedSuccessfully(
+            DEFAULT_NUM_CONTACTS_SELECTED,
+            false,
+            false,
+        )
 
         assertThat(capturedSessionFinishedAtoms).isEmpty()
     }
 
     @Test
-    fun logContactsPickerSessionFinished_logsCorrectNumSelectedContacts() {
-        for (numSelectedContacts in listOf(1, 10, 100)) verifySessionFinishedEventFields(
-            numSelectedContacts = numSelectedContacts
+    fun logContactsPickerSessionFinished_logsCorrectNumContactsSelected() {
+        for (numContactsSelected in listOf(1, 10, 100)) verifySessionFinishedEventFields(
+            numContactsSelected = numContactsSelected
         )
     }
 
@@ -172,7 +176,20 @@ class ContactsPickerLoggerImplTest {
                 listOf(MimeType.PHONE, MimeType.EMAIL, MimeType.STRUCTURED_NAME),
             useSystemContactsPicker = true,
             matchAllRequestedMimeTypes = true,
-            numSelectedContacts = 12,
+        )
+    }
+
+    @Test
+    fun logContactsPickerSessionFinished_logsCorrectContactsSelectedFromFavorites() {
+        for (contactsSelectedFromFavorites in listOf(true, false)) verifySessionFinishedEventFields(
+            contactsSelectedFromFavorites = contactsSelectedFromFavorites
+        )
+    }
+
+    @Test
+    fun logContactsPickerSessionFinished_logsCorrectContactsSelectedFromSearch() {
+        for (contactsSelectedFromSearch in listOf(true, false)) verifySessionFinishedEventFields(
+            contactsSelectedFromSearch = contactsSelectedFromSearch
         )
     }
 
@@ -222,7 +239,9 @@ class ContactsPickerLoggerImplTest {
         matchAllRequestedMimeTypes: Boolean = false,
         sessionResult: ContactsPickerSessionResult =
             ContactsPickerSessionResult.SESSION_RESULT_SUCCESS,
-        numSelectedContacts: Int = DEFAULT_NUM_SELECTED_CONTACTS,
+        numContactsSelected: Int = DEFAULT_NUM_CONTACTS_SELECTED,
+        contactsSelectedFromFavorites: Boolean = false,
+        contactsSelectedFromSearch: Boolean = false,
     ) {
         capturedSessionFinishedAtoms.clear()
 
@@ -236,7 +255,11 @@ class ContactsPickerLoggerImplTest {
             matchAllRequestedMimeTypes,
         )
 
-        logger.logContactsPickerSessionFinishedSuccessfully(numSelectedContacts)
+        logger.logContactsPickerSessionFinishedSuccessfully(
+            numContactsSelected = numContactsSelected,
+            contactsSelectedFromFavorites = contactsSelectedFromFavorites,
+            contactsSelectedFromSearch = contactsSelectedFromSearch,
+        )
 
         assertThat(capturedSessionFinishedAtoms).hasSize(1)
         val event = capturedSessionFinishedAtoms[0]
@@ -255,6 +278,8 @@ class ContactsPickerLoggerImplTest {
         assertThat(event.intentExtraPickContactsMatchAllDataFields)
             .isEqualTo(matchAllRequestedMimeTypes)
         assertThat(event.sessionResult).isEqualTo(sessionResult)
-        assertThat(event.numContactsSelected).isEqualTo(numSelectedContacts)
+        assertThat(event.numContactsSelected).isEqualTo(numContactsSelected)
+        assertThat(event.contactsSelectedFromFavorites).isEqualTo(contactsSelectedFromFavorites)
+        assertThat(event.contactsSelectedFromSearchResults).isEqualTo(contactsSelectedFromSearch)
     }
 }
