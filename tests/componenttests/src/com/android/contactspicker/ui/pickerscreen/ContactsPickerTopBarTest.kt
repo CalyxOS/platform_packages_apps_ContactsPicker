@@ -203,7 +203,7 @@ class ContactsPickerTopBarTest {
                 onToggleContactSelection = { _, _ -> },
                 onToggleEntrySelection = { _, _, _ -> },
                 onExitSearch = {},
-                onShowPrivacyDetailsClick = onShowPrivacyDetailsClick,
+                onPrivacyDetailsClicked = onShowPrivacyDetailsClick,
                 onProfileClicked = {},
             )
         }

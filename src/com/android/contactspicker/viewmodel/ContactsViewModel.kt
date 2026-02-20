@@ -31,6 +31,7 @@ import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.Flags
+import com.android.contactspicker.PrivacyDetailsState
 import com.android.contactspicker.R
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.config.ContactsPickerAction
@@ -143,7 +144,7 @@ constructor(
     private var callingPackageName: String? = null
     private var searchJob: Job? = null
     private var loadContactsJob: Job? = null
-    private var cachedStateBeforePreview: ContactsUiState? = null
+    private var cachedStateBeforeNavigation: ContactsUiState? = null
     private var callingAppUid: Int = -1
     private val callingUserId: Int
         get() = UserHandle.getUserId(callingAppUid)
@@ -705,7 +706,7 @@ constructor(
             "onPreviewClicked called from unexpected state: $currentState"
         }
 
-        cachedStateBeforePreview = currentState
+        cachedStateBeforeNavigation = currentState
 
         val (availableContacts, selectedIds, isMultiSelectEnabled) =
             when (currentState) {
@@ -742,7 +743,7 @@ constructor(
 
     fun onBackFromPreview() {
         val currentState = _uiState.value
-        val currentCachedState = cachedStateBeforePreview
+        val currentCachedState = cachedStateBeforeNavigation
         require(currentState is ContactsPreviewState && currentCachedState != null) {
             "onBackFromPreview called from unexpected state: $currentState, or no previous state found"
         }
@@ -755,7 +756,34 @@ constructor(
                     currentCachedState.copy(selectedContacts = currentState.selectedContacts)
                 else -> currentCachedState
             }
-        cachedStateBeforePreview = null
+        cachedStateBeforeNavigation = null
+    }
+
+    @OpenForTesting
+    open fun onPrivacyDetailsClicked() {
+        val currentState = _uiState.value
+        require(currentState is ContactsListState.Success) {
+            "onPrivacyDetailsClicked called from unexpected state: $currentState"
+        }
+
+        cachedStateBeforeNavigation = currentState
+
+        _uiState.value =
+            PrivacyDetailsState(
+                callingAppName = currentState.callingAppName,
+                requestedMimeTypes = currentState.requestedMimeTypes,
+            )
+    }
+
+    @OpenForTesting
+    open fun onBackFromPrivacyDetails() {
+        val currentState = _uiState.value
+        val currentCachedState = cachedStateBeforeNavigation
+        require(currentState is PrivacyDetailsState && currentCachedState != null) {
+            "onBackFromPrivacyDetails called from unexpected state: $currentState, or no previous state found"
+        }
+        _uiState.value = currentCachedState
+        cachedStateBeforeNavigation = null
     }
 }
 
