@@ -32,7 +32,6 @@
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"Значок \"Зорка\""</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"Значок \"Усмешка\""</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"Пераключыць профіль"</string>
-    <string name="privacy_info_content_description" msgid="1633879608858355544">"Інфармацыя аб прыватнасці"</string>
     <string name="scrubber_handle_content_description" msgid="1435669253806161568">"Маркер элемента з хуткай прагорткай"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Відарыс профілю кантакту"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"Ініцыялы кантакту"</string>
@@ -61,11 +60,15 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Гэта праграма"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Прыватнасць вашых кантактаў"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Пакуль кантактаў няма"</string>
+    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
+    <skip />
+    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
+    <skip />
+    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
+    <skip />
     <string name="no_contacts_description" msgid="2146615362021064099">"Тут будуць паказвацца кантакты, якія вы ствараеце або імпартуеце на прыладу"</string>
-    <!-- no translation found for no_results_found (8513853958245248109) -->
-    <skip />
-    <!-- no translation found for no_results_found_description (3316948006890920245) -->
-    <skip />
+    <string name="no_results_found" msgid="8513853958245248109">"Нічога не знойдзена"</string>
+    <string name="no_results_found_description" msgid="3316948006890920245">"Паспрабуйце змяніць напісанне і выканаць пошук яшчэ раз"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Асабісты"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Невядомы карыстальнік"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"Праграмы з профілю \"%s\" прыпынены"</string>

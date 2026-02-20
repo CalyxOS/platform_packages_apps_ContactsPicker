@@ -32,7 +32,6 @@
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"तारा जनाउने आइकन"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"मुस्कान जनाउने आइकन"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"प्रोफाइल बदल्नुहोस्"</string>
-    <string name="privacy_info_content_description" msgid="1633879608858355544">"गोपनीयतासम्बन्धी जानकारी"</string>
     <string name="scrubber_handle_content_description" msgid="1435669253806161568">"फास्ट स्क्रोलर ह्यान्डल"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"कन्ट्याक्टको प्रोफाइल फोटो"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"कन्ट्याक्टको नामको सुरुको अक्षर"</string>
@@ -61,6 +60,12 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"यो एप"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"तपाईंका कन्ट्याक्टको गोपनीयता"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"अहिलेसम्म कुनै पनि कन्ट्याक्ट छैन"</string>
+    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
+    <skip />
+    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
+    <skip />
+    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
+    <skip />
     <string name="no_contacts_description" msgid="2146615362021064099">"तपाईंले आफ्नो डिभाइसमा बनाउने वा इम्पोर्ट गर्ने कन्ट्याक्टहरू यहाँ देखिने छन्"</string>
     <string name="no_results_found" msgid="8513853958245248109">"कुनै पनि परिणाम भेटिएन"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"अर्कै हिज्जे प्रयोग गरी खोजी हेर्नुहोस्"</string>

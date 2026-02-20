@@ -32,7 +32,6 @@
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"Stjörnutákn"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"Brostákn"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"Skipta um prófíl"</string>
-    <string name="privacy_info_content_description" msgid="1633879608858355544">"Upplýsingar um persónuvernd"</string>
     <string name="scrubber_handle_content_description" msgid="1435669253806161568">"Handfang fyrir hraða flettingu"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Prófílmynd tengiliðar"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"Upphafsstafir tengiliðar"</string>
@@ -61,11 +60,15 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Þetta forrit"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Persónuvernd tengiliða þinna"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Engir tengiliðir enn"</string>
+    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
+    <skip />
+    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
+    <skip />
+    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
+    <skip />
     <string name="no_contacts_description" msgid="2146615362021064099">"Tengiliðirnir sem þú býrð til eða flytur inn í tækið þitt munu birtast hér"</string>
-    <!-- no translation found for no_results_found (8513853958245248109) -->
-    <skip />
-    <!-- no translation found for no_results_found_description (3316948006890920245) -->
-    <skip />
+    <string name="no_results_found" msgid="8513853958245248109">"Engar niðurstöður fundust"</string>
+    <string name="no_results_found_description" msgid="3316948006890920245">"Prófaðu að leita með annarri stafsetningu"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Persónulegt"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Óþekktur notandi"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"Hlé var gert á %s-forritum"</string>

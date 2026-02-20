@@ -32,7 +32,6 @@
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"اسٹار آئیکن"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"مسکراہٹ کا آئیکن"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"پروفائل سوئچ کریں"</string>
-    <string name="privacy_info_content_description" msgid="1633879608858355544">"رازداری کی معلومات"</string>
     <string name="scrubber_handle_content_description" msgid="1435669253806161568">"فاسٹ اسکرولر ہینڈل"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"رابطہ کی پروفائل تصویر"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"رابطہ کا ابتدائی"</string>
@@ -61,11 +60,15 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"یہ ایپ"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"آپ کے رابطوں کی رازداری"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"اب تک کوئی رابطے نہیں"</string>
+    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
+    <skip />
+    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
+    <skip />
+    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
+    <skip />
     <string name="no_contacts_description" msgid="2146615362021064099">"آپ کے تخلیق کردہ یا آپ کے آلہ میں درآمد کردہ رابطے یہاں ظاہر ہوں گے"</string>
-    <!-- no translation found for no_results_found (8513853958245248109) -->
-    <skip />
-    <!-- no translation found for no_results_found_description (3316948006890920245) -->
-    <skip />
+    <string name="no_results_found" msgid="8513853958245248109">"کوئی نتیجہ نہیں ملا"</string>
+    <string name="no_results_found_description" msgid="3316948006890920245">"مختلف ہجے کے ساتھ تلاش کرنے کی کوشش کریں"</string>
     <string name="user_type_personal" msgid="45376141973820399">"ذاتی"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"نامعلوم صارف"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"‏‫‎%s ایپس موقوف ہیں"</string>

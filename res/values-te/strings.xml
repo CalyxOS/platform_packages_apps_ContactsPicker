@@ -32,7 +32,6 @@
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"స్టార్ చిహ్నం"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"స్మైల్ చిహ్నం"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"ప్రొఫైల్‌ను మార్చండి"</string>
-    <string name="privacy_info_content_description" msgid="1633879608858355544">"గోప్యతా సమాచారం"</string>
     <string name="scrubber_handle_content_description" msgid="1435669253806161568">"ఫాస్ట్ స్క్రోలర్ హ్యాండిల్"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"కాంటాక్ట్ ప్రొఫైల్ ఫోటో"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"కాంటాక్ట్ ఇనిషియల్"</string>
@@ -61,11 +60,15 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"ఈ యాప్"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"మీ కాంటాక్ట్‌ల గోప్యత"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"కాంటాక్ట్‌లు ఏవీ లేవు"</string>
+    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
+    <skip />
+    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
+    <skip />
+    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
+    <skip />
     <string name="no_contacts_description" msgid="2146615362021064099">"మీరు క్రియేట్ చేసే లేదా మీ డివైజ్‌లోకి దిగుమతి చేసే కాంటాక్ట్‌లు ఇక్కడ కనిపిస్తాయి"</string>
-    <!-- no translation found for no_results_found (8513853958245248109) -->
-    <skip />
-    <!-- no translation found for no_results_found_description (3316948006890920245) -->
-    <skip />
+    <string name="no_results_found" msgid="8513853958245248109">"ఫలితాలు ఏవీ కనిపించలేదు"</string>
+    <string name="no_results_found_description" msgid="3316948006890920245">"వేరే స్పెల్లింగ్‌తో సెర్చ్ చేయడానికి ట్రై చేయండి"</string>
     <string name="user_type_personal" msgid="45376141973820399">"వ్యక్తిగతం"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"తెలియని యూజర్"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s యాప్‌లు పాజ్ చేయబడ్డాయి"</string>
