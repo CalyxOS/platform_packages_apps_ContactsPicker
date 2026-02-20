@@ -57,7 +57,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.VerbatimTtsAnnotation
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withAnnotation
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.R
 import com.android.contactspicker.data.model.Contact
@@ -250,7 +254,8 @@ fun ContactItem(
 }
 
 /**
- * Determines the secondary text to display below the contact's name.
+ * Determines the secondary text to display below the contact's name. Returns an AnnotatedString to
+ * ensure correct reading for accessibility/TTS.
  *
  * Returns:
  * - null if the contact has no entries (i.e., it's a [DisplayNameContact]).
@@ -259,7 +264,7 @@ fun ContactItem(
  *   selected, or a count of selected entries (e.g., "1 of 2 selected").
  */
 @Composable
-private fun Contact.secondaryText(selectedEntries: Set<Long>): String? {
+private fun Contact.secondaryText(selectedEntries: Set<Long>): AnnotatedString? {
     val context = LocalContext.current
     return when (this) {
         is DisplayNameContact -> null
@@ -267,7 +272,6 @@ private fun Contact.secondaryText(selectedEntries: Set<Long>): String? {
             val totalCount = emails.size
             val selectedCount = emails.count { selectedEntries.contains(it.id) }
             if (totalCount > 1) {
-
                 formatMultiEntrySecondaryText(
                     selectedCount,
                     totalCount,
@@ -275,10 +279,9 @@ private fun Contact.secondaryText(selectedEntries: Set<Long>): String? {
                     context.getString(R.string.contact_item_emails_count),
                 )
             } else {
-                emails.first().address
+                AnnotatedString(emails.first().address)
             }
         }
-
         is PhoneContact -> {
             val totalCount = phones.size
             val selectedCount = phones.count { selectedEntries.contains(it.id) }
@@ -290,7 +293,7 @@ private fun Contact.secondaryText(selectedEntries: Set<Long>): String? {
                     context.getString(R.string.contact_item_phones_count),
                 )
             } else {
-                phones.first().number
+                phones.first().number.toVerbatimAnnotatedString()
             }
         }
     }
@@ -301,10 +304,9 @@ fun formatMultiEntrySecondaryText(
     totalCount: Int,
     itemsSelectedCountMessage: String,
     noItemsSelectedCountMessage: String,
-): String? {
+): AnnotatedString {
     val (msgFormat, args) =
         if (selectedCount > 0) {
-
             Pair(
                 MessageFormat(itemsSelectedCountMessage, Locale.getDefault()),
                 mapOf(Pair("selected_count", selectedCount), Pair("total_count", totalCount)),
@@ -315,7 +317,7 @@ fun formatMultiEntrySecondaryText(
                 mapOf(Pair("count", totalCount)),
             )
         }
-    return msgFormat.format(args)
+    return AnnotatedString(msgFormat.format(args))
 }
 
 @Composable
@@ -388,7 +390,7 @@ private fun ExpandedPhoneEntry(
     onCheckedChange: () -> Unit,
 ) {
     ExpandedContactEntry(
-        text = phoneEntry.number,
+        text = phoneEntry.number.toVerbatimAnnotatedString(),
         label = phoneEntry.label,
         isChecked = isChecked,
         isMultiSelectEnabled = isMultiSelectEnabled,
@@ -411,7 +413,7 @@ private fun ExpandedEmailEntry(
     onCheckedChange: () -> Unit,
 ) {
     ExpandedContactEntry(
-        text = emailEntry.address,
+        text = AnnotatedString(emailEntry.address),
         label = emailEntry.label,
         isChecked = isChecked,
         isMultiSelectEnabled = isMultiSelectEnabled,
@@ -428,7 +430,7 @@ private fun ExpandedEmailEntry(
 
 @Composable
 private fun ExpandedContactEntry(
-    text: String,
+    text: AnnotatedString,
     label: String?,
     isChecked: Boolean,
     isMultiSelectEnabled: Boolean,
@@ -507,3 +509,12 @@ internal fun calculateShape(position: ItemPosition, isAnyEntrySelected: Boolean)
             ItemPosition.MIDDLE -> MIDDLE_ITEM_SHAPE
         }
     }
+
+/**
+ * Extension to wrap a string in VerbatimTtsAnnotation for verbatim TalkBack char-by-char reading.
+ */
+private fun String.toVerbatimAnnotatedString(): AnnotatedString = buildAnnotatedString {
+    withAnnotation(VerbatimTtsAnnotation(this@toVerbatimAnnotatedString)) {
+        append(this@toVerbatimAnnotatedString)
+    }
+}
