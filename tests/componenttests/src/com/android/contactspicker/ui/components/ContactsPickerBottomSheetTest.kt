@@ -366,15 +366,18 @@ class ContactsPickerBottomSheetTest {
         }
 
         composeTestRule.onNodeWithText(snackbarMessage).assertDoesNotExist()
+        composeTestRule.onNodeWithContentDescription(snackbarMessage).assertDoesNotExist()
 
         runBlocking { events.emit(SnackbarEvent.ShowSelectionLimitReached(2)) }
 
         composeTestRule.onNodeWithText(snackbarMessage).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(snackbarMessage).assertIsDisplayed()
 
         // Advance the clock past the Snackbar's default duration (4 seconds) + 1 to be safe
         composeTestRule.mainClock.advanceTimeBy(5000)
 
         composeTestRule.onNodeWithText(snackbarMessage).assertDoesNotExist()
+        composeTestRule.onNodeWithContentDescription(snackbarMessage).assertDoesNotExist()
     }
 
     @Test
