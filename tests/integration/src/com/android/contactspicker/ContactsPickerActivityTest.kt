@@ -19,6 +19,7 @@ package com.android.contactspicker
 import android.app.Activity
 import android.app.ApplicationPackageManager
 import android.app.Instrumentation
+import android.content.ClipData
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -65,7 +66,6 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import kotlin.test.Ignore
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
@@ -334,7 +334,6 @@ class ContactsPickerActivityTest {
         }
     }
 
-    @Ignore("TODO(b/461444388): reenable")
     @Test
     @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
     fun handleDoneClicked_withMultiSelection_setsResultOkWithClipData() {
@@ -354,7 +353,10 @@ class ContactsPickerActivityTest {
                 mockEventsFlow.tryEmit(
                     PickerResultEvent.SetResultAndFinish(
                         Intent().apply {
-                            data = testUri
+                            clipData =
+                                ClipData.newUri(context.contentResolver, "uri", testUri).apply {
+                                    addItem(ClipData.Item(testUri2))
+                                }
                             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                         }
                     )

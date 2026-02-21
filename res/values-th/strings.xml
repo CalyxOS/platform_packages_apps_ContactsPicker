@@ -32,7 +32,6 @@
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"ไอคอนดาว"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"ไอคอนยิ้ม"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"เปลี่ยนโปรไฟล์"</string>
-    <string name="privacy_info_content_description" msgid="1633879608858355544">"ข้อมูลความเป็นส่วนตัว"</string>
     <string name="scrubber_handle_content_description" msgid="1435669253806161568">"แฮนเดิลสำหรับเลื่อนอย่างรวดเร็ว"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"รูปโปรไฟล์ของรายชื่อติดต่อ"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"ชื่อย่อของรายชื่อติดต่อ"</string>
@@ -61,6 +60,12 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"แอปนี้"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"ความเป็นส่วนตัวของรายชื่อติดต่อ"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"ยังไม่มีรายชื่อติดต่อ"</string>
+    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
+    <skip />
+    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
+    <skip />
+    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
+    <skip />
     <string name="no_contacts_description" msgid="2146615362021064099">"รายชื่อติดต่อที่คุณสร้างหรือนำเข้าในอุปกรณ์จะปรากฏที่นี่"</string>
     <string name="no_results_found" msgid="8513853958245248109">"ไม่พบผลลัพธ์"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"ลองค้นหาด้วยการสะกดแบบอื่น"</string>

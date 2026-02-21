@@ -548,6 +548,34 @@ class ContactsRepositoryImplTest {
     }
 
     @Test
+    fun hasAnyContacts_cursorHasRows_returnsTrue() = runTest {
+        val cursor = MatrixCursor(arrayOf(Contacts._ID))
+        cursor.addRow(arrayOf(1))
+        fakeContentProvider.setCursorForUri(Contacts.CONTENT_URI, cursor)
+
+        val result = repository.hasAnyContacts(currentUserId)
+
+        assertThat(result).isTrue()
+    }
+
+    @Test
+    fun hasAnyContacts_cursorEmpty_returnsFalse() = runTest {
+        val cursor = MatrixCursor(arrayOf(Contacts._ID))
+        fakeContentProvider.setCursorForUri(Contacts.CONTENT_URI, cursor)
+
+        val result = repository.hasAnyContacts(currentUserId)
+
+        assertThat(result).isFalse()
+    }
+
+    @Test
+    fun hasAnyContacts_cursorNull_returnsFalse() = runTest {
+        val result = repository.hasAnyContacts(currentUserId)
+
+        assertThat(result).isFalse()
+    }
+
+    @Test
     fun getContacts_crossProfileUser_queriesCorrectProviderAuthority() = runTest {
         fakeContentProvider.bypassUserIdCheck = true
         val queryMode = ContactsQueryMode.DisplayNamesOnly

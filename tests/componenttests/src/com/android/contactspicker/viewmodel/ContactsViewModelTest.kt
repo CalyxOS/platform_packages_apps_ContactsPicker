@@ -18,6 +18,7 @@ package com.android.contactspicker.viewmodel
 
 import android.content.ContentProvider
 import android.content.ContentUris
+import android.content.Context
 import android.content.Intent
 import android.content.flags.Flags
 import android.net.Uri
@@ -36,7 +37,9 @@ import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.Flags.FLAG_ENABLE_ACTION_PICK_TAKEOVER_IN_DROIDFOOD
+import com.android.contactspicker.R
 import com.android.contactspicker.SearchState
+import com.android.contactspicker.config.ContactsPickerAction
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.MimeType
 import com.android.contactspicker.data.model.PausedProfileInfo
@@ -50,6 +53,7 @@ import com.android.contactspicker.data.repository.UserRepository
 import com.android.contactspicker.fakes.FakeContactsPickerSessionProviderRepository
 import com.android.contactspicker.fakes.FakeContactsRepository
 import com.android.contactspicker.fakes.FakePrivacyBannerRepository
+import com.android.contactspicker.logging.ContactsPickerLogger
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.google.common.truth.Truth.assertThat
 import dagger.Lazy
@@ -129,12 +133,16 @@ class ContactsViewModelTest {
 
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
     private val testDispatcher = StandardTestDispatcher()
+
+    private val context: Context = ApplicationProvider.getApplicationContext()
     private lateinit var fakeContactsRepository: FakeContactsRepository
 
     private lateinit var fakeContactsPickerSessionProviderRepository:
         FakeContactsPickerSessionProviderRepository
     private lateinit var fakePrivacyBannerRepository: FakePrivacyBannerRepository
     private lateinit var mockUserRepository: UserRepository
+
+    private lateinit var mockContactsPickerLogger: ContactsPickerLogger
     private lateinit var viewModel: ContactsViewModel
     private val userStateFlow =
         MutableStateFlow(
@@ -151,6 +159,7 @@ class ContactsViewModelTest {
         fakeContactsPickerSessionProviderRepository = FakeContactsPickerSessionProviderRepository()
         fakePrivacyBannerRepository = FakePrivacyBannerRepository()
         mockUserRepository = mock()
+        mockContactsPickerLogger = mock()
         userStateFlow.value =
             PickerUserState.Success(
                 userIdToAvailableUsersMap = emptyMap(),
@@ -173,6 +182,7 @@ class ContactsViewModelTest {
                 fakePrivacyBannerRepository,
                 Lazy { mockUserRepository },
                 fakeFactory,
+                mockContactsPickerLogger,
             )
     }
 
@@ -318,6 +328,61 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun handleIntent_noContactsForFullContacts_setsNoContactsStateWithCorrectMessage() = runTest {
+        initializeViewModelForLegacyActionPick(
+            emptyList(),
+            intentType = ContactsContract.Contacts.CONTENT_TYPE,
+        )
+
+        val noContactsState = viewModel.uiState.value as ContactsListState.NoResults
+        assertThat(noContactsState.message).isEqualTo(context.getString(R.string.no_contacts_title))
+    }
+
+    @Test
+    fun handleIntent_noContactsForEmails_setsNoContactsStateWithCorrectMessage() = runTest {
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+
+        val noContactsState = viewModel.uiState.value as ContactsListState.NoResults
+        assertThat(noContactsState.message)
+            .isEqualTo(context.getString(R.string.no_email_contacts_title))
+    }
+
+    @Test
+    fun handleIntent_noContactsForPhones_setsNoContactsStateWithCorrectMessage() = runTest {
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Phone.CONTENT_ITEM_TYPE))
+
+        val noContactsState = viewModel.uiState.value as ContactsListState.NoResults
+        assertThat(noContactsState.message)
+            .isEqualTo(context.getString(R.string.no_phone_contacts_title))
+    }
+
+    @Test
+    fun handleIntent_noContactsForCustomTypes_setsNoContactsStateWithCorrectMessage() = runTest {
+        initializeViewModelForActionPickContacts(
+            emptyList(),
+            listOf(Phone.CONTENT_ITEM_TYPE, Email.CONTENT_ITEM_TYPE),
+        )
+
+        val noContactsState = viewModel.uiState.value as ContactsListState.NoResults
+        assertThat(noContactsState.message)
+            .isEqualTo(context.getString(R.string.no_custom_details_contacts_title))
+    }
+
+    @Test
+    fun handleIntent_customMimeTypesAnNoContactsOnDevice_setsNoContactsStateWithCorrectMessage() =
+        runTest {
+            fakeContactsRepository.setHasAnyContacts(false)
+            initializeViewModelForActionPickContacts(
+                emptyList(),
+                listOf(Phone.CONTENT_ITEM_TYPE, Email.CONTENT_ITEM_TYPE),
+            )
+
+            val noContactsState = viewModel.uiState.value as ContactsListState.NoResults
+            assertThat(noContactsState.message)
+                .isEqualTo(context.getString(R.string.no_contacts_title))
+        }
+
+    @Test
     fun handleIntent_repositoryThrows_setsErrorState() = runTest {
         val testException = IllegalArgumentException("Unsupported action")
         fakeContactsRepository.setException(testException)
@@ -377,6 +442,31 @@ class ContactsViewModelTest {
             intentExtras = buildIntentExtrasWithMultiSelect(isMultiSelectEnabled = true),
         )
         assertThat(viewModel.currentSuccessState.isMultiSelectEnabled).isTrue()
+    }
+
+    @Test
+    fun handleIntent_logsSessionStarted() = runTest {
+        val intentAction = Intent.ACTION_PICK
+        val callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD
+        viewModel.handleIntent(
+            intentAction = intentAction,
+            intentType = Phone.CONTENT_TYPE,
+            intentExtras = null,
+            callingAppName = TEST_APP_NAME,
+            callingPackageName = TEST_PACKAGE_NAME,
+            callingAppUid = TEST_CALLING_UID,
+            callingAppTargetSdk = callingAppTargetSdk,
+        )
+
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionStarted(
+                TEST_CALLING_UID,
+                callingAppTargetSdk,
+                ContactsPickerAction.ACTION_PICK,
+                listOf(MimeType.PHONE),
+                useSystemContactsPicker = false,
+                matchAllRequestedMimeTypes = false,
+            )
     }
 
     @Test
@@ -1228,13 +1318,14 @@ class ContactsViewModelTest {
     private fun initializeViewModelForLegacyActionPick(
         contacts: List<Contact>,
         intentExtras: Bundle? = null,
+        intentType: String = Phone.CONTENT_TYPE,
         callingAppUid: Int = TEST_CALLING_UID,
     ) {
         fakeContactsRepository.setInitialContacts(contacts)
         val result =
             viewModel.handleIntent(
                 intentAction = Intent.ACTION_PICK,
-                intentType = Phone.CONTENT_TYPE,
+                intentType = intentType,
                 intentExtras = intentExtras,
                 callingAppName = TEST_APP_NAME,
                 callingPackageName = TEST_PACKAGE_NAME,
@@ -1529,7 +1620,7 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun userStateChange_emptyContacts_setsSuccessWithEmptyList() = runTest {
+    fun userStateChange_emptyContacts_setsNoContactsListState() = runTest {
         initializeViewModelForActionPickContacts(
             listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT),
             listOf(Email.CONTENT_ITEM_TYPE),
@@ -1543,8 +1634,7 @@ class ContactsViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.uiState.value
-        assertThat(state).isInstanceOf(ContactsListState.Success::class.java)
-        assertThat((state as ContactsListState.Success).availableContacts).isEmpty()
+        assertThat(state).isInstanceOf(ContactsListState.NoResults::class.java)
     }
 
     @Test

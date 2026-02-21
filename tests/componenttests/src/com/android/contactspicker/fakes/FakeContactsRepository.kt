@@ -30,6 +30,7 @@ class FakeContactsRepository : ContactsRepository {
     private val searchInvocationsCountMap = mutableMapOf<String, Int>()
     private val dataRowIdsMap = mutableMapOf<Pair<Set<Long>, Set<MimeType>>, List<Long>>()
     private var getContactsInvocationsCount = 0
+    private var hasAnyContacts = true
 
     var lastGetDataRowIdsUserId: Int? = null
         private set
@@ -62,6 +63,10 @@ class FakeContactsRepository : ContactsRepository {
         dataIds: List<Long>,
     ) {
         dataRowIdsMap[contactIds.toSet() to mimeTypes.toSet()] = dataIds
+    }
+
+    fun setHasAnyContacts(value: Boolean) {
+        hasAnyContacts = value
     }
 
     /** Returns the number of times [searchContacts] has been invoked with the provided [query]. */
@@ -98,4 +103,7 @@ class FakeContactsRepository : ContactsRepository {
         lastGetDataRowIdsUserId = userId
         return dataRowIdsMap[contactIds.toSet() to mimeTypes.toSet()] ?: emptyList()
     }
+
+    override suspend fun hasAnyContacts(userId: Int): Boolean =
+        if (initialContacts.isNotEmpty()) true else hasAnyContacts
 }

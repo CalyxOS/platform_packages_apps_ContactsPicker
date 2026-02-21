@@ -99,18 +99,11 @@ class ContactsListContentTest {
     }
 
     @Test
-    fun pickerContent_successState_emptyList_showsEmptyScreen() {
+    fun pickerContent_noContactsState_showsEmptyScreenWithCorrectMessage() {
+        val noContactsMessageTitle = "Example No Contacts Title"
         composeTestRule.setContent {
             ContactsListContent(
-                uiState =
-                    ContactsListState.Success(
-                        availableContacts = emptyList(),
-                        selectedContacts = emptyContactsSelection(),
-                        isMultiSelectEnabled = false,
-                        callingAppName = null,
-                        requestedMimeTypes = emptyList(),
-                        showPrivacyBanner = true,
-                    ),
+                uiState = ContactsListState.NoResults(message = noContactsMessageTitle),
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
                 onToggleContactSelection = {},
@@ -118,9 +111,10 @@ class ContactsListContentTest {
             )
         }
         val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+        composeTestRule.onNodeWithText(noContactsMessageTitle).assertIsDisplayed()
         composeTestRule
             .onNodeWithText(
-                context.getString(com.android.contactspicker.R.string.no_contacts_title)
+                context.getString(com.android.contactspicker.R.string.no_contacts_description)
             )
             .assertIsDisplayed()
         // Even if showPrivacyBanner is true, the EmptyScreen does NOT show it.

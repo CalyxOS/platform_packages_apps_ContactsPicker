@@ -32,7 +32,6 @@
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"星號圖示"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"微笑圖示"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"切換個人檔案"</string>
-    <string name="privacy_info_content_description" msgid="1633879608858355544">"私隱權資訊"</string>
     <string name="scrubber_handle_content_description" msgid="1435669253806161568">"快速捲軸控點"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"聯絡人個人檔案相片"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"聯絡人姓名縮寫"</string>
@@ -61,11 +60,15 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"此應用程式"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"聯絡人的私隱"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"未有任何聯絡人"</string>
+    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
+    <skip />
+    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
+    <skip />
+    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
+    <skip />
     <string name="no_contacts_description" msgid="2146615362021064099">"你建立或匯入至裝置的聯絡人會在這裡顯示"</string>
-    <!-- no translation found for no_results_found (8513853958245248109) -->
-    <skip />
-    <!-- no translation found for no_results_found_description (3316948006890920245) -->
-    <skip />
+    <string name="no_results_found" msgid="8513853958245248109">"找不到結果"</string>
+    <string name="no_results_found_description" msgid="3316948006890920245">"請嘗試使用其他拼法搜尋"</string>
     <string name="user_type_personal" msgid="45376141973820399">"個人"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"不明的使用者"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"已暫停 %s 個應用程式"</string>

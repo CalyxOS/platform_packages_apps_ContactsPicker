@@ -32,7 +32,6 @@
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"Icon na star"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"Icon ng ngiti"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"Lumipat ng profile"</string>
-    <string name="privacy_info_content_description" msgid="1633879608858355544">"Impormasyon ng privacy"</string>
     <string name="scrubber_handle_content_description" msgid="1435669253806161568">"Handle ng mabilis na scroller"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Larawan sa profile ng contact"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"Inisyal ng contact"</string>
@@ -61,6 +60,12 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"App na ito"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Privacy ng iyong mga contact"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Wala pang contact"</string>
+    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
+    <skip />
+    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
+    <skip />
+    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
+    <skip />
     <string name="no_contacts_description" msgid="2146615362021064099">"Lalabas dito ang mga contact na gagawin o ii-import mo sa iyong device"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Walang nahanap na resulta"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"Subukang maghanap gamit ang ibang spelling"</string>

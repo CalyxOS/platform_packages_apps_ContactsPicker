@@ -32,7 +32,6 @@
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"Icona d\'estrella"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"Icona de somriure"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"Canvia de perfil"</string>
-    <string name="privacy_info_content_description" msgid="1633879608858355544">"Informació sobre privadesa"</string>
     <string name="scrubber_handle_content_description" msgid="1435669253806161568">"Ansa de desplaçament ràpid"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"Foto de perfil del contacte"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"Inicial del contacte"</string>
@@ -61,11 +60,15 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Aquesta aplicació"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Privadesa dels teus contactes"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Encara no hi ha cap contacte"</string>
+    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
+    <skip />
+    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
+    <skip />
+    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
+    <skip />
     <string name="no_contacts_description" msgid="2146615362021064099">"Els contactes que creïs o importis al dispositiu es mostraran aquí"</string>
-    <!-- no translation found for no_results_found (8513853958245248109) -->
-    <skip />
-    <!-- no translation found for no_results_found_description (3316948006890920245) -->
-    <skip />
+    <string name="no_results_found" msgid="8513853958245248109">"No s\'ha trobat cap resultat"</string>
+    <string name="no_results_found_description" msgid="3316948006890920245">"Prova de cercar amb una altra grafia"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Personal"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Usuari desconegut"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"Les aplicacions de %s estan en pausa"</string>

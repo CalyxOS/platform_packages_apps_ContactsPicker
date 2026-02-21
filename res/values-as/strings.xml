@@ -32,7 +32,6 @@
     <string name="favorites_header_icon_content_description" msgid="7094941017377292492">"তৰা চিহ্ন"</string>
     <string name="emoji_header_icon_content_description" msgid="2926727446702186759">"হাঁহিৰ চিহ্ন"</string>
     <string name="profile_switcher_content_description" msgid="4180951376809274279">"প্ৰ’ফাইল সলনি কৰক"</string>
-    <string name="privacy_info_content_description" msgid="1633879608858355544">"গোপনীয়তাৰ তথ্য"</string>
     <string name="scrubber_handle_content_description" msgid="1435669253806161568">"দ্ৰুত স্ক্ৰ’লাৰ হেণ্ডেল"</string>
     <string name="contact_avatar_profile_picture_content_description" msgid="4077599609642932184">"সম্পৰ্কৰ প্ৰ’ফাইল চিত্ৰ"</string>
     <string name="contact_avatar_initial_content_description" msgid="8441303818086750337">"সম্পৰ্কৰ প্ৰাৰম্ভিক তথ্য"</string>
@@ -61,6 +60,12 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"এই এপ্‌টো"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"আপোনাৰ সম্পৰ্কসমূহৰ গোপনীয়তা"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"এতিয়ালৈকে কোনো সম্পৰ্ক নাই"</string>
+    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
+    <skip />
+    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
+    <skip />
+    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
+    <skip />
     <string name="no_contacts_description" msgid="2146615362021064099">"আপুনি সৃষ্টি কৰা বা আপোনাৰ ডিভাইচলৈ আমদানি কৰা সম্পৰ্কসমূহ ইয়াত দেখুওৱা হ’ব"</string>
     <string name="no_results_found" msgid="8513853958245248109">"কোনো ফলাফল পোৱা নগ’ল"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"এটা বেলেগ বানান ব্যৱহাৰ কৰি সন্ধান কৰি চাওক"</string>
