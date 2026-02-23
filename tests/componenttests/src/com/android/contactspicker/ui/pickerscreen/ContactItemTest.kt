@@ -549,6 +549,30 @@ class ContactItemTest {
     }
 
     @Test
+    fun selectableAvatarClick_whenSelectedEntryInSingleSelectMode_callsOnToggleContactSelection() {
+        val contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
+        assertAvatarClickBehavior(
+            contact = contact,
+            selectedEntries = setOf(contact.id),
+            isMultiSelectEnabled = false,
+            expectToggleContactCalled = true,
+            expectItemExpanded = false,
+        )
+    }
+
+    @Test
+    fun selectableAvatar_whenSelectedContactInSingleSelectMode_callsOnToggleContactSelection() {
+        val contact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT
+        assertAvatarClickBehavior(
+            contact = contact,
+            selectedEntries = setOf(contact.phones.first().id),
+            isMultiSelectEnabled = false,
+            expectToggleContactCalled = true,
+            expectItemExpanded = false,
+        )
+    }
+
+    @Test
     fun entryClick_withSingleEmailContact_callsOnToggleContactSelection() {
         assertEntryClickBehavior(
             contact = ContactTestDataFactory.GENERIC_EMAIL_CONTACT,
@@ -619,6 +643,7 @@ class ContactItemTest {
     /** Helper function to test the click behavior of the avatar in a [ContactItem]. */
     private fun assertAvatarClickBehavior(
         contact: Contact,
+        selectedEntries: Set<Long> = emptySet(), // default no selection
         isMultiSelectEnabled: Boolean,
         expectToggleContactCalled: Boolean,
         expectItemExpanded: Boolean,
@@ -628,7 +653,7 @@ class ContactItemTest {
         composeTestRule.setContent {
             ContactItem(
                 contact = contact,
-                selectedEntries = emptySet(),
+                selectedEntries = selectedEntries,
                 position = ItemPosition.ONLY,
                 isMultiSelectEnabled = isMultiSelectEnabled,
                 isSearchMode = false,
@@ -637,7 +662,18 @@ class ContactItemTest {
             )
         }
 
-        composeTestRule.onNode(hasTestTag(AVATAR_TEST_TAG), useUnmergedTree = true).performClick()
+        val avatarNode =
+            if (selectedEntries.isEmpty()) {
+                composeTestRule.onNode(hasTestTag(AVATAR_TEST_TAG), useUnmergedTree = true)
+            } else {
+                composeTestRule.onNodeWithContentDescription(
+                    context.getString(
+                        R.string.contact_item_selected_content_description,
+                        contact.displayName,
+                    )
+                )
+            }
+        avatarNode.performClick()
 
         assertThat(onToggleContactCalled).isEqualTo(expectToggleContactCalled)
         assertThat(onToggleEntryCalled).isFalse()

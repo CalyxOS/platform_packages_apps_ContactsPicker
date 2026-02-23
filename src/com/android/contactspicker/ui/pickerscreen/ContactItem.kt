@@ -170,7 +170,7 @@ fun ContactItem(
     val onAvatarClick: () -> Unit = {
         if (isSearchMode) {
             searchTargetEntryId?.let { entryId -> onToggleEntrySelection(contact.id, entryId) }
-        } else if (isMultiSelectEnabled || !isExpandable) {
+        } else if (isSelected || isMultiSelectEnabled || !isExpandable) {
             // In multi-select, or for simple contacts, the avatar toggles selection.
             onToggleContactSelection(contact)
         } else {
