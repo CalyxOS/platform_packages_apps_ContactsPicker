@@ -60,12 +60,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"កម្មវិធីនេះ"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"ឯកជនភាព​របស់​ទំនាក់ទំនង​អ្នក"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"មិន​ទាន់​មាន​ទំនាក់ទំនង​ទេ"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"គ្មានទំនាក់ទំនង​ដែល​មាន​អាសយដ្ឋាន​អ៊ីមែល"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"គ្មាន​ទំនាក់ទំនង​ដែល​មាន​លេខ​ទូរសព្ទ"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"គ្មានទំនាក់ទំនងដែលមានព័ត៌មានដែលតម្រូវ"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"ទំនាក់ទំនង​ដែលអ្នក​បង្កើត ឬនាំចូល​ទៅឧបករណ៍​របស់អ្នក​នឹង​បង្ហាញ​នៅទីនេះ"</string>
     <string name="no_results_found" msgid="8513853958245248109">"រក​មិន​ឃើញ​លទ្ធផលទេ"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"សាកល្បងស្វែងរកដោយប្រើការប្រកបខុសគ្នា"</string>

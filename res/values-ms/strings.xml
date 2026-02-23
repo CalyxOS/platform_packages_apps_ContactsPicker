@@ -60,12 +60,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Apl ini"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Privasi kenalan anda"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Belum ada kenalan"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"Tiada kenalan dengan alamat e-mel"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"Tiada kenalan dengan nombor telefon"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Tiada kenalan dengan maklumat diperlukan"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Kenalan yang anda buat atau import kepada peranti anda akan dipaparkan di sini"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Tiada hasil carian ditemukan"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"Cuba cari dengan ejaan yang berbeza"</string>
