@@ -386,7 +386,7 @@ constructor(
     /** Hides the privacy banner for the current session. */
     fun hidePrivacyBanner() {
         showPrivacyBanner = false
-
+        contactsPickerLogger.privacyBannerDismissedByUser()
         _uiState.update { currentState ->
             if (currentState is ContactsListState.Success) {
                 currentState.copy(showPrivacyBanner = showPrivacyBanner)

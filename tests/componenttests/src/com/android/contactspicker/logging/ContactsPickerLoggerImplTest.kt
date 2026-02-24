@@ -193,6 +193,14 @@ class ContactsPickerLoggerImplTest {
         )
     }
 
+    @Test
+    fun privacyBannerDismissedByUser_logContactsPickerSessionFinishedLogsCorrectly() {
+        verifySessionFinishedEventFields(
+            privacyBannerDismissedByUser = true,
+            midLoggingSessionBlock = { logger.privacyBannerDismissedByUser() },
+        )
+    }
+
     private fun verifySessionStartedEventFields(
         callingAppPackageUid: Int = DEFAULT_TEST_CALLING_APP_UID,
         callingAppTargetSdk: Int = DEFAULT_TEST_CALLING_APP_TARGET_SDK,
@@ -242,6 +250,8 @@ class ContactsPickerLoggerImplTest {
         numContactsSelected: Int = DEFAULT_NUM_CONTACTS_SELECTED,
         contactsSelectedFromFavorites: Boolean = false,
         contactsSelectedFromSearch: Boolean = false,
+        privacyBannerDismissedByUser: Boolean = false,
+        midLoggingSessionBlock: () -> Unit = {},
     ) {
         capturedSessionFinishedAtoms.clear()
 
@@ -254,6 +264,8 @@ class ContactsPickerLoggerImplTest {
             useSystemContactsPicker,
             matchAllRequestedMimeTypes,
         )
+
+        midLoggingSessionBlock()
 
         logger.logContactsPickerSessionFinishedSuccessfully(
             numContactsSelected = numContactsSelected,
@@ -281,5 +293,6 @@ class ContactsPickerLoggerImplTest {
         assertThat(event.numContactsSelected).isEqualTo(numContactsSelected)
         assertThat(event.contactsSelectedFromFavorites).isEqualTo(contactsSelectedFromFavorites)
         assertThat(event.contactsSelectedFromSearchResults).isEqualTo(contactsSelectedFromSearch)
+        assertThat(event.privacyBannerDismissedByUser).isEqualTo(privacyBannerDismissedByUser)
     }
 }

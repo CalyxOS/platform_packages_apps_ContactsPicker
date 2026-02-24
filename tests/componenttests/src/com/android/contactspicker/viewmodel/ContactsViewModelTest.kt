@@ -1673,12 +1673,27 @@ class ContactsViewModelTest {
 
     @Test
     fun hidePrivacyBanner_updatesUiState() = runTest {
-        initializeViewModelForActionPickContacts(listOf(ContactTestDataFactory.GENERIC_EMAIL_CONTACT), listOf(Email.CONTENT_ITEM_TYPE))
+        initializeViewModelForActionPickContacts(
+            listOf(ContactTestDataFactory.GENERIC_EMAIL_CONTACT),
+            listOf(Email.CONTENT_ITEM_TYPE),
+        )
         assertThat(viewModel.currentSuccessState.showPrivacyBanner).isTrue()
 
         viewModel.hidePrivacyBanner()
 
         assertThat(viewModel.currentSuccessState.showPrivacyBanner).isFalse()
+    }
+
+    @Test
+    fun hidePrivacyBanner_callsLoggerHidePrivacyBanner() = runTest {
+        initializeViewModelForActionPickContacts(
+            listOf(ContactTestDataFactory.GENERIC_EMAIL_CONTACT),
+            listOf(Email.CONTENT_ITEM_TYPE),
+        )
+
+        viewModel.hidePrivacyBanner()
+
+        verify(mockContactsPickerLogger).privacyBannerDismissedByUser()
     }
 
     @Test

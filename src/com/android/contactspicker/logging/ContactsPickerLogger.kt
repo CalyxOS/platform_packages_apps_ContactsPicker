@@ -33,4 +33,10 @@ interface ContactsPickerLogger {
         contactsSelectedFromFavorites: Boolean,
         contactsSelectedFromSearch: Boolean,
     )
+
+    /**
+     * Marks that the privacy banner has been dismissed by the user. Will be logged when the session
+     * finished is logged.
+     */
+    fun privacyBannerDismissedByUser()
 }
