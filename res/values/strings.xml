@@ -76,8 +76,8 @@
         [CHAR LIMIT=NONE] -->
     <string name="contact_item_emails_count">
         {count, plural,
-        =1 {# email}
-        other {# emails}}
+        =1 {# email address}
+        other {# email addresses}}
     </string>
     <!-- Count of phone numbers shown in the collapsed contact item with multiple numbers when none
         are selected. [CHAR LIMIT=NONE] -->
