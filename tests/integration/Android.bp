@@ -27,6 +27,7 @@ android_test {
     ],
     manifest: "AndroidManifest.xml",
     static_libs: [
+        "Nene",
         "android.content.flags-aconfig-java",
         "androidx.compose.ui_ui-test-junit4",
         "androidx.test.core",

@@ -16,7 +16,6 @@
 
 package com.android.contactspicker.data.repository
 
-import android.app.UiAutomation
 import android.content.ContentProviderOperation
 import android.content.ContentProviderResult
 import android.content.ContentResolver
@@ -36,7 +35,7 @@ import android.provider.ContactsContract.RawContacts
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import androidx.test.platform.app.InstrumentationRegistry
+import com.android.bedstead.nene.TestApis
 import com.android.contactspicker.config.ContactsQueryMode
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.EmailContact
@@ -71,12 +70,9 @@ class ContactsRepositoryIntegrationTest {
 
     @Before
     fun setUp() {
-        val instrumentation = InstrumentationRegistry.getInstrumentation()
-        instrumentation.targetContext.packageName
-        instrumentation.uiAutomation.grantRuntimePermission(
-            instrumentation.targetContext.packageName,
-            "android.permission.READ_CONTACTS",
-        )
+        TestApis.packages()
+            .find(context.packageName)
+            .grantPermission(android.Manifest.permission.READ_CONTACTS)
     }
 
     @After
@@ -493,14 +489,12 @@ class ContactsRepositoryIntegrationTest {
     }
 
     /** Executes the given [block] of code with shell permissions. */
-    fun <T> withShellPermissions(block: () -> T): T {
-        val instrumentation = InstrumentationRegistry.getInstrumentation()
-        val uiAutomation: UiAutomation = instrumentation.uiAutomation
-        uiAutomation.adoptShellPermissionIdentity()
-        try {
-            return block()
-        } finally {
-            uiAutomation.dropShellPermissionIdentity()
-        }
+    private fun <T> withShellPermissions(block: () -> T): T {
+        return TestApis.permissions()
+            .withPermission(
+                android.Manifest.permission.READ_CONTACTS,
+                android.Manifest.permission.WRITE_CONTACTS,
+            )
+            .use { block() }
     }
 }
