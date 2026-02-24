@@ -21,7 +21,7 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -146,9 +146,7 @@ class AvatarTest {
 
     @Test
     fun avatar_noProfilePictureAndDisplayNameEmpty_showsPersonIcon() {
-        composeTestRule.setContent {
-            Avatar(displayName = "", profilePictureUri = "")
-        }
+        composeTestRule.setContent { Avatar(displayName = "", profilePictureUri = "") }
 
         composeTestRule.onNodeWithTag(AVATAR_FALLBACK_PERSON_ICON_TEST_TAG).assertExists()
         composeTestRule.onNodeWithContentDescription(initialsContentDesc).assertExists()
