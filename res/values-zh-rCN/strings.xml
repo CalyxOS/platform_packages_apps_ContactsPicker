@@ -40,7 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"收起"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"电话号码"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"邮箱"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# 封邮件}other{# 封邮件}}"</string>
+    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
+    <skip />
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# 个电话号码}other{# 个电话号码}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{已选 {selected_count} 封邮件（共 # 封）}other{已选 {selected_count} 封邮件（共 # 封）}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{已选 {selected_count} 个电话号码（共 # 个）}other{已选 {selected_count} 个电话号码（共 # 个）}}"</string>
@@ -60,15 +61,12 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"此应用"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"您的通讯录隐私权"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"尚无联系人"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"没有联系人拥有邮箱"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"没有联系人拥有电话号码"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"没有联系人包含所需信息"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"您在设备上创建或导入的联系人将显示在此处"</string>
     <string name="no_results_found" msgid="8513853958245248109">"未找到任何结果"</string>
-    <string name="no_results_found_description" msgid="3316948006890920245">"请换种拼写重新搜索试试"</string>
+    <string name="no_results_found_description" msgid="3316948006890920245">"请重新拼写再试试"</string>
     <string name="user_type_personal" msgid="45376141973820399">"个人"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"未知用户"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"已暂停 %s 个应用"</string>
