@@ -24,7 +24,7 @@
     <string name="privacy_details_contact_data_fields_list_header" msgid="4492206191032534831">"தொடர்புத் தகவலில் இவை போன்ற விவரங்கள் இருக்கலாம்:"</string>
     <string name="privacy_details_data_field_name_header" msgid="3346074098934421249">"பெயர்"</string>
     <string name="privacy_details_data_field_phone_header" msgid="4186124073450199048">"ஃபோன் எண்கள்"</string>
-    <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"மின்னஞ்சல் முகவரிகள்"</string>
+    <string name="privacy_details_data_field_email_header" msgid="1860923612877349209">"ஈமெயில் முகவரிகள்"</string>
     <string name="privacy_details_data_field_address_header" msgid="8063949263754924922">"முகவரிகள்"</string>
     <string name="privacy_details_data_field_organization_header" msgid="5452268926445159613">"நிறுவனம்"</string>
     <string name="privacy_details_data_field_related_people_header" msgid="3252437046458903319">"வேண்டிய நபர்கள்"</string>
