@@ -48,6 +48,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
@@ -89,6 +91,7 @@ fun ContactsPickerSearchBar(
                 onSearch = { keyboardController?.hide() },
                 expanded = expanded,
                 onExpandedChange = onExpandedChange,
+                modifier = Modifier.semantics { contentDescription = "" },
                 placeholder = {
                     val hintRes =
                         if (expanded) R.string.contacts_picker_search_expanded_hint
@@ -240,12 +243,6 @@ private fun SearchBarLeadingIcon(expanded: Boolean, onExitSearch: () -> Unit) {
             )
         }
     } else {
-        Icon(
-            imageVector = Icons.Outlined.Search,
-            contentDescription =
-                stringResource(
-                    id = R.string.contacts_picker_top_bar_search_icon_content_description
-                ),
-        )
+        Icon(imageVector = Icons.Outlined.Search, contentDescription = null)
     }
 }
