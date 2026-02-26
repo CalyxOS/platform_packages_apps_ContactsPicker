@@ -66,7 +66,11 @@ constructor(
                     val currentSelected = _selectedUserId.value
                     if (currentSelected != null) {
                         val profile = availableUsersMap[currentSelected]
-                        if (profile == null || profile.pausedInfo != null) {
+                        if (
+                            profile == null ||
+                                profile.pausedInfo != null ||
+                                profile.switchableInfo == null
+                        ) {
                             _selectedUserId.value = null
                         }
                     }
