@@ -64,7 +64,11 @@ class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
         )
     }
 
-    override fun logContactsPickerSessionFinishedSuccessfully(numContactsSelected: Int) {
+    override fun logContactsPickerSessionFinishedSuccessfully(
+        numContactsSelected: Int,
+        contactsSelectedFromFavorites: Boolean,
+        contactsSelectedFromSearch: Boolean,
+    ) {
         val currentLoggingData = loggingData ?: return
         ContactsPickerStatsLog.write(
             ContactsPickerStatsLog.CONTACTS_PICKER_SESSION_FINISHED_REPORTED,
@@ -82,10 +86,8 @@ class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
             /* session_duration_ms */ 0, // TODO(b/441483549): Log session duration
             /* startup_loading_time_ms */ 0, // TODO(b/441483549): Log loading time
             /* num_contacts_selected */ numContactsSelected,
-            /* contacts_selected_from_favorites */ false, // TODO(b/441483549): Log selected from
-            // favourites
-            /* contacts_selected_from_search_results */ false, // TODO(b/441483549): Log selected
-            // from search results
+            /* contacts_selected_from_favorites */ contactsSelectedFromFavorites,
+            /* contacts_selected_from_search_results */ contactsSelectedFromSearch,
             /* preview_opened */ false, // TODO(b/441483549): Log preview opened
             /* search_used */ false, // TODO(b/441483549): Log search used
             /* count_search_load_time_above_tolerance */ 0, // TODO(b/441483549): Log long searches

@@ -141,7 +141,7 @@ fun ContactItem(
     isMultiSelectEnabled: Boolean,
     isSearchMode: Boolean,
     onToggleContactSelection: (Contact) -> Unit,
-    onToggleEntrySelection: (contactId: Long, entryId: Long) -> Unit,
+    onToggleEntrySelection: (Long, Long) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val isExpandable =

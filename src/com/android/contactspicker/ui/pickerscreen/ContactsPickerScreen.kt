@@ -27,6 +27,7 @@ import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.PickerUserState
+import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.ui.components.ContactsListContent
 
@@ -38,8 +39,8 @@ internal const val CONTACTS_PICKER_SCREEN_TEST_TAG = "contacts_picker_screen"
 fun ContactsPickerScreen(
     uiState: State<ContactsUiState>,
     userState: PickerUserState,
-    onToggleContactSelection: (Contact) -> Unit,
-    onToggleEntrySelection: (Long, Long) -> Unit,
+    onToggleContactSelection: (Contact, SelectionSource) -> Unit,
+    onToggleEntrySelection: (Long, Long, SelectionSource) -> Unit,
     onNavigateToPrivacyDetails: () -> Unit,
     onPrivacyBannerDismissRequest: () -> Unit,
     onExpandRequest: () -> Unit,

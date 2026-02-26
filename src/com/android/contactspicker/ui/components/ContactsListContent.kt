@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.ui.pickerscreen.CONTACTS_PICKER_SCREEN_LOADING_INDICATOR_TEST_TAG
 import com.android.contactspicker.ui.pickerscreen.ContactsPickerBody
 
@@ -45,8 +46,8 @@ fun ContactsListContent(
     uiState: ContactsListState,
     onPrivacyBannerMoreDetails: () -> Unit,
     onPrivacyBannerDismissRequest: () -> Unit,
-    onToggleContactSelection: (Contact) -> Unit,
-    onToggleEntrySelection: (contactId: Long, entryId: Long) -> Unit,
+    onToggleContactSelection: (Contact, SelectionSource) -> Unit,
+    onToggleEntrySelection: (contactId: Long, entryId: Long, SelectionSource) -> Unit,
 ) {
     when (uiState) {
         is ContactsListState.Loading ->

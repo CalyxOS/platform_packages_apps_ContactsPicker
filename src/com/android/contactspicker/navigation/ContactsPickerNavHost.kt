@@ -24,6 +24,7 @@ import androidx.navigation.compose.composable
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.PickerUserState
+import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.ui.pickerscreen.ContactsPickerScreen
 import com.android.contactspicker.ui.privacydetails.PrivacyDetailsScreen
@@ -33,8 +34,8 @@ fun ContactsPickerNavHost(
     navController: NavHostController,
     uiState: State<ContactsUiState>,
     userState: PickerUserState,
-    onToggleContactSelection: (Contact) -> Unit,
-    onToggleEntrySelection: (Long, Long) -> Unit,
+    onToggleContactSelection: (Contact, SelectionSource) -> Unit,
+    onToggleEntrySelection: (Long, Long, SelectionSource) -> Unit,
     onPrivacyBannerDismissRequest: () -> Unit,
     onExpandRequest: () -> Unit,
     onQueryChange: (String) -> Unit,
