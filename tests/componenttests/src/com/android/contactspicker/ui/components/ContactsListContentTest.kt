@@ -24,7 +24,6 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.data.model.emptyContactsSelection
@@ -103,20 +102,18 @@ class ContactsListContentTest {
         val noContactsMessageTitle = "Example No Contacts Title"
         composeTestRule.setContent {
             ContactsListContent(
-                uiState = ContactsListState.NoResults(message = noContactsMessageTitle),
+                uiState =
+                    ContactsListState.NoResults(
+                        titleText = noContactsMessageTitle,
+                        descriptionText = null,
+                    ),
                 onPrivacyBannerMoreDetails = {},
                 onPrivacyBannerDismissRequest = {},
                 onToggleContactSelection = {},
                 onToggleEntrySelection = { _, _ -> },
             )
         }
-        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
         composeTestRule.onNodeWithText(noContactsMessageTitle).assertIsDisplayed()
-        composeTestRule
-            .onNodeWithText(
-                context.getString(com.android.contactspicker.R.string.no_contacts_description)
-            )
-            .assertIsDisplayed()
         // Even if showPrivacyBanner is true, the EmptyScreen does NOT show it.
         composeTestRule.onNodeWithTag(PRIVACY_BANNER_TEST_TAG).assertDoesNotExist()
         composeTestRule.onNodeWithTag(CONTACTS_LIST_TEST_TAG).assertDoesNotExist()

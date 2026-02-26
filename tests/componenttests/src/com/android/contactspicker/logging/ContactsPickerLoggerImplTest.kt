@@ -17,12 +17,14 @@ package com.android.contactspicker.logging
 
 import android.content.flags.Flags
 import android.os.statsd.contactspicker.ContactMimeType
+import android.os.statsd.contactspicker.ContactsPickerSessionResult
 import android.os.statsd.contactspicker.IntentActionType
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.util.StatsEvent
 import android.util.StatsEventTestUtils
 import android.util.StatsLog
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.android.contactspicker.ContactsPickerSessionFinishedReported
 import com.android.contactspicker.ContactsPickerSessionStartedReported
 import com.android.contactspicker.ContactspickerExtensionAtoms
 import com.android.contactspicker.config.ContactsPickerAction
@@ -37,6 +39,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.MockitoSession
 import org.mockito.kotlin.any
+import org.mockito.quality.Strictness
 
 @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
 @RunWith(AndroidJUnit4::class)
@@ -44,17 +47,26 @@ class ContactsPickerLoggerImplTest {
     private val DEFAULT_TEST_CALLING_APP_UID = 123
     private val DEFAULT_TEST_CALLING_APP_TARGET_SDK = 33
 
+    private val DEFAULT_NUM_SELECTED_CONTACTS = 3
+
     private val registry = ExtensionRegistryLite.newInstance()
     private val logger = ContactsPickerLoggerImpl()
 
     val capturedSessionStartedAtoms = mutableListOf<ContactsPickerSessionStartedReported>()
+    val capturedSessionFinishedAtoms = mutableListOf<ContactsPickerSessionFinishedReported>()
 
     private lateinit var mockitoSession: MockitoSession
 
     @Before
     fun setUp() {
-        mockitoSession = mockitoSession().mockStatic(StatsLog::class.java).startMocking()
+        mockitoSession =
+            mockitoSession()
+                .mockStatic(StatsLog::class.java)
+                // lenient needed because some tests assert no interactions with static mock
+                .strictness(Strictness.LENIENT)
+                .startMocking()
         registry.add(ContactspickerExtensionAtoms.contactsPickerSessionStartedReported)
+        registry.add(ContactspickerExtensionAtoms.contactsPickerSessionFinishedReported)
         ExtendedMockito.doAnswer { invocation ->
                 val event = invocation.arguments[0] as StatsEvent
                 val atom = StatsEventTestUtils.convertToAtom(event, registry)
@@ -66,6 +78,16 @@ class ContactsPickerLoggerImplTest {
                     capturedSessionStartedAtoms.add(
                         atom.getExtension(
                             ContactspickerExtensionAtoms.contactsPickerSessionStartedReported
+                        )
+                    )
+                } else if (
+                    atom.hasExtension(
+                        ContactspickerExtensionAtoms.contactsPickerSessionFinishedReported
+                    )
+                ) {
+                    capturedSessionFinishedAtoms.add(
+                        atom.getExtension(
+                            ContactspickerExtensionAtoms.contactsPickerSessionFinishedReported
                         )
                     )
                 }
@@ -125,6 +147,35 @@ class ContactsPickerLoggerImplTest {
         }
     }
 
+    @Test
+    fun logContactsPickerSessionFinished_noSessionStartedCalled_doesNotLog() {
+        capturedSessionFinishedAtoms.clear()
+        logger.logContactsPickerSessionFinishedSuccessfully(DEFAULT_NUM_SELECTED_CONTACTS)
+
+        assertThat(capturedSessionFinishedAtoms).isEmpty()
+    }
+
+    @Test
+    fun logContactsPickerSessionFinished_logsCorrectNumSelectedContacts() {
+        for (numSelectedContacts in listOf(1, 10, 100)) verifySessionFinishedEventFields(
+            numSelectedContacts = numSelectedContacts
+        )
+    }
+
+    @Test
+    fun logContactsPickerSessionFinished_logsCorrectFieldsFromStartSessionCall() {
+        verifySessionFinishedEventFields(
+            callingAppPackageUid = 9876,
+            callingAppTargetSdk = 40,
+            intentAction = ContactsPickerAction.ACTION_PICK,
+            requestedMimetypesList =
+                listOf(MimeType.PHONE, MimeType.EMAIL, MimeType.STRUCTURED_NAME),
+            useSystemContactsPicker = true,
+            matchAllRequestedMimeTypes = true,
+            numSelectedContacts = 12,
+        )
+    }
+
     private fun verifySessionStartedEventFields(
         callingAppPackageUid: Int = DEFAULT_TEST_CALLING_APP_UID,
         callingAppTargetSdk: Int = DEFAULT_TEST_CALLING_APP_TARGET_SDK,
@@ -160,5 +211,50 @@ class ContactsPickerLoggerImplTest {
         assertThat(event.intentExtraUseSystemContactsPicker).isEqualTo(useSystemContactsPicker)
         assertThat(event.intentExtraPickContactsMatchAllDataFields)
             .isEqualTo(matchAllRequestedMimeTypes)
+    }
+
+    private fun verifySessionFinishedEventFields(
+        callingAppPackageUid: Int = DEFAULT_TEST_CALLING_APP_UID,
+        callingAppTargetSdk: Int = DEFAULT_TEST_CALLING_APP_TARGET_SDK,
+        intentAction: ContactsPickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
+        requestedMimetypesList: List<MimeType> = listOf(MimeType.PHONE, MimeType.STRUCTURED_NAME),
+        useSystemContactsPicker: Boolean = false,
+        matchAllRequestedMimeTypes: Boolean = false,
+        sessionResult: ContactsPickerSessionResult =
+            ContactsPickerSessionResult.SESSION_RESULT_SUCCESS,
+        numSelectedContacts: Int = DEFAULT_NUM_SELECTED_CONTACTS,
+    ) {
+        capturedSessionFinishedAtoms.clear()
+
+        // have to log session started to populate the fields
+        logger.logContactsPickerSessionStarted(
+            callingAppPackageUid,
+            callingAppTargetSdk,
+            intentAction,
+            requestedMimetypesList,
+            useSystemContactsPicker,
+            matchAllRequestedMimeTypes,
+        )
+
+        logger.logContactsPickerSessionFinishedSuccessfully(numSelectedContacts)
+
+        assertThat(capturedSessionFinishedAtoms).hasSize(1)
+        val event = capturedSessionFinishedAtoms[0]
+
+        assertThat(event.callingAppPackageUid).isEqualTo(callingAppPackageUid)
+        assertThat(event.callingAppTargetSdk).isEqualTo(callingAppTargetSdk)
+        assertThat(event.intentAction)
+            .isEqualTo(IntentActionType.forNumber(intentAction.toLoggingEnumValue()))
+        assertThat(event.requestedMimetypesList)
+            .containsExactlyElementsIn(
+                requestedMimetypesList.convertToLoggingEnumList().map {
+                    ContactMimeType.forNumber(it)
+                }
+            )
+        assertThat(event.intentExtraUseSystemContactsPicker).isEqualTo(useSystemContactsPicker)
+        assertThat(event.intentExtraPickContactsMatchAllDataFields)
+            .isEqualTo(matchAllRequestedMimeTypes)
+        assertThat(event.sessionResult).isEqualTo(sessionResult)
+        assertThat(event.numContactsSelected).isEqualTo(numSelectedContacts)
     }
 }

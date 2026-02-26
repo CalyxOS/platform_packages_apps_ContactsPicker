@@ -335,7 +335,10 @@ class ContactsViewModelTest {
         )
 
         val noContactsState = viewModel.uiState.value as ContactsListState.NoResults
-        assertThat(noContactsState.message).isEqualTo(context.getString(R.string.no_contacts_title))
+        assertThat(noContactsState.titleText)
+            .isEqualTo(context.getString(R.string.no_contacts_title))
+        assertThat(noContactsState.descriptionText)
+            .isEqualTo(context.getString(R.string.no_contacts_description))
     }
 
     @Test
@@ -343,8 +346,9 @@ class ContactsViewModelTest {
         initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
 
         val noContactsState = viewModel.uiState.value as ContactsListState.NoResults
-        assertThat(noContactsState.message)
+        assertThat(noContactsState.titleText)
             .isEqualTo(context.getString(R.string.no_email_contacts_title))
+        assertThat(noContactsState.descriptionText).isNull()
     }
 
     @Test
@@ -352,8 +356,9 @@ class ContactsViewModelTest {
         initializeViewModelForActionPickContacts(emptyList(), listOf(Phone.CONTENT_ITEM_TYPE))
 
         val noContactsState = viewModel.uiState.value as ContactsListState.NoResults
-        assertThat(noContactsState.message)
+        assertThat(noContactsState.titleText)
             .isEqualTo(context.getString(R.string.no_phone_contacts_title))
+        assertThat(noContactsState.descriptionText).isNull()
     }
 
     @Test
@@ -364,8 +369,9 @@ class ContactsViewModelTest {
         )
 
         val noContactsState = viewModel.uiState.value as ContactsListState.NoResults
-        assertThat(noContactsState.message)
+        assertThat(noContactsState.titleText)
             .isEqualTo(context.getString(R.string.no_custom_details_contacts_title))
+        assertThat(noContactsState.descriptionText).isNull()
     }
 
     @Test
@@ -378,8 +384,10 @@ class ContactsViewModelTest {
             )
 
             val noContactsState = viewModel.uiState.value as ContactsListState.NoResults
-            assertThat(noContactsState.message)
+            assertThat(noContactsState.titleText)
                 .isEqualTo(context.getString(R.string.no_contacts_title))
+            assertThat(noContactsState.descriptionText)
+                .isEqualTo(context.getString(R.string.no_contacts_description))
         }
 
     @Test
@@ -876,6 +884,51 @@ class ContactsViewModelTest {
 
         assertThat(events).hasSize(1)
         assertThat(events.first()).isInstanceOf(PickerResultEvent.CancelAndFinish::class.java)
+    }
+
+    @Test
+    fun onDoneClicked_actionPickContacts_logsFinishedSuccessfullyEvent() = runTest {
+        val contact =
+            ContactTestDataFactory.createEmailContact(
+                id = 1,
+                displayName = "Test Contact",
+                emailCount = 5,
+            )
+        initializeViewModelForActionPickContacts(
+            initialContacts = listOf(contact),
+            requestedMimeTypes = listOf(Email.CONTENT_ITEM_TYPE),
+            isMultiSelect = true,
+        )
+        val expectedCount = 3
+        for (i in 0..<expectedCount) {
+            viewModel.toggleEntrySelection(contact.id, contact.emails[i].id)
+        }
+
+        val events = callOnDoneAndCaptureEvents()
+
+        assertThat(events).hasSize(1)
+        assertThat(events.first()).isInstanceOf(PickerResultEvent.SetResultAndFinish::class.java)
+        verify(mockContactsPickerLogger).logContactsPickerSessionFinishedSuccessfully(expectedCount)
+    }
+
+    @Test
+    fun onDoneClicked_actionPick_logsFinishedSuccessfullyEvent() = runTest {
+        val contacts = ContactTestDataFactory.createContactList(count = 10)
+        initializeViewModelForLegacyActionPick(
+            contacts = contacts,
+            intentExtras = buildIntentExtrasWithMultiSelect(true),
+        )
+
+        val expectedCount = 7
+        for (i in 0..<expectedCount) {
+            viewModel.toggleContactSelection(contacts[i])
+        }
+
+        val events = callOnDoneAndCaptureEvents()
+
+        assertThat(events).hasSize(1)
+        assertThat(events.first()).isInstanceOf(PickerResultEvent.SetResultAndFinish::class.java)
+        verify(mockContactsPickerLogger).logContactsPickerSessionFinishedSuccessfully(expectedCount)
     }
 
     @Test

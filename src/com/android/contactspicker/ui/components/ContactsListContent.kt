@@ -28,10 +28,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.ContactsListState
-import com.android.contactspicker.R
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.ui.pickerscreen.CONTACTS_PICKER_SCREEN_LOADING_INDICATOR_TEST_TAG
 import com.android.contactspicker.ui.pickerscreen.ContactsPickerBody
@@ -85,8 +83,8 @@ fun ContactsListContent(
 
         is ContactsListState.NoResults ->
             EmptyContactsScreen(
-                title = uiState.message,
-                description = stringResource(id = R.string.no_contacts_description),
+                title = uiState.titleText,
+                description = uiState.descriptionText,
                 icon = Icons.Outlined.Group,
             )
     }

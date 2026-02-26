@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
@@ -43,9 +44,11 @@ private val TITLE_TOP_PADDING = 24.dp
 private val TEXT_WIDTH = 312.dp
 private val DESCRIPTION_TOP_PADDING = 8.dp
 
+internal const val EMPTY_SCREEN_DESCRIPTION_TEXT_TEST_TAG = "empty_screen_description_text"
+
 /** Composable function to display the empty state screen. */
 @Composable
-fun EmptyContactsScreen(title: String, description: String, icon: ImageVector) {
+fun EmptyContactsScreen(title: String, description: String?, icon: ImageVector) {
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.weight(TOP_SPACER_WEIGHT))
         Icon(
@@ -65,13 +68,18 @@ fun EmptyContactsScreen(title: String, description: String, icon: ImageVector) {
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = TITLE_TOP_PADDING).width(TEXT_WIDTH),
         )
-        Text(
-            text = description,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = DESCRIPTION_TOP_PADDING).width(TEXT_WIDTH),
-        )
+        if (description != null) {
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier =
+                    Modifier.padding(top = DESCRIPTION_TOP_PADDING)
+                        .width(TEXT_WIDTH)
+                        .testTag(EMPTY_SCREEN_DESCRIPTION_TEXT_TEST_TAG),
+            )
+        }
         Spacer(modifier = Modifier.weight(BOTTOM_SPACER_WEIGHT))
     }
 }

@@ -342,21 +342,30 @@ constructor(
                                 showPrivacyBanner = showPrivacyBanner,
                             )
                     } else {
-                        val noContactsMessage =
+                        val (noContactsTitleText, noContactsDescriptionText) =
                             when (config.queryMode) {
                                 ContactsQueryMode.EmailsOnly ->
-                                    context.getString(R.string.no_email_contacts_title)
+                                    context.getString(R.string.no_email_contacts_title) to null
                                 ContactsQueryMode.PhonesOnly ->
-                                    context.getString(R.string.no_phone_contacts_title)
+                                    context.getString(R.string.no_phone_contacts_title) to null
                                 ContactsQueryMode.DisplayNamesOnly ->
-                                    context.getString(R.string.no_contacts_title)
+                                    context.getString(R.string.no_contacts_title) to
+                                        context.getString(R.string.no_contacts_description)
                                 is ContactsQueryMode.Custom -> {
                                     if (contactsRepository.hasAnyContacts(userState.selectedUserId))
-                                        context.getString(R.string.no_custom_details_contacts_title)
-                                    else context.getString(R.string.no_contacts_title)
+                                        context.getString(
+                                            R.string.no_custom_details_contacts_title
+                                        ) to null
+                                    else
+                                        context.getString(R.string.no_contacts_title) to
+                                            context.getString(R.string.no_contacts_description)
                                 }
                             }
-                        _uiState.value = ContactsListState.NoResults(message = noContactsMessage)
+                        _uiState.value =
+                            ContactsListState.NoResults(
+                                titleText = noContactsTitleText,
+                                descriptionText = noContactsDescriptionText,
+                            )
                     }
                 } catch (e: Exception) {
                     // TODO(b/444459883): iterate on error handling and error messages
@@ -408,11 +417,12 @@ constructor(
                 return@launch
             }
 
-            val resultIntent: Intent? =
+            val (resultIntent, numContactsSelected) =
                 when (config.pickerAction) {
                     ContactsPickerAction.ACTION_PICK -> {
                         val finalUris = handler.resolveSelectedUris(initialContacts)
-                        createActionPickResult(finalUris, config.isMultiSelectEnabled)
+                        createActionPickResult(finalUris, config.isMultiSelectEnabled) to
+                            finalUris.size
                     }
                     ContactsPickerAction.ACTION_PICK_CONTACTS -> {
                         try {
@@ -424,13 +434,7 @@ constructor(
                             val userId =
                                 (_userState.value as? PickerUserState.Success)?.selectedUserId
                                     ?: UserHandle.getUserId(callingAppUid)
-                            val intent =
-                                createActionPickContactsResult(
-                                    selectedIds,
-                                    config.queryMode,
-                                    userId,
-                                )
-                            intent
+                            createActionPickContactsResult(selectedIds, config.queryMode, userId)
                         } finally {
                             Trace.endSection()
                         }
@@ -438,8 +442,12 @@ constructor(
                 }
 
             if (resultIntent != null) {
+                contactsPickerLogger.logContactsPickerSessionFinishedSuccessfully(
+                    numContactsSelected
+                )
                 _pickerResultEvents.send(PickerResultEvent.SetResultAndFinish(resultIntent))
             } else {
+                // TODO(b/441483549): Log cancelled event with correct error code
                 _pickerResultEvents.send(PickerResultEvent.CancelAndFinish)
             }
         }
@@ -469,22 +477,23 @@ constructor(
         ids: List<Long>,
         queryMode: ContactsQueryMode,
         userId: Int,
-    ): Intent? {
+    ): Pair<Intent?, Int> {
         if (ids.isEmpty()) {
-            return null
+            return null to 0
         }
 
-        return when (queryMode) {
-            is ContactsQueryMode.EmailsOnly,
-            is ContactsQueryMode.PhonesOnly -> getActionPickContactsIntent(ids, userId)
-            is ContactsQueryMode.Custom -> {
-                val ids = contactsRepository.getDataRowIds(ids, queryMode.mimetypes, userId)
-                getActionPickContactsIntent(ids, userId)
+        val finalIds =
+            when (queryMode) {
+                is ContactsQueryMode.EmailsOnly,
+                is ContactsQueryMode.PhonesOnly -> ids
+                is ContactsQueryMode.Custom ->
+                    contactsRepository.getDataRowIds(ids, queryMode.mimetypes, userId)
+
+                is ContactsQueryMode.DisplayNamesOnly ->
+                    throw IllegalStateException("Wrong query mode for ACTION_PICK_CONTACTS")
             }
 
-            is ContactsQueryMode.DisplayNamesOnly ->
-                throw IllegalStateException("Wrong query mode for ACTION_PICK_CONTACTS")
-        }
+        return getActionPickContactsIntent(finalIds, userId) to finalIds.size
     }
 
     private suspend fun getActionPickContactsIntent(dataIds: List<Long>, userId: Int): Intent {

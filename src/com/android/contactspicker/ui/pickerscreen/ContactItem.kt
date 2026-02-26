@@ -58,6 +58,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.VerbatimTtsAnnotation
@@ -494,6 +495,8 @@ private fun ExpandedContactEntry(
             }
         }
         SelectionControl(
+            // The whole row is clickable so hide the selection control from Talkback.
+            modifier = Modifier.semantics { hideFromAccessibility() },
             selected = isChecked,
             isMultiSelect = isMultiSelectEnabled,
             onValueChange = { onCheckedChange() },
@@ -502,12 +505,17 @@ private fun ExpandedContactEntry(
 }
 
 @Composable
-private fun SelectionControl(selected: Boolean, isMultiSelect: Boolean, onValueChange: () -> Unit) {
+private fun SelectionControl(
+    selected: Boolean,
+    isMultiSelect: Boolean,
+    onValueChange: () -> Unit,
+    modifier: Modifier,
+) {
     Box(modifier = Modifier.size(TOGGLE_ICON_BOX_SIZE), contentAlignment = Alignment.Center) {
         if (isMultiSelect) {
-            Checkbox(checked = selected, onCheckedChange = { onValueChange() })
+            Checkbox(modifier = modifier, checked = selected, onCheckedChange = { onValueChange() })
         } else {
-            RadioButton(selected = selected, onClick = onValueChange)
+            RadioButton(modifier = modifier, selected = selected, onClick = onValueChange)
         }
     }
 }
