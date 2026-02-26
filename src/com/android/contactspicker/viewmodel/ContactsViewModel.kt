@@ -639,6 +639,7 @@ constructor(
     /** Executes the search against the repository and updates the UI state. */
     private suspend fun performSearch(query: String) {
         val config = checkNotNull(pickerConfig)
+        contactsPickerLogger.searchUsed()
         try {
             Trace.beginSection("$TAG#searchingContacts")
 

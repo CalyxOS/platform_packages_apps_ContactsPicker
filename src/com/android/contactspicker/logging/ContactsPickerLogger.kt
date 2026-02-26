@@ -35,6 +35,11 @@ interface ContactsPickerLogger {
     )
 
     /**
+     * Marks that the user has search contacts. Will be logged when the session finished is logged.
+     */
+    fun searchUsed()
+
+    /**
      * Marks that the privacy banner has been dismissed by the user. Will be logged when the session
      * finished is logged.
      */

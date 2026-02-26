@@ -32,6 +32,7 @@ class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
         val requestedMimeTypes: IntArray,
         val useSystemContactsPicker: Boolean,
         val matchAllRequestedMimeTypes: Boolean,
+        var searchUsed: Boolean = false,
         var privacyBannerDismissed: Boolean = false,
     )
 
@@ -90,7 +91,7 @@ class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
             /* contacts_selected_from_favorites */ contactsSelectedFromFavorites,
             /* contacts_selected_from_search_results */ contactsSelectedFromSearch,
             /* preview_opened */ false, // TODO(b/441483549): Log preview opened
-            /* search_used */ false, // TODO(b/441483549): Log search used
+            /* search_used */ currentLoggingData.searchUsed,
             /* count_search_load_time_above_tolerance */ 0, // TODO(b/441483549): Log long searches
             /* privacy_banner_more_details_opened_by_user */ false, // TODO(b/441483549): Log priv
             // banner opened
@@ -98,6 +99,10 @@ class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
             /* privacy_banner_opened_from_overflow_menu */ false, // TODO(b/441483549): Log priv
             // banner opened from overflow menu
         )
+    }
+
+    override fun searchUsed() {
+        loggingData?.let { it.searchUsed = true }
     }
 
     override fun privacyBannerDismissedByUser() {

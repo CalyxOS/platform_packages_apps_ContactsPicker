@@ -1187,6 +1187,20 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun performSearch_callsLoggerSearchUsed() = runTest {
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+
+        val query = "test"
+        fakeContactsRepository.setSearchResults(query, emptyList())
+
+        viewModel.onSearchQueryChanged(query)
+        testDispatcher.scheduler.advanceTimeBy(SEARCH_DEBOUNCE_MS)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        verify(mockContactsPickerLogger).searchUsed()
+    }
+
+    @Test
     fun exitSearch_revertsToContactsListState_withSelectionPreserved() = runTest {
         val initialContacts = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST
         val searchQuery = "a"
