@@ -256,6 +256,47 @@ class UserRepositoryImplTest {
         assertThat(resultAvailable.selectedUserId).isEqualTo(PERSONAL_USER_ID)
     }
 
+    @Test
+    fun getUserState_switchesToDefault_whenSelectedProfileIsNonSwitchable() = runTest {
+        // Arrange: Set up a primary profile and a switchable work profile.
+        val (primaryUser, primaryProfile) = getUserInfoAndProfile(PERSONAL_USER_ID)
+        val workUser = UserInfo(WORK_USER_ID, "Work", 0)
+        val switchableWorkProfile =
+            UserProfile(
+                userId = WORK_USER_ID,
+                userIdToQueryContacts = WORK_USER_ID,
+                userType = UserType.WORK,
+                switchableInfo = mock(), // A non-null value makes it switchable
+            )
+        whenever(mockUserManager.getProfiles(any())) doReturn listOf(primaryUser, workUser)
+        whenever(mockUserProfileFactory.createProfile(primaryUser, TEST_PACKAGE_NAME)) doReturn
+            primaryProfile
+        whenever(mockUserProfileFactory.createProfile(workUser, TEST_PACKAGE_NAME)) doReturn
+            switchableWorkProfile
+        startCollecting()
+        receiveSuccessState() // Initial state
+
+        // Act: Select the work profile.
+        userRepository.setSelectedUser(WORK_USER_ID)
+        val workSelectedState = receiveSuccessState()
+
+        // Assert: The work profile is correctly selected.
+        assertThat(workSelectedState.selectedUserId).isEqualTo(WORK_USER_ID)
+
+        // Arrange: Make the work profile non-switchable by setting switchableInfo to null.
+        val nonSwitchableWorkProfile = switchableWorkProfile.copy(switchableInfo = null)
+        whenever(mockUserProfileFactory.createProfile(workUser, TEST_PACKAGE_NAME)) doReturn
+            nonSwitchableWorkProfile
+
+        // Act: Trigger a profile change.
+        profileChangesFlow.emit(Unit)
+
+        // Assert: The selection falls back to the default profile because the selected one is
+        // no longer switchable.
+        val result = receiveSuccessState()
+        assertThat(result.selectedUserId).isEqualTo(PERSONAL_USER_ID)
+    }
+
     private fun TestScope.startCollecting() {
         backgroundScope.launch {
             userRepository.getUserState(TEST_PACKAGE_NAME, callingUserId).collect {
