@@ -40,7 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Згарнуць"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Нумар тэлефона"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Электронная пошта"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# адрас электроннай пошты}one{# адрас электроннай пошты}few{# адрасы электроннай пошты}many{# адрасоў электроннай пошты}other{# адраса электроннай пошты}}"</string>
+    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
+    <skip />
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# нумар тэлефона}one{# нумар тэлефона}few{# нумары тэлефона}many{# нумароў тэлефона}other{# нумара тэлефона}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} з # адраса электроннай пошты}one{{selected_count} з # адраса электроннай пошты}few{{selected_count} з # адрасоў электроннай пошты}many{{selected_count} з # адрасоў электроннай пошты}other{{selected_count} з # адраса электроннай пошты}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} з # нумара тэлефона}one{{selected_count} з # нумара тэлефона}few{{selected_count} з # нумароў тэлефона}many{{selected_count} з # нумароў тэлефона}other{{selected_count} з # нумара тэлефона}}"</string>
@@ -60,12 +61,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Гэта праграма"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Прыватнасць вашых кантактаў"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Пакуль кантактаў няма"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"Няма кантактаў з электроннай поштай"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"Няма кантактаў з нумарамі тэлефонаў"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Няма кантактаў з патрэбнай інфармацыяй"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Тут будуць паказвацца кантакты, якія вы ствараеце або імпартуеце на прыладу"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Нічога не знойдзена"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"Паспрабуйце змяніць напісанне і выканаць пошук яшчэ раз"</string>

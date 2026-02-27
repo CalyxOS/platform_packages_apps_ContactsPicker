@@ -40,7 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Zbaliť"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefón"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"E‑mail"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# e‑mail}few{# e‑maily}many{# emails}other{# e‑mailov}}"</string>
+    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
+    <skip />
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# telefónne číslo}few{# telefónne čísla}many{# phone numbers}other{# telefónnych čísel}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} z # e‑mailu}few{{selected_count} z # e‑mailov}many{{selected_count} of # emails}other{{selected_count} z # e‑mailov}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} z # telefónneho čísla}few{{selected_count} z # telefónnych čísel}many{{selected_count} of # phone numbers}other{{selected_count} z # telefónnych čísel}}"</string>
@@ -60,12 +61,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Táto aplikácia"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Ochrana súkromia vašich kontaktov"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Zatiaľ žiadne kontakty"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"Žiadne kontakty s e‑mailovou adresou"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"Žiadne kontakty s telefónnym číslom"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Žiadne kontakty s požadovanými údajmi"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Tu sa budú zobrazovať kontakty, ktoré vytvoríte alebo importujete do zariadenia"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Nenašli sa žiadne výsledky"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"Skúste v hľadanom výraze zmeniť pravopis"</string>

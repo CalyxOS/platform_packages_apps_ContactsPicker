@@ -40,7 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Thu gọn"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Điện thoại"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Email"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# email}other{# email}}"</string>
+    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
+    <skip />
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# số điện thoại}other{# số điện thoại}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count}/# email}other{{selected_count}/# email}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count}/# số điện thoại}other{{selected_count}/# số điện thoại}}"</string>
@@ -60,12 +61,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Ứng dụng này"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Chế độ quyền riêng tư của người liên hệ"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Không có người liên hệ nào"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"Không người nào có địa chỉ email"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"Không người nào có số điện thoại"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Không người nào có thông tin cần thiết"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Những người liên hệ mà bạn tạo hoặc nhập vào thiết bị của mình sẽ xuất hiện tại đây"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Không tìm thấy kết quả nào"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"Hãy thử tìm kiếm bằng một cách viết khác"</string>
@@ -73,8 +71,6 @@
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Người dùng không xác định"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"Đã tạm dừng các ứng dụng %s"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Để mở danh bạ %1$s, hãy bật các ứng dụng %2$s rồi thử lại"</string>
-    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
-    <skip />
-    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
-    <skip />
+    <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"Quản trị viên CNTT của bạn đã chặn quyền truy cập"</string>
+    <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Hãy liên hệ với họ nếu bạn có thắc mắc"</string>
 </resources>

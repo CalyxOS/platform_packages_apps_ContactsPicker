@@ -40,7 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"कोल्याप्स गर्नुहोस्"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"फोन नम्बर"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"इमेल ठेगाना"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# इमेल}other{# वटा इमेल}}"</string>
+    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
+    <skip />
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# फोन नम्बर}other{# वटा फोन नम्बर}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{# मध्ये {selected_count} इमेल}other{# मध्ये {selected_count} वटा इमेल}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{# मध्ये {selected_count} फोन नम्बर}other{# मध्ये {selected_count} वटा फोन नम्बर}}"</string>

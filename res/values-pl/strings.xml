@@ -40,7 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Zwiń"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefon"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"E-mail"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# adres email}few{# adresy email}many{# adresów email}other{# adresu email}}"</string>
+    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
+    <skip />
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# numer telefonu}few{# numery telefonów}many{# numerów telefonów}other{# numeru telefonu}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} z # adresu e-mail}few{{selected_count} z # adresów e-mail}many{{selected_count} z # adresów e-mail}other{{selected_count} z # adresu e-mail}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} z # numeru telefonu}few{{selected_count} z # numerów telefonów}many{{selected_count} z # numerów telefonów}other{{selected_count} z # numeru telefonu}}"</string>
@@ -60,12 +61,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Ta aplikacja"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Prywatność Twoich kontaktów"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Nie ma tu jeszcze żadnych kontaktów"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"Brak kontaktów z adresami e-mail"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"Brak kontaktów z numerami telefonów"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Brak kontaktów z wymaganymi informacjami"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Tutaj będą widoczne kontakty, które utworzysz lub zaimportujesz na urządzenie"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Nie znaleziono wyników"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"Spróbuj wyszukać, używając innej pisowni"</string>

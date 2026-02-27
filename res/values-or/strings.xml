@@ -40,7 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"ସଙ୍କୁଚିତ କରନ୍ତୁ"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ଫୋନ"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"ଇମେଲ"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# ଇମେଲ}other{# ଇମେଲ}}"</string>
+    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
+    <skip />
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# ଫୋନ ନମ୍ବର}other{# ଫୋନ ନମ୍ବର}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{#ରୁ {selected_count} ଇମେଲ}other{#ରୁ {selected_count} ଇମେଲ}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{#ରୁ {selected_count} ଫୋନ ନମ୍ବର}other{#ରୁ {selected_count} ଫୋନ ନମ୍ବର}}"</string>
@@ -60,12 +61,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"ଏହି ଆପ"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"ଆପଣଙ୍କ କଣ୍ଟାକ୍ଟର ଗୋପନୀୟତା"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"ବର୍ତ୍ତମାନ କୌଣସି କଣ୍ଟାକ୍ଟ ନାହିଁ"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"ଇମେଲ ଠିକଣାଗୁଡ଼ିକ ସହ କୌଣସି କଣ୍ଟାକ୍ଟ ନାହିଁ"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"ଫୋନ ନମ୍ବରଗୁଡ଼ିକ ସହିତ କୌଣସି କଣ୍ଟାକ୍ଟ ନାହିଁ"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"ଆବଶ୍ୟକ ସୂଚନା ସହିତ କୌଣସି କଣ୍ଟାକ୍ଟ ନାହିଁ"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"ଆପଣଙ୍କ ଡିଭାଇସରେ ଆପଣ ତିଆରି କିମ୍ବା ଇମ୍ପୋର୍ଟ କରିଥିବା କଣ୍ଟାକ୍ଟଗୁଡ଼ିକ ଏଠାରେ ଦେଖାଯିବ"</string>
     <string name="no_results_found" msgid="8513853958245248109">"କୌଣସି ଫଳାଫଳ ମିଳିଲା ନାହିଁ"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"ଏକ ଭିନ୍ନ ବନାନ ସହ ସର୍ଚ୍ଚ କରିବାକୁ ଚେଷ୍ଟା କରନ୍ତୁ"</string>

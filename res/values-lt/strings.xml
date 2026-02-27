@@ -40,7 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Sutraukti"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefonas"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"El. paštas"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# el. pašto adresas}one{# el. pašto adresas}few{# el. pašto adresai}many{# el. pašto adreso}other{# el. pašto adresų}}"</string>
+    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
+    <skip />
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# telefono numeris}one{# telefono numeris}few{# telefono numeriai}many{# telefono numerio}other{# telefono numerių}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} iš # el. pašto adreso}one{{selected_count} iš # el. pašto adreso}few{{selected_count} iš # el. pašto adresų}many{{selected_count} iš # el. pašto adreso}other{{selected_count} iš # el. pašto adresų}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} iš # telefono numerio}one{{selected_count} iš # telefono numerio}few{{selected_count} iš # telefono numerių}many{{selected_count} iš # telefono numerio}other{{selected_count} iš # telefono numerių}}"</string>
@@ -60,12 +61,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Ši programa"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Jūsų kontaktų privatumas"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Dar nėra jokių kontaktų"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"Nėra kontaktų su el. pašto adresais"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"Nėra kontaktų su telefono numeriais"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Nėra kontaktų su būtina informacija"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Čia bus rodomi kontaktai, kuriuos sukuriate arba importuojate į įrenginį"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Nerasta jokių rezultatų"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"Bandykite ieškoti rašydami kitaip"</string>

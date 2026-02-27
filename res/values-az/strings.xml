@@ -40,7 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Yığcamlaşdırın"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefon"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"E-poçt"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# e-poçt}other{# e-poçt}}"</string>
+    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
+    <skip />
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# telefon nömrəsi}other{# telefon nömrəsi}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count}/# e-poçt}other{{selected_count}/# e-poçt}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count}/# telefon nömrəsi}other{{selected_count}/# telefon nömrəsi}}"</string>
@@ -60,12 +61,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Bu tətbiq"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Kontaktlarınızın məxfiliyi"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Hələ ki kontakt yoxdur"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"E-poçt ünvanı olan kontakt yoxdur"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"Telefon nömrəsi olan kontakt yoxdur"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Lazımi məlumatı olan kontakt yoxdur"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Yaratdığınız və ya cihazınıza import etdiyiniz kontaktlar burada görünəcək"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Nəticə tapılmadı"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"Başqa cür yazaraq axtarmağa cəhd edin"</string>

@@ -40,7 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Réduire"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Téléphone"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Adresse courriel"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# adresse courriel}one{# adresse courriel}other{# adresses courriel}}"</string>
+    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
+    <skip />
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# numéro de téléphone}one{# numéro de téléphone}other{# numéros de téléphone}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} adresse courriel sur #}one{{selected_count} adresse courriel sur #}other{{selected_count} adresses courriel sur #}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} numéro de téléphone sur #}one{{selected_count} numéro de téléphone sur #}other{{selected_count} numéros de téléphone sur #}}"</string>
@@ -60,12 +61,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Cette appli"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Confidentialité de vos contacts"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Aucun contact pour le moment"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"Aucun contact avec adresses courriel"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"Aucun contact avec numéros de téléphone"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Aucun contact avec les infos requises"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Les contacts que vous créez ou importez sur votre appareil s\'afficheront ici"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Aucun résultat trouvé"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"Essayez une orthographe différente pour effectuer votre recherche"</string>
@@ -74,5 +72,5 @@
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"Les applis %s sont mises en pause"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Pour ouvrir les contacts %1$s, activez vos applis %2$s, puis réessayez"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"Accès bloqué par votre administrateur informatique"</string>
-    <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Communiquer avec l\'administrateur si vous avez des questions"</string>
+    <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Communiquez avec l\'administrateur si vous avez des questions"</string>
 </resources>
