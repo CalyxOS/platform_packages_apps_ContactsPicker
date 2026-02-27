@@ -75,6 +75,7 @@ import com.android.contactspicker.R
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.PickerUserState
+import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.model.totalElementCount
 import com.android.contactspicker.navigation.ContactsPickerNavHost
@@ -98,8 +99,8 @@ fun ContactsPickerBottomSheet(
     uiState: State<ContactsUiState>,
     userState: PickerUserState,
     snackbarEvents: Flow<SnackbarEvent>,
-    onToggleContactSelection: (Contact) -> Unit,
-    onToggleEntrySelection: (Long, Long) -> Unit,
+    onToggleContactSelection: (Contact, SelectionSource) -> Unit,
+    onToggleEntrySelection: (Long, Long, SelectionSource) -> Unit,
     onClearSelection: () -> Unit,
     onPrivacyBannerDismissRequest: () -> Unit,
     bottomSheetState: SheetState =

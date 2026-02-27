@@ -48,6 +48,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
@@ -55,6 +57,7 @@ import com.android.contactspicker.SearchState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.PhoneContact
+import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.ui.components.EmptyContactsScreen
 
 private val CollapsedSearchBarPaddingValues = PaddingValues(start = 8.dp, end = 8.dp)
@@ -67,8 +70,8 @@ fun ContactsPickerSearchBar(
     uiState: State<ContactsUiState>,
     onExpandedChange: (Boolean) -> Unit,
     onQueryChange: (String) -> Unit,
-    onToggleContactSelection: (Contact) -> Unit,
-    onToggleEntrySelection: (Long, Long) -> Unit,
+    onToggleContactSelection: (Contact, SelectionSource) -> Unit,
+    onToggleEntrySelection: (Long, Long, SelectionSource) -> Unit,
     onExitSearch: () -> Unit,
 ) {
 
@@ -89,6 +92,7 @@ fun ContactsPickerSearchBar(
                 onSearch = { keyboardController?.hide() },
                 expanded = expanded,
                 onExpandedChange = onExpandedChange,
+                modifier = Modifier.semantics { contentDescription = "" },
                 placeholder = {
                     val hintRes =
                         if (expanded) R.string.contacts_picker_search_expanded_hint
@@ -174,8 +178,8 @@ fun ContactsPickerSearchBar(
 @Composable
 private fun SearchResultsList(
     searchState: SearchState.Success,
-    onToggleContactSelection: (Contact) -> Unit,
-    onToggleEntrySelection: (Long, Long) -> Unit,
+    onToggleContactSelection: (Contact, SelectionSource) -> Unit,
+    onToggleEntrySelection: (Long, Long, SelectionSource) -> Unit,
 ) {
     val listState = rememberLazyListState()
     LaunchedEffect(searchState.query) {
@@ -218,9 +222,13 @@ private fun SearchResultsList(
                     position = position,
                     selectedEntries = searchState.selectedContacts[contact.id],
                     isMultiSelectEnabled = false, // Not relevant in search state
-                    onToggleContactSelection = onToggleContactSelection,
-                    onToggleEntrySelection = onToggleEntrySelection,
                     isSearchMode = true,
+                    onToggleContactSelection = { c ->
+                        onToggleContactSelection(c, SelectionSource.SEARCH)
+                    },
+                    onToggleEntrySelection = { cId, eId ->
+                        onToggleEntrySelection(cId, eId, SelectionSource.SEARCH)
+                    },
                 )
             }
         }
@@ -240,12 +248,6 @@ private fun SearchBarLeadingIcon(expanded: Boolean, onExitSearch: () -> Unit) {
             )
         }
     } else {
-        Icon(
-            imageVector = Icons.Outlined.Search,
-            contentDescription =
-                stringResource(
-                    id = R.string.contacts_picker_top_bar_search_icon_content_description
-                ),
-        )
+        Icon(imageVector = Icons.Outlined.Search, contentDescription = null)
     }
 }

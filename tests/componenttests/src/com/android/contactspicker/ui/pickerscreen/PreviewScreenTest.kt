@@ -31,6 +31,8 @@ import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.R
+import com.android.contactspicker.data.model.Contact
+import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.data.model.buildContactsSelection
 import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.testdata.ContactTestDataFactory
@@ -48,6 +50,13 @@ class PreviewScreenTest {
 
     private val context: Context = ApplicationProvider.getApplicationContext()
 
+    private val EMPTY_ON_TOGGLE_CONTACT_SELECTION_CALLBACK: (Contact, SelectionSource) -> Unit =
+        { _, _ ->
+        }
+    private val EMPTY_ON_TOGGLE_ENTRY_SELECTION_CALLBACK: (Long, Long, SelectionSource) -> Unit =
+        { _, _, _ ->
+        }
+
     @Test
     fun previewScreen_displaysTopBarWithPrivacyDetailsHeader() {
         composeTestRule.setContent {
@@ -60,8 +69,8 @@ class PreviewScreenTest {
                             emptyContactsSelection(),
                             isMultiSelectEnabled = false,
                         ),
-                    onToggleContactSelection = {},
-                    onToggleEntrySelection = { _, _ -> },
+                    onToggleContactSelection = EMPTY_ON_TOGGLE_CONTACT_SELECTION_CALLBACK,
+                    onToggleEntrySelection = EMPTY_ON_TOGGLE_ENTRY_SELECTION_CALLBACK,
                 )
             }
         }
@@ -80,8 +89,8 @@ class PreviewScreenTest {
                 PreviewScreen(
                     onBackPressed = { onBackPressed = true },
                     uiState = ContactsPreviewState(emptyList(), emptyContactsSelection(), false),
-                    onToggleContactSelection = {},
-                    onToggleEntrySelection = { _, _ -> },
+                    onToggleContactSelection = EMPTY_ON_TOGGLE_CONTACT_SELECTION_CALLBACK,
+                    onToggleEntrySelection = EMPTY_ON_TOGGLE_ENTRY_SELECTION_CALLBACK,
                 )
             }
         }
@@ -103,8 +112,8 @@ class PreviewScreenTest {
                 PreviewScreen(
                     onBackPressed = { onBackPressed = true },
                     uiState = ContactsPreviewState(emptyList(), emptyContactsSelection(), false),
-                    onToggleContactSelection = {},
-                    onToggleEntrySelection = { _, _ -> },
+                    onToggleContactSelection = EMPTY_ON_TOGGLE_CONTACT_SELECTION_CALLBACK,
+                    onToggleEntrySelection = EMPTY_ON_TOGGLE_ENTRY_SELECTION_CALLBACK,
                 )
             }
         }
@@ -131,8 +140,8 @@ class PreviewScreenTest {
                 PreviewScreen(
                     onBackPressed = {},
                     uiState = uiState,
-                    onToggleContactSelection = {},
-                    onToggleEntrySelection = { _, _ -> },
+                    onToggleContactSelection = EMPTY_ON_TOGGLE_CONTACT_SELECTION_CALLBACK,
+                    onToggleEntrySelection = EMPTY_ON_TOGGLE_ENTRY_SELECTION_CALLBACK,
                 )
             }
         }
@@ -157,13 +166,40 @@ class PreviewScreenTest {
                             emptyContactsSelection(),
                             isMultiSelectEnabled = false,
                         ),
-                    onToggleContactSelection = {},
-                    onToggleEntrySelection = { _, _ -> },
+                    onToggleContactSelection = EMPTY_ON_TOGGLE_CONTACT_SELECTION_CALLBACK,
+                    onToggleEntrySelection = EMPTY_ON_TOGGLE_ENTRY_SELECTION_CALLBACK,
                 )
             }
         }
 
         val screenContentDesc = context.getString(R.string.preview_screen_content_description)
         composeTestRule.onNodeWithContentDescription(screenContentDesc).assertIsDisplayed()
+    }
+
+    @Test
+    fun onToggleContactSelection_passesPreviewSource() {
+        var toggledSource: SelectionSource? = null
+        val contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
+
+        composeTestRule.setContent {
+            ContactsPickerAppTheme {
+                PreviewScreen(
+                    onBackPressed = {},
+                    uiState =
+                        ContactsPreviewState(
+                            contactsToDisplay = listOf(contact),
+                            selectedContacts = emptyContactsSelection(),
+                            isMultiSelectEnabled = false,
+                        ),
+                    onToggleContactSelection = { _, source -> toggledSource = source },
+                    onToggleEntrySelection = { _, _, _ -> },
+                )
+            }
+        }
+
+        // Click the contact inside the preview list
+        composeTestRule.onNodeWithText(contact.displayName).performClick()
+
+        assertThat(toggledSource).isEqualTo(SelectionSource.PREVIEW)
     }
 }

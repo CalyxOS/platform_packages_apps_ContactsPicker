@@ -46,6 +46,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.ContactsSelection
+import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.ui.pickerscreen.SectionKey.EmojiIconKey
 import com.android.contactspicker.ui.pickerscreen.SectionKey.FavoriteIconKey
 import com.android.contactspicker.ui.pickerscreen.SectionKey.LetterKey
@@ -92,8 +93,8 @@ fun ContactsPickerBody(
     onPrivacyBannerDismissRequest: () -> Unit,
     selectedContacts: ContactsSelection,
     isMultiSelectEnabled: Boolean,
-    onToggleContactSelection: (Contact) -> Unit,
-    onToggleEntrySelection: (contactId: Long, entryId: Long) -> Unit,
+    onToggleContactSelection: (Contact, SelectionSource) -> Unit,
+    onToggleEntrySelection: (contactId: Long, entryId: Long, SelectionSource) -> Unit,
 ) {
     val favorites = remember(contacts) { contacts.filter { it.isFavorite } }
 
@@ -173,8 +174,8 @@ private fun ContactsList(
     onPrivacyBannerDismissRequest: () -> Unit,
     selectedContacts: ContactsSelection,
     isMultiSelectEnabled: Boolean,
-    onToggleContactSelection: (Contact) -> Unit,
-    onToggleEntrySelection: (Long, Long) -> Unit,
+    onToggleContactSelection: (Contact, SelectionSource) -> Unit,
+    onToggleEntrySelection: (Long, Long, SelectionSource) -> Unit,
 ) {
 
     val layoutDirection = LocalLayoutDirection.current
@@ -210,6 +211,12 @@ private fun ContactsList(
         sortedAllSectionsMap.forEach { (sectionKey, contactsInGroup) ->
             stickyHeader(key = "header_${sectionKey.uniqueId}") { SectionHeaderForKey(sectionKey) }
 
+            val currentSource =
+                if (sectionKey is FavoriteIconKey) {
+                    SelectionSource.FAVORITES
+                } else {
+                    SelectionSource.MAIN_LIST
+                }
             val groupSize = contactsInGroup.size
             itemsIndexed(
                 items = contactsInGroup,
@@ -236,8 +243,12 @@ private fun ContactsList(
                         selectedEntries = selectedContacts[contact.id],
                         isMultiSelectEnabled = isMultiSelectEnabled,
                         isSearchMode = false,
-                        onToggleContactSelection = onToggleContactSelection,
-                        onToggleEntrySelection = onToggleEntrySelection,
+                        onToggleContactSelection = { c ->
+                            onToggleContactSelection(c, currentSource)
+                        },
+                        onToggleEntrySelection = { cId, eId ->
+                            onToggleEntrySelection(cId, eId, currentSource)
+                        },
                     )
                 }
             }
