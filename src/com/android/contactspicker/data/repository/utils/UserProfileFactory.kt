@@ -18,11 +18,13 @@ package com.android.contactspicker.data.repository.utils
 
 import android.app.admin.DevicePolicyManager
 import android.content.pm.UserInfo
+import android.content.pm.UserProperties
 import android.os.UserHandle
 import android.os.UserManager
 import android.util.Log
 import com.android.contactspicker.data.model.PausedProfileInfo
 import com.android.contactspicker.data.model.PausedReason
+import com.android.contactspicker.data.model.SwitchableProfileInfo
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.model.UserType
 import javax.inject.Inject
@@ -40,94 +42,128 @@ constructor(
     private val devicePolicyManager: Provider<DevicePolicyManager>,
 ) {
 
-    open fun createProfile(userInfo: UserInfo, callingPackage: String?): UserProfile {
-        return when (userInfo.userType) {
-            UserManager.USER_TYPE_PROFILE_MANAGED -> createWorkProfile(userInfo, callingPackage)
-            UserManager.USER_TYPE_PROFILE_CLONE -> createCloneProfile(userInfo)
-            UserManager.USER_TYPE_PROFILE_PRIVATE -> createPrivateProfile(userInfo)
-            else -> createPersonalProfile(userInfo)
+    open fun createProfile(userInfo: UserInfo, callingPackage: String?): UserProfile? {
+        val userProperties = userManager.getUserProperties(userInfo.userHandle)
+        val currentProcessUserId = UserHandle.myUserId()
+
+        // Determine if the profile should be excluded from the picker entirely.
+        if (userInfo.id != currentProcessUserId) {
+            val isVisibleInSharingSurfaces =
+                userProperties.showInSharingSurfaces != UserProperties.SHOW_IN_SHARING_SURFACES_NO
+            val isHiddenInQuietMode =
+                userInfo.isQuietModeEnabled &&
+                    userProperties.showInQuietMode == UserProperties.SHOW_IN_QUIET_MODE_HIDDEN
+
+            if (!isVisibleInSharingSurfaces || isHiddenInQuietMode) {
+                return null
+            }
         }
+
+        val userIdToQueryContacts = getUserIdToQueryContacts(userInfo, userProperties)
+        val pausedReason = getPausedReason(userInfo, userProperties, callingPackage)
+        val switchableInfo = getSwitchableInfo(userInfo, userProperties)
+
+        return UserProfile(
+            userId = userInfo.id,
+            userIdToQueryContacts = userIdToQueryContacts,
+            userType = mapToInternalUserType(userInfo),
+            switchableInfo = switchableInfo,
+            pausedInfo = pausedReason?.let { PausedProfileInfo(it) },
+        )
     }
 
-    private fun createWorkProfile(userInfo: UserInfo, callingPackage: String?): UserProfile {
-        val isManagedProfileContactsAccessAllowed =
-            // Check if the target profile is the same as the current process user.
-            // If so, we always allow access (local access), bypassing the cross-profile check.
-            if (userInfo.id == UserHandle.myUserId()) {
-                true
-            } else if (callingPackage != null) {
-                devicePolicyManager
-                    .get()
-                    .hasManagedProfileContactsAccess(userInfo.userHandle, callingPackage)
-            } else {
-                // Deny access by default if we cannot verify the caller to prevent potential data
-                // leaks.
-                Log.w(
-                    TAG,
-                    "Access denied to managed profile: callingPackage is null. User ID: ${userInfo.id}",
-                )
-                false
+    private fun getUserIdToQueryContacts(userInfo: UserInfo, userProperties: UserProperties?): Int {
+        // TODO(b/479451420): Use UserProperties.getUseParentsContacts() once the permission
+        // MANAGE_USERS is granted to the ContactsPicker process.
+        val useParentsContacts = userInfo.userType == UserManager.USER_TYPE_PROFILE_CLONE
+        if (!useParentsContacts) {
+            return userInfo.id
+        }
+
+        val parentHandle = userManager.getProfileParent(userInfo.userHandle)
+        return parentHandle?.identifier ?: userInfo.id
+    }
+
+    private fun getPausedReason(
+        userInfo: UserInfo,
+        userProperties: UserProperties?,
+        callingPackage: String?,
+    ): PausedReason? {
+
+        if (userInfo.userType == UserManager.USER_TYPE_PROFILE_MANAGED) {
+            if (!hasManagedProfileContactsAccess(userInfo, callingPackage)) {
+                return PausedReason.MANAGED_PROFILE_CONTACTS_BLOCKED
             }
+        }
 
-        val pausedReason =
-            if (!isManagedProfileContactsAccessAllowed) {
-                PausedReason.MANAGED_PROFILE_CONTACTS_BLOCKED
-            } else if (userInfo.isQuietModeEnabled) {
-                PausedReason.QUIET_MODE
-            } else {
-                PausedReason.UNDEFINED
+        val showInQuietMode =
+            userProperties?.showInQuietMode ?: UserProperties.SHOW_IN_QUIET_MODE_DEFAULT
+
+        if (userInfo.isQuietModeEnabled) {
+            if (showInQuietMode == UserProperties.SHOW_IN_QUIET_MODE_PAUSED) {
+                return PausedReason.QUIET_MODE
+            } else if (showInQuietMode == UserProperties.SHOW_IN_QUIET_MODE_DEFAULT) {
+                // For profiles with default quiet mode property settings, fall back to pausing the
+                // profile with unknown paused reason in the UI.
+                return PausedReason.UNKNOWN_REASON
             }
+        }
 
-        return UserProfile(
-            userId = userInfo.id,
-            userIdToQueryContacts = userInfo.id,
-            userType = UserType.WORK,
-            switchableInfo = profileInfoCache.getSwitchableProfileInfo(userInfo),
-            pausedInfo =
-                if (pausedReason != PausedReason.UNDEFINED) {
-                    PausedProfileInfo(pausedReason)
-                } else {
-                    null
-                },
-        )
+        return null
     }
 
-    private fun createCloneProfile(userInfo: UserInfo): UserProfile {
-        // Clone profiles rely on the Contacts Provider of their parent profile.
-        // We use the parent's user ID to query the data so the user sees their main contact list.
-        // If no parent is found, fallback to the clone's ID (which results in an empty list).
-        val parentUserProfileId = userManager.getProfileParent(userInfo.userHandle)?.identifier
-        val delegatedUserId = parentUserProfileId ?: userInfo.id
+    private fun getSwitchableInfo(
+        userInfo: UserInfo,
+        userProperties: UserProperties?,
+    ): SwitchableProfileInfo? {
+        // Profiles that share parent contacts (e.g., Clones) don't need a separate tab since they
+        // display the same contacts as the parent.
+        // TODO(b/479451420): Use UserProperties.getUseParentsContacts() once the permission
+        // MANAGE_USERS is granted to the ContactsPicker process.
+        val useParentsContacts = userInfo.userType == UserManager.USER_TYPE_PROFILE_CLONE
+        if (useParentsContacts) {
+            return null
+        }
 
-        return UserProfile(
-            userId = userInfo.id,
-            userIdToQueryContacts = delegatedUserId,
-            userType = UserType.CLONE,
-            switchableInfo = null,
-        )
+        // Default: Show the profile tab (e.g., Work Profiles, or unlocked Private Profiles).
+        return profileInfoCache.getSwitchableProfileInfo(userInfo)
     }
 
-    private fun createPrivateProfile(userInfo: UserInfo): UserProfile {
-        return UserProfile(
-            userId = userInfo.id,
-            userIdToQueryContacts = userInfo.id,
-            userType = UserType.PRIVATE,
-            switchableInfo =
-                if (userInfo.isQuietModeEnabled) {
-                    null
-                } else {
-                    profileInfoCache.getSwitchableProfileInfo(userInfo)
-                },
-        )
+    /**
+     * Checks if the calling app has access to the managed profile's contacts. This method should
+     * only be called with userInfo of a managed profile.
+     *
+     * @param userInfo The user info of the managed profile.
+     * @param callingPackage The package name of the calling app.
+     * @return True if the calling app has access to the managed profile's contacts, false
+     *   otherwise.
+     */
+    private fun hasManagedProfileContactsAccess(
+        userInfo: UserInfo,
+        callingPackage: String?,
+    ): Boolean {
+        if (userInfo.id == UserHandle.myUserId()) {
+            return true
+        }
+        if (callingPackage == null) {
+            Log.w(
+                TAG,
+                "Access denied to managed profile: callingPackage is null. User ID: ${userInfo.id}",
+            )
+            return false
+        }
+        return devicePolicyManager
+            .get()
+            .hasManagedProfileContactsAccess(userInfo.userHandle, callingPackage)
     }
 
-    private fun createPersonalProfile(userInfo: UserInfo): UserProfile {
-        return UserProfile(
-            userId = userInfo.id,
-            userIdToQueryContacts = userInfo.id,
-            userType = UserType.PERSONAL,
-            switchableInfo = profileInfoCache.getSwitchableProfileInfo(userInfo),
-        )
+    private fun mapToInternalUserType(userInfo: UserInfo): UserType {
+        return when (userInfo.userType) {
+            UserManager.USER_TYPE_PROFILE_MANAGED -> UserType.WORK
+            UserManager.USER_TYPE_PROFILE_CLONE -> UserType.CLONE
+            UserManager.USER_TYPE_PROFILE_PRIVATE -> UserType.PRIVATE
+            else -> UserType.PERSONAL
+        }
     }
 
     /** Clears the profile info cache. */

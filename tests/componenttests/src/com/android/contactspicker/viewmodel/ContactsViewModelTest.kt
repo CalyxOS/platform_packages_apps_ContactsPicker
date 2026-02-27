@@ -1844,7 +1844,7 @@ class ContactsViewModelTest {
                 userIdToQueryContacts = 11,
                 userType = UserType.WORK,
                 switchableInfo = SwitchableProfileInfo("Work", null),
-                pausedInfo = PausedProfileInfo(PausedReason.UNDEFINED),
+                pausedInfo = PausedProfileInfo(PausedReason.UNKNOWN_REASON),
             )
 
         viewModel.onProfileClicked(undefinedPausedProfile)

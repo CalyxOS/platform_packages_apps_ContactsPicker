@@ -18,6 +18,7 @@ package com.android.contactspicker.data.repository.utils
 
 import android.content.Context
 import android.content.pm.UserInfo
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.os.UserHandle
@@ -31,8 +32,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.spy
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -50,8 +51,8 @@ class ProfileInfoCacheTest {
     companion object {
         private const val USER_ID_PERSONAL = 0
         private const val USER_ID_WORK = 10
-        private const val USER_ID_PRIVATE = 12
-        private const val USER_ID_CLONE = 11
+        private const val USER_ID_PRIVATE = 11
+        private const val USER_ID_CLONE = 12
         private const val USER_NAME_PERSONAL = "Personal"
         private const val USER_NAME_WORK = "Work"
         private const val USER_NAME_PRIVATE = "Private"
@@ -72,7 +73,14 @@ class ProfileInfoCacheTest {
     @Test
     fun getSwitchableProfileInfo_cachesResult() {
         val userId = USER_ID_WORK
-        val userInfo = UserInfo(userId, "User $userId", 0)
+        val userInfo =
+            UserInfo(
+                userId,
+                "User $userId",
+                null,
+                UserInfo.FLAG_PROFILE,
+                UserManager.USER_TYPE_PROFILE_MANAGED,
+            )
 
         val result1 = profileInfoCache.getSwitchableProfileInfo(userInfo)
         val result2 = profileInfoCache.getSwitchableProfileInfo(userInfo)
@@ -82,12 +90,18 @@ class ProfileInfoCacheTest {
     }
 
     @Test
-    fun getSwitchableProfileInfo_returnsCorrectLabel_forManagedProfile() {
+    fun getSwitchableProfileInfo_returnsCorrectLabel_forProfile() {
         val userId = USER_ID_WORK
-        val userInfo = spy(UserInfo(userId, USER_NAME_WORK, 0))
-        whenever(userInfo.isManagedProfile) doReturn true
-        whenever(mockUserManager.getProfileParent(userInfo.userHandle)) doReturn
-            UserHandle.of(USER_ID_PERSONAL)
+        val userInfo =
+            UserInfo(
+                userId,
+                USER_NAME_WORK,
+                null,
+                UserInfo.FLAG_PROFILE,
+                UserManager.USER_TYPE_PROFILE_MANAGED,
+            )
+        whenever(mockUserManager.getProfileParent(userInfo.userHandle))
+            .thenReturn(UserHandle.of(USER_ID_PERSONAL))
         whenever(mockUserProfileManager.profileLabel) doReturn LABEL_WORK
 
         val result = profileInfoCache.getSwitchableProfileInfo(userInfo)
@@ -96,10 +110,16 @@ class ProfileInfoCacheTest {
     }
 
     @Test
-    fun getSwitchableProfileInfo_fetchesIcon_forManagedProfile() {
+    fun getSwitchableProfileInfo_fetchesIcon_forProfile() {
         val userId = USER_ID_WORK
-        val userInfo = spy(UserInfo(userId, USER_NAME_WORK, 0))
-        whenever(userInfo.isManagedProfile) doReturn true
+        val userInfo =
+            UserInfo(
+                userId,
+                USER_NAME_WORK,
+                null,
+                UserInfo.FLAG_PROFILE,
+                UserManager.USER_TYPE_PROFILE_MANAGED,
+            )
         val bitmap = Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888)
         val drawable = BitmapDrawable(context.resources, bitmap)
         whenever(mockUserProfileManager.userBadge) doReturn drawable
@@ -110,25 +130,16 @@ class ProfileInfoCacheTest {
     }
 
     @Test
-    fun getSwitchableProfileInfo_returnsCorrectLabel_forPrivateProfile() {
-        val userId = USER_ID_PRIVATE
-        val userInfo = spy(UserInfo(userId, USER_NAME_PRIVATE, 0))
-        whenever(userInfo.isPrivateProfile) doReturn true
-        // Ensure it's not considered primary
-        whenever(mockUserManager.getProfileParent(userInfo.userHandle)) doReturn
-            UserHandle.of(USER_ID_PERSONAL)
-        whenever(mockUserProfileManager.profileLabel) doReturn LABEL_PRIVATE
-
-        val result = profileInfoCache.getSwitchableProfileInfo(userInfo)
-
-        assertThat(result.label).isEqualTo(LABEL_PRIVATE)
-    }
-
-    @Test
     fun getSwitchableProfileInfo_returnsNullIcon_whenBadgeIsNull() {
         val userId = USER_ID_WORK
-        val userInfo = spy(UserInfo(userId, USER_NAME_WORK, 0))
-        whenever(userInfo.isManagedProfile) doReturn true
+        val userInfo =
+            UserInfo(
+                userId,
+                USER_NAME_WORK,
+                null,
+                UserInfo.FLAG_PROFILE,
+                UserManager.USER_TYPE_PROFILE_MANAGED,
+            )
         doReturn(null).whenever(mockUserProfileManager).userBadge
 
         val result = profileInfoCache.getSwitchableProfileInfo(userInfo)
@@ -137,11 +148,31 @@ class ProfileInfoCacheTest {
     }
 
     @Test
-    fun getSwitchableProfileInfo_returnsUnknownLabel_ifNotSupported() {
+    fun getSwitchableProfileInfo_returnsCorrectLabel_forPersonalProfile() {
+        val userId = USER_ID_PERSONAL
+        val userInfo =
+            UserInfo(userId, USER_NAME_PERSONAL, null, 0, UserManager.USER_TYPE_FULL_SYSTEM)
+        whenever(mockUserManager.getProfileParent(userInfo.userHandle)).thenReturn(null)
+
+        val result = profileInfoCache.getSwitchableProfileInfo(userInfo)
+
+        assertThat(result.label).isEqualTo(context.getString(R.string.user_type_personal))
+    }
+
+    @Test
+    fun getSwitchableProfileInfo_returnsUnknownLabel_forNonPrimaryProfile_whenLabelIsNull() {
         val userId = USER_ID_CLONE
-        val userInfo = UserInfo(userId, USER_NAME_CLONE, 0)
-        whenever(mockUserManager.getProfileParent(userInfo.userHandle)) doReturn
-            UserHandle.of(USER_ID_PERSONAL)
+        val userInfo =
+            UserInfo(
+                userId,
+                USER_NAME_CLONE,
+                null,
+                UserInfo.FLAG_PROFILE,
+                UserManager.USER_TYPE_PROFILE_CLONE,
+            )
+        whenever(mockUserManager.getProfileParent(userInfo.userHandle))
+            .thenReturn(UserHandle.of(USER_ID_PERSONAL))
+        whenever(mockUserProfileManager.profileLabel).thenReturn(null as String?)
 
         val result = profileInfoCache.getSwitchableProfileInfo(userInfo)
 
@@ -149,31 +180,40 @@ class ProfileInfoCacheTest {
     }
 
     @Test
-    fun getSwitchableProfileInfo_returnsCorrectLabel_forPersonalProfile() {
-        val userId = USER_ID_PERSONAL
-        val userInfo = UserInfo(userId, USER_NAME_PERSONAL, 0)
-        whenever(mockUserManager.getProfileParent(userInfo.userHandle)) doReturn null
+    fun getSwitchableProfileInfo_handlesResourcesNotFoundException() {
+        val userId = USER_ID_CLONE
+        val userInfo =
+            UserInfo(
+                userId,
+                USER_NAME_CLONE,
+                null,
+                UserInfo.FLAG_PROFILE,
+                UserManager.USER_TYPE_PROFILE_CLONE,
+            )
+        whenever(mockUserManager.getProfileParent(userInfo.userHandle))
+            .thenReturn(UserHandle.of(USER_ID_PERSONAL))
+        whenever(mockUserProfileManager.profileLabel)
+            .doThrow(Resources.NotFoundException("Resource not found"))
 
         val result = profileInfoCache.getSwitchableProfileInfo(userInfo)
 
-        assertThat(result.label).isEqualTo(LABEL_PERSONAL)
+        assertThat(result.label).isEqualTo(context.getString(R.string.user_type_unknown_label))
     }
 
     @Test
-    fun getSwitchableProfileInfo_noIcon_forPersonalProfile() {
-        val userId = USER_ID_PERSONAL
-        val userInfo = UserInfo(userId, USER_NAME_PERSONAL, 0)
-        whenever(mockUserManager.getProfileParent(userInfo.userHandle)) doReturn null
-
-        val result = profileInfoCache.getSwitchableProfileInfo(userInfo)
-
-        assertThat(result.icon).isNull()
-    }
-
-    @Test
-    fun getSwitchableProfileInfo_noIcon_forUnsupportedProfile() {
-        val userId = USER_ID_PRIVATE
-        val userInfo = UserInfo(userId, "Other", 0)
+    fun getSwitchableProfileInfo_handlesResourcesNotFoundException_forIcon() {
+        val userId = USER_ID_WORK
+        val userInfo =
+            UserInfo(
+                userId,
+                USER_NAME_WORK,
+                null,
+                UserInfo.FLAG_PROFILE,
+                UserManager.USER_TYPE_PROFILE_MANAGED,
+            )
+        whenever(mockUserProfileManager.userBadge)
+            .doThrow(Resources.NotFoundException("Badge not found"))
+        whenever(mockUserProfileManager.profileLabel).thenReturn(LABEL_WORK)
 
         val result = profileInfoCache.getSwitchableProfileInfo(userInfo)
 
@@ -183,7 +223,14 @@ class ProfileInfoCacheTest {
     @Test
     fun clear_clearsCache() {
         val userId = USER_ID_WORK
-        val userInfo = UserInfo(userId, "User $userId", 0)
+        val userInfo =
+            UserInfo(
+                userId,
+                "User $userId",
+                null,
+                UserInfo.FLAG_PROFILE,
+                UserManager.USER_TYPE_PROFILE_MANAGED,
+            )
 
         profileInfoCache.getSwitchableProfileInfo(userInfo)
         profileInfoCache.clear()
