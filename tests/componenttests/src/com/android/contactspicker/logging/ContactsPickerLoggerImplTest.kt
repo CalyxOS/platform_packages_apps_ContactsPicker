@@ -194,6 +194,14 @@ class ContactsPickerLoggerImplTest {
     }
 
     @Test
+    fun previewOpened_logContactsPickerSessionFinishedLogsCorrectly() {
+        verifySessionFinishedEventFields(
+            previewOpened = true,
+            midLoggingSessionBlock = { logger.previewOpened() },
+        )
+    }
+
+    @Test
     fun privacyBannerDismissedByUser_logContactsPickerSessionFinishedLogsCorrectly() {
         verifySessionFinishedEventFields(
             privacyBannerDismissedByUser = true,
@@ -258,6 +266,7 @@ class ContactsPickerLoggerImplTest {
         numContactsSelected: Int = DEFAULT_NUM_CONTACTS_SELECTED,
         contactsSelectedFromFavorites: Boolean = false,
         contactsSelectedFromSearch: Boolean = false,
+        previewOpened: Boolean = false,
         searchUsed: Boolean = false,
         privacyBannerDismissedByUser: Boolean = false,
         midLoggingSessionBlock: () -> Unit = {},
@@ -302,6 +311,7 @@ class ContactsPickerLoggerImplTest {
         assertThat(event.numContactsSelected).isEqualTo(numContactsSelected)
         assertThat(event.contactsSelectedFromFavorites).isEqualTo(contactsSelectedFromFavorites)
         assertThat(event.contactsSelectedFromSearchResults).isEqualTo(contactsSelectedFromSearch)
+        assertThat(event.previewOpened).isEqualTo(previewOpened)
         assertThat(event.searchUsed).isEqualTo(searchUsed)
         assertThat(event.privacyBannerDismissedByUser).isEqualTo(privacyBannerDismissedByUser)
     }
