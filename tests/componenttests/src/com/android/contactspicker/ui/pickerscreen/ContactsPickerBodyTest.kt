@@ -519,6 +519,57 @@ class ContactsPickerBodyTest {
         assertThat(toggledSource).isEqualTo(SelectionSource.FAVORITES)
     }
 
+    @Test
+    fun contactsList_whenSelectionChanges_doesNotScroll() {
+        val contacts = ContactTestDataFactory.createContactList(20)
+        val selectedContactsState = mutableStateOf(emptyContactsSelection())
+
+        composeTestRule.setContent {
+            ContactsPickerBody(
+                availableContactsGroups = ContactTestDataFactory.groupContactsForTest(contacts),
+                selectedContacts = selectedContactsState.value,
+                isMultiSelectEnabled = true,
+                onPrivacyBannerMoreDetails = {},
+                onPrivacyBannerDismissRequest = {},
+                onToggleContactSelection = { _, _ -> },
+                onToggleEntrySelection = { _, _, _ -> },
+                callingAppName = null,
+                showPrivacyBanner = false,
+            )
+        }
+
+        val listNode = composeTestRule.onNode(hasTestTag(CONTACTS_LIST_TEST_TAG))
+
+        // scroll down from the top
+        listNode.performScrollToIndex(5)
+        composeTestRule.waitForIdle()
+
+        // capture the exact screen position of a visible item
+        val visibleContactName = contacts[5].displayName
+        val itemBoundsBefore =
+            composeTestRule.onNodeWithText(visibleContactName).fetchSemanticsNode().boundsInRoot
+
+        // select a contact to make the selection bar appear
+        val newSelection = MutableLongObjectMap<Set<Long>>()
+        newSelection.put(contacts[6].id, emptySet())
+        selectedContactsState.value = newSelection
+        composeTestRule.waitForIdle()
+
+        // verify the item hasn't moved (the list did not scroll up)
+        val itemBoundsWithSelectionBar =
+            composeTestRule.onNodeWithText(visibleContactName).fetchSemanticsNode().boundsInRoot
+
+        assertThat(itemBoundsWithSelectionBar.top).isEqualTo(itemBoundsBefore.top)
+
+        // same for the selection bar disappearing
+        selectedContactsState.value = MutableLongObjectMap()
+        composeTestRule.waitForIdle()
+        val itemBoundsAfter =
+            composeTestRule.onNodeWithText(visibleContactName).fetchSemanticsNode().boundsInRoot
+
+        assertThat(itemBoundsAfter.top).isEqualTo(itemBoundsBefore.top)
+    }
+
     private fun setContentWithContactsPickerBody(contacts: List<Contact>) {
         composeTestRule.setContent {
             ContactsPickerBody(
