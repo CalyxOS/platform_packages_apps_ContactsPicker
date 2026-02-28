@@ -1672,6 +1672,16 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun hidePrivacyBanner_updatesUiState() = runTest {
+        initializeViewModelForActionPickContacts(listOf(ContactTestDataFactory.GENERIC_EMAIL_CONTACT), listOf(Email.CONTENT_ITEM_TYPE))
+        assertThat(viewModel.currentSuccessState.showPrivacyBanner).isTrue()
+
+        viewModel.hidePrivacyBanner()
+
+        assertThat(viewModel.currentSuccessState.showPrivacyBanner).isFalse()
+    }
+
+    @Test
     fun onProfileClicked_pausedProfile_adminBlocked_showsAdminDialog() = runTest {
         initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
 

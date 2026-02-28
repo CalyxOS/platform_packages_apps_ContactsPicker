@@ -40,7 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Yopish"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefon"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Email"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# email}other{# email}}"</string>
+    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
+    <skip />
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# telefon raqami}other{# telefon raqami}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} / # email}other{{selected_count} / # email}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} / # telefon raqami}other{{selected_count} / # telefon raqami}}"</string>
@@ -60,12 +61,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Bu ilova"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Kontaktlaringiz maxfiyligi"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Hech qanday kontakt topilmadi"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"Email manziliga ega kontakt yoʻq"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"Telefon raqamiga ega kontakt yoʻq"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Kerakli axborotga ega kontakt yoʻq"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Qurilmangizda yaratilgan yoki unga import qilingan kontaktlar shu yerda chiqadi"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Hech narsa topilmadi"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"Farqli imlo bilan qidiring"</string>

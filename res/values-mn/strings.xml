@@ -40,7 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Хураах"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Утас"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Имэйл"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# имэйл}other{# имэйл}}"</string>
+    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
+    <skip />
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# утасны дугаар}other{# утасны дугаар}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{#-с {selected_count} имэйл}other{#-с {selected_count} имэйл}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{#-с {selected_count} утасны дугаар}other{#-с {selected_count} утасны дугаар}}"</string>
@@ -60,12 +61,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Энэ апп"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Таны харилцагчдын нууцлал"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Одоогоор харилцагч алга"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"Имэйл хаягтай харилцагч алга"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"Утасны дугаартай харилцагч алга"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Шаардлагатай мэдээлэлтэй харилцагч алга"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Таны үүсгэсэн эсвэл төхөөрөмж рүүгээ импортолсон харилцагчид энд харагдана"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Илэрц олдсонгүй"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"Өөр бичиглэлээр хайж үзээрэй"</string>

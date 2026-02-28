@@ -40,7 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Жыйыштыруу"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Телефон"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Электрондук почта"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# электрондук почта}other{# электрондук почта}}"</string>
+    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
+    <skip />
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# телефон номери}other{# телефон номери}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{# ичинен {selected_count} электрондук почта}other{# ичинен {selected_count} электрондук почта}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{# ичинен {selected_count} телефон номери}other{# ичинен {selected_count} телефон номери}}"</string>
@@ -60,12 +61,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Ушул колдонмо"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Байланыштарыңыздын купуялыгы"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Азырынча байланыш жок"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"Электрондук почта дарегин камтыган байланыш жок"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"Телефон номерлерин камтыган байланыш жок"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Талап кылынган маалымат камтылган байланыштар жок"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Түзмөгүңүздө түзүлгөн же импорттолгон байланыштар ушул жерде көрүнөт"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Эч нерсе табылган жок"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"Башкача жазып издеп көрүңүз"</string>

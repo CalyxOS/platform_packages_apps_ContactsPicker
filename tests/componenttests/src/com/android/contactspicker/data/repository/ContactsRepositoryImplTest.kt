@@ -187,7 +187,8 @@ class ContactsRepositoryImplTest {
         val queryMode = ContactsQueryMode.Custom(mimeTypes, matchAll)
         val expectedUri =
             ContactsContract.AUTHORITY_URI.buildUpon()
-                .appendPath("contacts_data")
+                .appendPath("contacts")
+                .appendPath("mimes")
                 .appendQueryParameter(
                     Contacts.REQUESTED_MIMETYPES_PARAM_KEY,
                     mimeTypes.joinToString(",") { it.value },
@@ -213,7 +214,8 @@ class ContactsRepositoryImplTest {
         val queryMode = ContactsQueryMode.Custom(mimeTypes, matchAll)
         val expectedUri =
             ContactsContract.AUTHORITY_URI.buildUpon()
-                .appendPath("contacts_data")
+                .appendPath("contacts")
+                .appendPath("mimes")
                 .appendPath("filter")
                 .appendPath(query)
                 .appendQueryParameter(

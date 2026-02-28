@@ -40,7 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Contraer"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Teléfono"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Correo"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# correo}other{# correos}}"</string>
+    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
+    <skip />
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# número de teléfono}other{# números de teléfono}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} de # correo}other{{selected_count} de # correos}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} de # número de teléfono}other{{selected_count} de # números de teléfono}}"</string>
@@ -73,8 +74,6 @@
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Usuario desconocido"</string>
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"Las aplicaciones de %s están en pausa"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Para abrir contactos de %1$s, activa tus aplicaciones de %2$s e inténtalo de nuevo"</string>
-    <!-- no translation found for picker_profile_blocked_admin_title (120810913376185332) -->
-    <skip />
-    <!-- no translation found for picker_profile_blocked_admin_msg (3792456887042138155) -->
-    <skip />
+    <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"El administrador de TI ha bloqueado el acceso"</string>
+    <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Ponte en contacto con él si tienes alguna pregunta"</string>
 </resources>

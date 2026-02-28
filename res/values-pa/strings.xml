@@ -40,7 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"ਸਮੇਟੋ"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ਫ਼ੋਨ"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"ਈਮੇਲ"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# ਈਮੇਲ}one{# ਈਮੇਲ}other{# ਈਮੇਲਾਂ}}"</string>
+    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
+    <skip />
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# ਫ਼ੋਨ ਨੰਬਰ}one{# ਫ਼ੋਨ ਨੰਬਰ}other{# ਫ਼ੋਨ ਨੰਬਰ}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{# ਈਮੇਲ ਵਿੱਚੋਂ {selected_count}}one{# ਈਮੇਲ ਵਿੱਚੋਂ {selected_count}}other{# ਈਮੇਲਾਂ ਵਿੱਚੋਂ {selected_count}}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{# ਫ਼ੋਨ ਨੰਬਰ ਵਿੱਚੋਂ {selected_count}}one{# ਫ਼ੋਨ ਨੰਬਰ ਵਿੱਚੋਂ {selected_count}}other{# ਫ਼ੋਨ ਨੰਬਰਾਂ ਵਿੱਚੋਂ {selected_count}}}"</string>
@@ -60,12 +61,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"ਇਹ ਐਪ"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"ਤੁਹਾਡੇ ਸੰਪਰਕਾਂ ਦੀ ਪਰਦੇਦਾਰੀ"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"ਹਾਲੇ ਕੋਈ ਸੰਪਰਕ ਨਹੀਂ ਹੈ"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"ਈਮੇਲ ਪਤਿਆਂ ਵਾਲਾ ਕੋਈ ਸੰਪਰਕ ਨਹੀਂ ਹੈ"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"ਫ਼ੋਨ ਨੰਬਰਾਂ ਵਾਲਾ ਕੋਈ ਸੰਪਰਕ ਨਹੀਂ ਹੈ"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"ਲੋੜੀਂਦੀ ਜਾਣਕਾਰੀ ਵਾਲਾ ਕੋਈ ਸੰਪਰਕ ਨਹੀਂ ਹੈ"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"ਤੁਹਾਡੇ ਵੱਲੋਂ ਬਣਾਏ ਗਏ ਜਾਂ ਤੁਹਾਡੇ ਡੀਵਾਈਸ \'ਤੇ ਆਯਾਤ ਕੀਤੇ ਗਏ ਸੰਪਰਕ ਇੱਥੇ ਦਿਖਾਈ ਦੇਣਗੇ"</string>
     <string name="no_results_found" msgid="8513853958245248109">"ਕੋਈ ਨਤੀਜਾ ਨਹੀਂ ਮਿਲਿਆ"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"ਕਿਸੇ ਵੱਖਰੇ ਸ਼ਬਦ-ਜੋੜ ਨਾਲ ਖੋਜ ਕੇ ਦੇਖੋ"</string>

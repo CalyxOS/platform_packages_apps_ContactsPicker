@@ -40,7 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Σύμπτυξη"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Τηλέφωνο"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Ηλεκτρονικό ταχυδρομείο"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# μήνυμα ηλεκτρονικού ταχυδρομείου}other{# μηνύματα ηλεκτρονικού ταχυδρομείου}}"</string>
+    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
+    <skip />
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# αριθμός τηλεφώνου}other{# αριθμοί τηλεφώνου}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} από # μήνυμα ηλεκτρονικού ταχυδρομείου}other{{selected_count} από # μηνύματα ηλεκτρονικού ταχυδρομείου}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} από # αριθμό τηλεφώνου}other{{selected_count} από # αριθμούς τηλεφώνου}}"</string>

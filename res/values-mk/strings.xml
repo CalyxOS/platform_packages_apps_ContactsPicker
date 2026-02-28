@@ -40,7 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Собери"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Телефон"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Е-пошта"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{# е-пошта}one{# е-пошта}other{# е-пошти}}"</string>
+    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
+    <skip />
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# телефонски број}one{# телефонски број}other{# телефонски броеви}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} од # е-пошта}one{{selected_count} од # е-пошта}other{{selected_count} од # е-пошти}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} од # телефонски број}one{{selected_count} од # телефонски број}other{{selected_count} од # телефонски броеви}}"</string>
@@ -60,12 +61,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Оваа апликација"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Приватноста на вашите контакти"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Сѐ уште нема контакти"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"Нема контакти со адреси на е-пошта"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"Нема контакти со телефонски броеви"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Нема контакти со потребните податоци"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Контактите што ќе ги создадете или ќе ги увезете на вашиот уред ќе се прикажат тука"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Не се најдени резултати"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"Обидете се да пребарате со други зборови"</string>

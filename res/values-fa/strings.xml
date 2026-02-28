@@ -40,7 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"جمع کردن"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"تلفن"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"ایمیل"</string>
-    <string name="contact_item_emails_count" msgid="3836424032662346956">"{count,plural, =1{‫# ایمیل}one{‫# ایمیل}other{‫# ایمیل}}"</string>
+    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
+    <skip />
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{‫# شماره تلفن}one{‫# شماره تلفن}other{‫# شماره تلفن}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{‫{selected_count} از # ایمیل}one{‫{selected_count} از # ایمیل}other{‫{selected_count} از # ایمیل}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{‫{selected_count} از # شماره تلفن}one{‫{selected_count} از # شماره تلفن}other{‫{selected_count} از # شماره تلفن}}"</string>
