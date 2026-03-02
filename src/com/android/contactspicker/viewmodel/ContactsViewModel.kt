@@ -731,6 +731,8 @@ constructor(
                 else -> return
             }
 
+        contactsPickerLogger.previewOpened()
+
         val previewList =
             availableContacts.filter { contact -> selectedIds.containsKey(contact.id) }
 

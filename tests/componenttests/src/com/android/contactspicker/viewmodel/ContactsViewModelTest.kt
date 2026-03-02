@@ -1326,6 +1326,18 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun onPreviewClicked_callsLoggerPreviewOpened() = runTest {
+        val contact = ContactTestDataFactory.GENERIC_PHONE_CONTACT
+        initializeViewModelForLegacyActionPickInMultiSelectMode(listOf(contact))
+        viewModel.toggleContactSelection(contact, SELECTION_SOURCE_MAIN_LIST)
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.onPreviewClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        verify(mockContactsPickerLogger).previewOpened()
+    }
+
+    @Test
     fun onBackFromPreview_updatesStateToList() = runTest {
         val contact = ContactTestDataFactory.GENERIC_EMAIL_CONTACT
         initializeViewModelForLegacyActionPick(listOf(contact))

@@ -35,6 +35,12 @@ interface ContactsPickerLogger {
     )
 
     /**
+     * Marks that the user opened the preview page. Will be logged when the session finished is
+     * logged.
+     */
+    fun previewOpened()
+
+    /**
      * Marks that the user has search contacts. Will be logged when the session finished is logged.
      */
     fun searchUsed()
