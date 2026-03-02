@@ -22,9 +22,13 @@ import android.icu.text.MessageFormat
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasAnyDescendant
@@ -34,7 +38,12 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performSemanticsAction
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.VerbatimTtsAnnotation
+import androidx.compose.ui.text.style.ResolvedTextDirection
+import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.R
@@ -341,6 +350,71 @@ class ContactItemTest {
             val hasVerbatimAnnotation = annotations.any { it.item is VerbatimTtsAnnotation }
             assertThat(hasVerbatimAnnotation).isFalse()
         }
+    }
+
+    @Test
+    fun secondaryText_phoneNumberInRtl_isForcedLtr() {
+        val contact = ContactTestDataFactory.GENERIC_PHONE_CONTACT
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                ContactItem(
+                    contact = contact,
+                    position = ItemPosition.ONLY,
+                    selectedEntries = emptySet(),
+                    isMultiSelectEnabled = true,
+                    isSearchMode = false,
+                    onToggleContactSelection = {},
+                    onToggleEntrySelection = { _, _ -> },
+                )
+            }
+        }
+        composeTestRule
+            .onNodeWithText(contact.phones.first().number, useUnmergedTree = true)
+            .assertTextDirection(TextDirection.Ltr, ResolvedTextDirection.Ltr)
+    }
+
+    @Test
+    fun secondaryText_multiPhoneInRtl_expanded_isForcedLtr() {
+        val contact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                ContactItem(
+                    contact = contact,
+                    position = ItemPosition.ONLY,
+                    selectedEntries = emptySet(),
+                    isMultiSelectEnabled = true,
+                    isSearchMode = false,
+                    onToggleContactSelection = {},
+                    onToggleEntrySelection = { _, _ -> },
+                )
+            }
+        }
+        // expand
+        composeTestRule.onNodeWithText(contact.displayName).performClick()
+
+        contact.phones.forEach { phone ->
+            composeTestRule
+                .onNodeWithText(phone.number)
+                .assertTextDirection(TextDirection.Ltr, ResolvedTextDirection.Ltr)
+        }
+    }
+
+    private fun SemanticsNodeInteraction.assertTextDirection(
+        requested: TextDirection,
+        resolved: ResolvedTextDirection,
+    ) {
+        val results = mutableListOf<TextLayoutResult>()
+        performSemanticsAction(SemanticsActions.GetTextLayoutResult) { it(results) }
+        val layoutResult = results.first()
+
+        val actualRequested =
+            layoutResult.layoutInput.text.paragraphStyles.firstOrNull()?.item?.textDirection
+                ?: TextDirection.Unspecified
+        assertThat(actualRequested).isEqualTo(requested)
+
+        val actualResolved = layoutResult.getParagraphDirection(0)
+        assertThat(actualResolved).isEqualTo(resolved)
     }
 
     @Test
