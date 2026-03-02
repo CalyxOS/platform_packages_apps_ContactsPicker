@@ -15,11 +15,14 @@
  */
 package com.android.contactspicker.logging
 
+import android.os.SystemClock
 import androidx.annotation.VisibleForTesting
 import com.android.contactspicker.ContactsPickerStatsLog
 import com.android.contactspicker.config.ContactsPickerAction
 import com.android.contactspicker.data.model.MimeType
 import javax.inject.Inject
+
+internal const val LOADING_TIME_UNSET = -1L
 
 class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
 
@@ -32,9 +35,12 @@ class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
         val requestedMimeTypes: IntArray,
         val useSystemContactsPicker: Boolean,
         val matchAllRequestedMimeTypes: Boolean,
+        val sessionStartTimeMs: Long = SystemClock.elapsedRealtime(),
+        var loadingContactsStartTimeMs: Long = LOADING_TIME_UNSET,
         var previewOpened: Boolean = false,
         var searchUsed: Boolean = false,
         var privacyBannerDismissed: Boolean = false,
+        var loadingTimeMs: Long = LOADING_TIME_UNSET,
     )
 
     override fun logContactsPickerSessionStarted(
@@ -73,6 +79,9 @@ class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
         contactsSelectedFromSearch: Boolean,
     ) {
         val currentLoggingData = loggingData ?: return
+        val sessionDurationMs =
+            SystemClock.elapsedRealtime() - currentLoggingData.sessionStartTimeMs
+
         ContactsPickerStatsLog.write(
             ContactsPickerStatsLog.CONTACTS_PICKER_SESSION_FINISHED_REPORTED,
             /* calling_app_package_uid */ currentLoggingData.callingAppUid,
@@ -86,8 +95,8 @@ class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
             /* session_result */ ContactsPickerStatsLog
                 .CONTACTS_PICKER_SESSION_FINISHED_REPORTED__SESSION_RESULT__SESSION_RESULT_SUCCESS,
             /* error_type */ 0, // No error
-            /* session_duration_ms */ 0, // TODO(b/441483549): Log session duration
-            /* startup_loading_time_ms */ 0, // TODO(b/441483549): Log loading time
+            /* session_duration_ms */ sessionDurationMs,
+            /* startup_loading_time_ms */ currentLoggingData.loadingTimeMs,
             /* num_contacts_selected */ numContactsSelected,
             /* contacts_selected_from_favorites */ contactsSelectedFromFavorites,
             /* contacts_selected_from_search_results */ contactsSelectedFromSearch,
@@ -100,6 +109,21 @@ class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
             /* privacy_banner_opened_from_overflow_menu */ false, // TODO(b/441483549): Log priv
             // banner opened from overflow menu
         )
+    }
+
+    override fun allContactsLoadingStarted() {
+        loggingData?.let { it.loadingContactsStartTimeMs = SystemClock.elapsedRealtime() }
+    }
+
+    override fun allContactsLoadingFinished() {
+        loggingData?.let {
+            if (it.loadingContactsStartTimeMs == LOADING_TIME_UNSET) {
+                return
+            }
+            val loadingTimeMs = SystemClock.elapsedRealtime() - it.loadingContactsStartTimeMs
+            it.loadingTimeMs = maxOf(it.loadingTimeMs, loadingTimeMs)
+            it.loadingContactsStartTimeMs = LOADING_TIME_UNSET
+        }
     }
 
     override fun previewOpened() {

@@ -314,6 +314,7 @@ constructor(
         config: ContactsPickerRequestConfig,
         userState: PickerUserState.Success,
     ) {
+        contactsPickerLogger.allContactsLoadingStarted()
         loadContactsJob?.cancel()
         loadContactsJob =
             viewModelScope.launch {
@@ -324,12 +325,12 @@ constructor(
                     Trace.beginSection("$TAG#contactsRepository.getContacts")
                     initialContacts =
                         contactsRepository.getContacts(config.queryMode, userState.selectedUserId)
-
                     val availableContactsGroups =
                         ContactsGrouper(initialContacts)
                             .also { contactsGrouper = it }
                             .availableContactsGroups
 
+                    contactsPickerLogger.allContactsLoadingFinished()
                     Trace.endSection()
                     if (initialContacts.isNotEmpty()) {
                         // Only show the privacy banner if user hasn't seen it before for this
