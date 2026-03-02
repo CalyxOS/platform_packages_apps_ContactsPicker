@@ -72,5 +72,5 @@
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"As apps %s estão pausadas"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Para abrir os contactos de %1$s, ative as suas apps %2$s e tente novamente"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"Acesso bloqueado pelo administrador de TI"</string>
-    <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Entre em contacto com o administrador de TI se tiver alguma dúvida"</string>
+    <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Contacte o administrador de TI se tiver alguma dúvida"</string>
 </resources>

@@ -40,8 +40,7 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Restrângeți"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefon"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"E-mail"</string>
-    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{o adresă de e-mail}few{# adrese de e-mail}other{# de adrese de e-mail}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{Un număr de telefon}few{# numere de telefon}other{# de numere de telefon}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} din 1 e-mail}few{{selected_count} din # e-mailuri}other{{selected_count} din # de e-mailuri}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} din 1 număr de telefon}few{{selected_count} din # numere de telefon}other{{selected_count} din # de numere de telefon}}"</string>
@@ -61,12 +60,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Această aplicație"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Confidențialitatea agendei dvs."</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Nicio persoană de contact"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"Nicio persoană din agendă cu adresă de e-mail"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"Nicio persoană din agendă cu numere de telefon"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Nicio persoană din agendă cu informațiile necesare"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Persoanele de contact pe care le creezi sau le imporți pe dispozitiv vor apărea aici"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Niciun rezultat"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"Încearcă să cauți cu altă ortografie"</string>

@@ -40,8 +40,7 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"收合"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"電話"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"電郵"</string>
-    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# 個電郵地址}other{# 個電郵地址}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# 個電話號碼}other{# 個電話號碼}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{第 {selected_count} 個電郵地址 (共 # 個)}other{第 {selected_count} 個電郵地址 (共 # 個)}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{第 {selected_count} 個電話號碼 (共 # 個)}other{第 {selected_count} 個電話號碼 (共 # 個)}}"</string>
@@ -72,5 +71,5 @@
     <string name="picker_profile_paused_title" msgid="4083321530415544679">"已暫停 %s 個應用程式"</string>
     <string name="picker_profile_paused_msg" msgid="2824051504891136577">"如要開啟「%1$s」的通訊錄，請開啟%2$s應用程式，然後再試一次"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"IT 管理員已封鎖存取權"</string>
-    <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"如有任何疑問，請聯絡他們"</string>
+    <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"如有任何疑問，請與對方聯絡"</string>
 </resources>

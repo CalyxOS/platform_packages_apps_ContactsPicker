@@ -40,8 +40,7 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Скупи"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Телефон"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Имејл"</string>
-    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# имејл адреса}one{# имејл адреса}few{# имејл адресе}other{# имејл адреса}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# број телефона}one{# број телефона}few{# броја телефона}other{# бројева телефона}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} од # имејла}one{{selected_count} од # имејла}few{{selected_count} од # имејла}other{{selected_count} од # имејлова}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} од # броја телефона}one{{selected_count} од # броја телефона}few{{selected_count} од # броја телефона}other{{selected_count} од # бројева телефона}}"</string>

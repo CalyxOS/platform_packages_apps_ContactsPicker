@@ -40,8 +40,7 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"បង្រួម"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ទូរសព្ទ"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"អ៊ីមែល"</string>
-    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{អាសយដ្ឋាន​អ៊ីមែល #}other{អាសយដ្ឋាន​អ៊ីមែល #}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{លេខទូរសព្ទ # ខ្សែ}other{លេខទូរសព្ទ # ខ្សែ}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{អ៊ីមែល {selected_count} នៃ #}other{អ៊ីមែល {selected_count} នៃ #}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{លេខទូរសព្ទ {selected_count} នៃ # ខ្សែ}other{លេខទូរសព្ទ {selected_count} នៃ # ខ្សែ}}"</string>
