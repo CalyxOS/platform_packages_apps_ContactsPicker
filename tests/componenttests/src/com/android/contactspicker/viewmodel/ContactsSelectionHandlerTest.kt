@@ -37,7 +37,7 @@ import org.junit.runner.RunWith
 class ContactsSelectionHandlerTest {
     @get:Rule val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
 
-    private val mSELECTION_SOURCE_MAIN_LIST = SelectionSource.MAIN_LIST
+    private val SELECTION_SOURCE_MAIN_LIST = SelectionSource.MAIN_LIST
     private lateinit var handler: ContactsSelectionHandler
     private val emittedEvents = mutableListOf<SnackbarEvent>()
 
@@ -60,7 +60,7 @@ class ContactsSelectionHandlerTest {
         initHandler(isMultiSelect = true)
         val contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
 
-        handler.toggleContactSelection(contact, mSELECTION_SOURCE_MAIN_LIST)
+        handler.toggleContactSelection(contact, SELECTION_SOURCE_MAIN_LIST)
 
         assertThat(handler.selectedContacts.value.containsKey(contact.id)).isTrue()
     }
@@ -70,7 +70,7 @@ class ContactsSelectionHandlerTest {
         initHandler(isMultiSelect = true)
         val contact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT
 
-        handler.toggleContactSelection(contact, mSELECTION_SOURCE_MAIN_LIST)
+        handler.toggleContactSelection(contact, SELECTION_SOURCE_MAIN_LIST)
 
         val selection = handler.selectedContacts.value
         assertThat(selection.containsKey(contact.id)).isTrue()
@@ -83,8 +83,8 @@ class ContactsSelectionHandlerTest {
         initHandler(isMultiSelect = true)
         val contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
 
-        handler.toggleContactSelection(contact, mSELECTION_SOURCE_MAIN_LIST) // Select
-        handler.toggleContactSelection(contact, mSELECTION_SOURCE_MAIN_LIST) // Deselect
+        handler.toggleContactSelection(contact, SELECTION_SOURCE_MAIN_LIST) // Select
+        handler.toggleContactSelection(contact, SELECTION_SOURCE_MAIN_LIST) // Deselect
 
         assertThat(handler.selectedContacts.value.isEmpty()).isTrue()
     }
@@ -95,11 +95,11 @@ class ContactsSelectionHandlerTest {
         val contacts = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST
 
         // Select first
-        handler.toggleContactSelection(contacts[0], mSELECTION_SOURCE_MAIN_LIST)
+        handler.toggleContactSelection(contacts[0], SELECTION_SOURCE_MAIN_LIST)
         assertThat(handler.selectedContacts.value.containsKey(contacts[0].id)).isTrue()
 
         // Select second
-        handler.toggleContactSelection(contacts[1], mSELECTION_SOURCE_MAIN_LIST)
+        handler.toggleContactSelection(contacts[1], SELECTION_SOURCE_MAIN_LIST)
 
         val selection = handler.selectedContacts.value
         assertThat(selection.containsKey(contacts[1].id)).isTrue()
@@ -112,7 +112,7 @@ class ContactsSelectionHandlerTest {
         initHandler(isMultiSelect = false)
         val contact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT
 
-        handler.toggleContactSelection(contact, mSELECTION_SOURCE_MAIN_LIST)
+        handler.toggleContactSelection(contact, SELECTION_SOURCE_MAIN_LIST)
 
         val selection = handler.selectedContacts.value
         assertThat(selection[contact.id]).containsExactly(contact.phones.first().id)
@@ -124,11 +124,11 @@ class ContactsSelectionHandlerTest {
         val contact1 = ContactTestDataFactory.GENERIC_PHONE_CONTACT
         val contact2 = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT
 
-        handler.toggleContactSelection(contact1, mSELECTION_SOURCE_MAIN_LIST)
+        handler.toggleContactSelection(contact1, SELECTION_SOURCE_MAIN_LIST)
 
         // Select entry from second contact
         val entryToSelect = contact2.phones.first()
-        handler.toggleEntrySelection(contact2.id, entryToSelect.id, mSELECTION_SOURCE_MAIN_LIST)
+        handler.toggleEntrySelection(contact2.id, entryToSelect.id, SELECTION_SOURCE_MAIN_LIST)
 
         val selection = handler.selectedContacts.value
         assertThat(selection.containsKey(contact2.id)).isTrue()
@@ -141,10 +141,10 @@ class ContactsSelectionHandlerTest {
         val contact = ContactTestDataFactory.GENERIC_EMAIL_CONTACT
         val entry = contact.emails.first()
 
-        handler.toggleEntrySelection(contact.id, entry.id, mSELECTION_SOURCE_MAIN_LIST)
+        handler.toggleEntrySelection(contact.id, entry.id, SELECTION_SOURCE_MAIN_LIST)
         assertThat(handler.selectedContacts.value.containsKey(contact.id)).isTrue()
 
-        handler.toggleEntrySelection(contact.id, entry.id, mSELECTION_SOURCE_MAIN_LIST) // Deselect
+        handler.toggleEntrySelection(contact.id, entry.id, SELECTION_SOURCE_MAIN_LIST) // Deselect
         assertThat(handler.selectedContacts.value.containsKey(contact.id)).isFalse()
     }
 
@@ -155,14 +155,14 @@ class ContactsSelectionHandlerTest {
         val contacts = ContactTestDataFactory.createContactList(limit + 1)
 
         // Fill up to limit
-        handler.toggleContactSelection(contacts[0], mSELECTION_SOURCE_MAIN_LIST)
-        handler.toggleContactSelection(contacts[1], mSELECTION_SOURCE_MAIN_LIST)
+        handler.toggleContactSelection(contacts[0], SELECTION_SOURCE_MAIN_LIST)
+        handler.toggleContactSelection(contacts[1], SELECTION_SOURCE_MAIN_LIST)
 
         assertThat(handler.selectedContacts.value.totalElementCount()).isEqualTo(limit)
         assertThat(emittedEvents).isEmpty()
 
         // Try to add one more
-        handler.toggleContactSelection(contacts[2], mSELECTION_SOURCE_MAIN_LIST)
+        handler.toggleContactSelection(contacts[2], SELECTION_SOURCE_MAIN_LIST)
 
         assertThat(handler.selectedContacts.value.totalElementCount())
             .isEqualTo(limit) // Count unchanged
@@ -178,14 +178,14 @@ class ContactsSelectionHandlerTest {
         val contact = ContactTestDataFactory.createPhoneContact(1, "Multi", 3)
 
         // Fill up to limit
-        handler.toggleEntrySelection(contact.id, contact.phones[0].id, mSELECTION_SOURCE_MAIN_LIST)
-        handler.toggleEntrySelection(contact.id, contact.phones[1].id, mSELECTION_SOURCE_MAIN_LIST)
+        handler.toggleEntrySelection(contact.id, contact.phones[0].id, SELECTION_SOURCE_MAIN_LIST)
+        handler.toggleEntrySelection(contact.id, contact.phones[1].id, SELECTION_SOURCE_MAIN_LIST)
 
         assertThat(handler.selectedContacts.value.totalElementCount()).isEqualTo(limit)
         assertThat(emittedEvents).isEmpty()
 
         // Try to add one more entry
-        handler.toggleEntrySelection(contact.id, contact.phones[2].id, mSELECTION_SOURCE_MAIN_LIST)
+        handler.toggleEntrySelection(contact.id, contact.phones[2].id, SELECTION_SOURCE_MAIN_LIST)
 
         assertThat(handler.selectedContacts.value.totalElementCount()).isEqualTo(limit)
         assertThat(emittedEvents).hasSize(1)
@@ -199,7 +199,7 @@ class ContactsSelectionHandlerTest {
         val contact = ContactTestDataFactory.GENERIC_EMAIL_CONTACT
         val entry = contact.emails.first()
 
-        handler.toggleEntrySelection(contact.id, entry.id, mSELECTION_SOURCE_MAIN_LIST)
+        handler.toggleEntrySelection(contact.id, entry.id, SELECTION_SOURCE_MAIN_LIST)
 
         val uris = handler.resolveSelectedUris(listOf(contact))
 
@@ -208,10 +208,62 @@ class ContactsSelectionHandlerTest {
     }
 
     @Test
+    fun toggleContactSelection_singleSelect_deselectsWhenTappedTwice() {
+        initHandler(isMultiSelect = false)
+        val contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
+
+        // select
+        handler.toggleContactSelection(contact, SELECTION_SOURCE_MAIN_LIST)
+        assertThat(handler.selectedContacts.value.containsKey(contact.id)).isTrue()
+        // deselect
+        handler.toggleContactSelection(contact, SELECTION_SOURCE_MAIN_LIST)
+
+        assertThat(handler.selectedContacts.value.containsKey(contact.id)).isFalse()
+        assertThat(handler.selectedContacts.value.isEmpty()).isTrue()
+    }
+
+    @Test
+    fun toggleEntrySelection_singleSelect_deselectsWhenTappedTwice() {
+        initHandler(isMultiSelect = false)
+        val contact = ContactTestDataFactory.GENERIC_PHONE_CONTACT
+        val entry = contact.phones.first()
+
+        // select entry
+        handler.toggleEntrySelection(contact.id, entry.id, SELECTION_SOURCE_MAIN_LIST)
+        assertThat(handler.selectedContacts.value[contact.id]).containsExactly(entry.id)
+
+        // deselect entry
+        handler.toggleEntrySelection(contact.id, entry.id, SELECTION_SOURCE_MAIN_LIST)
+
+        assertThat(handler.selectedContacts.value.containsKey(contact.id)).isFalse()
+        assertThat(handler.selectedContacts.value.isEmpty()).isTrue()
+    }
+
+    @Test
+    fun toggleContactSelection_singleSelect_multiEntryContact_canBeDeselected() {
+        initHandler(isMultiSelect = false)
+
+        val contact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT
+
+        handler.toggleEntrySelection(
+            contact.id,
+            contact.phones.first().id,
+            SELECTION_SOURCE_MAIN_LIST,
+        )
+        assertThat(handler.selectedContacts.value.containsKey(contact.id)).isTrue()
+
+        // Select whole contact to deselect
+        handler.toggleContactSelection(contact, SELECTION_SOURCE_MAIN_LIST)
+
+        assertThat(handler.selectedContacts.value.containsKey(contact.id)).isFalse()
+        assertThat(handler.selectedContacts.value.isEmpty()).isTrue()
+    }
+
+    @Test
     fun clearSelection_emptiesMap() {
         initHandler(isMultiSelect = true)
         val contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
-        handler.toggleContactSelection(contact, mSELECTION_SOURCE_MAIN_LIST)
+        handler.toggleContactSelection(contact, SELECTION_SOURCE_MAIN_LIST)
 
         handler.clearSelection()
 
@@ -222,7 +274,7 @@ class ContactsSelectionHandlerTest {
     fun getSelectedIds_returnsFlattenedListOfIds() {
         initHandler(isMultiSelect = true)
         val contact = ContactTestDataFactory.GENERIC_MULTI_PHONE_CONTACT
-        handler.toggleContactSelection(contact, mSELECTION_SOURCE_MAIN_LIST)
+        handler.toggleContactSelection(contact, SELECTION_SOURCE_MAIN_LIST)
 
         val ids = handler.getSelectedIds()
 
