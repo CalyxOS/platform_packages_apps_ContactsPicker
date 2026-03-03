@@ -1187,6 +1187,20 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun performSearch_callsLoggerSearchUsed() = runTest {
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+
+        val query = "test"
+        fakeContactsRepository.setSearchResults(query, emptyList())
+
+        viewModel.onSearchQueryChanged(query)
+        testDispatcher.scheduler.advanceTimeBy(SEARCH_DEBOUNCE_MS)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        verify(mockContactsPickerLogger).searchUsed()
+    }
+
+    @Test
     fun exitSearch_revertsToContactsListState_withSelectionPreserved() = runTest {
         val initialContacts = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST
         val searchQuery = "a"
@@ -1309,6 +1323,18 @@ class ContactsViewModelTest {
         assertThat(previewState.contactsToDisplay).containsExactly(contact)
         assertThat(previewState.selectedContacts).isEqualTo(currentSelection)
         assertThat(previewState.isMultiSelectEnabled).isFalse()
+    }
+
+    @Test
+    fun onPreviewClicked_callsLoggerPreviewOpened() = runTest {
+        val contact = ContactTestDataFactory.GENERIC_PHONE_CONTACT
+        initializeViewModelForLegacyActionPickInMultiSelectMode(listOf(contact))
+        viewModel.toggleContactSelection(contact, SELECTION_SOURCE_MAIN_LIST)
+        testDispatcher.scheduler.advanceUntilIdle()
+        viewModel.onPreviewClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        verify(mockContactsPickerLogger).previewOpened()
     }
 
     @Test
@@ -1673,12 +1699,27 @@ class ContactsViewModelTest {
 
     @Test
     fun hidePrivacyBanner_updatesUiState() = runTest {
-        initializeViewModelForActionPickContacts(listOf(ContactTestDataFactory.GENERIC_EMAIL_CONTACT), listOf(Email.CONTENT_ITEM_TYPE))
+        initializeViewModelForActionPickContacts(
+            listOf(ContactTestDataFactory.GENERIC_EMAIL_CONTACT),
+            listOf(Email.CONTENT_ITEM_TYPE),
+        )
         assertThat(viewModel.currentSuccessState.showPrivacyBanner).isTrue()
 
         viewModel.hidePrivacyBanner()
 
         assertThat(viewModel.currentSuccessState.showPrivacyBanner).isFalse()
+    }
+
+    @Test
+    fun hidePrivacyBanner_callsLoggerHidePrivacyBanner() = runTest {
+        initializeViewModelForActionPickContacts(
+            listOf(ContactTestDataFactory.GENERIC_EMAIL_CONTACT),
+            listOf(Email.CONTENT_ITEM_TYPE),
+        )
+
+        viewModel.hidePrivacyBanner()
+
+        verify(mockContactsPickerLogger).privacyBannerDismissedByUser()
     }
 
     @Test

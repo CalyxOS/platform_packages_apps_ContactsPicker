@@ -32,6 +32,9 @@ class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
         val requestedMimeTypes: IntArray,
         val useSystemContactsPicker: Boolean,
         val matchAllRequestedMimeTypes: Boolean,
+        var previewOpened: Boolean = false,
+        var searchUsed: Boolean = false,
+        var privacyBannerDismissed: Boolean = false,
     )
 
     override fun logContactsPickerSessionStarted(
@@ -88,16 +91,27 @@ class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
             /* num_contacts_selected */ numContactsSelected,
             /* contacts_selected_from_favorites */ contactsSelectedFromFavorites,
             /* contacts_selected_from_search_results */ contactsSelectedFromSearch,
-            /* preview_opened */ false, // TODO(b/441483549): Log preview opened
-            /* search_used */ false, // TODO(b/441483549): Log search used
+            /* preview_opened */ currentLoggingData.previewOpened,
+            /* search_used */ currentLoggingData.searchUsed,
             /* count_search_load_time_above_tolerance */ 0, // TODO(b/441483549): Log long searches
             /* privacy_banner_more_details_opened_by_user */ false, // TODO(b/441483549): Log priv
             // banner opened
-            /* privacy_banner_dismissed_by_user */ false, // TODO(b/441483549): Log priv banner
-            // dismissed
+            /* privacy_banner_dismissed_by_user */ currentLoggingData.privacyBannerDismissed,
             /* privacy_banner_opened_from_overflow_menu */ false, // TODO(b/441483549): Log priv
             // banner opened from overflow menu
         )
+    }
+
+    override fun previewOpened() {
+        loggingData?.let { it.previewOpened = true }
+    }
+
+    override fun searchUsed() {
+        loggingData?.let { it.searchUsed = true }
+    }
+
+    override fun privacyBannerDismissedByUser() {
+        loggingData?.let { it.privacyBannerDismissed = true }
     }
 }
 

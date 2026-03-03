@@ -105,7 +105,7 @@ constructor(
                     }
                 } else {
                     selectionSources.clear()
-                    if (!isAlreadyFullySelected) {
+                    if (existingEntryIds.isEmpty()) {
                         put(contact.id, entryIdsForSelection)
                         entryIdsForSelection.forEach { selectionSources[it] = source }
                     }

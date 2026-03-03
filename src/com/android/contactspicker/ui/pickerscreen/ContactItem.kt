@@ -61,10 +61,13 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.VerbatimTtsAnnotation
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.withAnnotation
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.R
 import com.android.contactspicker.data.model.Contact
@@ -170,7 +173,7 @@ fun ContactItem(
     val onAvatarClick: () -> Unit = {
         if (isSearchMode) {
             searchTargetEntryId?.let { entryId -> onToggleEntrySelection(contact.id, entryId) }
-        } else if (isMultiSelectEnabled || !isExpandable) {
+        } else if (isSelected || isMultiSelectEnabled || !isExpandable) {
             // In multi-select, or for simple contacts, the avatar toggles selection.
             onToggleContactSelection(contact)
         } else {
@@ -220,13 +223,10 @@ fun ContactItem(
                     )
                     // Secondary text changes based on the type, total count of contact entries, and
                     // count of selected entries.
-                    contact.secondaryText(selectedEntries ?: emptySet())?.let { secondaryText ->
-                        Text(
-                            text = secondaryText,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
+                    ContactSecondaryText(
+                        contact = contact,
+                        selectedEntries = selectedEntries ?: emptySet(),
+                    )
                 }
                 if (isExpandable && !isSearchMode) {
                     val rotationAngle by
@@ -286,70 +286,106 @@ fun ContactItem(
 }
 
 /**
- * Determines the secondary text to display below the contact's name. Returns an AnnotatedString to
- * ensure correct reading for accessibility/TTS.
+ * Determines and displays the secondary text below the contact's name. Handles early return for
+ * contacts without entries and ensures correct [TextDirection] for raw data vs. localized strings.
  *
- * Returns:
- * - null if the contact has no entries (i.e., it's a [DisplayNameContact]).
+ * Displays:
+ * - nothing if the contact has no entries (i.e., it's a [DisplayNameContact]).
  * - the phone number or email for single entry contacts.
  * - for multi-entry contacts a formatted count string (e.g., "2 phone numbers") if none are
  *   selected, or a count of selected entries (e.g., "1 of 2 selected").
  */
 @Composable
-private fun Contact.secondaryText(selectedEntries: Set<Long>): AnnotatedString? {
+private fun ContactSecondaryText(
+    contact: Contact,
+    selectedEntries: Set<Long>,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
-    return when (this) {
-        is DisplayNameContact -> null
-        is EmailContact -> {
-            val totalCount = emails.size
-            val selectedCount = emails.count { selectedEntries.contains(it.id) }
-            if (totalCount > 1) {
-                formatMultiEntrySecondaryText(
-                    selectedCount,
-                    totalCount,
-                    context.getString(R.string.contact_item_emails_selected_count),
-                    context.getString(R.string.contact_item_emails_count),
-                )
-            } else {
-                AnnotatedString(emails.first().address)
+    val isVerbatim = contact is PhoneContact && contact.phones.size == 1
+
+    val (text, direction) =
+        when (contact) {
+            is EmailContact -> {
+                val totalCount = contact.emails.size
+                if (totalCount > 1) {
+                    val selectedCount = contact.emails.count { selectedEntries.contains(it.id) }
+                    formatMultiEntrySecondaryText(
+                        selectedCount,
+                        totalCount,
+                        context.getString(R.string.contact_item_emails_selected_count),
+                        context.getString(R.string.contact_item_emails_count),
+                    ) to TextDirection.Content
+                } else {
+                    contact.emails.first().address to TextDirection.Ltr
+                }
             }
+            is PhoneContact -> {
+                val totalCount = contact.phones.size
+                if (totalCount > 1) {
+                    val selectedCount = contact.phones.count { selectedEntries.contains(it.id) }
+
+                    formatMultiEntrySecondaryText(
+                        selectedCount,
+                        totalCount,
+                        context.getString(R.string.contact_item_phones_selected_count),
+                        context.getString(R.string.contact_item_phones_count),
+                    ) to TextDirection.Content
+                } else {
+                    contact.phones.first().number to TextDirection.Ltr
+                }
+            }
+            else -> return
         }
-        is PhoneContact -> {
-            val totalCount = phones.size
-            val selectedCount = phones.count { selectedEntries.contains(it.id) }
-            if (totalCount > 1) {
-                formatMultiEntrySecondaryText(
-                    selectedCount,
-                    totalCount,
-                    context.getString(R.string.contact_item_phones_selected_count),
-                    context.getString(R.string.contact_item_phones_count),
-                )
-            } else {
-                phones.first().number.toVerbatimAnnotatedString()
+
+    val annotatedString = rememberAnnotatedContactData(text, direction, isVerbatim)
+
+    Text(
+        text = annotatedString,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = modifier,
+    )
+}
+
+/**
+ * Constructs and remembers an [AnnotatedString] for contact data, applying the [ParagraphStyle] for
+ * RTL directionality and [VerbatimTtsAnnotation] for TalkBack integrity.
+ */
+@Composable
+private fun rememberAnnotatedContactData(
+    text: String,
+    direction: TextDirection,
+    isVerbatim: Boolean,
+): AnnotatedString =
+    remember(text, direction, isVerbatim) {
+        buildAnnotatedString {
+            withStyle(ParagraphStyle(textDirection = direction)) {
+                if (isVerbatim) {
+                    withAnnotation(VerbatimTtsAnnotation(text)) { append(text) }
+                } else {
+                    append(text)
+                }
             }
         }
     }
-}
 
+/** Returns a plain formatted string for multi-entry counts. */
 fun formatMultiEntrySecondaryText(
     selectedCount: Int,
     totalCount: Int,
     itemsSelectedCountMessage: String,
     noItemsSelectedCountMessage: String,
-): AnnotatedString {
+): String {
     val (msgFormat, args) =
-        if (selectedCount > 0) {
-            Pair(
-                MessageFormat(itemsSelectedCountMessage, Locale.getDefault()),
-                mapOf(Pair("selected_count", selectedCount), Pair("total_count", totalCount)),
-            )
-        } else {
-            Pair(
-                MessageFormat(noItemsSelectedCountMessage, Locale.getDefault()),
-                mapOf(Pair("count", totalCount)),
-            )
-        }
-    return AnnotatedString(msgFormat.format(args))
+        if (selectedCount > 0)
+            MessageFormat(itemsSelectedCountMessage, Locale.getDefault()) to
+                mapOf("selected_count" to selectedCount, "total_count" to totalCount)
+        else
+            MessageFormat(noItemsSelectedCountMessage, Locale.getDefault()) to
+                mapOf("count" to totalCount)
+
+    return msgFormat.format(args)
 }
 
 @Composable
@@ -421,8 +457,14 @@ private fun ExpandedPhoneEntry(
     isMultiSelectEnabled: Boolean,
     onCheckedChange: () -> Unit,
 ) {
+    val annotatedText =
+        rememberAnnotatedContactData(
+            text = phoneEntry.number,
+            direction = TextDirection.Ltr,
+            isVerbatim = true,
+        )
     ExpandedContactEntry(
-        text = phoneEntry.number.toVerbatimAnnotatedString(),
+        text = annotatedText,
         label = phoneEntry.label,
         isChecked = isChecked,
         isMultiSelectEnabled = isMultiSelectEnabled,
@@ -444,8 +486,14 @@ private fun ExpandedEmailEntry(
     isMultiSelectEnabled: Boolean,
     onCheckedChange: () -> Unit,
 ) {
+    val annotatedText =
+        rememberAnnotatedContactData(
+            text = emailEntry.address,
+            direction = TextDirection.Content,
+            isVerbatim = false,
+        )
     ExpandedContactEntry(
-        text = AnnotatedString(emailEntry.address),
+        text = annotatedText,
         label = emailEntry.label,
         isChecked = isChecked,
         isMultiSelectEnabled = isMultiSelectEnabled,
@@ -550,12 +598,3 @@ internal fun calculateShape(position: ItemPosition, isAnyEntrySelected: Boolean)
             ItemPosition.MIDDLE -> MIDDLE_ITEM_SHAPE
         }
     }
-
-/**
- * Extension to wrap a string in VerbatimTtsAnnotation for verbatim TalkBack char-by-char reading.
- */
-private fun String.toVerbatimAnnotatedString(): AnnotatedString = buildAnnotatedString {
-    withAnnotation(VerbatimTtsAnnotation(this@toVerbatimAnnotatedString)) {
-        append(this@toVerbatimAnnotatedString)
-    }
-}

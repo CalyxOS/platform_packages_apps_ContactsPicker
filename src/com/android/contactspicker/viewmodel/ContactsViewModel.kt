@@ -386,7 +386,7 @@ constructor(
     /** Hides the privacy banner for the current session. */
     fun hidePrivacyBanner() {
         showPrivacyBanner = false
-
+        contactsPickerLogger.privacyBannerDismissedByUser()
         _uiState.update { currentState ->
             if (currentState is ContactsListState.Success) {
                 currentState.copy(showPrivacyBanner = showPrivacyBanner)
@@ -639,6 +639,7 @@ constructor(
     /** Executes the search against the repository and updates the UI state. */
     private suspend fun performSearch(query: String) {
         val config = checkNotNull(pickerConfig)
+        contactsPickerLogger.searchUsed()
         try {
             Trace.beginSection("$TAG#searchingContacts")
 
@@ -729,6 +730,8 @@ constructor(
                 }
                 else -> return
             }
+
+        contactsPickerLogger.previewOpened()
 
         val previewList =
             availableContacts.filter { contact -> selectedIds.containsKey(contact.id) }

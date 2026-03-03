@@ -7,3 +7,13 @@ flag {
     description: "Enables the system contacts picker to always handle the ACTION_PICK for contacts"
     bug: "459413010"
 }
+
+flag {
+    name: "enable_contact_grouping_using_cp2"
+    namespace: "profile_experiences"
+    description: "Enables the system contacts picker to use grouping metadata provided by the contacts provider to group contacts"
+    bug: "481304134"
+    metadata {
+            purpose: PURPOSE_BUGFIX
+        }
+}
