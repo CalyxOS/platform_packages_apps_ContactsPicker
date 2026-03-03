@@ -48,6 +48,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.R
 import com.android.contactspicker.data.model.PickerUserState
@@ -93,6 +96,8 @@ fun ProfileSwitcher(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = MaterialTheme.colorScheme.primary,
                 ),
+            modifier =
+                Modifier.semantics { currentSwitchableInfo?.label?.let { stateDescription = it } },
         ) {
             ProfileIcon(
                 icon = currentSwitchableInfo?.icon,
@@ -141,6 +146,7 @@ fun ProfileSwitcher(
                             expanded = false
                             onProfileClicked(userProfile)
                         },
+                        modifier = Modifier.semantics { selected = isSelected },
                     )
                 }
             }
