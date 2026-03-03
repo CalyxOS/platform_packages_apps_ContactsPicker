@@ -211,7 +211,7 @@ class ContactsPickerScreenTest {
                 uiState =
                     mutableStateOf(
                         ContactsListState.Success(
-                            availableContacts = emptyList(),
+                            availableContactsGroups = emptyMap(),
                             selectedContacts = emptyContactsSelection(),
                             isMultiSelectEnabled = false,
                             callingAppName = null,
@@ -276,7 +276,8 @@ class ContactsPickerScreenTest {
         val uiState =
             mutableStateOf<ContactsUiState>(
                 ContactsListState.Success(
-                    availableContacts = listOf(testContact),
+                    availableContactsGroups =
+                        ContactTestDataFactory.groupContactsForTest(listOf(testContact)),
                     selectedContacts = emptyContactsSelection(),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
@@ -333,7 +334,8 @@ class ContactsPickerScreenTest {
                 uiState =
                     mutableStateOf(
                         ContactsListState.Success(
-                            availableContacts = listOf(testContact),
+                            availableContactsGroups =
+                                ContactTestDataFactory.groupContactsForTest(listOf(testContact)),
                             selectedContacts = emptyContactsSelection(),
                             isMultiSelectEnabled = false,
                             callingAppName = null,
@@ -365,7 +367,8 @@ class ContactsPickerScreenTest {
                 uiState =
                     mutableStateOf(
                         ContactsListState.Success(
-                            availableContacts = listOf(testContact),
+                            availableContactsGroups =
+                                ContactTestDataFactory.groupContactsForTest(listOf(testContact)),
                             selectedContacts = emptyContactsSelection(),
                             isMultiSelectEnabled = false,
                             callingAppName = null,

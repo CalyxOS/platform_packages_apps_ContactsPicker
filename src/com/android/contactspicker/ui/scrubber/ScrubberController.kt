@@ -20,9 +20,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import com.android.contactspicker.data.model.Contact
-import com.android.contactspicker.ui.pickerscreen.SectionKey
-import com.android.contactspicker.ui.pickerscreen.getSectionKeyForNonFavorite
-import java.util.SortedMap
+import com.android.contactspicker.data.model.SectionKey
 import kotlin.math.abs
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -35,17 +33,21 @@ private const val SCRUBBER_VERTICAL_OFFSET_FRACTION_UPDATE_THRESHOLD = 0.001f
  * scrubber position and drag
  *
  * @param contactSections Source data used for index-to-position mapping.
- * @param numberOfFavoriteContacts Count of favorites (Used in scrubber label mapping).
  * @param showPrivacyBanner A flag indicating if the privacy banner is displayed. This is used to
  *   correctly calculate list indices from contact indices, as the banner adds an offset to the item
  *   positions.
  */
 class ScrubberController(
-    contactSections: SortedMap<SectionKey, List<Contact>>,
-    val numberOfFavoriteContacts: Int,
+    contactSections: Map<SectionKey, List<Contact>>,
     showPrivacyBanner: Boolean,
 ) {
-    private val flattenedContacts = contactSections.values.flatten()
+    // TODO(b/489313689) : Reuse ScrubberPositionToListIndexMapper to find SectionKey instead of
+    // creating a new list
+    private val contactIndexToSectionKey = buildList {
+        contactSections.forEach { (sectionKey, contacts) ->
+            repeat(contacts.size) { add(sectionKey) }
+        }
+    }
     private val scrollRequestChannel = Channel<Int>(Channel.CONFLATED)
     /** A flow emitting target list indices for scrolling. */
     val scrollRequests: Flow<Int> = scrollRequestChannel.receiveAsFlow()
@@ -87,11 +89,7 @@ class ScrubberController(
                 scrubberState.verticalOffsetFraction
             )
 
-        if (contactIndex < numberOfFavoriteContacts) {
-            SectionKey.FavoriteIconKey
-        } else {
-            flattenedContacts[contactIndex].getSectionKeyForNonFavorite()
-        }
+        contactIndexToSectionKey.getOrNull(contactIndex)
     }
 
     /**
@@ -130,22 +128,16 @@ class ScrubberController(
  * Creates and remembers a [ScrubberController]
  *
  * @param contactSections Source data used for index-to-position mapping.
- * @param numberOfFavoriteContacts Count of favorites (Used in scrubber label mapping).
  * @param showPrivacyBanner A flag indicating if the privacy banner is displayed. This is used to
  *   correctly calculate list indices from contact indices, as the banner adds an offset to the item
  *   positions.
  */
 @Composable
 internal fun rememberScrubberController(
-    contactSections: SortedMap<SectionKey, List<Contact>>,
-    numberOfFavoriteContacts: Int,
+    contactSections: Map<SectionKey, List<Contact>>,
     showPrivacyBanner: Boolean,
 ): ScrubberController {
-    return remember(contactSections, numberOfFavoriteContacts, showPrivacyBanner) {
-        ScrubberController(
-            contactSections = contactSections,
-            numberOfFavoriteContacts = numberOfFavoriteContacts,
-            showPrivacyBanner = showPrivacyBanner,
-        )
+    return remember(contactSections, showPrivacyBanner) {
+        ScrubberController(contactSections = contactSections, showPrivacyBanner = showPrivacyBanner)
     }
 }

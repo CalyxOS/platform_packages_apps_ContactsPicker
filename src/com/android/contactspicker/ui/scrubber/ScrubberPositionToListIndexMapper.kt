@@ -17,8 +17,7 @@ package com.android.contactspicker.ui.scrubber
 
 import androidx.annotation.FloatRange
 import com.android.contactspicker.data.model.Contact
-import com.android.contactspicker.ui.pickerscreen.SectionKey
-import java.util.SortedMap
+import com.android.contactspicker.data.model.SectionKey
 import kotlin.math.roundToInt
 
 private const val STICKY_HEADER_OFFSET = 1
@@ -36,7 +35,7 @@ private const val PRIVACY_BANNER_OFFSET = 1
  *    into a `listIndex` to scroll the `LazyColumn` to the correct position.
  */
 internal class ScrubberPositionToListIndexMapper(
-    contactSections: SortedMap<SectionKey, List<Contact>>,
+    contactSections: Map<SectionKey, List<Contact>>,
     showPrivacyBanner: Boolean,
 ) {
     /** The total number of contacts across all sections. */

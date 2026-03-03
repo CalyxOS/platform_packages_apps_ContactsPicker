@@ -22,6 +22,8 @@ import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.EmailEntry
 import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.model.PhoneEntry
+import com.android.contactspicker.data.model.SectionKey
+import com.android.contactspicker.viewmodel.ContactsGrouper
 
 /** A central factory for creating test [Contact] objects for tests. */
 object ContactTestDataFactory {
@@ -158,5 +160,9 @@ object ContactTestDataFactory {
             val id = (it + 1).toLong()
             createDisplayNameContact(id = id, displayName = "$namePrefix $id")
         }
+    }
+
+    fun groupContactsForTest(contacts: List<Contact>): Map<SectionKey, List<Contact>> {
+        return ContactsGrouper(contacts).availableContactsGroups
     }
 }

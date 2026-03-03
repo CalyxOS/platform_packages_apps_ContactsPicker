@@ -72,7 +72,10 @@ class ContactsPickerNavHostTest {
         setupNavHostInitialState(
             mutableStateOf(
                 ContactsListState.Success(
-                    availableContacts = listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT),
+                    availableContactsGroups =
+                        ContactTestDataFactory.groupContactsForTest(
+                            listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT)
+                        ),
                     selectedContacts = emptyContactsSelection(),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
@@ -93,7 +96,10 @@ class ContactsPickerNavHostTest {
         setupNavHostInitialState(
             mutableStateOf(
                 ContactsListState.Success(
-                    availableContacts = listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT),
+                    availableContactsGroups =
+                        ContactTestDataFactory.groupContactsForTest(
+                            listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT)
+                        ),
                     selectedContacts = emptyContactsSelection(),
                     isMultiSelectEnabled = false,
                     callingAppName = null,

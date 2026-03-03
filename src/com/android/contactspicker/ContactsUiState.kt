@@ -19,6 +19,7 @@ import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.ContactsSelection
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.MimeType
+import com.android.contactspicker.data.model.SectionKey
 
 /** Represents the different states for the Contacts Picker screen. */
 sealed interface ContactsUiState
@@ -32,14 +33,15 @@ sealed interface ContactsListState : ContactsUiState {
     /**
      * The state representing a successful fetch of the main contacts list.
      *
-     * @param availableContacts The complete list of all contacts to be displayed.
+     * @param availableContactsGroups The contacts to be displayed, grouped by section headers. It
+     *   also contains the favorite contacts list, and it is ordered as expected in UI.
      * @param selectedContacts A map representing the current selection, where the key is the
      *   contact ID and the value is a set of selected entry IDs. For a [DisplayNameContact] that
      *   has no entries, its own contact.id is used.
      * @param isMultiSelectEnabled True if multiple contacts can be selected.
      */
     data class Success(
-        val availableContacts: List<Contact>,
+        val availableContactsGroups: Map<SectionKey, List<Contact>>,
         val selectedContacts: ContactsSelection,
         val isMultiSelectEnabled: Boolean,
         val showPrivacyBanner: Boolean,

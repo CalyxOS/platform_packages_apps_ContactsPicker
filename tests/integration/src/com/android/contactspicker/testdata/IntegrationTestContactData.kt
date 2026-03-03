@@ -16,11 +16,12 @@
 
 package com.android.contactspicker.testdata
 
+import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.DisplayNameContact
+import com.android.contactspicker.data.model.SectionKey
+import com.android.contactspicker.viewmodel.ContactsGrouper
 
-/**
- * Test data for integration tests.
- */
+/** Test data for integration tests. */
 object IntegrationTestContactData {
 
     val GENERIC_DISPLAY_NAME_CONTACT =
@@ -31,4 +32,8 @@ object IntegrationTestContactData {
             profilePictureUri = null,
             lookupKey = "key_1",
         )
+
+    fun groupContactsForTest(contacts: List<Contact>): Map<SectionKey, List<Contact>> {
+        return ContactsGrouper(contacts).availableContactsGroups
+    }
 }
