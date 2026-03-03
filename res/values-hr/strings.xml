@@ -40,8 +40,7 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Sažimanje"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefon"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"E-adresa"</string>
-    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# e-adresa}one{# e-adresa}few{# e-adrese}other{# e-adresa}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# telefonski broj}one{# telefonski broj}few{# telefonska broja}other{# telefonskih brojeva}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} e-adresa od #}one{{selected_count} e-adresa od #}few{{selected_count} e-adrese od #}other{{selected_count} e-adresa od #}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} telefonski broj od #}one{{selected_count} telefonski broj od #}few{{selected_count} telefonska broja od #}other{{selected_count} telefonskih brojeva od #}}"</string>

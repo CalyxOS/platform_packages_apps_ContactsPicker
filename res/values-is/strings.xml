@@ -61,12 +61,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Þetta forrit"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Persónuvernd tengiliða þinna"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Engir tengiliðir enn"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"Engir tengiliðir með netföng"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"Engir tengiliðir með símanúmer"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Engir tengiliðir með áskildar upplýs."</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Tengiliðirnir sem þú býrð til eða flytur inn í tækið þitt munu birtast hér"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Engar niðurstöður fundust"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"Prófaðu að leita með annarri stafsetningu"</string>

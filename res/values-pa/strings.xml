@@ -40,8 +40,7 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"ਸਮੇਟੋ"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ਫ਼ੋਨ"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"ਈਮੇਲ"</string>
-    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# ਈਮੇਲ ਪਤਾ}one{# ਈਮੇਲ ਪਤਾ}other{# ਈਮੇਲ ਪਤੇ}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# ਫ਼ੋਨ ਨੰਬਰ}one{# ਫ਼ੋਨ ਨੰਬਰ}other{# ਫ਼ੋਨ ਨੰਬਰ}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{# ਈਮੇਲ ਵਿੱਚੋਂ {selected_count}}one{# ਈਮੇਲ ਵਿੱਚੋਂ {selected_count}}other{# ਈਮੇਲਾਂ ਵਿੱਚੋਂ {selected_count}}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{# ਫ਼ੋਨ ਨੰਬਰ ਵਿੱਚੋਂ {selected_count}}one{# ਫ਼ੋਨ ਨੰਬਰ ਵਿੱਚੋਂ {selected_count}}other{# ਫ਼ੋਨ ਨੰਬਰਾਂ ਵਿੱਚੋਂ {selected_count}}}"</string>
