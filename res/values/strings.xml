@@ -72,6 +72,15 @@
         addresses. [CHAR LIMIT=NONE] -->
     <string name="contact_item_email_icon_content_description">Email</string>
 
+    <!-- Content description for the accessibility custom action of selecting all contact's entries.
+        [CHAR LIMIT=NONE] -->
+    <string name="a11y_select_all">Select all</string>
+    <!-- Content description for the accessibility custom action of deselecting all contact's
+        entries. [CHAR LIMIT=NONE] -->
+    <string name="a11y_deselect_all">Deselect all</string>
+
+
+
     <!-- Count of emails shown in the contact item with multiple emails when none are selected.
         [CHAR LIMIT=NONE] -->
     <string name="contact_item_emails_count">
