@@ -20,7 +20,11 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotSelected
+import androidx.compose.ui.test.assertIsSelected
+import androidx.compose.ui.test.hasStateDescription
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -115,6 +119,29 @@ class ProfileSwitcherTest {
         composeTestRule.onNodeWithText("Work").performClick()
 
         assertThat(clickedProfile).isEqualTo(workProfile)
+    }
+
+    @Test
+    fun profileSwitcher_hasCorrectAccessibilitySemantics() {
+        composeTestRule.setContent {
+            ProfileSwitcher(
+                userState = createPickerUserState(listOf(personalProfile, workProfile)),
+                onProfileClicked = {},
+            )
+        }
+
+        // 2. Verify the Main Button's State Description
+        composeTestRule
+            .onNodeWithContentDescription("Switch profile")
+            .assert(hasStateDescription("Personal"))
+
+        // 3. Open the dropdown menu
+        composeTestRule.onNodeWithContentDescription("Switch profile").performClick()
+
+        // 4. Verify the "Selected" state is accurately reflected on the menu items
+        composeTestRule.onNodeWithText("Personal").assertIsSelected()
+
+        composeTestRule.onNodeWithText("Work").assertIsNotSelected()
     }
 
     private fun createUserProfile(id: Int, type: UserType, label: String): UserProfile {
