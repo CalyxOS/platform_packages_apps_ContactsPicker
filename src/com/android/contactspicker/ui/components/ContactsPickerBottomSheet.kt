@@ -19,7 +19,6 @@ import android.icu.text.MessageFormat
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -87,10 +86,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 internal const val BOTTOM_SHEET_TEST_TAG = "bottom_sheet"
-internal const val SCRIM_TEST_TAG = "scrim"
 
 internal const val BOTTOM_SHEET_PEEK_HEIGHT_RATIO = 0.75f
-private const val SCRIM_ALPHA = 0.32f
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -152,15 +149,6 @@ fun ContactsPickerBottomSheet(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        // Draw a scrim behind the scaffold when the sheet is not hidden
-        if (bottomSheetState.currentValue != SheetValue.Hidden) {
-            Box(
-                modifier =
-                    Modifier.fillMaxSize()
-                        .background(MaterialTheme.colorScheme.scrim.copy(alpha = SCRIM_ALPHA))
-                        .testTag(SCRIM_TEST_TAG)
-            )
-        }
         val sheetOffsetLeft = remember { mutableFloatStateOf(0f) }
         val sheetWidth = remember { mutableFloatStateOf(0f) }
         BottomSheetScaffold(

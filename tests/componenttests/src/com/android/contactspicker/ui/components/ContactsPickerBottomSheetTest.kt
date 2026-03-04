@@ -129,17 +129,6 @@ class ContactsPickerBottomSheetTest {
     }
 
     @Test
-    fun scrim_isDisplayed_onlyWhenSheetIsVisible() {
-        setupBottomSheet()
-
-        composeTestRule.onNodeWithTag(SCRIM_TEST_TAG).assertIsDisplayed()
-
-        composeTestRule.onNodeWithTag(BOTTOM_SHEET_TEST_TAG).performTouchInput { swipeDown() }
-        composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithTag(SCRIM_TEST_TAG).assertDoesNotExist()
-    }
-
-    @Test
     fun selectionBar_inLoadingState_isNotVisible() {
         setupBottomSheet()
         composeTestRule
