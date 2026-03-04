@@ -17,8 +17,13 @@ package com.android.contactspicker.ui.pickerscreen
 
 import android.icu.text.MessageFormat
 import androidx.annotation.VisibleForTesting
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -54,6 +59,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -83,10 +89,13 @@ import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.EmailEntry
 import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.model.PhoneEntry
+import com.android.contactspicker.ui.components.AVATAR_SIZE
 import com.android.contactspicker.ui.components.Avatar
 import java.util.Locale
 
 // TODO(b/450842541): move constants to a separate file
+
+private const val AVATAR_ANIMATION_INITIAL_SIZE = 8f
 private val CONTACT_ITEM_PADDING = 16.dp
 private val EXPANDED_CONTACT_ITEM_START_PADDING = 32.dp
 private val EXPANDED_CONTACT_ITEM_END_PADDING = 16.dp
@@ -425,18 +434,40 @@ private fun SelectableAvatar(
     isSelected: Boolean,
     onClick: (() -> Unit)?,
 ) {
+    val spatialFastSpec = MaterialTheme.motionScheme.fastSpatialSpec<Float>()
 
     Box(
         modifier =
             modifier
-                .size(40.dp)
+                .size(AVATAR_SIZE.dp)
                 .clip(CircleShape)
                 .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
         contentAlignment = Alignment.Center,
     ) {
-        if (isSelected) {
+        if (!isSelected) {
+            Avatar(displayName = contact.displayName, profilePictureUri = contact.profilePictureUri)
+        }
+        AnimatedVisibility(
+            visible = isSelected,
+            enter =
+                fadeIn(animationSpec = spatialFastSpec) +
+                    scaleIn(
+                        initialScale = AVATAR_ANIMATION_INITIAL_SIZE / AVATAR_SIZE,
+                        animationSpec = spatialFastSpec,
+                        transformOrigin = TransformOrigin.Center,
+                    ),
+            exit =
+                fadeOut(animationSpec = spatialFastSpec) +
+                    scaleOut(
+                        targetScale = AVATAR_ANIMATION_INITIAL_SIZE / AVATAR_SIZE,
+                        animationSpec = spatialFastSpec,
+                        transformOrigin = TransformOrigin.Center,
+                    ),
+        ) {
             Box(
-                modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.primary),
+                modifier =
+                    Modifier.fillMaxSize()
+                        .background(MaterialTheme.colorScheme.primary, shape = CircleShape),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
@@ -449,8 +480,6 @@ private fun SelectableAvatar(
                     tint = MaterialTheme.colorScheme.onPrimary,
                 )
             }
-        } else {
-            Avatar(displayName = contact.displayName, profilePictureUri = contact.profilePictureUri)
         }
     }
 }

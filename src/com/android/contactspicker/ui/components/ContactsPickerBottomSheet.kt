@@ -240,12 +240,25 @@ private fun AnimatedSelectionBottomBar(
     val isPreviewMode = uiStateValue is ContactsPreviewState
 
     val density = LocalDensity.current
-    val navBarHeight = WindowInsets.navigationBars.getBottom(density)
+    val navBarHeightPx = WindowInsets.navigationBars.getBottom(density)
+    val navBarHeightDp = with(density) { navBarHeightPx.toDp() }
+
+    val spatialExpressiveSpec = MaterialTheme.motionScheme.defaultSpatialSpec<IntOffset>()
+
+    val bottomBarPadding = navBarHeightDp + AVATAR_SIZE.dp
 
     AnimatedVisibility(
         visible = uiStateValue.isSelectionBarVisible(),
-        enter = slideInVertically(initialOffsetY = { it + navBarHeight }),
-        exit = slideOutVertically(targetOffsetY = { it + navBarHeight }),
+        enter =
+            slideInVertically(
+                initialOffsetY = { it + navBarHeightPx },
+                animationSpec = spatialExpressiveSpec,
+            ),
+        exit =
+            slideOutVertically(
+                targetOffsetY = { it + navBarHeightPx },
+                animationSpec = spatialExpressiveSpec,
+            ),
         modifier = modifier.padding(horizontal = 16.dp),
     ) {
         SelectionBottomBar(
@@ -260,7 +273,7 @@ private fun AnimatedSelectionBottomBar(
                 }
                 onClearSelection()
             },
-            modifier = Modifier.padding(bottom = 24.dp),
+            modifier = Modifier.padding(bottom = bottomBarPadding),
         )
     }
 }

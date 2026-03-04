@@ -42,6 +42,7 @@ import com.android.contactspicker.R
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 
+const val AVATAR_SIZE = 40
 internal const val AVATAR_TEST_TAG = "contact_avatar"
 internal const val AVATAR_FALLBACK_PERSON_ICON_TEST_TAG = "avatar_fallback_person_icon"
 
@@ -56,7 +57,7 @@ internal const val AVATAR_FALLBACK_PERSON_ICON_TEST_TAG = "avatar_fallback_perso
 fun Avatar(displayName: String, profilePictureUri: String?) {
     Box(
         modifier =
-            Modifier.size(40.dp)
+            Modifier.size(AVATAR_SIZE.dp)
                 .clip(CircleShape) // Clip the whole container
                 .testTag(AVATAR_TEST_TAG),
         contentAlignment = Alignment.Center,
