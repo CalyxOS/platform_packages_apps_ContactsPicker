@@ -391,15 +391,12 @@ fun formatMultiEntrySecondaryText(
 @Composable
 private fun SelectableAvatar(contact: Contact, isSelected: Boolean, onClick: () -> Unit) {
     Box(
-        modifier = Modifier.size(40.dp).clickable(onClick = onClick),
+        modifier = Modifier.size(40.dp).clip(CircleShape).clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         if (isSelected) {
             Box(
-                modifier =
-                    Modifier.fillMaxSize()
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary),
+                modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
