@@ -40,8 +40,7 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Згарнуць"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Нумар тэлефона"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Электронная пошта"</string>
-    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# адрас электроннай пошты}one{# адрас электроннай пошты}few{# адрасы электроннай пошты}many{# адрасоў электроннай пошты}other{# адраса электроннай пошты}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# нумар тэлефона}one{# нумар тэлефона}few{# нумары тэлефона}many{# нумароў тэлефона}other{# нумара тэлефона}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} з # адраса электроннай пошты}one{{selected_count} з # адраса электроннай пошты}few{{selected_count} з # адрасоў электроннай пошты}many{{selected_count} з # адрасоў электроннай пошты}other{{selected_count} з # адраса электроннай пошты}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} з # нумара тэлефона}one{{selected_count} з # нумара тэлефона}few{{selected_count} з # нумароў тэлефона}many{{selected_count} з # нумароў тэлефона}other{{selected_count} з # нумара тэлефона}}"</string>
