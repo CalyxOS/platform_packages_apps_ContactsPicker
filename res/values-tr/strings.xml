@@ -61,12 +61,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Bu uygulama"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Kişilerinizin gizliliği"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Henüz kişi yok"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"E-posta adresi olan kişi yok"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"Telefon numarası olan kişi yok"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Gerekli bilgileri olan kişi yok"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Cihazınızda oluşturduğunuz veya içe aktardığınız kişiler burada gösterilir"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Sonuç bulunamadı"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"Farklı bir yazım şekliyle aramayı deneyin"</string>

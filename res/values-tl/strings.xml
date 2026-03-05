@@ -40,8 +40,7 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"I-collapse"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telepono"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Email"</string>
-    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# email address}one{# email address}other{# na email address}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# numero ng telepono}one{# numero ng telepono}other{# na numero ng telepono}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} sa # email}one{{selected_count} sa # email}other{{selected_count} sa # na email}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} sa # numero ng telepono}one{{selected_count} sa # numero ng telepono}other{{selected_count} sa # na numero ng telepono}}"</string>

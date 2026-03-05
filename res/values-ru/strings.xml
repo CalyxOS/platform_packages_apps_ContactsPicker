@@ -40,11 +40,10 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Свернуть"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Телефон"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Электронная почта"</string>
-    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# адрес электронной почты}one{# адрес электронной почты}few{# адреса электронной почты}many{# адресов электронной почты}other{# адреса электронной почты}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# номер телефона}one{# номер телефона}few{# номера телефона}many{# номеров телефона}other{# номера телефона}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} адрес эл. почты из #}one{{selected_count} адрес эл. почты из #}few{{selected_count} адреса эл. почты из #}many{{selected_count} адресов эл. почты из #}other{{selected_count} адреса эл. почты из #}}"</string>
-    <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} номер телефона из #}one{{selected_count} номер телефона из #}few{{selected_count} номера телефона из #}many{{selected_count} номеров телефона из #}other{{selected_count} номера телефона из #}}"</string>
+    <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} из # номера телефона}one{{selected_count} из # номера телефонов}few{{selected_count} из # номеров телефонов}many{{selected_count} из # номеров телефонов}other{{selected_count} из # номера телефонов}}"</string>
     <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{За раз можно поделиться только # контактом.}one{За раз можно поделиться только # контактом.}few{За раз можно поделиться только # контактами.}many{За раз можно поделиться только # контактами.}other{За раз можно поделиться только # контакта.}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s (контакт выбран)"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Отменить выбор"</string>

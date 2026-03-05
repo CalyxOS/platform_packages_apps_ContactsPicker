@@ -61,12 +61,9 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"Este app"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"Privacidade dos seus contatos"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"Nenhum contato ainda"</string>
-    <!-- no translation found for no_email_contacts_title (501276640394262467) -->
-    <skip />
-    <!-- no translation found for no_phone_contacts_title (3446367223904876925) -->
-    <skip />
-    <!-- no translation found for no_custom_details_contacts_title (8492259954778971307) -->
-    <skip />
+    <string name="no_email_contacts_title" msgid="501276640394262467">"Nenhum contato com endereços de e-mail"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"Nenhum contato com números de telefone"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Nenhum contato com essas informações"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Os contatos que você criar ou importar para o dispositivo vão aparecer aqui"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Nenhum resultado encontrado"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"Tente escrever de outra maneira"</string>
