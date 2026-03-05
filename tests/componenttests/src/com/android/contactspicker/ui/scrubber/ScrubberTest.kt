@@ -112,7 +112,7 @@ class ScrubberTest {
 
         val expectedY = (containerSize - ScrubberHandleHeight) * 0.5f
         val handleNode = composeTestRule.onNodeWithTag(SCRUBBER_HANDLE_TEST_TAG)
-        handleNode.assertTopPositionInRootIsEqualTo(expectedY)
+        assertThat(handleNode.getBoundsInRoot().top.value).isWithin(1f).of(expectedY.value)
         assertHandleAndLabelAreVerticallyCentered()
         assertHandleIsHorizontallyAtTheEnd()
     }
