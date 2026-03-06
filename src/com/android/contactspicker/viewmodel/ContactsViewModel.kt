@@ -44,6 +44,7 @@ import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.ProfileBlockedDialogData
 import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.data.model.UserProfile
+import com.android.contactspicker.data.model.UserType
 import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.data.repository.ContactsPickerSessionProviderRepository
 import com.android.contactspicker.data.repository.ContactsRepository
@@ -563,8 +564,7 @@ constructor(
     private fun createProfilePausedDialogData(
         userProfile: UserProfile,
         reason: PausedReason? = null,
-    ): ProfileBlockedDialogData {
-        val targetUserLabel = userProfile.switchableInfo?.label ?: ""
+    ): ProfileBlockedDialogData? {
         val actualReason = reason ?: userProfile.pausedInfo?.pausedReason ?: PausedReason.UNDEFINED
 
         return when (actualReason) {
@@ -574,28 +574,15 @@ constructor(
                     message = context.getString(R.string.picker_profile_blocked_admin_msg),
                 )
             PausedReason.QUIET_MODE ->
-                ProfileBlockedDialogData(
-                    title =
-                        context.getString(R.string.picker_profile_paused_title, targetUserLabel),
-                    message =
-                        context.getString(
-                            R.string.picker_profile_paused_msg,
-                            targetUserLabel,
-                            targetUserLabel,
-                        ),
-                )
-            PausedReason.UNDEFINED ->
-                // Fallback to generic paused message
-                ProfileBlockedDialogData(
-                    title =
-                        context.getString(R.string.picker_profile_paused_title, targetUserLabel),
-                    message =
-                        context.getString(
-                            R.string.picker_profile_paused_msg,
-                            targetUserLabel,
-                            targetUserLabel,
-                        ),
-                )
+                if (userProfile.userType == UserType.WORK) {
+                    ProfileBlockedDialogData(
+                        title = context.getString(R.string.picker_work_profile_paused_title),
+                        message = context.getString(R.string.picker_work_profile_paused_msg),
+                    )
+                } else {
+                    null
+                }
+            PausedReason.UNDEFINED -> null
         }
     }
 
