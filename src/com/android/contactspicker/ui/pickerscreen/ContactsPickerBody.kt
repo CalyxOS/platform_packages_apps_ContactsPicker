@@ -15,7 +15,7 @@
  */
 package com.android.contactspicker.ui.pickerscreen
 
-import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -36,11 +36,11 @@ import androidx.compose.material.icons.filled.Mood
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -116,18 +116,6 @@ fun ContactsPickerBody(
         } else {
             true
         }
-    val density = LocalDensity.current
-    // TODO(b/464529057): Verify the animation when deselecting the last contact.
-    LaunchedEffect(selectedContacts.isNotEmpty()) {
-        if (selectedContacts.isNotEmpty()) {
-            // Only auto-scroll if the user has scrolled down a bit (is not at the very top).
-            // This prevents the UI from "jumping" if the user selects the very first item.
-            if (listState.canScrollBackward) {
-                val scrollPixelAmount = with(density) { SELECTION_BAR_HEIGHT_SPACE.toPx() }
-                listState.animateScrollBy(scrollPixelAmount)
-            }
-        }
-    }
 
     Box(modifier = Modifier.fillMaxWidth()) {
         ContactsList(
@@ -175,7 +163,11 @@ private fun ContactsList(
     val navBarsPadding = WindowInsets.navigationBars.asPaddingValues()
 
     // Calculate the total bottom padding: System Bars + Selection Bar (if visible)
-    val extraBottomPadding = if (selectedContacts.isNotEmpty()) SELECTION_BAR_HEIGHT_SPACE else 0.dp
+    val extraBottomPadding by
+        animateDpAsState(
+            targetValue = if (selectedContacts.isNotEmpty()) SELECTION_BAR_HEIGHT_SPACE else 0.dp,
+            label = "SelectionBarBottomPadding",
+        )
     val totalBottomPadding = navBarsPadding.calculateBottomPadding() + extraBottomPadding
 
     val listContentPadding =
