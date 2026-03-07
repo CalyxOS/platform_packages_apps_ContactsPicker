@@ -130,11 +130,6 @@ private fun Sdk37Screen(targetSdk: Int) {
         }
 
         Spacer(modifier = Modifier.height(20.dp))
-        SwitchOption(
-            title = "Match all data fields",
-            checked = matchAllDataFields,
-            onCheckedChange = { matchAllDataFields = it },
-        )
         CommonOptions(
             allowMultiple = allowMultiple,
             onAllowMultipleChange = { allowMultiple = it },
@@ -143,6 +138,13 @@ private fun Sdk37Screen(targetSdk: Int) {
             selectionLimit = selectionLimit,
             onSelectionLimitChange = { selectionLimit = it },
         )
+        if (intentType == Sdk37IntentType.NEW_ACTION_PICK_CONTACTS) {
+            SwitchOption(
+                title = "Match all data fields",
+                checked = matchAllDataFields,
+                onCheckedChange = { matchAllDataFields = it },
+            )
+        }
         Spacer(modifier = Modifier.height(24.dp))
 
         LaunchPickerButton {

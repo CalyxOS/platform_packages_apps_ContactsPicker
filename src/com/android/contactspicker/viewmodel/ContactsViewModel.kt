@@ -136,6 +136,7 @@ constructor(
     private var selectionCollectorJob: Job? = null
     private var userStateCollectorJob: Job? = null
 
+    private var contactsGrouper: ContactsGrouper? = null
     private var initialContacts: List<Contact> = emptyList()
     private var callingAppName: String? = null
     private var callingPackageName: String? = null
@@ -322,6 +323,12 @@ constructor(
                     Trace.beginSection("$TAG#contactsRepository.getContacts")
                     initialContacts =
                         contactsRepository.getContacts(config.queryMode, userState.selectedUserId)
+
+                    val availableContactsGroups =
+                        ContactsGrouper(initialContacts)
+                            .also { contactsGrouper = it }
+                            .availableContactsGroups
+
                     Trace.endSection()
                     if (initialContacts.isNotEmpty()) {
                         // Only show the privacy banner if user hasn't seen it before for this
@@ -334,7 +341,7 @@ constructor(
 
                         _uiState.value =
                             ContactsListState.Success(
-                                availableContacts = initialContacts,
+                                availableContactsGroups = availableContactsGroups,
                                 selectedContacts =
                                     checkNotNull(selectionHandler).selectedContacts.value,
                                 isMultiSelectEnabled = config.isMultiSelectEnabled,
@@ -688,8 +695,9 @@ constructor(
                         else ->
                             emptyContactsSelection() // Should not happen if exiting from Success
                     }
+                val availableContactsGroups = checkNotNull(contactsGrouper).availableContactsGroups
                 ContactsListState.Success(
-                    availableContacts = initialContacts,
+                    availableContactsGroups = availableContactsGroups,
                     selectedContacts = selectedContacts,
                     isMultiSelectEnabled = config.isMultiSelectEnabled,
                     callingAppName = callingAppName,
@@ -715,7 +723,7 @@ constructor(
             when (currentState) {
                 is ContactsListState.Success ->
                     Triple(
-                        currentState.availableContacts,
+                        initialContacts,
                         currentState.selectedContacts,
                         currentState.isMultiSelectEnabled,
                     )
