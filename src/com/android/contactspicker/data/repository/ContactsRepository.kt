@@ -18,6 +18,7 @@ package com.android.contactspicker.data.repository
 import com.android.contactspicker.config.ContactsQueryMode
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.MimeType
+import com.android.contactspicker.viewmodel.GroupedContactsData
 
 /** Interface for accessing contact data from the Android ContactsProvider. */
 interface ContactsRepository {
@@ -27,9 +28,10 @@ interface ContactsRepository {
      *
      * @param queryMode The mode of query to perform.
      * @param userId The user ID to query contacts for.
-     * @return A list of matching [Contact]s.
+     * @return A [GroupedContactsData] object containing the list of contacts and the grouping
+     *   information.
      */
-    suspend fun getContacts(queryMode: ContactsQueryMode, userId: Int): List<Contact>
+    suspend fun getContacts(queryMode: ContactsQueryMode, userId: Int): GroupedContactsData
 
     /**
      * Searches for contacts that match the given query and have at least one of the requested mime

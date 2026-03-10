@@ -27,6 +27,7 @@ import android.provider.ContactsContract.Contacts.MATCH_ALL_MIMETYPES_PARAM_KEY
 import android.provider.ContactsContract.Contacts.REQUESTED_MIMETYPES_PARAM_KEY
 import android.provider.ContactsContract.Data
 import androidx.annotation.VisibleForTesting
+import androidx.collection.mutableLongObjectMapOf
 import androidx.core.net.toUri
 import com.android.contactspicker.R
 import com.android.contactspicker.config.ContactsQueryMode
@@ -37,9 +38,14 @@ import com.android.contactspicker.data.model.EmailEntry
 import com.android.contactspicker.data.model.MimeType
 import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.model.PhoneEntry
+import com.android.contactspicker.viewmodel.ContactGroupingMetadata
+import com.android.contactspicker.viewmodel.FALLBACK_SECTION_HEADER
+import com.android.contactspicker.viewmodel.GroupedContactsData
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.LinkedHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.min
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -113,6 +119,20 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 Contacts.PHOTO_THUMBNAIL_URI,
                 Contacts.LOOKUP_KEY,
             )
+
+        @VisibleForTesting
+        internal fun createHeaderIterator(
+            titles: Array<String>,
+            counts: IntArray,
+        ): Iterator<String> {
+            return sequence {
+                    val numSections = min(titles.size, counts.size)
+                    for (i in 0 until numSections) {
+                        repeat(counts[i]) { yield(titles[i]) }
+                    }
+                }
+                .iterator()
+        }
     }
 
     private class ContactBuilder(
@@ -142,7 +162,10 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             )
     }
 
-    override suspend fun getContacts(queryMode: ContactsQueryMode, userId: Int): List<Contact> =
+    override suspend fun getContacts(
+        queryMode: ContactsQueryMode,
+        userId: Int,
+    ): GroupedContactsData =
         withContext(Dispatchers.IO) {
             when (queryMode) {
                 ContactsQueryMode.EmailsOnly -> getEmailContacts(userId)
@@ -237,10 +260,14 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         return cursor?.use { it.moveToFirst() } ?: false
     }
 
-    private fun getEmailContacts(userId: Int): List<Contact> {
+    private fun getEmailContacts(userId: Int): GroupedContactsData {
+        val uri =
+            Email.CONTENT_URI.buildUpon()
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .build()
         val cursor =
             contentResolver.query(
-                ContentProvider.maybeAddUserId(Email.CONTENT_URI, userId),
+                ContentProvider.maybeAddUserId(uri, userId),
                 EMAIL_FETCH_PROJECTION,
                 null, // No specific selection
                 null, // No selection args
@@ -248,7 +275,11 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             )
 
         return cursor?.use { c ->
-            val builders = mutableMapOf<Long, ContactBuilder>()
+            val contactIdToContactBuilders = LinkedHashMap<Long, ContactBuilder>()
+            val contactIdToSectionMap = mutableLongObjectMapOf<String>()
+
+            val (titles, counts) = getRawContactGroupingData(c)
+            val headerIterator = createHeaderIterator(titles, counts)
 
             val idIndex = c.getColumnIndex(Email.CONTACT_ID)
             val nameIndex = c.getColumnIndex(Email.DISPLAY_NAME_PRIMARY)
@@ -260,7 +291,10 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             val labelIndex = c.getColumnIndex(Email.LABEL)
 
             while (c.moveToNext()) {
-                val id = c.getLong(idIndex)
+                val sectionHeader =
+                    if (headerIterator.hasNext()) headerIterator.next() else FALLBACK_SECTION_HEADER
+
+                val contactId = c.getLong(idIndex)
                 val name = c.getString(nameIndex)
                 val address = c.getString(addressIndex)
 
@@ -275,8 +309,9 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                     val label = Email.getTypeLabel(context.resources, type, customLabel).toString()
                     val emailEntry = EmailEntry(dataId, address, label)
 
-                    builders
-                        .getOrPut(id) {
+                    contactIdToSectionMap[contactId] = sectionHeader
+                    contactIdToContactBuilders
+                        .getOrPut(contactId) {
                             ContactBuilder(
                                 displayName = name,
                                 profilePictureUri = uriStringWithUserId(profilePictureUri, userId),
@@ -287,14 +322,27 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                         .add(emailEntry)
                 }
             }
-            builders.map { (id, builder) -> builder.toEmailContact(id) }
-        } ?: emptyList()
+
+            val aggregatedContacts =
+                contactIdToContactBuilders.map { (contactId, builder) ->
+                    builder.toEmailContact(contactId)
+                }
+
+            GroupedContactsData(
+                contacts = aggregatedContacts,
+                groupingMetadata = ContactGroupingMetadata(contactIdToSectionMap),
+            )
+        } ?: GroupedContactsData.EMPTY
     }
 
-    private fun getPhoneContacts(userId: Int): List<Contact> {
+    private fun getPhoneContacts(userId: Int): GroupedContactsData {
+        val uri =
+            Phone.CONTENT_URI.buildUpon()
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .build()
         val cursor =
             contentResolver.query(
-                ContentProvider.maybeAddUserId(Phone.CONTENT_URI, userId),
+                ContentProvider.maybeAddUserId(uri, userId),
                 PHONE_FETCH_PROJECTION,
                 null, // No specific selection
                 null, // No selection args
@@ -302,7 +350,10 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             )
 
         return cursor?.use { c ->
-            val builders = mutableMapOf<Long, ContactBuilder>()
+            val (titles, counts) = getRawContactGroupingData(c)
+            val headerIterator = createHeaderIterator(titles, counts)
+            val contactIdToContactBuilders = LinkedHashMap<Long, ContactBuilder>()
+            val contactIdToSectionMap = mutableLongObjectMapOf<String>()
 
             val idIndex = c.getColumnIndex(Phone.CONTACT_ID)
             val nameIndex = c.getColumnIndex(Phone.DISPLAY_NAME_PRIMARY)
@@ -314,7 +365,10 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             val labelIndex = c.getColumnIndex(Phone.LABEL)
 
             while (c.moveToNext()) {
-                val id = c.getLong(idIndex)
+                val sectionHeader =
+                    if (headerIterator.hasNext()) headerIterator.next() else FALLBACK_SECTION_HEADER
+
+                val contactId = c.getLong(idIndex)
                 val name = c.getString(nameIndex)
                 val number = c.getString(numberIndex)
 
@@ -328,8 +382,9 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                     val label = Phone.getTypeLabel(context.resources, type, customLabel).toString()
                     val phoneEntry = PhoneEntry(dataId, number, label)
 
-                    builders
-                        .getOrPut(id) {
+                    contactIdToSectionMap[contactId] = sectionHeader
+                    contactIdToContactBuilders
+                        .getOrPut(contactId) {
                             ContactBuilder(
                                 displayName = name,
                                 profilePictureUri = uriStringWithUserId(profilePictureUri, userId),
@@ -340,30 +395,43 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                         .add(phoneEntry)
                 }
             }
-            builders.map { (id, builder) -> builder.toPhoneContact(id) }
-        } ?: emptyList()
+
+            val aggregatedContacts =
+                contactIdToContactBuilders.map { (contactId, builder) ->
+                    builder.toPhoneContact(contactId)
+                }
+            GroupedContactsData(
+                contacts = aggregatedContacts,
+                groupingMetadata = ContactGroupingMetadata(contactIdToSectionMap),
+            )
+        } ?: GroupedContactsData.EMPTY
     }
 
-    private fun getDisplayNameContacts(userId: Int): List<Contact> {
+    private fun getDisplayNameContacts(userId: Int): GroupedContactsData {
+        val uri =
+            Contacts.CONTENT_URI.buildUpon()
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .build()
         val cursor =
             contentResolver.query(
-                ContentProvider.maybeAddUserId(Contacts.CONTENT_URI, userId),
+                ContentProvider.maybeAddUserId(uri, userId),
                 DISPLAY_NAME_FETCH_PROJECTION,
                 null, // No specific selection
                 null, // No selection args
                 Data.SORT_KEY_PRIMARY + " ASC",
             )
 
-        return cursor?.use { parseDisplayNameContacts(it, userId) } ?: emptyList()
+        return cursor?.use { parseDisplayNameContactsGrouped(it, userId) }
+            ?: GroupedContactsData.EMPTY
     }
 
     private fun getContactsWithMimetypes(
         mimetypes: List<MimeType>,
         matchAllRequestedMimetypes: Boolean,
         userId: Int,
-    ): List<Contact> {
+    ): GroupedContactsData {
         if (mimetypes.isEmpty()) {
-            return emptyList()
+            return GroupedContactsData.EMPTY
         }
 
         // TODO(467326511#comment3): consider fix in the CP2 matcher and change the used URI
@@ -379,6 +447,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                     MATCH_ALL_MIMETYPES_PARAM_KEY,
                     matchAllRequestedMimetypes.toString(),
                 )
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
                 .build()
 
         val cursor =
@@ -390,7 +459,8 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 Contacts.SORT_KEY_PRIMARY + " ASC",
             )
 
-        return cursor?.use { parseDisplayNameContacts(it, userId) } ?: emptyList()
+        return cursor?.use { parseDisplayNameContactsGrouped(it, userId) }
+            ?: GroupedContactsData.EMPTY
     }
 
     private fun searchContactsByMimeTypes(
@@ -429,7 +499,29 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         return cursor?.use { parseDisplayNameContacts(it, userId) } ?: emptyList()
     }
 
-    private fun parseDisplayNameContacts(cursor: Cursor, userId: Int): List<DisplayNameContact> {
+    private fun parseDisplayNameContactsGrouped(cursor: Cursor, userId: Int): GroupedContactsData {
+        val (titles, counts) = getRawContactGroupingData(cursor)
+        val headerIterator = createHeaderIterator(titles, counts)
+        val contactIdToSectionMap = mutableLongObjectMapOf<String>()
+
+        val contacts =
+            parseDisplayNameContacts(cursor, userId) { contactId ->
+                val sectionHeader =
+                    if (headerIterator.hasNext()) headerIterator.next() else FALLBACK_SECTION_HEADER
+                contactIdToSectionMap[contactId] = sectionHeader
+            }
+
+        return GroupedContactsData(
+            contacts = contacts,
+            groupingMetadata = ContactGroupingMetadata(contactIdToSectionMap),
+        )
+    }
+
+    private fun parseDisplayNameContacts(
+        cursor: Cursor,
+        userId: Int,
+        onRowVisited: (contactId: Long) -> Unit = {},
+    ): List<Contact> {
         val idIndex = cursor.getColumnIndex(Contacts._ID)
         val nameIndex = cursor.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY)
         val profilePictureUriIndex = cursor.getColumnIndex(Contacts.PHOTO_THUMBNAIL_URI)
@@ -438,7 +530,9 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
 
         return buildList {
             while (cursor.moveToNext()) {
-                val id = cursor.getLong(idIndex)
+                val contactId = cursor.getLong(idIndex)
+                onRowVisited(contactId)
+
                 val name =
                     cursor.getString(nameIndex)?.takeIf { nameStr -> nameStr.isNotBlank() }
                         ?: context.getString(R.string.no_name_placeholder)
@@ -448,7 +542,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
 
                 add(
                     DisplayNameContact(
-                        id = id,
+                        id = contactId,
                         displayName = name,
                         profilePictureUri = uriStringWithUserId(profilePictureUri, userId),
                         isFavorite = isFavorite,
@@ -457,6 +551,12 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 )
             }
         }
+    }
+
+    private fun getRawContactGroupingData(cursor: Cursor): Pair<Array<String>, IntArray> {
+        val titles = cursor.extras.getStringArray(Contacts.EXTRA_ADDRESS_BOOK_INDEX_TITLES)
+        val counts = cursor.extras.getIntArray(Contacts.EXTRA_ADDRESS_BOOK_INDEX_COUNTS)
+        return (titles ?: emptyArray()) to (counts ?: intArrayOf())
     }
 
     private fun searchPhones(query: String, userId: Int): List<Contact> {

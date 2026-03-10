@@ -323,10 +323,12 @@ constructor(
                     Trace.beginSection("$TAG#loadContactsListData")
                     // load contacts data
                     Trace.beginSection("$TAG#contactsRepository.getContacts")
-                    initialContacts =
+                    val (loadedContacts, initialContactGroupingMetadata) =
                         contactsRepository.getContacts(config.queryMode, userState.selectedUserId)
+                    initialContacts = loadedContacts
+
                     val availableContactsGroups =
-                        ContactsGrouper(initialContacts)
+                        ContactsGrouper(initialContacts, initialContactGroupingMetadata)
                             .also { contactsGrouper = it }
                             .availableContactsGroups
 

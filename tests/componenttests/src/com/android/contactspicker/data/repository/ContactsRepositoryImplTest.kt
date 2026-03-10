@@ -24,6 +24,7 @@ import android.content.flags.Flags
 import android.content.pm.ProviderInfo
 import android.content.res.Resources
 import android.database.MatrixCursor
+import android.os.Bundle
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
@@ -33,6 +34,7 @@ import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsContract.Contacts
 import android.provider.ContactsContract.Data
 import android.test.mock.MockContentResolver
+import androidx.collection.mutableLongObjectMapOf
 import androidx.core.net.toUri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -44,6 +46,7 @@ import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.MimeType
 import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.fakes.FakeContentProvider
+import com.android.contactspicker.viewmodel.FALLBACK_SECTION_HEADER
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -89,6 +92,9 @@ class ContactsRepositoryImplTest {
         private const val TEST_EMAIL = "test@example.com"
         private const val TEST_PHONE_1 = "555-0123"
         private const val TEST_PHONE_2 = "555-0124"
+
+        private val SECTION_TITLES = arrayOf("A", "B", "C")
+        private val SECTION_COUNTS = intArrayOf(1, 1, 1)
     }
 
     @Before
@@ -122,31 +128,109 @@ class ContactsRepositoryImplTest {
         repository = ContactsRepositoryImpl(contextWrapper)
     }
 
+    private fun createCursorWithExtras(cursor: MatrixCursor): MatrixCursor {
+        val extras =
+            Bundle().apply {
+                putStringArray(Contacts.EXTRA_ADDRESS_BOOK_INDEX_TITLES, SECTION_TITLES)
+                putIntArray(Contacts.EXTRA_ADDRESS_BOOK_INDEX_COUNTS, SECTION_COUNTS)
+            }
+        cursor.extras = extras
+        return cursor
+    }
+
     @Test
     fun getContacts_displayNamesOnlyMode_returnsDisplayNamesContacts() = runTest {
         val queryMode = ContactsQueryMode.DisplayNamesOnly
-        val uriToExpect = Contacts.CONTENT_URI
-        val cursor = createDisplayNameCursor().apply { addDisplayNameRow() }
+        val uriToExpect =
+            Contacts.CONTENT_URI.buildUpon()
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .build()
+        val cursor = createCursorWithExtras(createDisplayNameCursor().apply { addDisplayNameRow() })
         fakeContentProvider.setCursorForUri(uriToExpect, cursor)
 
-        val contacts = repository.getContacts(queryMode, currentUserId)
+        val result = repository.getContacts(queryMode, currentUserId)
 
-        assertThat(contacts).isNotEmpty()
-        val contact = contacts.first()
+        assertThat(result.contacts).isNotEmpty()
+        val contact = result.contacts.first()
         assertThat(contact).isInstanceOf(DisplayNameContact::class.java)
+        assertThat(fakeContentProvider.capturedUris)
+            .contains(ContentProvider.maybeAddUserId(uriToExpect, currentUserId))
+    }
+
+    @Test
+    fun getContacts_displayNamesOnlyMode_parsesGroupMetadata() = runTest {
+        val queryMode = ContactsQueryMode.DisplayNamesOnly
+        val uriToExpect =
+            Contacts.CONTENT_URI.buildUpon()
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .build()
+        val cursor =
+            createCursorWithExtras(
+                createDisplayNameCursor().apply {
+                    addDisplayNameRow(id = 1L, displayName = "Apple")
+                    addDisplayNameRow(id = 2L, displayName = "Banana")
+                    addDisplayNameRow(id = 3L, displayName = "Cherry")
+                }
+            )
+        fakeContentProvider.setCursorForUri(uriToExpect, cursor)
+
+        val result = repository.getContacts(queryMode, currentUserId)
+
+        assertThat(result.groupingMetadata).isNotNull()
+        val expectedMap =
+            mutableLongObjectMapOf<String>().apply {
+                put(1L, "A")
+                put(2L, "B")
+                put(3L, "C")
+            }
+        assertThat(result.groupingMetadata.contactIdToSectionMap).isEqualTo(expectedMap)
+    }
+
+    @Test
+    fun getContacts_mismatchedIndexCounts_usesFallbackHeader() = runTest {
+        val queryMode = ContactsQueryMode.DisplayNamesOnly
+        val uriToExpect =
+            Contacts.CONTENT_URI.buildUpon()
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .build()
+        val cursor = MatrixCursor(ContactsRepositoryImpl.DISPLAY_NAME_FETCH_PROJECTION)
+        cursor.addRow(arrayOf<Any?>(1L, "Apple", null, 0, "lookup_1"))
+        cursor.addRow(arrayOf<Any?>(2L, "Banana", null, 0, "lookup_2"))
+        val extras =
+            Bundle().apply {
+                putStringArray(Contacts.EXTRA_ADDRESS_BOOK_INDEX_TITLES, arrayOf("A"))
+                putIntArray(Contacts.EXTRA_ADDRESS_BOOK_INDEX_COUNTS, intArrayOf(1))
+            }
+        cursor.extras = extras
+        fakeContentProvider.setCursorForUri(uriToExpect, cursor)
+
+        val result = repository.getContacts(queryMode, currentUserId)
+
+        val expectedMap =
+            mutableLongObjectMapOf<String>().apply {
+                put(1L, "A")
+                put(2L, FALLBACK_SECTION_HEADER)
+            }
+        assertThat(result.groupingMetadata.contactIdToSectionMap).isEqualTo(expectedMap)
     }
 
     @Test
     fun getContacts_displayNamesOnlyMode_noName_returnsNoName() = runTest {
         val queryMode = ContactsQueryMode.DisplayNamesOnly
-        val uriToExpect = Contacts.CONTENT_URI
-        val cursor = createDisplayNameCursor().apply { addDisplayNameRow(displayName = null) }
+        val uriToExpect =
+            Contacts.CONTENT_URI.buildUpon()
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .build()
+        val cursor =
+            createCursorWithExtras(
+                createDisplayNameCursor().apply { addDisplayNameRow(displayName = null) }
+            )
         fakeContentProvider.setCursorForUri(uriToExpect, cursor)
 
-        val contacts = repository.getContacts(queryMode, currentUserId)
+        val result = repository.getContacts(queryMode, currentUserId)
 
-        assertThat(contacts).isNotEmpty()
-        val contact = contacts.first()
+        assertThat(result.contacts).isNotEmpty()
+        val contact = result.contacts.first()
         assertThat(contact).isInstanceOf(DisplayNameContact::class.java)
         assertThat(contact.displayName)
             .isEqualTo(realContext.getString(R.string.no_name_placeholder))
@@ -155,29 +239,97 @@ class ContactsRepositoryImplTest {
     @Test
     fun getContacts_emailsOnlyMode_returnsEmailContacts() = runTest {
         val queryMode = ContactsQueryMode.EmailsOnly
-        val uriToExpect = Email.CONTENT_URI
-        val cursor = createEmailCursor().apply { addEmailRow() }
+        val uriToExpect =
+            Email.CONTENT_URI.buildUpon()
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .build()
+        val cursor = createCursorWithExtras(createEmailCursor().apply { addEmailRow() })
         fakeContentProvider.setCursorForUri(uriToExpect, cursor)
 
-        val contacts = repository.getContacts(queryMode, currentUserId)
+        val result = repository.getContacts(queryMode, currentUserId)
 
-        assertThat(contacts).isNotEmpty()
-        val contact = contacts.first()
+        assertThat(result.contacts).isNotEmpty()
+        val contact = result.contacts.first()
         assertThat(contact).isInstanceOf(EmailContact::class.java)
+        assertThat(fakeContentProvider.capturedUris)
+            .contains(ContentProvider.maybeAddUserId(uriToExpect, currentUserId))
+    }
+
+    @Test
+    fun getContacts_emailsOnlyMode_parsesGroupMetadata() = runTest {
+        val queryMode = ContactsQueryMode.EmailsOnly
+        val uriToExpect =
+            Email.CONTENT_URI.buildUpon()
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .build()
+        val cursor =
+            createCursorWithExtras(
+                createEmailCursor().apply {
+                    addEmailRow(id = 1L, displayName = "Apple")
+                    addEmailRow(id = 2L, displayName = "Banana")
+                    addEmailRow(id = 3L, displayName = "Cherry")
+                }
+            )
+        fakeContentProvider.setCursorForUri(uriToExpect, cursor)
+
+        val result = repository.getContacts(queryMode, currentUserId)
+
+        assertThat(result.groupingMetadata).isNotNull()
+        val expectedMap =
+            mutableLongObjectMapOf<String>().apply {
+                put(1L, "A")
+                put(2L, "B")
+                put(3L, "C")
+            }
+        assertThat(result.groupingMetadata.contactIdToSectionMap).isEqualTo(expectedMap)
     }
 
     @Test
     fun getContacts_phonesOnlyMode_returnsPhoneContacts() = runTest {
         val queryMode = ContactsQueryMode.PhonesOnly
-        val uriToExpect = Phone.CONTENT_URI
-        val cursor = createPhoneCursor().apply { addPhoneRow() }
+        val uriToExpect =
+            Phone.CONTENT_URI.buildUpon()
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .build()
+        val cursor = createCursorWithExtras(createPhoneCursor().apply { addPhoneRow() })
         fakeContentProvider.setCursorForUri(uriToExpect, cursor)
 
-        val contacts = repository.getContacts(queryMode, currentUserId)
+        val result = repository.getContacts(queryMode, currentUserId)
 
-        assertThat(contacts).isNotEmpty()
-        val contact = contacts.first()
+        assertThat(result.contacts).isNotEmpty()
+        val contact = result.contacts.first()
         assertThat(contact).isInstanceOf(PhoneContact::class.java)
+        assertThat(fakeContentProvider.capturedUris)
+            .contains(ContentProvider.maybeAddUserId(uriToExpect, currentUserId))
+    }
+
+    @Test
+    fun getContacts_phonesOnlyMode_parsesGroupMetadata() = runTest {
+        val queryMode = ContactsQueryMode.PhonesOnly
+        val uriToExpect =
+            Phone.CONTENT_URI.buildUpon()
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .build()
+        val cursor =
+            createCursorWithExtras(
+                createPhoneCursor().apply {
+                    addPhoneRow(id = 1L, displayName = "Apple")
+                    addPhoneRow(id = 2L, displayName = "Banana")
+                    addPhoneRow(id = 3L, displayName = "Cherry")
+                }
+            )
+        fakeContentProvider.setCursorForUri(uriToExpect, cursor)
+
+        val result = repository.getContacts(queryMode, currentUserId)
+
+        assertThat(result.groupingMetadata).isNotNull()
+        val expectedMap =
+            mutableLongObjectMapOf<String>().apply {
+                put(1L, "A")
+                put(2L, "B")
+                put(3L, "C")
+            }
+        assertThat(result.groupingMetadata.contactIdToSectionMap).isEqualTo(expectedMap)
     }
 
     @Test
@@ -194,16 +346,57 @@ class ContactsRepositoryImplTest {
                     mimeTypes.joinToString(",") { it.value },
                 )
                 .appendQueryParameter(Contacts.MATCH_ALL_MIMETYPES_PARAM_KEY, "true")
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
                 .build()
-        val cursor = createDisplayNameCursor().apply { addDisplayNameRow() }
+        val cursor = createCursorWithExtras(createDisplayNameCursor().apply { addDisplayNameRow() })
         fakeContentProvider.setCursorForUri(expectedUri, cursor)
 
-        val contacts = repository.getContacts(queryMode, currentUserId)
+        val result = repository.getContacts(queryMode, currentUserId)
 
-        assertThat(contacts).isNotEmpty()
-        val contact = contacts.first()
+        assertThat(result.contacts).isNotEmpty()
+        val contact = result.contacts.first()
         assertThat(contact).isInstanceOf(DisplayNameContact::class.java)
         assertThat(contact.displayName).isEqualTo(TEST_CONTACT_NAME)
+        assertThat(fakeContentProvider.capturedUris)
+            .contains(ContentProvider.maybeAddUserId(expectedUri, currentUserId))
+    }
+
+    @Test
+    fun getContacts_customMode_parsesGroupMetadata() = runTest {
+        val mimeTypes = listOf(MimeType.EMAIL, MimeType.PHONE)
+        val matchAll = true
+        val queryMode = ContactsQueryMode.Custom(mimeTypes, matchAll)
+        val expectedUri =
+            ContactsContract.AUTHORITY_URI.buildUpon()
+                .appendPath("contacts")
+                .appendPath("mimes")
+                .appendQueryParameter(
+                    Contacts.REQUESTED_MIMETYPES_PARAM_KEY,
+                    mimeTypes.joinToString(",") { it.value },
+                )
+                .appendQueryParameter(Contacts.MATCH_ALL_MIMETYPES_PARAM_KEY, "true")
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .build()
+        val cursor =
+            createCursorWithExtras(
+                createDisplayNameCursor().apply {
+                    addDisplayNameRow(id = 1L, displayName = "Apple")
+                    addDisplayNameRow(id = 2L, displayName = "Banana")
+                    addDisplayNameRow(id = 3L, displayName = "Cherry")
+                }
+            )
+        fakeContentProvider.setCursorForUri(expectedUri, cursor)
+
+        val result = repository.getContacts(queryMode, currentUserId)
+
+        assertThat(result.groupingMetadata).isNotNull()
+        val expectedMap =
+            mutableLongObjectMapOf<String>().apply {
+                put(1L, "A")
+                put(2L, "B")
+                put(3L, "C")
+            }
+        assertThat(result.groupingMetadata.contactIdToSectionMap).isEqualTo(expectedMap)
     }
 
     @Test
@@ -223,6 +416,7 @@ class ContactsRepositoryImplTest {
                     mimeTypes.joinToString(",") { it.value },
                 )
                 .appendQueryParameter(Contacts.MATCH_ALL_MIMETYPES_PARAM_KEY, "false")
+                // EXTRA_ADDRESS_BOOK_INDEX is not used in search
                 .build()
         val cursor = createDisplayNameCursor().apply { addDisplayNameRow() }
         fakeContentProvider.setCursorForUri(expectedUri, cursor)
@@ -232,31 +426,39 @@ class ContactsRepositoryImplTest {
         assertThat(contacts).isNotEmpty()
         val contact = contacts.first()
         assertThat(contact.displayName).isEqualTo(TEST_CONTACT_NAME)
+        assertThat(fakeContentProvider.capturedUris)
+            .contains(ContentProvider.maybeAddUserId(expectedUri, currentUserId))
     }
 
     @Test
     fun getContactsForIntent_groupsMultipleEntriesForSameContact() = runTest {
         val queryMode = ContactsQueryMode.PhonesOnly
+        val uriToExpect =
+            Phone.CONTENT_URI.buildUpon()
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .build()
         val cursor =
-            createPhoneCursor().apply {
-                addPhoneRow(
-                    number = TEST_PHONE_1,
-                    dataId = TEST_CONTACT_DATA_ID_1,
-                    type = Phone.TYPE_HOME,
-                )
-                addPhoneRow(
-                    displayName = TEST_CONTACT_NAME_2,
-                    number = TEST_PHONE_2,
-                    dataId = TEST_CONTACT_DATA_ID_2,
-                    type = Phone.TYPE_WORK,
-                )
-            }
-        fakeContentProvider.setCursorForUri(Phone.CONTENT_URI, cursor)
+            createCursorWithExtras(
+                createPhoneCursor().apply {
+                    addPhoneRow(
+                        number = TEST_PHONE_1,
+                        dataId = TEST_CONTACT_DATA_ID_1,
+                        type = Phone.TYPE_HOME,
+                    )
+                    addPhoneRow(
+                        displayName = TEST_CONTACT_NAME_2, // Same contact ID
+                        number = TEST_PHONE_2,
+                        dataId = TEST_CONTACT_DATA_ID_2,
+                        type = Phone.TYPE_WORK,
+                    )
+                }
+            )
+        fakeContentProvider.setCursorForUri(uriToExpect, cursor)
 
-        val contacts = repository.getContacts(queryMode, currentUserId)
+        val result = repository.getContacts(queryMode, currentUserId)
 
-        assertThat(contacts).hasSize(1)
-        val phoneContact = contacts.first() as PhoneContact
+        assertThat(result.contacts).hasSize(1)
+        val phoneContact = result.contacts.first() as PhoneContact
         assertThat(phoneContact.phones).hasSize(2)
         assertThat(phoneContact.phones[0].number).isEqualTo(TEST_PHONE_1)
         assertThat(phoneContact.phones[0].label).isEqualTo("Home")
@@ -268,26 +470,32 @@ class ContactsRepositoryImplTest {
     fun getContactsForIntent_phonesOnlyMode_passesUriValueCorrectly() = runTest {
         val queryMode = ContactsQueryMode.PhonesOnly
         val fakeUri = "content://fake/uri/123"
+        val uriToExpect =
+            Phone.CONTENT_URI.buildUpon()
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .build()
         val cursor =
-            createPhoneCursor().apply {
-                addPhoneRow(photoUri = null, type = Phone.TYPE_HOME)
-                addPhoneRow(
-                    id = 2L,
-                    displayName = TEST_CONTACT_NAME_2,
-                    photoUri = fakeUri,
-                    number = TEST_PHONE_2,
-                    dataId = TEST_CONTACT_DATA_ID_2,
-                    type = Phone.TYPE_WORK,
-                )
-            }
-        fakeContentProvider.setCursorForUri(Phone.CONTENT_URI, cursor)
+            createCursorWithExtras(
+                createPhoneCursor().apply {
+                    addPhoneRow(photoUri = null, type = Phone.TYPE_HOME)
+                    addPhoneRow(
+                        id = 2L,
+                        displayName = TEST_CONTACT_NAME_2,
+                        photoUri = fakeUri,
+                        number = TEST_PHONE_2,
+                        dataId = TEST_CONTACT_DATA_ID_2,
+                        type = Phone.TYPE_WORK,
+                    )
+                }
+            )
+        fakeContentProvider.setCursorForUri(uriToExpect, cursor)
 
-        val contacts = repository.getContacts(queryMode, currentUserId)
+        val result = repository.getContacts(queryMode, currentUserId)
 
-        assertThat(contacts).hasSize(2)
-        assertThat((contacts[0] as PhoneContact).profilePictureUri).isNull()
-        assertThat((contacts[1] as PhoneContact).profilePictureUri).isNotNull()
-        val profilePictureUri = (contacts[1] as PhoneContact).profilePictureUri!!.toUri()
+        assertThat(result.contacts).hasSize(2)
+        assertThat((result.contacts[0] as PhoneContact).profilePictureUri).isNull()
+        assertThat((result.contacts[1] as PhoneContact).profilePictureUri).isNotNull()
+        val profilePictureUri = (result.contacts[1] as PhoneContact).profilePictureUri!!.toUri()
         assertThat(profilePictureUri.userInfo).isNotNull()
         assertThat(ContentProvider.getUriWithoutUserId(profilePictureUri).toString())
             .isEqualTo(fakeUri)
@@ -297,26 +505,32 @@ class ContactsRepositoryImplTest {
     fun getContactsForIntent_emailsOnlyMode_passesUriValueCorrectly() = runTest {
         val queryMode = ContactsQueryMode.EmailsOnly
         val fakeUri = "content://fake/uri/111"
+        val uriToExpect =
+            Email.CONTENT_URI.buildUpon()
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .build()
         val cursor =
-            createEmailCursor().apply {
-                addEmailRow(photoUri = null, type = Email.TYPE_HOME)
-                addEmailRow(
-                    id = 2L,
-                    displayName = TEST_CONTACT_NAME_2,
-                    photoUri = fakeUri,
-                    address = "testemail@email.com",
-                    dataId = TEST_CONTACT_DATA_ID_2,
-                    type = Email.TYPE_WORK,
-                )
-            }
-        fakeContentProvider.setCursorForUri(Email.CONTENT_URI, cursor)
+            createCursorWithExtras(
+                createEmailCursor().apply {
+                    addEmailRow(photoUri = null, type = Email.TYPE_HOME)
+                    addEmailRow(
+                        id = 2L,
+                        displayName = TEST_CONTACT_NAME_2,
+                        photoUri = fakeUri,
+                        address = "testemail@email.com",
+                        dataId = TEST_CONTACT_DATA_ID_2,
+                        type = Email.TYPE_WORK,
+                    )
+                }
+            )
+        fakeContentProvider.setCursorForUri(uriToExpect, cursor)
 
-        val contacts = repository.getContacts(queryMode, currentUserId)
+        val result = repository.getContacts(queryMode, currentUserId)
 
-        assertThat(contacts).hasSize(2)
-        assertThat((contacts[0] as EmailContact).profilePictureUri).isNull()
-        assertThat((contacts[1] as EmailContact).profilePictureUri).isNotNull()
-        val profilePictureUri = (contacts[1] as EmailContact).profilePictureUri!!.toUri()
+        assertThat(result.contacts).hasSize(2)
+        assertThat((result.contacts[0] as EmailContact).profilePictureUri).isNull()
+        assertThat((result.contacts[1] as EmailContact).profilePictureUri).isNotNull()
+        val profilePictureUri = (result.contacts[1] as EmailContact).profilePictureUri!!.toUri()
         assertThat(profilePictureUri.userInfo).isNotNull()
         assertThat(ContentProvider.getUriWithoutUserId(profilePictureUri).toString())
             .isEqualTo(fakeUri)
@@ -326,24 +540,31 @@ class ContactsRepositoryImplTest {
     fun getContactsForIntent_displayNamesOnlyMode_passesUriValueCorrectly() = runTest {
         val queryMode = ContactsQueryMode.DisplayNamesOnly
         val fakeUri = "content://fake/uri/123"
+        val uriToExpect =
+            Contacts.CONTENT_URI.buildUpon()
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .build()
         val cursor =
-            createDisplayNameCursor().apply {
-                addDisplayNameRow(photoUri = null)
-                addDisplayNameRow(
-                    id = TEST_CONTACT_ID,
-                    displayName = TEST_CONTACT_NAME_2,
-                    photoUri = fakeUri,
-                    lookupKey = TEST_CONTACT_LOOKUP_KEY + 1,
-                )
-            }
-        fakeContentProvider.setCursorForUri(Contacts.CONTENT_URI, cursor)
+            createCursorWithExtras(
+                createDisplayNameCursor().apply {
+                    addDisplayNameRow(photoUri = null)
+                    addDisplayNameRow(
+                        id = TEST_CONTACT_ID,
+                        displayName = TEST_CONTACT_NAME_2,
+                        photoUri = fakeUri,
+                        lookupKey = TEST_CONTACT_LOOKUP_KEY + 1,
+                    )
+                }
+            )
+        fakeContentProvider.setCursorForUri(uriToExpect, cursor)
 
-        val contacts = repository.getContacts(queryMode, currentUserId)
+        val result = repository.getContacts(queryMode, currentUserId)
 
-        assertThat(contacts).hasSize(2)
-        assertThat((contacts[0] as DisplayNameContact).profilePictureUri).isNull()
-        assertThat((contacts[1] as DisplayNameContact).profilePictureUri).isNotNull()
-        val profilePictureUri = (contacts[1] as DisplayNameContact).profilePictureUri!!.toUri()
+        assertThat(result.contacts).hasSize(2)
+        assertThat((result.contacts[0] as DisplayNameContact).profilePictureUri).isNull()
+        assertThat((result.contacts[1] as DisplayNameContact).profilePictureUri).isNotNull()
+        val profilePictureUri =
+            (result.contacts[1] as DisplayNameContact).profilePictureUri!!.toUri()
         assertThat(profilePictureUri.userInfo).isNotNull()
         assertThat(ContentProvider.getUriWithoutUserId(profilePictureUri).toString())
             .isEqualTo(fakeUri)
@@ -402,26 +623,31 @@ class ContactsRepositoryImplTest {
     fun getContacts_crossProfileUser_queriesCorrectProviderAuthority() = runTest {
         fakeContentProvider.bypassUserIdCheck = true
         val queryMode = ContactsQueryMode.DisplayNamesOnly
-        val uriToExpect = Contacts.CONTENT_URI
+        val uriToExpect =
+            Contacts.CONTENT_URI.buildUpon()
+                .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
+                .build()
         val cursor =
-            createDisplayNameCursor().apply {
-                addDisplayNameRow(
-                    id = CROSS_PROFILE_CONTACT_ID,
-                    displayName = CROSS_PROFILE_CONTACT_NAME,
-                    lookupKey = CROSS_PROFILE_LOOKUP_KEY,
-                )
-            }
+            createCursorWithExtras(
+                createDisplayNameCursor().apply {
+                    addDisplayNameRow(
+                        id = CROSS_PROFILE_CONTACT_ID,
+                        displayName = CROSS_PROFILE_CONTACT_NAME,
+                        lookupKey = CROSS_PROFILE_LOOKUP_KEY,
+                    )
+                }
+            )
         fakeContentProvider.setCursorForUri(uriToExpect, cursor)
 
-        val contacts = repository.getContacts(queryMode, CROSS_PROFILE_USER_ID)
+        val result = repository.getContacts(queryMode, CROSS_PROFILE_USER_ID)
 
-        assertThat(contacts).isNotEmpty()
-        val contact = contacts.first()
+        assertThat(result.contacts).isNotEmpty()
+        val contact = result.contacts.first()
         assertThat(contact).isInstanceOf(DisplayNameContact::class.java)
         assertThat((contact as DisplayNameContact).displayName)
             .isEqualTo(CROSS_PROFILE_CONTACT_NAME)
         assertThat(fakeContentProvider.capturedUris)
-            .contains(ContentProvider.maybeAddUserId(Contacts.CONTENT_URI, CROSS_PROFILE_USER_ID))
+            .contains(ContentProvider.maybeAddUserId(uriToExpect, CROSS_PROFILE_USER_ID))
     }
 
     @Test
@@ -470,6 +696,94 @@ class ContactsRepositoryImplTest {
         assertThat(result).containsExactly(dataId)
         assertThat(fakeContentProvider.capturedUris)
             .contains(ContentProvider.maybeAddUserId(Data.CONTENT_URI, CROSS_PROFILE_USER_ID))
+    }
+
+    @Test
+    fun createHeaderIterator_emptyList_hasNoNext() {
+        val iterator = ContactsRepositoryImpl.createHeaderIterator(emptyArray(), intArrayOf())
+        assertThat(iterator.hasNext()).isFalse()
+    }
+
+    @Test
+    fun createHeaderIterator_singleSection_yieldsCorrectTitles() {
+        val iterator =
+            ContactsRepositoryImpl.createHeaderIterator(
+                titles = arrayOf("A"),
+                counts = intArrayOf(2),
+            )
+        assertThat(iterator.hasNext()).isTrue()
+        assertThat(iterator.next()).isEqualTo("A")
+        assertThat(iterator.hasNext()).isTrue()
+        assertThat(iterator.next()).isEqualTo("A")
+        assertThat(iterator.hasNext()).isFalse()
+    }
+
+    @Test
+    fun createHeaderIterator_multipleSections_yieldsCorrectTitles() {
+        val iterator =
+            ContactsRepositoryImpl.createHeaderIterator(
+                titles = arrayOf("A", "B"),
+                counts = intArrayOf(1, 2),
+            )
+        assertThat(iterator.next()).isEqualTo("A")
+        assertThat(iterator.next()).isEqualTo("B")
+        assertThat(iterator.next()).isEqualTo("B")
+        assertThat(iterator.hasNext()).isFalse()
+    }
+
+    @Test
+    fun createHeaderIterator_mismatchedListSizes_usesShorterCountsList() {
+        val iterator =
+            ContactsRepositoryImpl.createHeaderIterator(
+                titles = arrayOf("A", "B"),
+                counts = intArrayOf(1),
+            )
+        assertThat(iterator.next()).isEqualTo("A")
+        assertThat(iterator.hasNext()).isFalse()
+    }
+
+    @Test
+    fun createHeaderIterator_mismatchedListSizes_usesShorterTitlesList() {
+        val iterator =
+            ContactsRepositoryImpl.createHeaderIterator(
+                titles = arrayOf("A"),
+                counts = intArrayOf(1, 2),
+            )
+        assertThat(iterator.next()).isEqualTo("A")
+        assertThat(iterator.hasNext()).isFalse()
+    }
+
+    @Test
+    fun createHeaderIterator_sectionsWithZeroCount_areSkipped() {
+        val iterator =
+            ContactsRepositoryImpl.createHeaderIterator(
+                titles = arrayOf("A", "B", "C"),
+                counts = intArrayOf(2, 0, 1),
+            )
+        assertThat(iterator.next()).isEqualTo("A")
+        assertThat(iterator.next()).isEqualTo("A")
+        assertThat(iterator.next()).isEqualTo("C")
+        assertThat(iterator.hasNext()).isFalse()
+    }
+
+    @Test
+    fun createHeaderIterator_emptyCountsList_hasNextIsFalse() {
+        val iterator =
+            ContactsRepositoryImpl.createHeaderIterator(
+                titles = arrayOf("A", "B"),
+                counts = intArrayOf(),
+            )
+        assertThat(iterator.hasNext()).isFalse()
+    }
+
+    @Test
+    fun createHeaderIterator_emptyTitlesList_hasNextIsFalse() {
+        val iterator =
+            ContactsRepositoryImpl.createHeaderIterator(
+                titles = emptyArray(),
+                counts = intArrayOf(1, 2),
+            )
+        assertThat(iterator.hasNext()).isFalse()
     }
 
     private fun createDisplayNameCursor(): MatrixCursor =

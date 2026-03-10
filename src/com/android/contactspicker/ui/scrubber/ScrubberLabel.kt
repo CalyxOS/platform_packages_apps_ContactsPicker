@@ -38,6 +38,7 @@ import com.android.contactspicker.data.model.SectionKey
 import com.android.contactspicker.data.model.SectionKey.EmojiSection
 import com.android.contactspicker.data.model.SectionKey.FavoriteSection
 import com.android.contactspicker.data.model.SectionKey.LetterKey
+import com.android.contactspicker.data.model.SectionKey.StringKey
 
 // TODO(b/468919056): Add FadeIn/FadeOut animation for ScrubberLabel
 /**
@@ -75,6 +76,14 @@ private fun ScrubberContent(targetKey: SectionKey) {
         is LetterKey ->
             Text(
                 text = targetKey.letter.toString(),
+                style = MaterialTheme.typography.displayLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.testTag(SCRUBBER_LABEL_TEXT_TEST_TAG),
+            )
+        is StringKey ->
+            Text(
+                text = targetKey.header,
                 style = MaterialTheme.typography.displayLarge,
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,

@@ -61,4 +61,10 @@ class SectionKeyTest {
         val letterKey2 = LetterKey('B')
         assertThat(SectionKey.COMPARATOR.compare(letterKey1, letterKey2)).isLessThan(0)
     }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun comparator_throwsException_forStringKey() {
+        val stringKey = SectionKey.StringKey("Section")
+        SectionKey.COMPARATOR.compare(stringKey, LetterKey('A'))
+    }
 }
