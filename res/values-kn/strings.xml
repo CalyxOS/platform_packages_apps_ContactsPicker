@@ -40,8 +40,7 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"ಕುಗ್ಗಿಸಿ"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ಫೋನ್"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"ಇಮೇಲ್"</string>
-    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# ಇಮೇಲ್ ವಿಳಾಸ}one{# ಇಮೇಲ್ ವಿಳಾಸಗಳು}other{# ಇಮೇಲ್ ವಿಳಾಸಗಳು}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# ಫೋನ್ ಸಂಖ್ಯೆ}one{# ಫೋನ್ ಸಂಖ್ಯೆಗಳು}other{# ಫೋನ್ ಸಂಖ್ಯೆಗಳು}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{# ರಲ್ಲಿ {selected_count} ಇಮೇಲ್}one{# ರಲ್ಲಿ {selected_count} ಇಮೇಲ್‌ಗಳು}other{# ರಲ್ಲಿ {selected_count} ಇಮೇಲ್‌ಗಳು}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{# ರಲ್ಲಿ {selected_count} ಫೋನ್ ಸಂಖ್ಯೆ}one{# ರಲ್ಲಿ {selected_count} ಫೋನ್ ಸಂಖ್ಯೆಗಳು}other{# ರಲ್ಲಿ {selected_count} ಫೋನ್ ಸಂಖ್ಯೆಗಳು}}"</string>

@@ -40,8 +40,7 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Thu gọn"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Điện thoại"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Email"</string>
-    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# địa chỉ email}other{# địa chỉ email}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# số điện thoại}other{# số điện thoại}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count}/# email}other{{selected_count}/# email}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count}/# số điện thoại}other{{selected_count}/# số điện thoại}}"</string>

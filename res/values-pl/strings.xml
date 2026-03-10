@@ -40,8 +40,7 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Zwiń"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefon"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"E-mail"</string>
-    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# adres e-mail}few{# adresy e-mail}many{# adresów e-mail}other{# adresu e-mail}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# numer telefonu}few{# numery telefonów}many{# numerów telefonów}other{# numeru telefonu}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} z # adresu e-mail}few{{selected_count} z # adresów e-mail}many{{selected_count} z # adresów e-mail}other{{selected_count} z # adresu e-mail}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} z # numeru telefonu}few{{selected_count} z # numerów telefonów}many{{selected_count} z # numerów telefonów}other{{selected_count} z # numeru telefonu}}"</string>

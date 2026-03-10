@@ -40,8 +40,7 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Minnka"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Sími"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Tölvupóstur"</string>
-    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# netfang}one{# netfang}other{# netföng}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# símanúmer}one{# símanúmer}other{# símanúmer}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} af # tölvupósti}one{{selected_count} af # tölvupósti}other{{selected_count} af # tölvupóstum}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} af # símanúmeri}one{{selected_count} af # símanúmeri}other{{selected_count} af # símanúmerum}}"</string>
