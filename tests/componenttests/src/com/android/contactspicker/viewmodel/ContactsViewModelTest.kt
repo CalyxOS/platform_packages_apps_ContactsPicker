@@ -1835,7 +1835,7 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun onProfileClicked_pausedProfile_undefinedReason_showsGenericDialog() = runTest {
+    fun onProfileClicked_pausedProfile_undefinedReason_showsNoDialog() = runTest {
         initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
 
         val undefinedPausedProfile =
@@ -1852,9 +1852,28 @@ class ContactsViewModelTest {
 
         val successState = viewModel.currentSuccessUserState
         val dialogData = successState.profileBlockedDialogData
-        assertThat(dialogData).isNotNull()
 
-        assertThat(dialogData?.title).isEqualTo(PAUSED_WORK_APPS_TITLE)
+        assertThat(dialogData).isNull()
+    }
+
+    @Test
+    fun onProfileClicked_pausedNonWorkProfile_showsNoDialog() = runTest {
+        initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
+
+        val pausedPersonalProfile =
+            UserProfile(
+                userId = USER_ID_PERSONAL,
+                userIdToQueryContacts = USER_ID_PERSONAL,
+                userType = UserType.PERSONAL,
+                switchableInfo = SwitchableProfileInfo("Personal", null),
+                pausedInfo = PausedProfileInfo(PausedReason.QUIET_MODE),
+            )
+
+        viewModel.onProfileClicked(pausedPersonalProfile)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val successState = viewModel.currentSuccessUserState
+        assertThat(successState.profileBlockedDialogData).isNull()
     }
 
     @Test

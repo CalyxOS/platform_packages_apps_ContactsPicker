@@ -40,8 +40,7 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Sbalit"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefon"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"E-mail"</string>
-    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# e‑mailová adresa}few{# e‑mailové adresy}many{# e‑mailové adresy}other{# e‑mailových adres}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# telefonní číslo}few{# telefonní čísla}many{# telefonního čísla}other{# telefonních čísel}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} z # e-mailové adresy}few{{selected_count} ze # e-mailových adres}many{{selected_count} z # e-mailové adresy}other{{selected_count} z # e-mailových adres}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} z # telefonního čísla}few{{selected_count} ze # telefonních čísel}many{{selected_count} z # telefonního čísla}other{{selected_count} z # telefonních čísel}}"</string>

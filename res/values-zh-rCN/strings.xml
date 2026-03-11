@@ -40,8 +40,7 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"收起"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"电话号码"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"邮箱"</string>
-    <!-- no translation found for contact_item_emails_count (2351800816629653553) -->
-    <skip />
+    <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# 个邮箱}other{# 个邮箱}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# 个电话号码}other{# 个电话号码}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{已选 {selected_count} 封邮件（共 # 封）}other{已选 {selected_count} 封邮件（共 # 封）}}"</string>
     <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{已选 {selected_count} 个电话号码（共 # 个）}other{已选 {selected_count} 个电话号码（共 # 个）}}"</string>
