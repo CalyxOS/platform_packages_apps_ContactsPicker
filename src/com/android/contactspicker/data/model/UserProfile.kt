@@ -59,7 +59,7 @@ enum class UserType {
 }
 
 enum class PausedReason {
-    UNDEFINED,
+    UNKNOWN_REASON,
     QUIET_MODE,
     MANAGED_PROFILE_CONTACTS_BLOCKED,
 }

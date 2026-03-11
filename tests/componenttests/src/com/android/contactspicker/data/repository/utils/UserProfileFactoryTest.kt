@@ -18,6 +18,7 @@ package com.android.contactspicker.data.repository.utils
 
 import android.app.admin.DevicePolicyManager
 import android.content.pm.UserInfo
+import android.content.pm.UserProperties
 import android.os.UserManager
 import androidx.compose.ui.graphics.ImageBitmap
 import com.android.contactspicker.data.model.PausedProfileInfo
@@ -47,6 +48,9 @@ class UserProfileFactoryTest {
     fun setUp() {
         userProfileFactory =
             UserProfileFactory(mockUserManager, mockProfileInfoCache) { mockDevicePolicyManager }
+
+        val defaultProperties = android.content.pm.UserProperties.Builder().build()
+        whenever(mockUserManager.getUserProperties(any())).thenReturn(defaultProperties)
     }
 
     @Test
@@ -87,13 +91,41 @@ class UserProfileFactoryTest {
     @Test
     fun createProfile_forWorkUser_whenQuietModeEnabled_returnsPausedProfile() {
         val userInfo = createUserInfo(id = USER_ID_WORK, type = UserType.WORK, isQuietMode = true)
-        // Access is allowed, but quiet mode is on
+        val userProperties =
+            android.content.pm.UserProperties.Builder()
+                .setShowInQuietMode(android.content.pm.UserProperties.SHOW_IN_QUIET_MODE_PAUSED)
+                .build()
+        whenever(mockUserManager.getUserProperties(userInfo.userHandle)).thenReturn(userProperties)
         whenever(mockDevicePolicyManager.hasManagedProfileContactsAccess(any(), any()))
             .thenReturn(true)
+        val switchableInfo = SwitchableProfileInfo(USER_NAME_WORK, mockIcon)
+        whenever(mockProfileInfoCache.getSwitchableProfileInfo(userInfo)).thenReturn(switchableInfo)
 
         val result = userProfileFactory.createProfile(userInfo, CALLING_PACKAGE)
 
         assertThat(result).isEqualTo(EXPECTED_WORK_PROFILE_QUIET)
+    }
+
+    @Test
+    fun createProfile_forWorkUser_whenQuietModeEnabled_andShowInQuietModeDefault_returnsUnknownPausedProfile() {
+        val userInfo = createUserInfo(id = USER_ID_WORK, type = UserType.WORK, isQuietMode = true)
+        val userProperties =
+            android.content.pm.UserProperties.Builder()
+                .setShowInQuietMode(android.content.pm.UserProperties.SHOW_IN_QUIET_MODE_DEFAULT)
+                .build()
+        whenever(mockUserManager.getUserProperties(userInfo.userHandle)).thenReturn(userProperties)
+        whenever(mockDevicePolicyManager.hasManagedProfileContactsAccess(any(), any()))
+            .thenReturn(true)
+        val switchableInfo = SwitchableProfileInfo(USER_NAME_WORK, mockIcon)
+        whenever(mockProfileInfoCache.getSwitchableProfileInfo(userInfo)).thenReturn(switchableInfo)
+
+        val result = userProfileFactory.createProfile(userInfo, CALLING_PACKAGE)
+
+        val expected =
+            EXPECTED_WORK_PROFILE_ALLOWED.copy(
+                pausedInfo = PausedProfileInfo(PausedReason.UNKNOWN_REASON)
+            )
+        assertThat(result).isEqualTo(expected)
     }
 
     @Test
@@ -102,6 +134,7 @@ class UserProfileFactoryTest {
         val parentId = USER_ID_PERSONAL
         val cloneUserInfo = createUserInfo(id = cloneId, type = UserType.CLONE)
         val parentUserInfo = createUserInfo(id = parentId)
+
         whenever(mockUserManager.getProfileParent(cloneUserInfo.userHandle))
             .thenReturn(parentUserInfo.userHandle)
 
@@ -122,13 +155,32 @@ class UserProfileFactoryTest {
     }
 
     @Test
-    fun createProfile_forPrivateUser_whenQuietMode_hidesSwitchableInfo() {
-        val userInfo =
-            createUserInfo(id = USER_ID_PRIVATE, type = UserType.PRIVATE, isQuietMode = true)
+    fun createProfile_whenShowInSharingSurfacesNo_returnsNull() {
+        val userInfo = createUserInfo(id = USER_ID_WORK, type = UserType.WORK)
+        val userProperties =
+            UserProperties.Builder()
+                .setShowInSharingSurfaces(UserProperties.SHOW_IN_SHARING_SURFACES_NO)
+                .build()
+        whenever(mockUserManager.getUserProperties(userInfo.userHandle)).thenReturn(userProperties)
 
         val result = userProfileFactory.createProfile(userInfo, CALLING_PACKAGE)
 
-        assertThat(result).isEqualTo(EXPECTED_PRIVATE_PROFILE_QUIET)
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun createProfile_forPrivateUser_whenQuietMode_andHidden_returnsNull() {
+        val userInfo =
+            createUserInfo(id = USER_ID_PRIVATE, type = UserType.PRIVATE, isQuietMode = true)
+        val userProperties =
+            UserProperties.Builder()
+                .setShowInQuietMode(UserProperties.SHOW_IN_QUIET_MODE_HIDDEN)
+                .build()
+        whenever(mockUserManager.getUserProperties(userInfo.userHandle)).thenReturn(userProperties)
+
+        val result = userProfileFactory.createProfile(userInfo, CALLING_PACKAGE)
+
+        assertThat(result).isNull()
     }
 
     private fun createUserInfo(
@@ -194,7 +246,7 @@ class UserProfileFactoryTest {
                 userId = USER_ID_WORK,
                 userIdToQueryContacts = USER_ID_WORK,
                 userType = UserType.WORK,
-                switchableInfo = null,
+                switchableInfo = SwitchableProfileInfo(USER_NAME_WORK, mockIcon),
                 pausedInfo = PausedProfileInfo(PausedReason.QUIET_MODE),
             )
 

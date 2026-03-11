@@ -17,6 +17,7 @@
 package com.android.contactspicker.data.repository
 
 import android.content.pm.UserInfo
+import android.content.pm.UserProperties
 import android.os.UserManager
 import com.android.contactspicker.data.model.PausedProfileInfo
 import com.android.contactspicker.data.model.PausedReason
@@ -51,6 +52,7 @@ class UserRepositoryImplTest {
         private const val TEST_PACKAGE_NAME = "com.test"
         private const val PERSONAL_USER_ID = 0
         private const val WORK_USER_ID = 10
+        private const val PRIVATE_USER_ID = 12
     }
 
     private val mockUserManager: UserManager = mock()
@@ -67,6 +69,29 @@ class UserRepositoryImplTest {
 
         userRepository =
             UserRepositoryImpl(mockUserManager, mockUserProfileFactory, mockProfileChangesMonitor)
+
+        // Default UserProperties for all users unless overridden in tests
+        val defaultProperties = UserProperties.Builder().build()
+        whenever(mockUserManager.getUserProperties(any())).thenReturn(defaultProperties)
+    }
+
+    @Test
+    fun getUserState_filtersProfilesWhenFactoryReturnsNull() = runTest {
+        val (primaryUser, primaryProfile) = getUserInfoAndProfile(PERSONAL_USER_ID)
+        val (privateUser, _) = getUserInfoAndProfile(PRIVATE_USER_ID, UserType.PRIVATE)
+
+        whenever(mockUserManager.getProfiles(any())) doReturn listOf(primaryUser, privateUser)
+        whenever(mockUserProfileFactory.createProfile(primaryUser, TEST_PACKAGE_NAME)) doReturn
+            primaryProfile
+        whenever(mockUserProfileFactory.createProfile(privateUser, TEST_PACKAGE_NAME)) doReturn null
+
+        startCollecting()
+
+        val result = receiveSuccessState()
+
+        assertThat(result.userIdToAvailableUsersMap).hasSize(1)
+        assertThat(result.userIdToAvailableUsersMap.containsKey(PRIVATE_USER_ID)).isFalse()
+        assertThat(result.selectedUserId).isEqualTo(PERSONAL_USER_ID)
     }
 
     @Test
@@ -264,13 +289,23 @@ class UserRepositoryImplTest {
         }
     }
 
-    private fun getUserInfoAndProfile(id: Int): Pair<UserInfo, UserProfile> {
-        val userInfo = UserInfo(id, "User $id", 0)
+    private fun getUserInfoAndProfile(
+        id: Int,
+        type: UserType = UserType.PERSONAL,
+    ): Pair<UserInfo, UserProfile> {
+        val userTypeString =
+            when (type) {
+                UserType.PERSONAL -> UserManager.USER_TYPE_FULL_SYSTEM
+                UserType.WORK -> UserManager.USER_TYPE_PROFILE_MANAGED
+                UserType.CLONE -> UserManager.USER_TYPE_PROFILE_CLONE
+                UserType.PRIVATE -> UserManager.USER_TYPE_PROFILE_PRIVATE
+            }
+        val userInfo = UserInfo(id, "User $id", null, 0, userTypeString)
         val userProfile =
             UserProfile(
                 userId = id,
                 userIdToQueryContacts = id,
-                userType = UserType.PERSONAL,
+                userType = type,
                 switchableInfo = null,
             )
         return Pair(userInfo, userProfile)

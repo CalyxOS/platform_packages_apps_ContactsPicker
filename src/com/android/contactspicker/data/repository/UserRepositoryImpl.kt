@@ -94,9 +94,11 @@ constructor(
         val currentProcessUserId = UserHandle.myUserId()
         val allProfiles = userManager.getProfiles(currentProcessUserId)
 
-        return allProfiles.associate { userInfo ->
-            userInfo.id to userProfileFactory.createProfile(userInfo, callingPackageName)
-        }
+        return allProfiles
+            .mapNotNull { userInfo ->
+                userProfileFactory.createProfile(userInfo, callingPackageName)
+            }
+            .associateBy { it.userId }
     }
 
     /**

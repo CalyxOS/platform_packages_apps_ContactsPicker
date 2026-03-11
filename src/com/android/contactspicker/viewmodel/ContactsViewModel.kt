@@ -552,24 +552,22 @@ constructor(
     }
 
     private fun showProfilePausedDialog(userProfile: UserProfile, reason: PausedReason? = null) {
+        val dialogData = createProfilePausedDialogData(userProfile, reason)
         _userState.update { currentState ->
             if (currentState is PickerUserState.Success) {
-                currentState.copy(
-                    profileBlockedDialogData = createProfilePausedDialogData(userProfile, reason)
-                )
+                currentState.copy(profileBlockedDialogData = dialogData)
             } else {
                 currentState
             }
         }
     }
 
-    // TODO(b/479461249): Refactor profile visibility logic to use explicit quiet mode properties
     private fun createProfilePausedDialogData(
         userProfile: UserProfile,
         reason: PausedReason? = null,
     ): ProfileBlockedDialogData? {
-        val actualReason = reason ?: userProfile.pausedInfo?.pausedReason ?: PausedReason.UNDEFINED
-
+        val actualReason =
+            reason ?: userProfile.pausedInfo?.pausedReason ?: PausedReason.UNKNOWN_REASON
         return when (actualReason) {
             PausedReason.MANAGED_PROFILE_CONTACTS_BLOCKED ->
                 ProfileBlockedDialogData(
@@ -585,7 +583,7 @@ constructor(
                 } else {
                     null
                 }
-            PausedReason.UNDEFINED -> null
+            PausedReason.UNKNOWN_REASON -> null
         }
     }
 
