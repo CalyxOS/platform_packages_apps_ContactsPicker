@@ -20,6 +20,21 @@ import android.os.Bundle
 import android.provider.ContactsPickerSessionContract
 import com.android.contactspicker.data.model.MimeType
 
+/** Sealed interface to facilitate handling of errors in parsing. */
+sealed interface ContactsPickerConfigResult
+
+/**
+ * Signals error in parsing of the intent. Includes parsed fields and error type for logging
+ * purposes.
+ */
+data class ContactsPickerConfigError(
+    val errorType: ConfigErrorType,
+    val message: String,
+    val parsedAction: ContactsPickerAction? = null,
+    val parsedMimeTypes: List<MimeType>? = null,
+    val parsedMatchAll: Boolean = false,
+) : ContactsPickerConfigResult
+
 /**
  * A configuration object, parsed from the incoming Intent, that dictates the contacts picker's
  * behavior and data requirements.
@@ -30,6 +45,7 @@ import com.android.contactspicker.data.model.MimeType
  * @param isMultiSelectEnabled Whether multiple contacts/entries can be selected.
  * @param maxSelectionLimit The maximum number of items that can be selected (used for UI warnings).
  * @param requestedMimeTypes The explicit list of mimetypes requested by the caller.
+ * @return [ContactsPickerRequestConfig] if success else [ContactsPickerConfigError]
  */
 data class ContactsPickerRequestConfig(
     val queryMode: ContactsQueryMode,
@@ -38,7 +54,7 @@ data class ContactsPickerRequestConfig(
     val maxSelectionLimit: Int,
     val requestedMimeTypes: List<MimeType>,
     val matchAllRequestedMimeTypes: Boolean,
-) {
+) : ContactsPickerConfigResult {
     companion object {
         /** Default selection limit if not specified for multi-select. */
         const val DEFAULT_SELECTION_LIMIT = 50
@@ -60,62 +76,91 @@ data class ContactsPickerRequestConfig(
             intentAction: String?,
             intentType: String?,
             intentExtras: Bundle?,
-        ): ContactsPickerRequestConfig {
-            val pickerAction = getPickerAction(intentAction)
+        ): ContactsPickerConfigResult {
+
+            val pickerAction =
+                getPickerAction(intentAction)
+                    ?: return ContactsPickerConfigError(
+                        errorType = ConfigErrorType.UNSUPPORTED_ACTION,
+                        message = "Unsupported intent action: $intentAction",
+                    )
+
             val isMultiSelect =
                 intentExtras?.getBoolean(Intent.EXTRA_ALLOW_MULTIPLE, false) ?: false
-            val queryMode = ContactsQueryMode.getQueryMode(pickerAction, intentType, intentExtras)
+
+            val queryModeResult =
+                ContactsQueryMode.getQueryMode(pickerAction, intentType, intentExtras)
+            if (queryModeResult is ParseResult.Error) {
+                return ContactsPickerConfigError(
+                    errorType = queryModeResult.errorType,
+                    message = queryModeResult.message,
+                    parsedAction = pickerAction,
+                )
+            }
+            val queryMode = (queryModeResult as ParseResult.Success).value
             val requestedMimeTypes = queryMode.getMimeTypes()
-            val selectionLimit = getSelectionLimit(intentExtras, isMultiSelect)
-
             val matchAllRequestedMimeTypes =
-                (queryMode as? ContactsQueryMode.Custom)?.matchAllRequestedMimeTypes ?: false
+                intentExtras?.getBoolean(
+                    ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_MATCH_ALL_DATA_FIELDS,
+                    false,
+                ) ?: false
 
+            val selectionLimitResult = getSelectionLimit(intentExtras, isMultiSelect)
+            if (selectionLimitResult is ParseResult.Error) {
+                return ContactsPickerConfigError(
+                    errorType = selectionLimitResult.errorType,
+                    message = selectionLimitResult.message,
+                    parsedAction = pickerAction,
+                    parsedMimeTypes = requestedMimeTypes,
+                    parsedMatchAll = matchAllRequestedMimeTypes,
+                )
+            }
+
+            // Success
             return ContactsPickerRequestConfig(
                 queryMode = queryMode,
                 pickerAction = pickerAction,
                 isMultiSelectEnabled = isMultiSelect,
-                maxSelectionLimit = selectionLimit,
+                maxSelectionLimit = (selectionLimitResult as ParseResult.Success).value,
                 matchAllRequestedMimeTypes = matchAllRequestedMimeTypes,
                 requestedMimeTypes = requestedMimeTypes,
             )
         }
 
-        private fun getPickerAction(action: String?): ContactsPickerAction {
+        private fun getPickerAction(action: String?): ContactsPickerAction? {
             return when (action) {
                 Intent.ACTION_PICK -> ContactsPickerAction.ACTION_PICK
                 ContactsPickerSessionContract.ACTION_PICK_CONTACTS ->
                     ContactsPickerAction.ACTION_PICK_CONTACTS
-
-                else -> throw IllegalArgumentException("Unsupported intent action: $action")
+                else -> null
             }
         }
 
-        private fun getSelectionLimit(intentExtras: Bundle?, isMultiSelect: Boolean): Int {
-            if (!isMultiSelect) {
-                return 1
-            }
-
-            val defaultLimit = DEFAULT_SELECTION_LIMIT
-            val maxLimit = MAX_SELECTION_LIMIT
+        private fun getSelectionLimit(
+            intentExtras: Bundle?,
+            isMultiSelect: Boolean,
+        ): ParseResult<Int> {
+            if (!isMultiSelect) return ParseResult.Success(1)
 
             val limit =
                 intentExtras?.getInt(
                     ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_SELECTION_LIMIT,
-                    defaultLimit,
-                ) ?: defaultLimit
+                    DEFAULT_SELECTION_LIMIT,
+                ) ?: DEFAULT_SELECTION_LIMIT
 
             if (limit <= 0) {
-                throw IllegalArgumentException(
-                    "Selection limit must be a positive number. Received $limit."
+                return ParseResult.Error(
+                    ConfigErrorType.UNSUPPORTED_SELECTION_LIMIT,
+                    "Selection limit must be a positive number. Received $limit.",
                 )
             }
-            if (limit > maxLimit) {
-                throw IllegalArgumentException(
-                    "Selection limit cannot exceed $maxLimit. Received $limit."
+            if (limit > MAX_SELECTION_LIMIT) {
+                return ParseResult.Error(
+                    ConfigErrorType.UNSUPPORTED_SELECTION_LIMIT,
+                    "Selection limit cannot exceed $MAX_SELECTION_LIMIT. Received $limit.",
                 )
             }
-            return limit
+            return ParseResult.Success(limit)
         }
     }
 }

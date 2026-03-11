@@ -23,7 +23,6 @@ import android.provider.ContactsContract.Contacts
 import android.provider.ContactsPickerSessionContract
 import com.android.contactspicker.data.model.MimeType
 import com.google.common.truth.Truth.assertThat
-import kotlin.test.assertFailsWith
 import org.junit.Test
 
 class ContactsQueryModeTest {
@@ -36,48 +35,55 @@ class ContactsQueryModeTest {
                 Pair(Contacts.CONTENT_TYPE, ContactsQueryMode.DisplayNamesOnly),
             )
             .forEach { pair ->
-                val queryMode =
+                val result =
                     ContactsQueryMode.getQueryMode(
                         pickerAction = ContactsPickerAction.ACTION_PICK,
                         intentType = pair.first,
                         intentExtras = null,
                     )
 
-                assertThat(queryMode).isEqualTo(pair.second)
+                assertThat(result).isInstanceOf(ParseResult.Success::class.java)
+                assertThat((result as ParseResult.Success).value).isEqualTo(pair.second)
             }
     }
 
     @Test
     fun getQueryMode_actionPick_unsupportedType() {
-        assertFailsWith<IllegalArgumentException> {
+        val result =
             ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK,
                 intentType = "vnd.android.cursor.dir/unsupported",
                 intentExtras = null,
             )
-        }
+        assertThat(result).isInstanceOf(ParseResult.Error::class.java)
+        assertThat((result as ParseResult.Error).errorType)
+            .isEqualTo(ConfigErrorType.UNSUPPORTED_MIME_TYPE)
     }
 
     @Test
-    fun getQueryMode_actionPick_nullType_throwsException() {
-        assertFailsWith<IllegalArgumentException> {
+    fun getQueryMode_actionPick_nullType_returnsError() {
+        val result =
             ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK,
                 intentType = null,
                 intentExtras = null,
             )
-        }
+        assertThat(result).isInstanceOf(ParseResult.Error::class.java)
+        assertThat((result as ParseResult.Error).errorType)
+            .isEqualTo(ConfigErrorType.UNSUPPORTED_MIME_TYPE)
     }
 
     @Test
-    fun getQueryMode_actionPickContacts_missingMimeTypes_throwsException() {
-        assertFailsWith<IllegalArgumentException> {
+    fun getQueryMode_actionPickContacts_missingMimeTypes_returnsError() {
+        val result =
             ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
                 intentType = null,
                 intentExtras = null,
             )
-        }
+        assertThat(result).isInstanceOf(ParseResult.Error::class.java)
+        assertThat((result as ParseResult.Error).errorType)
+            .isEqualTo(ConfigErrorType.EMPTY_REQUESTED_MIME_TYPE)
     }
 
     @Test
@@ -90,13 +96,16 @@ class ContactsQueryModeTest {
                     mimeTypes,
                 )
             }
-        assertFailsWith<IllegalArgumentException> {
+
+        val result =
             ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
                 intentType = null,
                 intentExtras = extras,
             )
-        }
+        assertThat(result).isInstanceOf(ParseResult.Error::class.java)
+        assertThat((result as ParseResult.Error).errorType)
+            .isEqualTo(ConfigErrorType.UNSUPPORTED_MIME_TYPE)
     }
 
     @Test
@@ -110,14 +119,15 @@ class ContactsQueryModeTest {
                 )
             }
 
-        val queryMode =
+        val result =
             ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
                 intentType = null,
                 intentExtras = extras,
             )
 
-        assertThat(queryMode).isEqualTo(ContactsQueryMode.EmailsOnly)
+        assertThat(result).isInstanceOf(ParseResult.Success::class.java)
+        assertThat((result as ParseResult.Success).value).isEqualTo(ContactsQueryMode.EmailsOnly)
     }
 
     @Test
@@ -131,14 +141,15 @@ class ContactsQueryModeTest {
                 )
             }
 
-        val queryMode =
+        val result =
             ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
                 intentType = null,
                 intentExtras = extras,
             )
 
-        assertThat(queryMode).isEqualTo(ContactsQueryMode.PhonesOnly)
+        assertThat(result).isInstanceOf(ParseResult.Success::class.java)
+        assertThat((result as ParseResult.Success).value).isEqualTo(ContactsQueryMode.PhonesOnly)
     }
 
     @Test
@@ -152,14 +163,15 @@ class ContactsQueryModeTest {
                 )
             }
 
-        val queryMode =
+        val result =
             ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
                 intentType = null,
                 intentExtras = extras,
             )
 
-        assertThat(queryMode)
+        assertThat(result).isInstanceOf(ParseResult.Success::class.java)
+        assertThat((result as ParseResult.Success).value)
             .isEqualTo(ContactsQueryMode.Custom(listOf(MimeType.EMAIL, MimeType.PHONE), false))
     }
 
@@ -175,14 +187,15 @@ class ContactsQueryModeTest {
                 )
             }
 
-        val queryMode =
+        val result =
             ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
                 intentType = null,
                 intentExtras = extras,
             )
 
-        assertThat(queryMode)
+        assertThat(result).isInstanceOf(ParseResult.Success::class.java)
+        assertThat((result as ParseResult.Success).value)
             .isEqualTo(ContactsQueryMode.Custom(listOf(MimeType.STRUCTURED_POSTAL), false))
     }
 
@@ -195,14 +208,15 @@ class ContactsQueryModeTest {
                     MimeType.ACTION_PICK_CONTACTS_SUPPORTED.map { it.value } as ArrayList,
                 )
             }
-        val queryMode =
+        val result =
             ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
                 intentType = null,
                 intentExtras = extras,
             )
 
-        assertThat(queryMode)
+        assertThat(result).isInstanceOf(ParseResult.Success::class.java)
+        assertThat((result as ParseResult.Success).value)
             .isEqualTo(
                 ContactsQueryMode.Custom(MimeType.ACTION_PICK_CONTACTS_SUPPORTED.map { it }, false)
             )
@@ -217,13 +231,16 @@ class ContactsQueryModeTest {
                     ArrayList(listOf(MimeType.CONTACTS.value)),
                 )
             }
-        assertFailsWith<IllegalArgumentException> {
+        val result =
             ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
                 intentType = null,
                 intentExtras = extras,
             )
-        }
+
+        assertThat(result).isInstanceOf(ParseResult.Error::class.java)
+        assertThat((result as ParseResult.Error).errorType)
+            .isEqualTo(ConfigErrorType.UNSUPPORTED_MIME_TYPE)
     }
 
     @Test
@@ -241,14 +258,15 @@ class ContactsQueryModeTest {
                 )
             }
 
-        val queryMode =
+        val result =
             ContactsQueryMode.getQueryMode(
                 pickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
                 intentType = null,
                 intentExtras = extras,
             )
 
-        assertThat(queryMode)
+        assertThat(result).isInstanceOf(ParseResult.Success::class.java)
+        assertThat((result as ParseResult.Success).value)
             .isEqualTo(ContactsQueryMode.Custom(listOf(MimeType.EMAIL, MimeType.PHONE), true))
     }
 

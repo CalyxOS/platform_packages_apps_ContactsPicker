@@ -42,6 +42,7 @@ import com.android.contactspicker.Flags.FLAG_ENABLE_ACTION_PICK_TAKEOVER_IN_DROI
 import com.android.contactspicker.PrivacyDetailsState
 import com.android.contactspicker.R
 import com.android.contactspicker.SearchState
+import com.android.contactspicker.config.ConfigErrorType
 import com.android.contactspicker.config.ContactsPickerAction
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.MimeType
@@ -421,8 +422,11 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun handleIntent_withInvalidAction_throwsException() {
-        assertFailsWith<IllegalArgumentException> {
+    fun handleIntent_withInvalidAction_emitsCancelAndFinishAndLogsFailure() = runTest {
+        val events = mutableListOf<PickerResultEvent>()
+        val job = launch { viewModel.pickerResultEvents.toList(events) }
+
+        val result =
             viewModel.handleIntent(
                 intentAction = "INVALID_ACTION",
                 intentType = null,
@@ -432,7 +436,16 @@ class ContactsViewModelTest {
                 callingAppUid = TEST_CALLING_UID,
                 callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD,
             )
-        }
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(result).isTrue() // Handled internally
+        assertThat(events).hasSize(1)
+        assertThat(events.first()).isInstanceOf(PickerResultEvent.CancelAndFinish::class.java)
+
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionFailed(ConfigErrorType.UNSUPPORTED_ACTION)
+
+        job.cancel()
     }
 
     @Test
@@ -1275,33 +1288,137 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun handleIntent_whenSelectMultipleEnabledAndLimitExceedsMax_throwsException() = runTest {
-        assertFailsWith<IllegalArgumentException> {
-            initializeViewModelForLegacyActionPick(
-                ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
-                buildIntentExtrasWithSelectionLimit(true, MAX_ALLOWED_SELECTION_LIMIT + 1),
+    fun handleIntent_whenSelectMultipleEnabledAndLimitExceedsMax_emitsCancelAndFinish() = runTest {
+        val events = mutableListOf<PickerResultEvent>()
+        val job = launch { viewModel.pickerResultEvents.toList(events) }
+
+        val result =
+            viewModel.handleIntent(
+                intentAction = Intent.ACTION_PICK,
+                intentType = ContactsContract.Contacts.CONTENT_TYPE,
+                intentExtras =
+                    buildIntentExtrasWithSelectionLimit(true, MAX_ALLOWED_SELECTION_LIMIT + 1),
+                callingAppName = TEST_APP_NAME,
+                callingPackageName = TEST_PACKAGE_NAME,
+                callingAppUid = TEST_CALLING_UID,
+                callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD,
             )
-        }
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(result).isTrue()
+        assertThat(events).hasSize(1)
+        assertThat(events.first()).isInstanceOf(PickerResultEvent.CancelAndFinish::class.java)
+
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionFailed(ConfigErrorType.UNSUPPORTED_SELECTION_LIMIT)
+
+        job.cancel()
     }
 
     @Test
-    fun handleIntent_whenSelectMultipleEnabledAndLimitZero_throwsException() = runTest {
-        assertFailsWith<IllegalArgumentException> {
-            initializeViewModelForLegacyActionPick(
-                ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
-                buildIntentExtrasWithSelectionLimit(true, 0),
+    fun handleIntent_whenSelectMultipleEnabledAndLimitZero_emitsCancelAndFinish() = runTest {
+        val events = mutableListOf<PickerResultEvent>()
+        val job = launch { viewModel.pickerResultEvents.toList(events) }
+
+        val result =
+            viewModel.handleIntent(
+                intentAction = Intent.ACTION_PICK,
+                intentType = ContactsContract.Contacts.CONTENT_TYPE,
+                intentExtras = buildIntentExtrasWithSelectionLimit(true, 0),
+                callingAppName = TEST_APP_NAME,
+                callingPackageName = TEST_PACKAGE_NAME,
+                callingAppUid = TEST_CALLING_UID,
+                callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD,
             )
-        }
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(result).isTrue()
+        assertThat(events).hasSize(1)
+        assertThat(events.first()).isInstanceOf(PickerResultEvent.CancelAndFinish::class.java)
+
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionFailed(ConfigErrorType.UNSUPPORTED_SELECTION_LIMIT)
+
+        job.cancel()
     }
 
     @Test
-    fun handleIntent_whenSelectMultipleEnabledAndLimitNegative_throwsException() = runTest {
-        assertFailsWith<IllegalArgumentException> {
-            initializeViewModelForLegacyActionPick(
-                ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
-                buildIntentExtrasWithSelectionLimit(true, -1),
+    fun handleIntent_whenSelectMultipleEnabledAndLimitNegative_emitsCancelAndFinish() = runTest {
+        val events = mutableListOf<PickerResultEvent>()
+        val job = launch { viewModel.pickerResultEvents.toList(events) }
+
+        val result =
+            viewModel.handleIntent(
+                intentAction = Intent.ACTION_PICK,
+                intentType = ContactsContract.Contacts.CONTENT_TYPE,
+                intentExtras = buildIntentExtrasWithSelectionLimit(true, -1),
+                callingAppName = TEST_APP_NAME,
+                callingPackageName = TEST_PACKAGE_NAME,
+                callingAppUid = TEST_CALLING_UID,
+                callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD,
             )
-        }
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(result).isTrue()
+        assertThat(events).hasSize(1)
+        assertThat(events.first()).isInstanceOf(PickerResultEvent.CancelAndFinish::class.java)
+
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionFailed(ConfigErrorType.UNSUPPORTED_SELECTION_LIMIT)
+
+        job.cancel()
+    }
+
+    @Test
+    fun handleIntent_invalidLimit_logsStartedWithAlreadyCollectedDataAndFails() = runTest {
+        val events = mutableListOf<PickerResultEvent>()
+        val job = launch { viewModel.pickerResultEvents.toList(events) }
+
+        // selection limit too high error is caught when several other fields are already collected
+        val mimes = ArrayList(listOf(Email.CONTENT_ITEM_TYPE))
+        val extras =
+            Bundle().apply {
+                putBoolean(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                putBoolean(
+                    ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_MATCH_ALL_DATA_FIELDS,
+                    true,
+                )
+                putInt(
+                    ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_SELECTION_LIMIT,
+                    MAX_ALLOWED_SELECTION_LIMIT + 1,
+                )
+                putStringArrayList(
+                    ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_REQUESTED_DATA_FIELDS,
+                    mimes,
+                )
+            }
+
+        viewModel.handleIntent(
+            intentAction = ContactsPickerSessionContract.ACTION_PICK_CONTACTS,
+            intentType = null,
+            intentExtras = extras,
+            callingAppName = TEST_APP_NAME,
+            callingPackageName = TEST_PACKAGE_NAME,
+            callingAppUid = TEST_CALLING_UID,
+            callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD,
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // verify the session started was called with already collected fields
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionStarted(
+                callingAppUid = TEST_CALLING_UID,
+                callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD,
+                pickerIntentAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
+                requestedMimeTypes = listOf(MimeType.EMAIL),
+                useSystemContactsPicker = false,
+                matchAllRequestedMimeTypes = true,
+            )
+
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionFailed(ConfigErrorType.UNSUPPORTED_SELECTION_LIMIT)
+
+        job.cancel()
     }
 
     @Test
