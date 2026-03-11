@@ -454,6 +454,7 @@ constructor(
         val handler = checkNotNull(selectionHandler)
         viewModelScope.launch {
             if (handler.selectedContacts.value.isEmpty()) {
+                contactsPickerLogger.logContactsPickerSessionCancelled()
                 _pickerResultEvents.send(PickerResultEvent.CancelAndFinish)
                 return@launch
             }
@@ -811,5 +812,14 @@ constructor(
         }
         _uiState.value = currentCachedState
         cachedStateBeforeNavigation = null
+    }
+
+    /** Override the ViewModel lifecycle method to catch when the view model is destroyed */
+    override fun onCleared() {
+        // Always send a signal to the logger. If the session end was logged as success/failure
+        // earlier, the session data will be null and this call will be a no-op. It will log if the
+        // view model is destroyed because the user exited the app with an unfinished session.
+        contactsPickerLogger.logContactsPickerSessionCancelled()
+        super.onCleared()
     }
 }
