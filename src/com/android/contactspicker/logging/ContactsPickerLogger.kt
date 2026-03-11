@@ -34,6 +34,14 @@ interface ContactsPickerLogger {
         contactsSelectedFromSearch: Boolean,
     )
 
+    fun allContactsLoadingStarted()
+
+    /**
+     * Marks initial contacts loaded. Will be used to log the loading time when the session finished
+     * is logged.
+     */
+    fun allContactsLoadingFinished()
+
     /**
      * Marks that the user opened the preview page. Will be logged when the session finished is
      * logged.

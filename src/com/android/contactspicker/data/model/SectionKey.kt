@@ -41,9 +41,20 @@ sealed interface SectionKey {
             get() = "letter_$letter"
     }
 
+    /** Represents a section of the contacts list with a string header. */
+    @JvmInline
+    value class StringKey(val header: String) : SectionKey {
+        override val uniqueId
+            get() = "string_$header"
+    }
+
+    // TODO(b/491763328): Remove COMPARATOR during enable_contact_grouping_using_cp2 flag cleanup
     companion object {
         val COMPARATOR =
             Comparator<SectionKey> { k1, k2 ->
+                if (k1 is StringKey || k2 is StringKey) {
+                    throw IllegalArgumentException("StringKey is not supported in COMPARATOR")
+                }
                 if (k1 == k2) return@Comparator 0
                 val p1 = k1.toPriority()
                 val p2 = k2.toPriority()
@@ -61,6 +72,8 @@ sealed interface SectionKey {
                 is FavoriteSection -> 0
                 is EmojiSection -> 1
                 is LetterKey -> 2
+                is StringKey ->
+                    throw IllegalArgumentException("StringKey does not have a defined priority")
             }
     }
 }

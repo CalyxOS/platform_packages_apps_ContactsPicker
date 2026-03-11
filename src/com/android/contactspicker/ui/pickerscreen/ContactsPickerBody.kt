@@ -54,6 +54,7 @@ import com.android.contactspicker.data.model.SectionKey
 import com.android.contactspicker.data.model.SectionKey.EmojiSection
 import com.android.contactspicker.data.model.SectionKey.FavoriteSection
 import com.android.contactspicker.data.model.SectionKey.LetterKey
+import com.android.contactspicker.data.model.SectionKey.StringKey
 import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.ui.scrubber.AnimatedScrubber
 import com.android.contactspicker.ui.scrubber.ScrubberController
@@ -304,7 +305,10 @@ private fun LazyListState.getFractionalFirstVisibleItemIndex(): Float {
 private fun SectionHeaderForKey(sectionKey: SectionKey) {
     when (sectionKey) {
         is LetterKey -> {
-            SectionHeader(sectionKey.letter)
+            SectionHeader(sectionKey.letter.toString())
+        }
+        is StringKey -> {
+            SectionHeader(sectionKey.header)
         }
         is FavoriteSection -> {
             SectionHeader(

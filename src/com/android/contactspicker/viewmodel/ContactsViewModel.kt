@@ -314,6 +314,7 @@ constructor(
         config: ContactsPickerRequestConfig,
         userState: PickerUserState.Success,
     ) {
+        contactsPickerLogger.allContactsLoadingStarted()
         loadContactsJob?.cancel()
         loadContactsJob =
             viewModelScope.launch {
@@ -322,14 +323,16 @@ constructor(
                     Trace.beginSection("$TAG#loadContactsListData")
                     // load contacts data
                     Trace.beginSection("$TAG#contactsRepository.getContacts")
-                    initialContacts =
+                    val (loadedContacts, initialContactGroupingMetadata) =
                         contactsRepository.getContacts(config.queryMode, userState.selectedUserId)
+                    initialContacts = loadedContacts
 
                     val availableContactsGroups =
-                        ContactsGrouper(initialContacts)
+                        ContactsGrouper(initialContacts, initialContactGroupingMetadata)
                             .also { contactsGrouper = it }
                             .availableContactsGroups
 
+                    contactsPickerLogger.allContactsLoadingFinished()
                     Trace.endSection()
                     if (initialContacts.isNotEmpty()) {
                         // Only show the privacy banner if user hasn't seen it before for this
@@ -549,24 +552,22 @@ constructor(
     }
 
     private fun showProfilePausedDialog(userProfile: UserProfile, reason: PausedReason? = null) {
+        val dialogData = createProfilePausedDialogData(userProfile, reason)
         _userState.update { currentState ->
             if (currentState is PickerUserState.Success) {
-                currentState.copy(
-                    profileBlockedDialogData = createProfilePausedDialogData(userProfile, reason)
-                )
+                currentState.copy(profileBlockedDialogData = dialogData)
             } else {
                 currentState
             }
         }
     }
 
-    // TODO(b/479461249): Refactor profile visibility logic to use explicit quiet mode properties
     private fun createProfilePausedDialogData(
         userProfile: UserProfile,
         reason: PausedReason? = null,
     ): ProfileBlockedDialogData? {
-        val actualReason = reason ?: userProfile.pausedInfo?.pausedReason ?: PausedReason.UNDEFINED
-
+        val actualReason =
+            reason ?: userProfile.pausedInfo?.pausedReason ?: PausedReason.UNKNOWN_REASON
         return when (actualReason) {
             PausedReason.MANAGED_PROFILE_CONTACTS_BLOCKED ->
                 ProfileBlockedDialogData(
@@ -582,7 +583,7 @@ constructor(
                 } else {
                     null
                 }
-            PausedReason.UNDEFINED -> null
+            PausedReason.UNKNOWN_REASON -> null
         }
     }
 

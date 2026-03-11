@@ -38,14 +38,14 @@ internal const val CONTACTS_LIST_SECTION_HEADER_TEST_TAG = "contacts_list_sectio
 private val SECTION_HEADER_PADDING_VALUES = PaddingValues(horizontal = 24.dp, vertical = 8.dp)
 
 /**
- * A composable that displays a section header with a single character.
+ * A composable that displays a section header with a string.
  *
- * @param letter The character to display as the header.
+ * @param title The string to display as the header.
  */
 @Composable
-fun SectionHeader(letter: Char) {
+fun SectionHeader(title: String) {
     Text(
-        text = letter.toString(),
+        text = title,
         modifier =
             Modifier.fillMaxWidth()
                 .background(MaterialTheme.colorScheme.surfaceContainer)

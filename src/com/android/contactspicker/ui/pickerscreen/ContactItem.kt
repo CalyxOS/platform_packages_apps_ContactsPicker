@@ -57,8 +57,15 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.hideFromAccessibility
+import androidx.compose.ui.semantics.onClick
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ParagraphStyle
@@ -170,17 +177,26 @@ fun ContactItem(
             contact.hasAnySelection(selectedEntries ?: emptySet())
         }
 
-    val onAvatarClick: () -> Unit = {
+    val onRowClick: () -> Unit = {
         if (isSearchMode) {
             searchTargetEntryId?.let { entryId -> onToggleEntrySelection(contact.id, entryId) }
-        } else if (isSelected || isMultiSelectEnabled || !isExpandable) {
-            // In multi-select, or for simple contacts, the avatar toggles selection.
-            onToggleContactSelection(contact)
-        } else {
-            // In single-select for expandable contacts, the avatar toggles expansion.
+        } else if (isExpandable) {
             expanded = !expanded
+        } else {
+            onToggleContactSelection(contact)
         }
     }
+
+    val hasSeparateAvatarAction =
+        !isSearchMode && isExpandable && (isSelected || isMultiSelectEnabled)
+
+    val onAvatarClick: (() -> Unit)? =
+        if (hasSeparateAvatarAction) {
+            { onToggleContactSelection(contact) }
+        } else {
+            // click on the avatar will fall through to the parent row
+            null
+        }
 
     Surface(
         color =
@@ -189,17 +205,36 @@ fun ContactItem(
         shape = calculateShape(position, isSelected),
     ) {
         Column(modifier = Modifier.animateContentSize()) {
+            val isAvatarActionDeselect =
+                if (isMultiSelectEnabled) contact.isFullySelected(selectedEntries) else isSelected
+            val avatarActionLabel =
+                if (isAvatarActionDeselect) stringResource(R.string.a11y_deselect_all)
+                else stringResource(R.string.a11y_select_all)
+
+            val rowClickLabel =
+                if (isExpandable && !isSearchMode) {
+                    stringResource(
+                        if (expanded) R.string.contact_item_collapse_button_content_description
+                        else R.string.contact_item_expand_button_content_description
+                    )
+                } else null
+
             val rowModifier =
                 Modifier.fillMaxWidth()
-                    .clickable {
-                        if (isSearchMode) {
-                            searchTargetEntryId?.let { entryId ->
-                                onToggleEntrySelection(contact.id, entryId)
-                            }
-                        } else if (isExpandable) {
-                            expanded = !expanded
-                        } else {
-                            onToggleContactSelection(contact)
+                    .clickable(onClickLabel = rowClickLabel, onClick = onRowClick)
+                    .semantics {
+                        // This ensures TalkBack announces "Selected" or "Not Selected"
+                        selected = isSelected
+                        role = Role.Checkbox
+                        // Only add the TalkBack custom action if the avatar has a separate action
+                        if (hasSeparateAvatarAction) {
+                            customActions =
+                                listOf(
+                                    CustomAccessibilityAction(label = avatarActionLabel) {
+                                        onAvatarClick?.invoke()
+                                        true
+                                    }
+                                )
                         }
                     }
                     .padding(CONTACT_ITEM_PADDING)
@@ -210,9 +245,10 @@ fun ContactItem(
                 horizontalArrangement = Arrangement.spacedBy(AVATAR_TEXT_SPACING),
             ) {
                 SelectableAvatar(
+                    modifier = Modifier.clearAndSetSemantics {},
                     contact = contact,
                     isSelected = isSelected,
-                    onClick = { onAvatarClick() },
+                    onClick = onAvatarClick,
                 )
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
@@ -236,7 +272,7 @@ fun ContactItem(
                         )
 
                     Box(
-                        modifier = Modifier.size(TOGGLE_ICON_BOX_SIZE),
+                        modifier = Modifier.size(TOGGLE_ICON_BOX_SIZE).clearAndSetSemantics {},
                         contentAlignment = Alignment.Center,
                     ) {
                         FilledIconToggleButton(
@@ -259,13 +295,7 @@ fun ContactItem(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.KeyboardArrowDown,
-                                contentDescription =
-                                    stringResource(
-                                        if (expanded)
-                                            R.string
-                                                .contact_item_collapse_button_content_description
-                                        else R.string.contact_item_expand_button_content_description
-                                    ),
+                                contentDescription = null,
                                 modifier = Modifier.graphicsLayer { rotationZ = rotationAngle },
                             )
                         }
@@ -389,9 +419,19 @@ fun formatMultiEntrySecondaryText(
 }
 
 @Composable
-private fun SelectableAvatar(contact: Contact, isSelected: Boolean, onClick: () -> Unit) {
+private fun SelectableAvatar(
+    modifier: Modifier,
+    contact: Contact,
+    isSelected: Boolean,
+    onClick: (() -> Unit)?,
+) {
+
     Box(
-        modifier = Modifier.size(40.dp).clip(CircleShape).clickable(onClick = onClick),
+        modifier =
+            modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
         contentAlignment = Alignment.Center,
     ) {
         if (isSelected) {
@@ -518,6 +558,10 @@ private fun ExpandedContactEntry(
         modifier =
             Modifier.fillMaxWidth()
                 .clickable { onCheckedChange() }
+                .semantics {
+                    selected = isChecked
+                    role = if (isMultiSelectEnabled) Role.Checkbox else Role.RadioButton
+                }
                 .padding(
                     start = EXPANDED_CONTACT_ITEM_START_PADDING,
                     end = EXPANDED_CONTACT_ITEM_END_PADDING,
@@ -544,23 +588,17 @@ private fun ExpandedContactEntry(
             modifier = Modifier.semantics { hideFromAccessibility() },
             selected = isChecked,
             isMultiSelect = isMultiSelectEnabled,
-            onValueChange = { onCheckedChange() },
         )
     }
 }
 
 @Composable
-private fun SelectionControl(
-    selected: Boolean,
-    isMultiSelect: Boolean,
-    onValueChange: () -> Unit,
-    modifier: Modifier,
-) {
-    Box(modifier = Modifier.size(TOGGLE_ICON_BOX_SIZE), contentAlignment = Alignment.Center) {
+private fun SelectionControl(selected: Boolean, isMultiSelect: Boolean, modifier: Modifier) {
+    Box(modifier = modifier.size(TOGGLE_ICON_BOX_SIZE), contentAlignment = Alignment.Center) {
         if (isMultiSelect) {
-            Checkbox(modifier = modifier, checked = selected, onCheckedChange = { onValueChange() })
+            Checkbox(checked = selected, onCheckedChange = null)
         } else {
-            RadioButton(modifier = modifier, selected = selected, onClick = onValueChange)
+            RadioButton(selected = selected, onClick = null)
         }
     }
 }

@@ -194,6 +194,25 @@ class ContactsPickerLoggerImplTest {
     }
 
     @Test
+    fun allContactsLoadingDuration_logContactsPickerSessionFinishedLogsCorrectly() {
+        verifySessionFinishedEventFields(
+            startupLoadingTimeLogged = true,
+            midLoggingSessionBlock = {
+                logger.allContactsLoadingStarted()
+                logger.allContactsLoadingFinished()
+            },
+        )
+    }
+
+    @Test
+    fun allContactsLoadingFinished_allContactsLoadingStarted_doesNotLog() {
+        verifySessionFinishedEventFields(
+            // startupLoadingTimeLogged default false
+            midLoggingSessionBlock = { logger.allContactsLoadingFinished() }
+        )
+    }
+
+    @Test
     fun previewOpened_logContactsPickerSessionFinishedLogsCorrectly() {
         verifySessionFinishedEventFields(
             previewOpened = true,
@@ -264,6 +283,7 @@ class ContactsPickerLoggerImplTest {
         sessionResult: ContactsPickerSessionResult =
             ContactsPickerSessionResult.SESSION_RESULT_SUCCESS,
         numContactsSelected: Int = DEFAULT_NUM_CONTACTS_SELECTED,
+        startupLoadingTimeLogged: Boolean = false,
         contactsSelectedFromFavorites: Boolean = false,
         contactsSelectedFromSearch: Boolean = false,
         previewOpened: Boolean = false,
@@ -309,6 +329,9 @@ class ContactsPickerLoggerImplTest {
             .isEqualTo(matchAllRequestedMimeTypes)
         assertThat(event.sessionResult).isEqualTo(sessionResult)
         assertThat(event.numContactsSelected).isEqualTo(numContactsSelected)
+        assertThat(event.sessionDurationMs).isAtLeast(0L)
+        if (startupLoadingTimeLogged) assertThat(event.startupLoadingTimeMs).isAtLeast(0L)
+        else assertThat(event.startupLoadingTimeMs).isEqualTo(LOADING_TIME_UNSET)
         assertThat(event.contactsSelectedFromFavorites).isEqualTo(contactsSelectedFromFavorites)
         assertThat(event.contactsSelectedFromSearchResults).isEqualTo(contactsSelectedFromSearch)
         assertThat(event.previewOpened).isEqualTo(previewOpened)

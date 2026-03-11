@@ -483,6 +483,16 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun handleIntent_whenContactsLoad_callsLoggerInitialContactsLoaded() = runTest {
+        val contact = ContactTestDataFactory.GENERIC_EMAIL_CONTACT
+        initializeViewModelForActionPickContacts(listOf(contact), listOf(Email.CONTENT_ITEM_TYPE))
+
+        assertThat(viewModel.uiState.value).isInstanceOf(ContactsListState.Success::class.java)
+        verify(mockContactsPickerLogger).allContactsLoadingStarted()
+        verify(mockContactsPickerLogger).allContactsLoadingFinished()
+    }
+
+    @Test
     fun toggleContactSelection_updatesUiState() = runTest {
         val displayNameContact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
         initializeViewModelForLegacyActionPick(listOf(displayNameContact))
@@ -1844,7 +1854,7 @@ class ContactsViewModelTest {
                 userIdToQueryContacts = 11,
                 userType = UserType.WORK,
                 switchableInfo = SwitchableProfileInfo("Work", null),
-                pausedInfo = PausedProfileInfo(PausedReason.UNDEFINED),
+                pausedInfo = PausedProfileInfo(PausedReason.UNKNOWN_REASON),
             )
 
         viewModel.onProfileClicked(undefinedPausedProfile)

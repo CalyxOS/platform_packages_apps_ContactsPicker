@@ -18,6 +18,7 @@ package com.android.contactspicker.ui.pickerscreen
 
 import android.content.Context
 import android.content.flags.Flags
+import android.platform.test.annotations.RequiresFlagsDisabled
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
@@ -75,6 +76,7 @@ class ContactsPickerBodyTest {
         }
 
     @Test
+    @RequiresFlagsDisabled(com.android.contactspicker.Flags.FLAG_ENABLE_CONTACT_GROUPING_USING_CP2)
     fun contactsList_displaysHeadersAndContacts() {
         val contacts = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST
 
@@ -197,6 +199,7 @@ class ContactsPickerBodyTest {
     }
 
     @Test
+    @RequiresFlagsDisabled(com.android.contactspicker.Flags.FLAG_ENABLE_CONTACT_GROUPING_USING_CP2)
     fun contactsPickerBody_withSpecialCharacterDisplayName_displaysEmojiHeader() {
         val regularContact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
         val contacts =
@@ -247,6 +250,7 @@ class ContactsPickerBodyTest {
     }
 
     @Test
+    @RequiresFlagsDisabled(com.android.contactspicker.Flags.FLAG_ENABLE_CONTACT_GROUPING_USING_CP2)
     fun contactsList_rendersSections_inCorrectOrder() {
         val favContact =
             ContactTestDataFactory.createDisplayNameContact(

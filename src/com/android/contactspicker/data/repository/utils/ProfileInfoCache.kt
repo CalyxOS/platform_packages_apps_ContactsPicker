@@ -18,7 +18,9 @@ package com.android.contactspicker.data.repository.utils
 
 import android.content.Context
 import android.content.pm.UserInfo
+import android.content.res.Resources
 import android.os.UserManager
+import android.util.Log
 import androidx.annotation.OpenForTesting
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
@@ -30,13 +32,14 @@ import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val TAG = "ProfileInfoCache"
+
 /**
  * Caches static profile information (label and icon) to avoid expensive Context creation
  * operations.
  */
 @Singleton
 @OpenForTesting
-// TODO(b/479451420): Re evaluate the APIs used to show profile icon and label
 open class ProfileInfoCache
 @Inject
 constructor(
@@ -49,45 +52,50 @@ constructor(
 
     open fun getSwitchableProfileInfo(userInfo: UserInfo): SwitchableProfileInfo {
         return cache.computeIfAbsent(userInfo.id) {
-            val userProfileManager = userProfileManagerFactory.getProfileUserManager(userInfo)
+            val profileUserManager = userProfileManagerFactory.getProfileUserManager(userInfo)
             SwitchableProfileInfo(
-                label = getProfileLabel(context, userProfileManager, userManager, userInfo),
-                icon = getProfileIcon(userProfileManager, userInfo),
+                label = getProfileLabel(context, userInfo, profileUserManager),
+                icon = getProfileIcon(userInfo, profileUserManager),
             )
         }
     }
 
-    // TODO(b/479447282): Refactor profile icon logic to use SHOW_IN_SHARING_SURFACES user property
-    private fun getProfileIcon(userProfileManager: UserManager?, userInfo: UserInfo): ImageBitmap? {
-        val isIconSupported = userInfo.isManagedProfile || userInfo.isPrivateProfile
-
-        if (isIconSupported) {
-            val badge = userProfileManager?.userBadge
+    /**
+     * Returns the profile icon. If null is returned, the UI will fall back to the default icon (see
+     *
+     * @see com.android.contactspicker.ui.pickerscreen.ProfileSwitcher#getFallbackIcon()
+     */
+    private fun getProfileIcon(userInfo: UserInfo, profileUserManager: UserManager?): ImageBitmap? {
+        try {
+            val badge = profileUserManager?.userBadge
             if (badge != null && badge.intrinsicWidth > 0 && badge.intrinsicHeight > 0) {
                 return badge.toBitmap().asImageBitmap()
             }
+        } catch (e: Resources.NotFoundException) {
+            Log.w(TAG, "Profile icon resource not found for user ${userInfo.id}", e)
         }
         return null
     }
 
     private fun getProfileLabel(
         context: Context,
-        userProfileManager: UserManager?,
-        userManager: UserManager,
         userInfo: UserInfo,
+        profileUserManager: UserManager?,
     ): String {
-        val isPrimaryProfile = userManager.getProfileParent(userInfo.userHandle) == null
-        if (isPrimaryProfile) {
-            return context.getString(R.string.user_type_personal)
-        }
+        if (userInfo.isProfile) {
+            try {
+                val label = profileUserManager?.profileLabel
+                if (label != null) {
+                    return label
+                }
+            } catch (e: Resources.NotFoundException) {
+                Log.w(TAG, "Profile label resource not found for user ${userInfo.id}", e)
+            }
 
-        val unknownUserLabel = context.getString(R.string.user_type_unknown_label)
-        val isLabelSupported = userInfo.isManagedProfile || userInfo.isPrivateProfile
-        if (isLabelSupported) {
-            return userProfileManager?.profileLabel ?: unknownUserLabel
+            Log.w(TAG, "Falling back to unknown label for user ${userInfo.id}")
+            return context.getString(R.string.user_type_unknown_label)
         }
-
-        return unknownUserLabel
+        return context.getString(R.string.user_type_personal)
     }
 
     open fun clear() {

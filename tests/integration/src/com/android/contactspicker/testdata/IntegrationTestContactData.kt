@@ -19,6 +19,7 @@ package com.android.contactspicker.testdata
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.SectionKey
+import com.android.contactspicker.viewmodel.ContactGroupingMetadata
 import com.android.contactspicker.viewmodel.ContactsGrouper
 
 /** Test data for integration tests. */
@@ -33,7 +34,10 @@ object IntegrationTestContactData {
             lookupKey = "key_1",
         )
 
-    fun groupContactsForTest(contacts: List<Contact>): Map<SectionKey, List<Contact>> {
-        return ContactsGrouper(contacts).availableContactsGroups
+    fun groupContactsForTest(
+        contacts: List<Contact>,
+        metadata: ContactGroupingMetadata = ContactGroupingMetadata.EMPTY,
+    ): Map<SectionKey, List<Contact>> {
+        return ContactsGrouper(contacts, metadata).availableContactsGroups
     }
 }
