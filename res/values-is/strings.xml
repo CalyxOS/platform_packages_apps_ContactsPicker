@@ -40,6 +40,10 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Minnka"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Sími"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Tölvupóstur"</string>
+    <!-- no translation found for a11y_select_all (7721156399480254682) -->
+    <skip />
+    <!-- no translation found for a11y_deselect_all (6535215299362628830) -->
+    <skip />
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# netfang}one{# netfang}other{# netföng}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# símanúmer}one{# símanúmer}other{# símanúmer}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} af # tölvupósti}one{{selected_count} af # tölvupósti}other{{selected_count} af # tölvupóstum}}"</string>
@@ -68,8 +72,8 @@
     <string name="no_results_found_description" msgid="3316948006890920245">"Prófaðu að leita með annarri stafsetningu"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Persónulegt"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Óþekktur notandi"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"Hlé var gert á %s-forritum"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Kveiktu á forritunum þínum í %2$s og reyndu síðan aftur til að opna %1$s-tengiliði"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"Hlé gert á vinnuforritum"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"Til að skoða tengiliði fyrir þennan prófíl skaltu hætta við hlé á vinnuforritum og reyna aftur"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"Kerfisstjórinn þinn lokaði á aðgang"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Hafðu samband við viðkomandi ef þú hefur einhverjar spurningar"</string>
 </resources>

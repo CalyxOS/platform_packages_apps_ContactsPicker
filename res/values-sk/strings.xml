@@ -40,6 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Zbaliť"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefón"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"E‑mail"</string>
+    <string name="a11y_select_all" msgid="7721156399480254682">"Vybrať všetko"</string>
+    <string name="a11y_deselect_all" msgid="6535215299362628830">"Zrušiť výber všetkých"</string>
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# e‑mailová adresa}few{# e-mailové adresy}many{# email addresses}other{# e-mailových adries}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# telefónne číslo}few{# telefónne čísla}many{# phone numbers}other{# telefónnych čísel}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} z # e‑mailu}few{{selected_count} z # e‑mailov}many{{selected_count} of # emails}other{{selected_count} z # e‑mailov}}"</string>
@@ -68,8 +70,8 @@
     <string name="no_results_found_description" msgid="3316948006890920245">"Skúste v hľadanom výraze zmeniť pravopis"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Osobný"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Neznámy používateľ"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"Aplikácie (%s) sú pozastavené"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Ak chcete otvoriť kontakty %1$s, zapnite aplikácie %2$s a skúste to znova"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"Pracovné aplikácie sú pozastavené"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"Ak si chcete pozrieť kontakty v tomto profile, zrušte pozastavenie pracovných aplikácií a skúste to znova"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"Prístup blokuje váš správca IT"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Ak máte otázky, kontaktujte ho"</string>
 </resources>

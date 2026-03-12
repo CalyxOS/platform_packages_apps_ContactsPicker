@@ -40,6 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"收起"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"电话号码"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"邮箱"</string>
+    <string name="a11y_select_all" msgid="7721156399480254682">"全选"</string>
+    <string name="a11y_deselect_all" msgid="6535215299362628830">"全部取消选择"</string>
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# 个邮箱}other{# 个邮箱}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# 个电话号码}other{# 个电话号码}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{已选 {selected_count} 封邮件（共 # 封）}other{已选 {selected_count} 封邮件（共 # 封）}}"</string>
@@ -65,11 +67,11 @@
     <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"没有联系人包含所需信息"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"您在设备上创建或导入的联系人将显示在此处"</string>
     <string name="no_results_found" msgid="8513853958245248109">"未找到任何结果"</string>
-    <string name="no_results_found_description" msgid="3316948006890920245">"请重新拼写再试试"</string>
+    <string name="no_results_found_description" msgid="3316948006890920245">"换个拼写试试"</string>
     <string name="user_type_personal" msgid="45376141973820399">"个人"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"未知用户"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"已暂停 %s 个应用"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"若要打开“%1$s”联系人，请先打开“%2$s”应用，然后重试"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"工作应用已暂停"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"如需查看此个人资料的联系人，请取消暂停工作应用，然后重试"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"您的 IT 管理员已禁止访问"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"如有任何疑问，请与他们联系"</string>
 </resources>

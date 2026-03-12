@@ -40,6 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"تصغير"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"الهاتف"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"البريد الإلكتروني"</string>
+    <string name="a11y_select_all" msgid="7721156399480254682">"اختيار الكل"</string>
+    <string name="a11y_deselect_all" msgid="6535215299362628830">"إلغاء اختيار الكل"</string>
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{عنوان بريد إلكتروني واحد}zero{‫# عنوان بريد إلكتروني}two{عنوانا بريد إلكتروني}few{‫# عناوين بريد إلكتروني}many{‫# عنوان بريد إلكتروني}other{‫# عنوان بريد إلكتروني}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{رقم هاتف واحد}zero{‫# رقم هاتف}two{رقما هاتف}few{‫# أرقام هاتف}many{‫# رقم هاتف}other{‫# رقم هاتف}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{عنوان بريد إلكتروني واحد ({selected_count}) من إجمالي #}zero{‫{selected_count} من إجمالي # عنوان بريد إلكتروني}two{‫{selected_count} من إجمالي عنوانَي بريد إلكتروني}few{‫{selected_count} من إجمالي # عناوين بريد إلكتروني}many{‫{selected_count} من إجمالي # عنوان بريد إلكتروني}other{‫{selected_count} من إجمالي # عنوان بريد إلكتروني}}"</string>
@@ -68,8 +70,8 @@
     <string name="no_results_found_description" msgid="3316948006890920245">"يُرجى محاولة البحث باستخدام تهجئة مختلفة"</string>
     <string name="user_type_personal" msgid="45376141973820399">"شخصي"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"مستخدم غير معروف"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"‏تم إيقاف %s تطبيق مؤقتًا"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"‏لفتح جهات اتصال %1$s، يُرجى تشغيل تطبيقات %2$s ثم إعادة المحاولة"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"تطبيقات العمل متوقفة مؤقتًا"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"للاطّلاع على جهات الاتصال في هذا الملف الشخصي، يُرجى استئناف استخدام تطبيقات العمل وإعادة المحاولة"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"حظَر مشرف تكنولوجيا المعلومات إمكانية الوصول"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"يُرجى التواصل مع المشرف إذا كان لديك أي سؤال"</string>
 </resources>

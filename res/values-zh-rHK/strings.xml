@@ -40,6 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"收合"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"電話"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"電郵"</string>
+    <string name="a11y_select_all" msgid="7721156399480254682">"揀哂全部"</string>
+    <string name="a11y_deselect_all" msgid="6535215299362628830">"取消揀選全部"</string>
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# 個電郵地址}other{# 個電郵地址}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# 個電話號碼}other{# 個電話號碼}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{第 {selected_count} 個電郵地址 (共 # 個)}other{第 {selected_count} 個電郵地址 (共 # 個)}}"</string>
@@ -68,8 +70,8 @@
     <string name="no_results_found_description" msgid="3316948006890920245">"請嘗試使用其他拼法搜尋"</string>
     <string name="user_type_personal" msgid="45376141973820399">"個人"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"不明的使用者"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"已暫停 %s 個應用程式"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"如要開啟「%1$s」的通訊錄，請開啟%2$s應用程式，然後再試一次"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"已暫停工作應用程式"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"如要查看此設定檔的聯絡人，請取消暫停工作應用程式，然後再試一次"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"IT 管理員已封鎖存取權"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"如有任何疑問，請與對方聯絡"</string>
 </resources>

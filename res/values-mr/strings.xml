@@ -40,6 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"कोलॅप्स करा"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"फोन"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"ईमेल"</string>
+    <string name="a11y_select_all" msgid="7721156399480254682">"सर्व निवडा"</string>
+    <string name="a11y_deselect_all" msgid="6535215299362628830">"सर्व निवडी रद्द करा"</string>
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# ईमेल अ‍ॅड्रेस}other{# ईमेल अ‍ॅड्रेस}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# फोन नंबर}other{# फोन नंबर}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{# ईमेलपैकी {selected_count}}other{# ईमेलपैकी {selected_count}}}"</string>
@@ -68,8 +70,8 @@
     <string name="no_results_found_description" msgid="3316948006890920245">"वेगळे शब्दलेखन वापरून शोधण्याचा प्रयत्न करा"</string>
     <string name="user_type_personal" msgid="45376141973820399">"वैयक्तिक"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"अज्ञात वापरकर्ता"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s अ‍ॅप्स थांबवली आहेत"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"%1$s संपर्क उघडण्यासाठी, तुमची %2$s ॲप्स सुरू करा, त्यानंतर पुन्हा प्रयत्न करा"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"कामासंबंधित अ‍ॅप्स थांबवली आहेत"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"या प्रोफाइलसाठी संपर्क पाहण्याकरिता, कामासंबंधित अ‍ॅप्स पुन्हा सुरू करा आणि पुन्हा प्रयत्न करा"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"तुमच्या आयटी ॲडमिनने अ‍ॅक्सेस ब्लॉक केला आहे"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"तुम्हाला कोणतेही प्रश्न असल्यास, त्यांच्याशी संपर्क साधा"</string>
 </resources>

@@ -40,6 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Skupi"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefon"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Imejl"</string>
+    <string name="a11y_select_all" msgid="7721156399480254682">"Izaberi sve"</string>
+    <string name="a11y_deselect_all" msgid="6535215299362628830">"Opozovi izbor svih stavki"</string>
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# imejl adresa}one{# imejl adresa}few{# imejl adrese}other{# imejl adresa}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# broj telefona}one{# broj telefona}few{# broja telefona}other{# brojeva telefona}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} od # imejla}one{{selected_count} od # imejla}few{{selected_count} od # imejla}other{{selected_count} od # imejlova}}"</string>
@@ -68,8 +70,8 @@
     <string name="no_results_found_description" msgid="3316948006890920245">"Probajte da pretražite sa drugačije napisanim pojmom za pretraživanje"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Lično"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Nepoznat korisnik"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"Pauzirane su aplikacije (%s)"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Da biste otvorili kontakte (%1$s), uključite aplikacije (%2$s) i probajte ponovo"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"Poslovne aplikacije su pauzirane"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"Da biste pregledali kontakte za ovaj profil, uključite poslovne aplikacije i probajte ponovo"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"IT administrator je blokirao pristup"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Obratite mu se ako imate pitanja"</string>
 </resources>

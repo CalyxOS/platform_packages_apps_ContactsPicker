@@ -40,6 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Sutraukti"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefonas"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"El. paštas"</string>
+    <string name="a11y_select_all" msgid="7721156399480254682">"Pasirinkti viską"</string>
+    <string name="a11y_deselect_all" msgid="6535215299362628830">"Panaikinti visų pasirinkimą"</string>
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# el. pašto adresas}one{# el. pašto adresas}few{# el. pašto adresai}many{# el. pašto adreso}other{# el. pašto adresų}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# telefono numeris}one{# telefono numeris}few{# telefono numeriai}many{# telefono numerio}other{# telefono numerių}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} iš # el. pašto adreso}one{{selected_count} iš # el. pašto adreso}few{{selected_count} iš # el. pašto adresų}many{{selected_count} iš # el. pašto adreso}other{{selected_count} iš # el. pašto adresų}}"</string>
@@ -68,8 +70,8 @@
     <string name="no_results_found_description" msgid="3316948006890920245">"Bandykite ieškoti rašydami kitaip"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Asmeninė"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Nežinomas naudotojas"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"Pristabdyta %s progr."</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Jei norite atidaryti %1$s kont., įjunkite %2$s progr. ir bandykite dar kartą"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"Darbo programos pristabdytos"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"Jei norite peržiūrėti šio profilio kontaktus, atšaukite darbo programų pristabdymą ir bandykite dar kartą"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"Prieigą užblokavo jūsų IT administratorius"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Jei turite klausimų, susisiekite su juo"</string>
 </resources>
