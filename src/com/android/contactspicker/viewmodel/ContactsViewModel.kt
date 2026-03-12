@@ -230,9 +230,7 @@ constructor(
                 )
 
                 if (!shouldHandleIntent(callingAppTargetSdk, useSystemContactsPicker)) {
-
-                    // TODO(b/441483549): Log ContactsPickerSessionFinished with
-                    //  ContactsPickerSessionResult.SESSION_RESULT_FORWARDED
+                    contactsPickerLogger.logContactsPickerSessionForwarded()
                     return false
                 }
 

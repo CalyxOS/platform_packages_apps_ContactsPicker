@@ -332,6 +332,25 @@ class ContactsPickerLoggerImplTest {
     }
 
     @Test
+    fun logContactsPickerSessionForwarded_logsCorrectly() {
+        logger.logContactsPickerSessionStarted(
+            DEFAULT_TEST_CALLING_APP_UID,
+            DEFAULT_TEST_CALLING_APP_TARGET_SDK,
+            ContactsPickerAction.ACTION_PICK_CONTACTS,
+            listOf(MimeType.EMAIL),
+            false,
+            false,
+        )
+        capturedSessionFinishedAtoms.clear()
+
+        logger.logContactsPickerSessionForwarded()
+
+        assertThat(capturedSessionFinishedAtoms).hasSize(1)
+        assertThat(capturedSessionFinishedAtoms[0].sessionResult)
+            .isEqualTo(ContactsPickerSessionResult.SESSION_RESULT_FORWARDED)
+    }
+
+    @Test
     fun terminalEvents_calledMultipleTimes_onlyLogsOnce() {
         logger.logContactsPickerSessionStarted(
             DEFAULT_TEST_CALLING_APP_UID,

@@ -250,6 +250,24 @@ class ContactsViewModelTest {
     }
 
     @Test
+    @RequiresFlagsDisabled(FLAG_ENABLE_ACTION_PICK_TAKEOVER_IN_DROIDFOOD)
+    fun handleIntent_lowSdk_logsSessionForwarded() = runTest {
+        val result =
+            viewModel.handleIntent(
+                intentAction = Intent.ACTION_PICK,
+                intentType = Phone.CONTENT_TYPE,
+                intentExtras = null,
+                callingAppName = TEST_APP_NAME,
+                callingPackageName = TEST_PACKAGE_NAME,
+                callingAppUid = TEST_CALLING_UID,
+                callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD - 1,
+            )
+
+        assertThat(result).isFalse()
+        verify(mockContactsPickerLogger).logContactsPickerSessionForwarded()
+    }
+
+    @Test
     fun handleIntent_setsLoadingThenSuccessState() = runTest {
         val testContacts = listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT)
         fakeContactsRepository.setInitialContacts(testContacts)

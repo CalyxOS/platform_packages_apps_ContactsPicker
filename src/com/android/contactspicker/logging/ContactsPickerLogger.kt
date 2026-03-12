@@ -45,6 +45,8 @@ interface ContactsPickerLogger {
      */
     fun logContactsPickerSessionCancelled()
 
+    fun logContactsPickerSessionForwarded()
+
     fun allContactsLoadingStarted()
 
     /**

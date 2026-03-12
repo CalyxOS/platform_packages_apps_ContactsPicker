@@ -137,6 +137,14 @@ class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
         )
     }
 
+    override fun logContactsPickerSessionForwarded() {
+        logSessionFinishedInternal(
+            sessionResult =
+                ContactsPickerStatsLog
+                    .CONTACTS_PICKER_SESSION_FINISHED_REPORTED__SESSION_RESULT__SESSION_RESULT_FORWARDED
+        )
+    }
+
     /**
      * Shared helper to write the final CONTACTS_PICKER_SESSION_FINISHED_REPORTED atom. Default
      * values represent a session with no selection or error.
