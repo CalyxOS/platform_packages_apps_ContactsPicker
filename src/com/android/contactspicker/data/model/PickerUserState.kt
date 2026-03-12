@@ -43,3 +43,15 @@ sealed interface PickerUserState {
         val profileBlockedDialogData: ProfileBlockedDialogData? = null,
     ) : PickerUserState
 }
+
+/** Returns true if recents screenshots should be disabled for the current user state. */
+// TODO(b/479447282): Refactor to base upon SHOW_IN_SHARING_SURFACES_HIDDEN user property
+fun PickerUserState.shouldDisableRecentsScreenshot(): Boolean {
+    return if (this is PickerUserState.Success) {
+        userIdToAvailableUsersMap.values.any {
+            it.userType == UserType.PRIVATE && it.switchableInfo != null
+        }
+    } else {
+        false
+    }
+}
