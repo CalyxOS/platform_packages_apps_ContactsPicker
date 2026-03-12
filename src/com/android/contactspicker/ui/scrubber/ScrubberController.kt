@@ -41,14 +41,8 @@ class ScrubberController(
     contactSections: Map<SectionKey, List<Contact>>,
     showPrivacyBanner: Boolean,
 ) {
-    // TODO(b/489313689) : Reuse ScrubberPositionToListIndexMapper to find SectionKey instead of
-    // creating a new list
-    private val contactIndexToSectionKey = buildList {
-        contactSections.forEach { (sectionKey, contacts) ->
-            repeat(contacts.size) { add(sectionKey) }
-        }
-    }
     private val scrollRequestChannel = Channel<Int>(Channel.CONFLATED)
+
     /** A flow emitting target list indices for scrolling. */
     val scrollRequests: Flow<Int> = scrollRequestChannel.receiveAsFlow()
 
@@ -89,7 +83,7 @@ class ScrubberController(
                 scrubberState.verticalOffsetFraction
             )
 
-        contactIndexToSectionKey.getOrNull(contactIndex)
+        scrubberPositionToListIndexMapper.getSectionKeyForContactIndex(contactIndex)
     }
 
     /**
