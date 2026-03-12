@@ -20,7 +20,6 @@ import android.content.flags.Flags
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -29,7 +28,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.android.contactspicker.ContactsListState
+import com.android.contactspicker.PrivacyDetailsState
 import com.android.contactspicker.R
 import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
 import org.junit.Rule
@@ -53,7 +52,8 @@ class PrivacyDetailsScreenTest {
             ContactsPickerAppTheme {
                 PrivacyDetailsScreen(
                     onBackPressed = {},
-                    uiState = mutableStateOf(ContactsListState.Loading),
+                    uiState =
+                        PrivacyDetailsState(callingAppName = null, requestedMimeTypes = emptyList()),
                 )
             }
         }
@@ -72,7 +72,8 @@ class PrivacyDetailsScreenTest {
         composeTestRule.setContent {
             PrivacyDetailsScreen(
                 onBackPressed = mockOnBackPressed,
-                uiState = mutableStateOf(ContactsListState.Loading),
+                uiState =
+                    PrivacyDetailsState(callingAppName = null, requestedMimeTypes = emptyList()),
             )
         }
 

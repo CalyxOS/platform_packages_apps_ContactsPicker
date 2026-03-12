@@ -31,7 +31,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.android.contactspicker.data.model.shouldDisableRecentsScreenshot
 import com.android.contactspicker.provider.CallingPackageProvider
 import com.android.contactspicker.ui.components.ContactsPickerBottomSheet
 import com.android.contactspicker.ui.theme.ContactsPickerAppTheme
@@ -194,16 +196,23 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
             }
 
             val uiState = contactsViewModel.uiState.collectAsStateWithLifecycle()
-            val userState = contactsViewModel.userState.collectAsStateWithLifecycle()
+            val userState by contactsViewModel.userState.collectAsStateWithLifecycle()
+
+            LaunchedEffect(userState) {
+                setRecentsScreenshotEnabled(!userState.shouldDisableRecentsScreenshot())
+            }
+
             ContactsPickerAppTheme {
                 ContactsPickerBottomSheet(
                     onDismissRequest = { finish() },
                     uiState = uiState,
-                    userState = userState.value,
+                    userState = userState,
                     snackbarEvents = contactsViewModel.snackbarEvents,
                     onToggleContactSelection = contactsViewModel::toggleContactSelection,
                     onToggleEntrySelection = contactsViewModel::toggleEntrySelection,
                     onClearSelection = contactsViewModel::clearSelection,
+                    onPrivacyDetailsClicked = contactsViewModel::onPrivacyDetailsClicked,
+                    onBackFromPrivacyDetails = contactsViewModel::onBackFromPrivacyDetails,
                     onPrivacyBannerDismissRequest = contactsViewModel::hidePrivacyBanner,
                     onDoneClicked = contactsViewModel::onDoneClicked,
                     onQueryChange = contactsViewModel::onSearchQueryChanged,

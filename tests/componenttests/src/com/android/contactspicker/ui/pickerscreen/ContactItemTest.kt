@@ -778,20 +778,32 @@ class ContactItemTest {
         val hasSeparateAvatarAction =
             isExpandable && (selectedEntries.isNotEmpty() || isMultiSelectEnabled)
 
+        // assert the visibility of the checkmark and avatar varies depending on the selection state
+        val checkMarkNode =
+            composeTestRule.onNodeWithContentDescription(
+                context.getString(
+                    R.string.contact_item_selected_content_description,
+                    contact.displayName,
+                ),
+                useUnmergedTree = true,
+            )
+        val avatarNode = composeTestRule.onNode(hasTestTag(AVATAR_TEST_TAG), useUnmergedTree = true)
+        if (selectedEntries.isEmpty()) {
+            checkMarkNode.assertDoesNotExist()
+            avatarNode.assertIsDisplayed()
+        } else {
+            checkMarkNode.assertIsDisplayed()
+            avatarNode.assertDoesNotExist()
+        }
+
         // If the avatar has a separate action, its Box is explicitly clickable.
         // Otherwise, it acts purely visually and touch falls through to the Row.
         if (hasSeparateAvatarAction) {
             val visualAvatarNode =
                 if (selectedEntries.isEmpty()) {
-                    composeTestRule.onNode(hasTestTag(AVATAR_TEST_TAG), useUnmergedTree = true)
+                    avatarNode
                 } else {
-                    composeTestRule.onNodeWithContentDescription(
-                        context.getString(
-                            R.string.contact_item_selected_content_description,
-                            contact.displayName,
-                        ),
-                        useUnmergedTree = true,
-                    )
+                    checkMarkNode
                 }
             // Navigate to the clickable SelectableAvatar Box
             visualAvatarNode.onParent().performClick()

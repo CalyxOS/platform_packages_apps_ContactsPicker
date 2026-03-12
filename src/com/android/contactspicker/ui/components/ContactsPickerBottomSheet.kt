@@ -65,8 +65,6 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
@@ -77,7 +75,7 @@ import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.model.totalElementCount
-import com.android.contactspicker.navigation.ContactsPickerNavHost
+import com.android.contactspicker.ui.pickerscreen.ContactsPickerScreen
 import com.android.contactspicker.ui.pickerscreen.SelectionBottomBar
 import com.android.contactspicker.viewmodel.SnackbarEvent
 import java.util.Locale
@@ -99,6 +97,8 @@ fun ContactsPickerBottomSheet(
     onToggleContactSelection: (Contact, SelectionSource) -> Unit,
     onToggleEntrySelection: (Long, Long, SelectionSource) -> Unit,
     onClearSelection: () -> Unit,
+    onPrivacyDetailsClicked: () -> Unit,
+    onBackFromPrivacyDetails: () -> Unit,
     onPrivacyBannerDismissRequest: () -> Unit,
     bottomSheetState: SheetState =
         rememberStandardBottomSheetState(
@@ -114,14 +114,10 @@ fun ContactsPickerBottomSheet(
     onDismissProfileBlockedDialog: () -> Unit,
 ) {
     val peekHeight = LocalConfiguration.current.screenHeightDp.dp * BOTTOM_SHEET_PEEK_HEIGHT_RATIO
-    val navController = rememberNavController()
     val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
 
     LaunchedEffect(bottomSheetState.currentValue) {
         if (bottomSheetState.currentValue == SheetValue.Hidden) {
@@ -165,20 +161,21 @@ fun ContactsPickerBottomSheet(
             sheetShadowElevation = 8.dp,
             containerColor = Color.Transparent,
             sheetContent = {
-                ContactsPickerNavHost(
-                    navController = navController,
-                    uiState = uiState,
-                    userState = userState,
-                    onToggleContactSelection = onToggleContactSelection,
-                    onToggleEntrySelection = onToggleEntrySelection,
-                    onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
-                    onExpandRequest = { scope.launch { bottomSheetState.expand() } },
+                ContactsPickerScreen(
                     modifier =
                         Modifier.testTag(BOTTOM_SHEET_TEST_TAG).onGloballyPositioned {
                             val bounds = it.boundsInWindow()
                             sheetWidth.value = bounds.width
                             sheetOffsetLeft.value = bounds.left
                         },
+                    uiState = uiState,
+                    userState = userState,
+                    onToggleContactSelection = onToggleContactSelection,
+                    onToggleEntrySelection = onToggleEntrySelection,
+                    onPrivacyDetailsClicked = onPrivacyDetailsClicked,
+                    onBackFromPrivacyDetails = onBackFromPrivacyDetails,
+                    onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
+                    onExpandRequest = { scope.launch { bottomSheetState.expand() } },
                     onQueryChange = onQueryChange,
                     onExitSearch = onExitSearch,
                     onBackFromPreview = onBackFromPreview,
@@ -240,12 +237,25 @@ private fun AnimatedSelectionBottomBar(
     val isPreviewMode = uiStateValue is ContactsPreviewState
 
     val density = LocalDensity.current
-    val navBarHeight = WindowInsets.navigationBars.getBottom(density)
+    val navBarHeightPx = WindowInsets.navigationBars.getBottom(density)
+    val navBarHeightDp = with(density) { navBarHeightPx.toDp() }
+
+    val spatialExpressiveSpec = MaterialTheme.motionScheme.defaultSpatialSpec<IntOffset>()
+
+    val bottomBarPadding = navBarHeightDp + AVATAR_SIZE.dp
 
     AnimatedVisibility(
         visible = uiStateValue.isSelectionBarVisible(),
-        enter = slideInVertically(initialOffsetY = { it + navBarHeight }),
-        exit = slideOutVertically(targetOffsetY = { it + navBarHeight }),
+        enter =
+            slideInVertically(
+                initialOffsetY = { it + navBarHeightPx },
+                animationSpec = spatialExpressiveSpec,
+            ),
+        exit =
+            slideOutVertically(
+                targetOffsetY = { it + navBarHeightPx },
+                animationSpec = spatialExpressiveSpec,
+            ),
         modifier = modifier.padding(horizontal = 16.dp),
     ) {
         SelectionBottomBar(
@@ -260,7 +270,7 @@ private fun AnimatedSelectionBottomBar(
                 }
                 onClearSelection()
             },
-            modifier = Modifier.padding(bottom = 24.dp),
+            modifier = Modifier.padding(bottom = bottomBarPadding),
         )
     }
 }
