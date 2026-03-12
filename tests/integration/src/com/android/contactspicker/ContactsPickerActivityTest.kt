@@ -35,6 +35,7 @@ import android.platform.test.flag.junit.DeviceFlagsValueProvider
 import android.provider.ContactsContract
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createEmptyComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -493,10 +494,10 @@ class ContactsPickerActivityTest {
 
     @Test
     @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
-    fun privacyDetails_page_showsAppName_andRetainsOnRotation() = runTest {
+    fun privacyDetailsPage_showsAppName_andRetainsOnRotation() = runTest {
         val testAppName = "Test App"
-        val successState =
-            MutableStateFlow(
+        val initialState =
+            MutableStateFlow<ContactsUiState>(
                 ContactsListState.Success(
                     availableContactsGroups =
                         IntegrationTestContactData.groupContactsForTest(listOf(testContact)),
@@ -507,7 +508,17 @@ class ContactsPickerActivityTest {
                     showPrivacyBanner = true,
                 )
             )
-        whenever(mockViewModel.uiState).thenReturn(successState)
+        whenever(mockViewModel.uiState).thenReturn(initialState)
+        doAnswer {
+                initialState.value =
+                    PrivacyDetailsState(
+                        callingAppName = testAppName,
+                        requestedMimeTypes = emptyList(),
+                    )
+                null
+            }
+            .whenever(mockViewModel)
+            .onPrivacyDetailsClicked()
 
         val scenario = ActivityScenario.launch<ContactsPickerActivity>(baseIntent)
 
@@ -525,6 +536,63 @@ class ContactsPickerActivityTest {
         composeTestRule.awaitIdle()
         composeTestRule
             .onNodeWithText(context.getString(R.string.privacy_details_description, testAppName))
+            .assertIsDisplayed()
+    }
+
+    @Test
+    @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
+    fun privacyDetailsPage_backButton_returnsToPicker() = runTest {
+        val testAppName = "Test App"
+        val initialState =
+            ContactsListState.Success(
+                availableContactsGroups =
+                    IntegrationTestContactData.groupContactsForTest(listOf(testContact)),
+                selectedContacts = emptyContactsSelection(),
+                isMultiSelectEnabled = false,
+                callingAppName = testAppName,
+                requestedMimeTypes = emptyList(),
+                showPrivacyBanner = true,
+            )
+        val uiStateFlow = MutableStateFlow<ContactsUiState>(initialState)
+        whenever(mockViewModel.uiState).thenReturn(uiStateFlow)
+        doAnswer {
+                uiStateFlow.value =
+                    PrivacyDetailsState(
+                        callingAppName = testAppName,
+                        requestedMimeTypes = emptyList(),
+                    )
+                null
+            }
+            .whenever(mockViewModel)
+            .onPrivacyDetailsClicked()
+
+        // Mock backward navigation
+        doAnswer {
+                uiStateFlow.value = initialState
+                null
+            }
+            .whenever(mockViewModel)
+            .onBackFromPrivacyDetails()
+
+        ActivityScenario.launch<ContactsPickerActivity>(baseIntent)
+
+        // Navigate to Privacy Details
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.privacy_banner_more_details))
+            .performClick()
+        composeTestRule.awaitIdle()
+
+        // Click the Back Button
+        composeTestRule
+            .onNodeWithContentDescription(
+                context.getString(R.string.title_top_bar_back_button_content_description)
+            )
+            .performClick()
+        composeTestRule.awaitIdle()
+
+        // Verify we are successfully back on the original picker screen
+        composeTestRule
+            .onNodeWithText(context.getString(R.string.privacy_banner_more_details))
             .assertIsDisplayed()
     }
 

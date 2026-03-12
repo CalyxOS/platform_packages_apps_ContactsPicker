@@ -96,3 +96,14 @@ data class ContactsPreviewState(
     val selectedContacts: ContactsSelection,
     val isMultiSelectEnabled: Boolean,
 ) : ContactsUiState
+
+/**
+ * Represents the state for displaying privacy details.
+ *
+ * @param callingAppName The name of the app that opened the picker.
+ * @param requestedMimeTypes The list of contacts to show in the preview.
+ */
+data class PrivacyDetailsState(
+    val callingAppName: String?,
+    val requestedMimeTypes: List<MimeType>,
+) : ContactsUiState

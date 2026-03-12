@@ -25,11 +25,13 @@ import androidx.compose.ui.platform.testTag
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
+import com.android.contactspicker.PrivacyDetailsState
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.ui.components.ContactsListContent
+import com.android.contactspicker.ui.privacydetails.PrivacyDetailsScreen
 
 internal const val CONTACTS_PICKER_SCREEN_LOADING_INDICATOR_TEST_TAG =
     "contacts_picker_screen_loading_indicator"
@@ -37,11 +39,13 @@ internal const val CONTACTS_PICKER_SCREEN_TEST_TAG = "contacts_picker_screen"
 
 @Composable
 fun ContactsPickerScreen(
+    modifier: Modifier,
     uiState: State<ContactsUiState>,
     userState: PickerUserState,
     onToggleContactSelection: (Contact, SelectionSource) -> Unit,
     onToggleEntrySelection: (Long, Long, SelectionSource) -> Unit,
-    onNavigateToPrivacyDetails: () -> Unit,
+    onPrivacyDetailsClicked: () -> Unit,
+    onBackFromPrivacyDetails: () -> Unit,
     onPrivacyBannerDismissRequest: () -> Unit,
     onExpandRequest: () -> Unit,
     onQueryChange: (String) -> Unit,
@@ -51,55 +55,65 @@ fun ContactsPickerScreen(
     onDismissProfileBlockedDialog: () -> Unit,
 ) {
     Column(
-        modifier = Modifier.fillMaxSize().testTag(CONTACTS_PICKER_SCREEN_TEST_TAG),
+        modifier = modifier.fillMaxSize().testTag(CONTACTS_PICKER_SCREEN_TEST_TAG),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        val uiStateValue = uiState.value
-
-        if (uiStateValue is ContactsPreviewState) {
-            PreviewScreen(
-                onBackPressed = onBackFromPreview,
-                uiState = uiStateValue,
-                onToggleContactSelection = onToggleContactSelection,
-                onToggleEntrySelection = onToggleEntrySelection,
-            )
-        } else {
-            ContactsPickerTopBar(
-                uiState = uiState,
-                userState = userState,
-                onSearchBarToggled = { isExpanded ->
-                    if (isExpanded) {
-                        onExpandRequest()
-                        onQueryChange("")
-                    } else {
-                        onExitSearch()
-                    }
-                },
-                onQueryChange = onQueryChange,
-                onToggleContactSelection = onToggleContactSelection,
-                onToggleEntrySelection = onToggleEntrySelection,
-                onExitSearch = onExitSearch,
-                onShowPrivacyDetailsClick = onNavigateToPrivacyDetails,
-                onProfileClicked = onProfileClicked,
-            )
-
-            if (uiStateValue is ContactsListState) {
-                ContactsListContent(
+        when (val uiStateValue = uiState.value) {
+            is ContactsPreviewState -> {
+                PreviewScreen(
+                    onBackPressed = onBackFromPreview,
                     uiState = uiStateValue,
-                    onPrivacyBannerMoreDetails = onNavigateToPrivacyDetails,
-                    onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
                     onToggleContactSelection = onToggleContactSelection,
                     onToggleEntrySelection = onToggleEntrySelection,
                 )
             }
 
-            if (
-                userState is PickerUserState.Success && userState.profileBlockedDialogData != null
-            ) {
-                ProfileBlockedDialog(
-                    data = userState.profileBlockedDialogData,
-                    onDismissRequest = onDismissProfileBlockedDialog,
+            is PrivacyDetailsState -> {
+                PrivacyDetailsScreen(
+                    onBackPressed = onBackFromPrivacyDetails,
+                    uiState = uiStateValue,
                 )
+            }
+
+            else -> {
+                ContactsPickerTopBar(
+                    uiState = uiState,
+                    userState = userState,
+                    onSearchBarToggled = { isExpanded ->
+                        if (isExpanded) {
+                            onExpandRequest()
+                            onQueryChange("")
+                        } else {
+                            onExitSearch()
+                        }
+                    },
+                    onQueryChange = onQueryChange,
+                    onToggleContactSelection = onToggleContactSelection,
+                    onToggleEntrySelection = onToggleEntrySelection,
+                    onExitSearch = onExitSearch,
+                    onPrivacyDetailsClicked = onPrivacyDetailsClicked,
+                    onProfileClicked = onProfileClicked,
+                )
+
+                if (uiStateValue is ContactsListState) {
+                    ContactsListContent(
+                        uiState = uiStateValue,
+                        onPrivacyBannerMoreDetails = onPrivacyDetailsClicked,
+                        onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
+                        onToggleContactSelection = onToggleContactSelection,
+                        onToggleEntrySelection = onToggleEntrySelection,
+                    )
+                }
+
+                if (
+                    userState is PickerUserState.Success &&
+                        userState.profileBlockedDialogData != null
+                ) {
+                    ProfileBlockedDialog(
+                        data = userState.profileBlockedDialogData,
+                        onDismissRequest = onDismissProfileBlockedDialog,
+                    )
+                }
             }
         }
     }

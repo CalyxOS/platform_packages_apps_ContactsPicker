@@ -15,18 +15,17 @@
  */
 package com.android.contactspicker.ui.privacydetails
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.android.contactspicker.ContactsListState
-import com.android.contactspicker.ContactsUiState
+import com.android.contactspicker.PrivacyDetailsState
 import com.android.contactspicker.R
 import com.android.contactspicker.ui.components.TitleTopBar
 
@@ -40,10 +39,11 @@ internal const val PRIVACY_DETAILS_SCREEN_BODY_TEST_TAG = "privacy_details_scree
 
 // TODO(b/455591386) : Revisit Error handling in PrivacyDetailsScreen in ContactsPicker
 @Composable
-fun PrivacyDetailsScreen(onBackPressed: () -> Unit, uiState: State<ContactsUiState>) {
-    val callingAppName = (uiState.value as? ContactsListState.Success)?.callingAppName
-    val requestedMimeTypes =
-        (uiState.value as? ContactsListState.Success)?.requestedMimeTypes ?: emptyList()
+fun PrivacyDetailsScreen(onBackPressed: () -> Unit, uiState: PrivacyDetailsState) {
+    val callingAppName = uiState.callingAppName
+    val requestedMimeTypes = uiState.requestedMimeTypes
+
+    BackHandler(onBack = onBackPressed)
 
     Column(modifier = Modifier.fillMaxSize()) {
         TitleTopBar(

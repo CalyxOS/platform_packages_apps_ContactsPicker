@@ -37,6 +37,7 @@ import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.Flags.FLAG_ENABLE_ACTION_PICK_TAKEOVER_IN_DROIDFOOD
+import com.android.contactspicker.PrivacyDetailsState
 import com.android.contactspicker.R
 import com.android.contactspicker.SearchState
 import com.android.contactspicker.config.ContactsPickerAction
@@ -1352,6 +1353,53 @@ class ContactsViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         verify(mockContactsPickerLogger).previewOpened()
+    }
+
+    @Test
+    fun onPrivacyDetailsClicked_updatesStateToPrivacyDetails() = runTest {
+        val contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
+        initializeViewModelForActionPickContacts(listOf(contact), listOf(Phone.CONTENT_ITEM_TYPE))
+
+        viewModel.onPrivacyDetailsClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertThat(state).isInstanceOf(PrivacyDetailsState::class.java)
+        val privacyState = state as PrivacyDetailsState
+        assertThat(privacyState.callingAppName).isEqualTo(TEST_APP_NAME)
+        assertThat(privacyState.requestedMimeTypes).containsExactly(MimeType.PHONE)
+    }
+
+    @Test
+    fun onBackFromPrivacyDetails_revertsToPreviousState() = runTest {
+        val contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
+        initializeViewModelForLegacyActionPick(listOf(contact))
+        val previousSuccessState = viewModel.uiState.value
+
+        viewModel.onPrivacyDetailsClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+        assertThat(viewModel.uiState.value).isInstanceOf(PrivacyDetailsState::class.java)
+
+        viewModel.onBackFromPrivacyDetails()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertThat(state).isInstanceOf(ContactsListState.Success::class.java)
+        assertThat(state).isEqualTo(previousSuccessState)
+    }
+
+    @Test
+    fun onPrivacyDetailsClicked_inLoadingState_throwsException() = runTest {
+        // The ViewModel starts in the Loading state by default.
+        // It should throw an IllegalArgumentException because of the require() check.
+        assertFailsWith<IllegalArgumentException> { viewModel.onPrivacyDetailsClicked() }
+    }
+
+    @Test
+    fun onBackFromPrivacyDetails_inInvalidState_throwsException() = runTest {
+        // The ViewModel starts in the Loading state, not PrivacyDetailsState.
+        // Calling onBackFromPrivacyDetails here should throw an exception.
+        assertFailsWith<IllegalArgumentException> { viewModel.onBackFromPrivacyDetails() }
     }
 
     @Test
