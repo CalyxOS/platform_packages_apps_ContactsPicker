@@ -45,7 +45,6 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.R
 import com.android.contactspicker.data.model.Contact
-import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.testdata.ContactTestDataFactory
@@ -494,12 +493,10 @@ class ContactsPickerBodyTest {
         var toggledSource: SelectionSource? = null
         // Create or copy a contact that is explicitly marked as a favorite
         val favoriteContact =
-            DisplayNameContact(
+            ContactTestDataFactory.createDisplayNameContact(
                 id = 123L,
                 displayName = "Favorite Person",
-                profilePictureUri = null,
                 isFavorite = true,
-                lookupKey = "fav_key",
             )
 
         composeTestRule.setContent {

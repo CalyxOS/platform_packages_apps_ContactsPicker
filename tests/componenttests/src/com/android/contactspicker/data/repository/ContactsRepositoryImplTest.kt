@@ -92,6 +92,7 @@ class ContactsRepositoryImplTest {
         private const val TEST_EMAIL = "test@example.com"
         private const val TEST_PHONE_1 = "555-0123"
         private const val TEST_PHONE_2 = "555-0124"
+        private const val DISPLAY_NAME_SOURCE = ContactsContract.DisplayNameSources.STRUCTURED_NAME
 
         private val SECTION_TITLES = arrayOf("A", "B", "C")
         private val SECTION_COUNTS = intArrayOf(1, 1, 1)
@@ -194,8 +195,8 @@ class ContactsRepositoryImplTest {
                 .appendQueryParameter(Contacts.EXTRA_ADDRESS_BOOK_INDEX, "true")
                 .build()
         val cursor = MatrixCursor(ContactsRepositoryImpl.DISPLAY_NAME_FETCH_PROJECTION)
-        cursor.addRow(arrayOf<Any?>(1L, "Apple", null, 0, "lookup_1"))
-        cursor.addRow(arrayOf<Any?>(2L, "Banana", null, 0, "lookup_2"))
+        cursor.addRow(arrayOf<Any?>(1L, "Apple", null, 0, "lookup_1", DISPLAY_NAME_SOURCE))
+        cursor.addRow(arrayOf<Any?>(2L, "Banana", null, 0, "lookup_2", DISPLAY_NAME_SOURCE))
         val extras =
             Bundle().apply {
                 putStringArray(Contacts.EXTRA_ADDRESS_BOOK_INDEX_TITLES, arrayOf("A"))
@@ -796,7 +797,7 @@ class ContactsRepositoryImplTest {
         starred: Int = 0,
         lookupKey: String = TEST_CONTACT_LOOKUP_KEY,
     ) {
-        addRow(arrayOf<Any?>(id, displayName, photoUri, starred, lookupKey))
+        addRow(arrayOf<Any?>(id, displayName, photoUri, starred, lookupKey, DISPLAY_NAME_SOURCE))
     }
 
     private fun createEmailCursor(): MatrixCursor =
@@ -812,7 +813,19 @@ class ContactsRepositoryImplTest {
         type: Int = Email.TYPE_HOME,
         label: String? = null,
     ) {
-        addRow(arrayOf<Any?>(id, displayName, photoUri, starred, address, dataId, type, label))
+        addRow(
+            arrayOf<Any?>(
+                id,
+                displayName,
+                photoUri,
+                starred,
+                address,
+                dataId,
+                type,
+                label,
+                DISPLAY_NAME_SOURCE,
+            )
+        )
     }
 
     private fun createPhoneCursor(): MatrixCursor =
@@ -828,6 +841,18 @@ class ContactsRepositoryImplTest {
         type: Int = Phone.TYPE_HOME,
         label: String? = null,
     ) {
-        addRow(arrayOf<Any?>(id, displayName, photoUri, starred, number, dataId, type, label))
+        addRow(
+            arrayOf<Any?>(
+                id,
+                displayName,
+                photoUri,
+                starred,
+                number,
+                dataId,
+                type,
+                label,
+                DISPLAY_NAME_SOURCE,
+            )
+        )
     }
 }

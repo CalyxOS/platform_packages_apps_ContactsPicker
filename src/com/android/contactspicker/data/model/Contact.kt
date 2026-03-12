@@ -30,6 +30,7 @@ sealed class Contact {
     /** The name of the contact, suitable for display. */
     abstract val displayName: String
 
+    abstract val displayNameSource: Int
     /** The URI for the contact's profile picture thumbnail, or null if one doesn't exist. */
     abstract val profilePictureUri: String?
 
@@ -79,6 +80,7 @@ sealed class Contact {
 data class DisplayNameContact(
     override val id: Long,
     override val displayName: String,
+    override val displayNameSource: Int,
     override val profilePictureUri: String?,
     override val isFavorite: Boolean,
     val lookupKey: String,
@@ -102,6 +104,7 @@ data class DisplayNameContact(
 data class PhoneContact(
     override val id: Long,
     override val displayName: String,
+    override val displayNameSource: Int,
     override val profilePictureUri: String?,
     override val isFavorite: Boolean,
     val phones: List<PhoneEntry>,
@@ -129,6 +132,7 @@ data class PhoneContact(
 data class EmailContact(
     override val id: Long,
     override val displayName: String,
+    override val displayNameSource: Int,
     override val profilePictureUri: String?,
     override val isFavorite: Boolean,
     val emails: List<EmailEntry>,

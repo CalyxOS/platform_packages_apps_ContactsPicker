@@ -33,6 +33,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.bedstead.nene.TestApis
 import com.android.contactspicker.config.ContactsQueryMode
 import com.android.contactspicker.data.model.DisplayNameContact
+import com.android.contactspicker.data.repository.ContactsRepositoryImpl.Companion.DISPLAY_NAME_FILTER_PROJECTION
+import com.android.contactspicker.data.repository.ContactsRepositoryImpl.Companion.EMAIL_FILTER_PROJECTION
+import com.android.contactspicker.data.repository.ContactsRepositoryImpl.Companion.PHONE_FILTER_PROJECTION
 import com.android.contactspicker.fakes.FakeContentProvider
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
@@ -47,6 +50,8 @@ import org.mockito.kotlin.whenever
 @RunWith(AndroidJUnit4::class)
 class ContactsRepositorySearchTest {
     @get:Rule() val checkFlagsRule: CheckFlagsRule = DeviceFlagsValueProvider.createCheckFlagsRule()
+
+    private val DISPLAY_NAME_SOURCE = ContactsContract.DisplayNameSources.STRUCTURED_NAME
 
     private val context: Context = ApplicationProvider.getApplicationContext()
     private val mockContext: Context = mock()
@@ -78,17 +83,10 @@ class ContactsRepositorySearchTest {
 
     @Test
     fun searchContacts_inEmailMode_returnsEmailContacts() = runTest {
-        val cursor =
-            MatrixCursor(
-                arrayOf(
-                    Email.CONTACT_ID,
-                    Email.DISPLAY_NAME_PRIMARY,
-                    Email.PHOTO_THUMBNAIL_URI,
-                    Email.ADDRESS,
-                    Email._ID,
-                )
-            )
-        cursor.addRow(arrayOf<Any?>(1L, "John Doe", null, "john.doe@example.com", 101L))
+        val cursor = MatrixCursor(EMAIL_FILTER_PROJECTION)
+        cursor.addRow(
+            arrayOf<Any?>(1L, "John Doe", null, "john.doe@example.com", 101L, DISPLAY_NAME_SOURCE)
+        )
         val query = "john"
         val filterUri = Email.CONTENT_FILTER_URI.buildUpon().appendPath(query).build()
         fakeContentProvider.setCursorForUri(filterUri, cursor)
@@ -108,17 +106,10 @@ class ContactsRepositorySearchTest {
 
     @Test
     fun searchContacts_inPhoneMode_returnsPhoneContacts() = runTest {
-        val cursor =
-            MatrixCursor(
-                arrayOf(
-                    Phone.CONTACT_ID,
-                    Phone.DISPLAY_NAME_PRIMARY,
-                    Phone.PHOTO_THUMBNAIL_URI,
-                    Phone.NUMBER,
-                    Phone._ID,
-                )
-            )
-        cursor.addRow(arrayOf<Any?>(2L, "Jane Doe", null, "123-456-7890", 102L))
+        val cursor = MatrixCursor(PHONE_FILTER_PROJECTION)
+        cursor.addRow(
+            arrayOf<Any?>(2L, "Jane Doe", null, "123-456-7890", 102L, DISPLAY_NAME_SOURCE)
+        )
         val query = "jane"
         val filterUri = Phone.CONTENT_FILTER_URI.buildUpon().appendPath(query).build()
         fakeContentProvider.setCursorForUri(filterUri, cursor)
@@ -138,16 +129,8 @@ class ContactsRepositorySearchTest {
 
     @Test
     fun searchContacts_inDisplayNameMode_returnsDisplayNameContacts() = runTest {
-        val cursor =
-            MatrixCursor(
-                arrayOf(
-                    ContactsContract.Contacts._ID,
-                    ContactsContract.Contacts.DISPLAY_NAME_PRIMARY,
-                    ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
-                    ContactsContract.Contacts.LOOKUP_KEY,
-                )
-            )
-        cursor.addRow(arrayOf<Any?>(3L, "Alice Smith", null, "lookupKeyAlice"))
+        val cursor = MatrixCursor(DISPLAY_NAME_FILTER_PROJECTION)
+        cursor.addRow(arrayOf<Any?>(3L, "Alice Smith", null, "lookupKeyAlice", DISPLAY_NAME_SOURCE))
         val query = "alice"
         val filterUri =
             ContactsContract.Contacts.CONTENT_FILTER_URI.buildUpon().appendPath(query).build()

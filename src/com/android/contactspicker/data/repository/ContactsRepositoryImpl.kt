@@ -70,6 +70,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 Contacts.PHOTO_THUMBNAIL_URI,
                 Contacts.STARRED,
                 Contacts.LOOKUP_KEY,
+                Contacts.DISPLAY_NAME_SOURCE,
             )
 
         @VisibleForTesting
@@ -83,6 +84,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 Email._ID,
                 Email.TYPE,
                 Email.LABEL,
+                Email.DISPLAY_NAME_SOURCE,
             )
         @VisibleForTesting
         internal val PHONE_FETCH_PROJECTION =
@@ -95,29 +97,33 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 Phone._ID,
                 Phone.TYPE,
                 Phone.LABEL,
+                Phone.DISPLAY_NAME_SOURCE,
             )
-        private val PHONE_FILTER_PROJECTION =
+        internal val PHONE_FILTER_PROJECTION =
             arrayOf(
                 Phone.CONTACT_ID,
                 Phone.DISPLAY_NAME_PRIMARY,
                 Phone.PHOTO_THUMBNAIL_URI,
                 Phone.NUMBER,
                 Phone._ID,
+                Phone.DISPLAY_NAME_SOURCE,
             )
-        private val EMAIL_FILTER_PROJECTION =
+        internal val EMAIL_FILTER_PROJECTION =
             arrayOf(
                 Email.CONTACT_ID,
                 Email.DISPLAY_NAME_PRIMARY,
                 Email.PHOTO_THUMBNAIL_URI,
                 Email.ADDRESS,
                 Email._ID,
+                Email.DISPLAY_NAME_SOURCE,
             )
-        private val DISPLAY_NAME_FILTER_PROJECTION =
+        internal val DISPLAY_NAME_FILTER_PROJECTION =
             arrayOf(
                 Contacts._ID,
                 Contacts.DISPLAY_NAME_PRIMARY,
                 Contacts.PHOTO_THUMBNAIL_URI,
                 Contacts.LOOKUP_KEY,
+                Contacts.DISPLAY_NAME_SOURCE,
             )
 
         @VisibleForTesting
@@ -139,6 +145,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         val displayName: String,
         val profilePictureUri: String?,
         val isFavorite: Boolean,
+        val displayNameSource: Int,
     ) {
         val emails = mutableListOf<EmailEntry>()
         val phones = mutableListOf<PhoneEntry>()
@@ -149,6 +156,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 displayName = displayName,
                 profilePictureUri = profilePictureUri,
                 isFavorite = isFavorite,
+                displayNameSource = displayNameSource,
                 emails = emails,
             )
 
@@ -158,6 +166,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 displayName = displayName,
                 profilePictureUri = profilePictureUri,
                 isFavorite = isFavorite,
+                displayNameSource = displayNameSource,
                 phones = phones,
             )
     }
@@ -289,6 +298,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             val dataIdIndex = c.getColumnIndex(Email._ID)
             val typeIndex = c.getColumnIndex(Email.TYPE)
             val labelIndex = c.getColumnIndex(Email.LABEL)
+            val sourceIndex = c.getColumnIndex(Email.DISPLAY_NAME_SOURCE)
 
             while (c.moveToNext()) {
                 val sectionHeader =
@@ -305,6 +315,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                     val dataId = c.getLong(dataIdIndex)
                     val type = c.getInt(typeIndex)
                     val customLabel = c.getString(labelIndex)
+                    val displayNameSource = c.getInt(sourceIndex)
 
                     val label = Email.getTypeLabel(context.resources, type, customLabel).toString()
                     val emailEntry = EmailEntry(dataId, address, label)
@@ -316,6 +327,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                                 displayName = name,
                                 profilePictureUri = uriStringWithUserId(profilePictureUri, userId),
                                 isFavorite = isFavorite,
+                                displayNameSource = displayNameSource,
                             )
                         }
                         .emails
@@ -363,6 +375,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             val dataIdIndex = c.getColumnIndex(Phone._ID)
             val typeIndex = c.getColumnIndex(Phone.TYPE)
             val labelIndex = c.getColumnIndex(Phone.LABEL)
+            val sourceIndex = c.getColumnIndex(Phone.DISPLAY_NAME_SOURCE)
 
             while (c.moveToNext()) {
                 val sectionHeader =
@@ -378,6 +391,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                     val dataId = c.getLong(dataIdIndex)
                     val type = c.getInt(typeIndex)
                     val customLabel = c.getString(labelIndex)
+                    val displayNameSource = c.getInt(sourceIndex)
 
                     val label = Phone.getTypeLabel(context.resources, type, customLabel).toString()
                     val phoneEntry = PhoneEntry(dataId, number, label)
@@ -389,6 +403,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                                 displayName = name,
                                 profilePictureUri = uriStringWithUserId(profilePictureUri, userId),
                                 isFavorite = isFavorite,
+                                displayNameSource = displayNameSource,
                             )
                         }
                         .phones
@@ -527,6 +542,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         val profilePictureUriIndex = cursor.getColumnIndex(Contacts.PHOTO_THUMBNAIL_URI)
         val starredIndex = cursor.getColumnIndex(Contacts.STARRED)
         val lookupKeyIndex = cursor.getColumnIndex(Contacts.LOOKUP_KEY)
+        val sourceIndex = cursor.getColumnIndex(Contacts.DISPLAY_NAME_SOURCE)
 
         return buildList {
             while (cursor.moveToNext()) {
@@ -539,6 +555,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 val profilePictureUri = cursor.getString(profilePictureUriIndex)
                 val isFavorite = cursor.getInt(starredIndex) == 1
                 val lookupKey = cursor.getString(lookupKeyIndex)
+                val displayNameSource = cursor.getInt(sourceIndex)
 
                 add(
                     DisplayNameContact(
@@ -546,6 +563,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                         displayName = name,
                         profilePictureUri = uriStringWithUserId(profilePictureUri, userId),
                         isFavorite = isFavorite,
+                        displayNameSource = displayNameSource,
                         lookupKey = lookupKey,
                     )
                 )
@@ -566,12 +584,13 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             PHONE_FILTER_PROJECTION,
             Phone.NUMBER,
             userId,
-        ) { id, displayName, profilePictureUri, dataId, number ->
+        ) { id, displayName, profilePictureUri, displayNameSource, dataId, number ->
             PhoneContact(
                 id = id,
                 displayName = displayName,
                 profilePictureUri = uriStringWithUserId(profilePictureUri, userId),
                 isFavorite = false,
+                displayNameSource = displayNameSource,
                 phones = listOf(PhoneEntry(dataId, number)),
             )
         }
@@ -584,12 +603,13 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
             EMAIL_FILTER_PROJECTION,
             Email.ADDRESS,
             userId,
-        ) { id, displayName, profilePictureUri, dataId, address ->
+        ) { id, displayName, profilePictureUri, displayNameSource, dataId, address ->
             EmailContact(
                 id = id,
                 displayName = displayName,
                 profilePictureUri = uriStringWithUserId(profilePictureUri, userId),
                 isFavorite = false,
+                displayNameSource = displayNameSource,
                 emails = listOf(EmailEntry(dataId, address)),
             )
         }
@@ -617,12 +637,14 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                     val nameIndex = c.getColumnIndex(Contacts.DISPLAY_NAME_PRIMARY)
                     val profilePictureUriIndex = c.getColumnIndex(Contacts.PHOTO_THUMBNAIL_URI)
                     val lookupKeyIndex = c.getColumnIndex(Contacts.LOOKUP_KEY)
+                    val sourceIndex = c.getColumnIndex(Contacts.DISPLAY_NAME_SOURCE)
 
                     while (c.moveToNext()) {
                         val contactId = c.getLong(idIndex)
                         val displayName = c.getString(nameIndex)
                         val profilePictureUri = c.getString(profilePictureUriIndex)
                         val lookupKey = c.getString(lookupKeyIndex)
+                        val displayNameSource = c.getInt(sourceIndex)
 
                         if (!displayName.isNullOrBlank() && !lookupKey.isNullOrBlank()) {
                             add(
@@ -632,6 +654,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                                     profilePictureUri =
                                         uriStringWithUserId(profilePictureUri, userId),
                                     isFavorite = false,
+                                    displayNameSource = displayNameSource,
                                     lookupKey = lookupKey,
                                 )
                             )
@@ -652,6 +675,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 id: Long,
                 displayName: String,
                 profilePictureUri: String?,
+                displayNameSource: Int,
                 dataId: Long,
                 dataValue: String,
             ) -> Contact,
@@ -667,6 +691,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                     val profilePictureUriIndex = c.getColumnIndex(Data.PHOTO_THUMBNAIL_URI)
                     val dataValueIndex = c.getColumnIndex(dataColumnName)
                     val dataIdIndex = c.getColumnIndex(Data._ID)
+                    val sourceIndex = c.getColumnIndex(Data.DISPLAY_NAME_SOURCE)
 
                     while (c.moveToNext()) {
                         val id = c.getLong(idIndex)
@@ -674,12 +699,22 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                         val profilePictureUri = c.getString(profilePictureUriIndex)
                         val dataValue = c.getString(dataValueIndex)
                         val dataId = c.getLong(dataIdIndex)
+                        val displayNameSource = c.getInt(sourceIndex)
 
                         if (!name.isNullOrBlank() && !dataValue.isNullOrBlank()) {
                             // TODO(b/451963918) Confirm if we return aggregated contacts or single
                             // data
                             // rows
-                            add(parseContact(id, name, profilePictureUri, dataId, dataValue))
+                            add(
+                                parseContact(
+                                    id,
+                                    name,
+                                    profilePictureUri,
+                                    displayNameSource,
+                                    dataId,
+                                    dataValue,
+                                )
+                            )
                         }
                     }
                 }
