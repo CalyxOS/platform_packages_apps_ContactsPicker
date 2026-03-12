@@ -48,7 +48,6 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.android.contactspicker.Flags.FLAG_ENABLE_ACTION_PICK_TAKEOVER_IN_DROIDFOOD
 import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.contactsSelectionOf
@@ -122,14 +121,6 @@ class ContactsPickerActivityTest {
         hiltRule.inject()
 
         testPackageName = context.packageName
-        // TODO(b/456756675): remove grantRuntimePermission once the pregrant permission issue is
-        // solved.
-        val instrumentation = InstrumentationRegistry.getInstrumentation()
-        instrumentation.targetContext.packageName
-        instrumentation.uiAutomation.grantRuntimePermission(
-            instrumentation.targetContext.packageName,
-            "android.permission.READ_CONTACTS",
-        )
         val appInfo =
             ApplicationInfo().apply { targetSdkVersion = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD }
         whenever(mockPackageManager.getApplicationInfo(testPackageName, 0)).doReturn(appInfo)
