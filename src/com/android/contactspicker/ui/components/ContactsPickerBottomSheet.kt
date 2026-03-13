@@ -86,6 +86,7 @@ import kotlinx.coroutines.launch
 internal const val BOTTOM_SHEET_TEST_TAG = "bottom_sheet"
 
 internal const val BOTTOM_SHEET_PEEK_HEIGHT_RATIO = 0.75f
+internal val SELECTION_BAR_ABOVE_NAV_BAR_PADDING = 8.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -238,11 +239,7 @@ private fun AnimatedSelectionBottomBar(
 
     val density = LocalDensity.current
     val navBarHeightPx = WindowInsets.navigationBars.getBottom(density)
-    val navBarHeightDp = with(density) { navBarHeightPx.toDp() }
-
     val spatialExpressiveSpec = MaterialTheme.motionScheme.defaultSpatialSpec<IntOffset>()
-
-    val bottomBarPadding = navBarHeightDp + AVATAR_SIZE.dp
 
     AnimatedVisibility(
         visible = uiStateValue.isSelectionBarVisible(),
@@ -270,7 +267,7 @@ private fun AnimatedSelectionBottomBar(
                 }
                 onClearSelection()
             },
-            modifier = Modifier.padding(bottom = bottomBarPadding),
+            modifier = Modifier.padding(bottom = SELECTION_BAR_ABOVE_NAV_BAR_PADDING),
         )
     }
 }
