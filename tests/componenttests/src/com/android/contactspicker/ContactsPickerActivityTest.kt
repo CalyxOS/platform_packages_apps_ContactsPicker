@@ -56,7 +56,7 @@ import com.android.contactspicker.inject.ActivityModule
 import com.android.contactspicker.inject.AppModule
 import com.android.contactspicker.provider.CallingPackageProvider
 import com.android.contactspicker.room.dao.PrivacyBannerShownDao
-import com.android.contactspicker.testdata.IntegrationTestContactData
+import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.android.contactspicker.ui.components.BOTTOM_SHEET_TEST_TAG
 import com.android.contactspicker.viewmodel.ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD
 import com.android.contactspicker.viewmodel.ContactsViewModel
@@ -113,7 +113,7 @@ class ContactsPickerActivityTest {
 
     private val testUri = Uri.parse("content://contacts/1")
     private val testUri2 = Uri.parse("content://data/10")
-    private val testContact = IntegrationTestContactData.GENERIC_DISPLAY_NAME_CONTACT
+    private val testContact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
 
     @Before
     fun setUp() {
@@ -283,7 +283,7 @@ class ContactsPickerActivityTest {
             MutableStateFlow(
                 ContactsListState.Success(
                     availableContactsGroups =
-                        IntegrationTestContactData.groupContactsForTest(listOf(testContact)),
+                        ContactTestDataFactory.groupContactsForTest(listOf(testContact)),
                     selectedContacts = contactsSelectionOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
@@ -335,7 +335,7 @@ class ContactsPickerActivityTest {
             MutableStateFlow(
                 ContactsListState.Success(
                     availableContactsGroups =
-                        IntegrationTestContactData.groupContactsForTest(listOf(testContact)),
+                        ContactTestDataFactory.groupContactsForTest(listOf(testContact)),
                     selectedContacts = contactsSelectionOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = true,
                     callingAppName = null,
@@ -391,7 +391,7 @@ class ContactsPickerActivityTest {
             MutableStateFlow(
                 ContactsListState.Success(
                     availableContactsGroups =
-                        IntegrationTestContactData.groupContactsForTest(listOf(testContact)),
+                        ContactTestDataFactory.groupContactsForTest(listOf(testContact)),
                     selectedContacts = contactsSelectionOf(testContact.id, setOf(testContact.id)),
                     isMultiSelectEnabled = false,
                     callingAppName = null,
@@ -458,7 +458,7 @@ class ContactsPickerActivityTest {
             MutableStateFlow(
                 ContactsListState.Success(
                     availableContactsGroups =
-                        IntegrationTestContactData.groupContactsForTest(listOf(testContact)),
+                        ContactTestDataFactory.groupContactsForTest(listOf(testContact)),
                     selectedContacts = emptyContactsSelection(),
                     isMultiSelectEnabled = false,
                     callingAppName = testAppName,
@@ -491,7 +491,7 @@ class ContactsPickerActivityTest {
             MutableStateFlow<ContactsUiState>(
                 ContactsListState.Success(
                     availableContactsGroups =
-                        IntegrationTestContactData.groupContactsForTest(listOf(testContact)),
+                        ContactTestDataFactory.groupContactsForTest(listOf(testContact)),
                     selectedContacts = emptyContactsSelection(),
                     isMultiSelectEnabled = false,
                     callingAppName = testAppName,
@@ -537,7 +537,7 @@ class ContactsPickerActivityTest {
         val initialState =
             ContactsListState.Success(
                 availableContactsGroups =
-                    IntegrationTestContactData.groupContactsForTest(listOf(testContact)),
+                    ContactTestDataFactory.groupContactsForTest(listOf(testContact)),
                 selectedContacts = emptyContactsSelection(),
                 isMultiSelectEnabled = false,
                 callingAppName = testAppName,

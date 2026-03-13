@@ -25,6 +25,7 @@ import com.android.contactspicker.data.model.SectionKey.EmojiSection
 import com.android.contactspicker.data.model.SectionKey.FavoriteSection
 import com.android.contactspicker.data.model.SectionKey.LetterKey
 import com.google.common.truth.Truth.assertThat
+import java.lang.IllegalArgumentException
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
