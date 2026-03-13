@@ -1483,11 +1483,11 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun onPrivacyDetailsClicked_updatesStateToPrivacyDetails() = runTest {
+    fun onPrivacyDetailsBannerClicked_updatesStateToPrivacyDetailsBanner() = runTest {
         val contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
         initializeViewModelForActionPickContacts(listOf(contact), listOf(Phone.CONTENT_ITEM_TYPE))
 
-        viewModel.onPrivacyDetailsClicked()
+        viewModel.onPrivacyDetailsBannerClicked()
         testDispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.uiState.value
@@ -1498,12 +1498,54 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun onPrivacyDetailsBannerClicked_callsLoggerPrivacyDetailsBannerOpened() = runTest {
+        initializeViewModelForActionPickContacts(
+            listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT),
+            listOf(Phone.CONTENT_ITEM_TYPE),
+        )
+
+        viewModel.onPrivacyDetailsBannerClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        verify(mockContactsPickerLogger).privacyDetailsBannerOpened()
+    }
+
+    @Test
+    fun onPrivacyDetailsOverflowMenuClicked_updatesStateToPrivacyDetailsBanner() = runTest {
+        val contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
+        initializeViewModelForActionPickContacts(listOf(contact), listOf(Phone.CONTENT_ITEM_TYPE))
+
+        viewModel.onPrivacyDetailsOverflowMenuClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertThat(state).isInstanceOf(PrivacyDetailsState::class.java)
+        val privacyState = state as PrivacyDetailsState
+        assertThat(privacyState.callingAppName).isEqualTo(TEST_APP_NAME)
+        assertThat(privacyState.requestedMimeTypes).containsExactly(MimeType.PHONE)
+    }
+
+    @Test
+    fun onPrivacyDetailsOverflowMenuClicked_callsLoggerPrivacyDetailsOverflowMenuOpened() =
+        runTest {
+            initializeViewModelForActionPickContacts(
+                listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT),
+                listOf(Phone.CONTENT_ITEM_TYPE),
+            )
+
+            viewModel.onPrivacyDetailsOverflowMenuClicked()
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            verify(mockContactsPickerLogger).privacyDetailsOverflowMenuOpened()
+        }
+
+    @Test
     fun onBackFromPrivacyDetails_revertsToPreviousState() = runTest {
         val contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
         initializeViewModelForLegacyActionPick(listOf(contact))
         val previousSuccessState = viewModel.uiState.value
 
-        viewModel.onPrivacyDetailsClicked()
+        viewModel.onPrivacyDetailsBannerClicked()
         testDispatcher.scheduler.advanceUntilIdle()
         assertThat(viewModel.uiState.value).isInstanceOf(PrivacyDetailsState::class.java)
 
@@ -1516,10 +1558,10 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun onPrivacyDetailsClicked_inLoadingState_throwsException() = runTest {
+    fun onPrivacyDetailsBannerClicked_inLoadingState_throwsException() = runTest {
         // The ViewModel starts in the Loading state by default.
         // It should throw an IllegalArgumentException because of the require() check.
-        assertFailsWith<IllegalArgumentException> { viewModel.onPrivacyDetailsClicked() }
+        assertFailsWith<IllegalArgumentException> { viewModel.onPrivacyDetailsBannerClicked() }
     }
 
     @Test

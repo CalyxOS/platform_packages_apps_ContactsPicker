@@ -791,7 +791,17 @@ constructor(
     }
 
     @OpenForTesting
-    open fun onPrivacyDetailsClicked() {
+    open fun onPrivacyDetailsBannerClicked() {
+        contactsPickerLogger.privacyDetailsBannerOpened()
+        navigateToPrivacyDetails()
+    }
+
+    fun onPrivacyDetailsOverflowMenuClicked() {
+        contactsPickerLogger.privacyDetailsOverflowMenuOpened()
+        navigateToPrivacyDetails()
+    }
+
+    private fun navigateToPrivacyDetails() {
         val currentState = _uiState.value
         require(currentState is ContactsListState.Success) {
             "onPrivacyDetailsClicked called from unexpected state: $currentState"

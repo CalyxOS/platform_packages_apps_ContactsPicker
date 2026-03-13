@@ -239,6 +239,22 @@ class ContactsPickerLoggerImplTest {
     }
 
     @Test
+    fun privacyDetailsBannerOpened_logContactsPickerSessionFinishedLogsCorrectly() {
+        verifySessionFinishedEventFields(
+            privacyDetailsBannerOpened = true,
+            midLoggingSessionBlock = { logger.privacyDetailsBannerOpened() },
+        )
+    }
+
+    @Test
+    fun privacyDetailsOverflowMenuOpened_logContactsPickerSessionFinishedLogsCorrectly() {
+        verifySessionFinishedEventFields(
+            privacyDetailsOverflowMenuOpened = true,
+            midLoggingSessionBlock = { logger.privacyDetailsOverflowMenuOpened() },
+        )
+    }
+
+    @Test
     fun logContactsPickerSessionStarted_withNulls_logsUnspecified() {
         verifySessionStartedEventFields(intentAction = null, requestedMimetypesList = null)
     }
@@ -363,6 +379,8 @@ class ContactsPickerLoggerImplTest {
         previewOpened: Boolean = false,
         searchUsed: Boolean = false,
         privacyBannerDismissedByUser: Boolean = false,
+        privacyDetailsBannerOpened: Boolean = false,
+        privacyDetailsOverflowMenuOpened: Boolean = false,
         midLoggingSessionBlock: () -> Unit = {},
     ) {
         capturedSessionFinishedAtoms.clear()
@@ -453,5 +471,8 @@ class ContactsPickerLoggerImplTest {
         assertThat(event.previewOpened).isEqualTo(previewOpened)
         assertThat(event.searchUsed).isEqualTo(searchUsed)
         assertThat(event.privacyBannerDismissedByUser).isEqualTo(privacyBannerDismissedByUser)
+        assertThat(event.privacyBannerMoreDetailsOpenedByUser).isEqualTo(privacyDetailsBannerOpened)
+        assertThat(event.privacyBannerOpenedFromOverflowMenu)
+            .isEqualTo(privacyDetailsOverflowMenuOpened)
     }
 }
