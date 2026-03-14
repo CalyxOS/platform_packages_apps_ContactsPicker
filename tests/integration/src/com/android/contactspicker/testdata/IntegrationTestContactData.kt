@@ -16,6 +16,7 @@
 
 package com.android.contactspicker.testdata
 
+import android.provider.ContactsContract
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.SectionKey
@@ -29,6 +30,7 @@ object IntegrationTestContactData {
         DisplayNameContact(
             id = 1,
             displayName = "Alice Wonderland",
+            displayNameSource = ContactsContract.DisplayNameSources.STRUCTURED_NAME,
             isFavorite = false,
             profilePictureUri = null,
             lookupKey = "key_1",

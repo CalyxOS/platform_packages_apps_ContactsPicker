@@ -16,6 +16,7 @@
 package com.android.contactspicker.ui.pickerscreen
 
 import android.icu.text.MessageFormat
+import android.provider.ContactsContract.DisplayNameSources
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -260,8 +261,17 @@ fun ContactItem(
                     onClick = onAvatarClick,
                 )
                 Column(modifier = Modifier.weight(1f)) {
+                    val isNamePhoneNumber = contact.displayNameSource == DisplayNameSources.PHONE
+                    val nameAnnotatedString =
+                        rememberAnnotatedContactData(
+                            text = contact.displayName,
+                            direction =
+                                if (isNamePhoneNumber) TextDirection.Ltr
+                                else TextDirection.Unspecified,
+                            isVerbatim = isNamePhoneNumber,
+                        )
                     Text(
-                        text = contact.displayName,
+                        text = nameAnnotatedString,
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.semantics { contentDescription = contact.displayName },

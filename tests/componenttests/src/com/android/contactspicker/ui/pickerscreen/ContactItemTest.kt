@@ -22,6 +22,7 @@ import android.icu.text.MessageFormat
 import android.platform.test.annotations.RequiresFlagsEnabled
 import android.platform.test.flag.junit.CheckFlagsRule
 import android.platform.test.flag.junit.DeviceFlagsValueProvider
+import android.provider.ContactsContract
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.Role
@@ -333,6 +334,47 @@ class ContactItemTest {
             val hasVerbatimAnnotation = annotations.any { it.item is VerbatimTtsAnnotation }
             assertThat(hasVerbatimAnnotation).isFalse()
         }
+    }
+
+    @Test
+    fun displayName_fromPhoneSourceInRtl_isForcedLtr() {
+        // string with numbers and blank spaces
+        val phoneNumber = "+44 123 456"
+
+        val contact =
+            ContactTestDataFactory.GENERIC_PHONE_CONTACT.copy(
+                displayName = phoneNumber,
+                displayNameSource = ContactsContract.DisplayNameSources.PHONE,
+            )
+
+        composeTestRule.setContent {
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+                ContactItem(
+                    contact = contact,
+                    position = ItemPosition.ONLY,
+                    selectedEntries = emptySet(),
+                    isMultiSelectEnabled = true,
+                    isSearchMode = false,
+                    onToggleContactSelection = {},
+                    onToggleEntrySelection = { _, _ -> },
+                )
+            }
+        }
+
+        // Verify display name resolves to LTR visually
+        composeTestRule
+            .onNodeWithText(contact.displayName, useUnmergedTree = true)
+            .assertTextDirection(TextDirection.Ltr, ResolvedTextDirection.Ltr)
+
+        val node = composeTestRule.onNodeWithText(phoneNumber).fetchSemanticsNode()
+
+        val annotatedString =
+            node.config[SemanticsProperties.Text].find { it.text == phoneNumber }
+                ?: error("Phone number text not found in semantics node")
+
+        val annotations = annotatedString.getTtsAnnotations(0, phoneNumber.length)
+        val hasVerbatimAnnotation = annotations.any { it.item is VerbatimTtsAnnotation }
+        assertThat(hasVerbatimAnnotation).isTrue()
     }
 
     @Test

@@ -16,6 +16,7 @@
 
 package com.android.contactspicker.testdata
 
+import android.provider.ContactsContract
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.DisplayNameContact
 import com.android.contactspicker.data.model.EmailContact
@@ -67,6 +68,7 @@ object ContactTestDataFactory {
         return DisplayNameContact(
             id = id,
             displayName = displayName,
+            displayNameSource = ContactsContract.DisplayNameSources.STRUCTURED_NAME,
             isFavorite = isFavorite,
             profilePictureUri = profilePictureUri,
             lookupKey = lookupKey,
@@ -84,6 +86,7 @@ object ContactTestDataFactory {
         return PhoneContact(
             id = id,
             displayName = displayName,
+            displayNameSource = ContactsContract.DisplayNameSources.STRUCTURED_NAME,
             isFavorite = isFavorite,
             phones = phones,
             profilePictureUri = profilePictureUri,
@@ -101,6 +104,7 @@ object ContactTestDataFactory {
         return EmailContact(
             id = id,
             displayName = displayName,
+            displayNameSource = ContactsContract.DisplayNameSources.STRUCTURED_NAME,
             isFavorite = isFavorite,
             emails = emails,
             profilePictureUri = profilePictureUri,
