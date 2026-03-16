@@ -40,6 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Sbalit"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefon"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"E-mail"</string>
+    <string name="a11y_select_all" msgid="7721156399480254682">"Vybrat vše"</string>
+    <string name="a11y_deselect_all" msgid="6535215299362628830">"Zrušit výběr všech"</string>
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# e‑mailová adresa}few{# e‑mailové adresy}many{# e‑mailové adresy}other{# e‑mailových adres}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# telefonní číslo}few{# telefonní čísla}many{# telefonního čísla}other{# telefonních čísel}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} z # e-mailové adresy}few{{selected_count} ze # e-mailových adres}many{{selected_count} z # e-mailové adresy}other{{selected_count} z # e-mailových adres}}"</string>
@@ -65,11 +67,11 @@
     <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Žádné kontakty s požadovanými údaji"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Tady se zobrazí kontakty, které vytvoříte nebo importujete do zařízení"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Nenašly se žádné výsledky"</string>
-    <string name="no_results_found_description" msgid="3316948006890920245">"Zkuste v dotazu jiný pravopis"</string>
+    <string name="no_results_found_description" msgid="3316948006890920245">"Zkuste hledaný výraz napsat jinak"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Osobní"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Neznámý uživatel"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"Aplikace typu %s jsou pozastavené"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Pokud chcete otevřít kontakty typu %1$s, zapněte aplikace typu %2$s a zkuste to znovu"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"Pracovní aplikace jsou pozastavené"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"Pokud chcete zobrazit kontakty v tomto profilu, zrušte pozastavení pracovních aplikací a zkuste to znovu"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"Přístup je blokován vaším administrátorem IT"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"V případě dotazů se na něj obraťte"</string>
 </resources>

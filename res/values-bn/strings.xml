@@ -40,6 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"আড়াল করুন"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ফোন"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"ইমেল"</string>
+    <string name="a11y_select_all" msgid="7721156399480254682">"সবকটি বেছে নিন"</string>
+    <string name="a11y_deselect_all" msgid="6535215299362628830">"সবকটি থেকে টিকচিহ্ন সরান"</string>
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{#টি ইমেল আইডি}one{#টি ইমেল আইডি}other{#টি ইমেল আইডি}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{#টি ফোন নম্বর}one{#টি ফোন নম্বর}other{#টি ফোন নম্বর}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{#টি ইমেলের মধ্যে {selected_count}টি}one{#টি ইমেলের মধ্যে {selected_count}টি}other{#টি ইমেলের মধ্যে {selected_count}টি}}"</string>
@@ -68,8 +70,8 @@
     <string name="no_results_found_description" msgid="3316948006890920245">"অন্য বানান ব্যবহার করে সার্চ করে দেখুন"</string>
     <string name="user_type_personal" msgid="45376141973820399">"ব্যক্তিগত"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"অজানা ব্যবহারকারী"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"%sটি অ্যাপ পজ করা আছে"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"%1$sটি পরিচিতি খুলতে, আপনার %2$s অ্যাপ চালু করে আবার চেষ্টা করুন"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"অফিসের অ্যাপ পজ করা আছে"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"এই প্রোফাইলের পরিচিতি দেখতে, অফিসের অ্যাপ আনপজ করে আবার চেষ্টা করুন"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"আপনার আইটি অ্যাডমিন অ্যাক্সেস ব্লক করেছেন"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"আপনার কোনও প্রশ্ন থাকলে, তাদের সাথে যোগাযোগ করুন"</string>
 </resources>

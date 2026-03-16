@@ -40,6 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"收合"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"電話號碼"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"電子郵件地址"</string>
+    <string name="a11y_select_all" msgid="7721156399480254682">"全選"</string>
+    <string name="a11y_deselect_all" msgid="6535215299362628830">"取消全選"</string>
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# 個電子郵件地址}other{# 個電子郵件地址}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# 個電話號碼}other{# 個電話號碼}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{第 {selected_count} 封電子郵件 (共 # 封)}other{第 {selected_count} 封電子郵件 (共 # 封)}}"</string>
@@ -60,16 +62,16 @@
     <string name="default_calling_app_name" msgid="5345125341557406609">"這個應用程式"</string>
     <string name="privacy_details_menu_label" msgid="497348969731766203">"聯絡人的隱私權"</string>
     <string name="no_contacts_title" msgid="9093698629001614808">"目前還沒有聯絡人"</string>
-    <string name="no_email_contacts_title" msgid="501276640394262467">"沒有具備電子郵件地址的聯絡人"</string>
-    <string name="no_phone_contacts_title" msgid="3446367223904876925">"沒有具備電話號碼的聯絡人"</string>
-    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"沒有具備必要資訊的聯絡人"</string>
+    <string name="no_email_contacts_title" msgid="501276640394262467">"找不到有電子郵件地址的聯絡人"</string>
+    <string name="no_phone_contacts_title" msgid="3446367223904876925">"找不到有電話號碼的聯絡人"</string>
+    <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"找不到有所需資訊的聯絡人"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"你在裝置建立或匯入的聯絡人會顯示在這裡"</string>
-    <string name="no_results_found" msgid="8513853958245248109">"找不到任何結果"</string>
+    <string name="no_results_found" msgid="8513853958245248109">"找不到相符的結果"</string>
     <string name="no_results_found_description" msgid="3316948006890920245">"請改用其他拼法搜尋"</string>
     <string name="user_type_personal" msgid="45376141973820399">"個人"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"不明使用者"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s 個應用程式已暫停"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"如要開啟「%1$s」的聯絡人資料，請開啟「%2$s」應用程式，然後再試一次"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"工作應用程式目前為暫停狀態"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"如要查看這個設定檔的聯絡人，請取消暫停工作應用程式，然後再試一次"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"存取權遭 IT 管理員封鎖"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"如有任何疑問，請與對方聯絡"</string>
 </resources>

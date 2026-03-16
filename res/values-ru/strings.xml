@@ -40,6 +40,10 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Свернуть"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Телефон"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Электронная почта"</string>
+    <!-- no translation found for a11y_select_all (7721156399480254682) -->
+    <skip />
+    <!-- no translation found for a11y_deselect_all (6535215299362628830) -->
+    <skip />
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# адрес электронной почты}one{# адрес электронной почты}few{# адреса электронной почты}many{# адресов электронной почты}other{# адреса электронной почты}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# номер телефона}one{# номер телефона}few{# номера телефона}many{# номеров телефона}other{# номера телефона}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} адрес эл. почты из #}one{{selected_count} адрес эл. почты из #}few{{selected_count} адреса эл. почты из #}many{{selected_count} адресов эл. почты из #}other{{selected_count} адреса эл. почты из #}}"</string>
@@ -68,8 +72,8 @@
     <string name="no_results_found_description" msgid="3316948006890920245">"Попробуйте написать запрос по-другому."</string>
     <string name="user_type_personal" msgid="45376141973820399">"Личный"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Неизвестный пользователь"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"Приложения (%s) приостановлены"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Чтобы открыть контакты профиля \"%1$s\", включите приложения (%2$s) и повторите попытку."</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"Рабочие приложения приостановлены"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"Чтобы посмотреть контакты для выбранного профиля, возобновите работу этих приложений и повторите попытку."</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"Доступ заблокирован администратором"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Если у вас есть вопросы, свяжитесь с ним."</string>
 </resources>

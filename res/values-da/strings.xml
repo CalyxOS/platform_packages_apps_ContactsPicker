@@ -40,6 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Skjul"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefon"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Mail"</string>
+    <string name="a11y_select_all" msgid="7721156399480254682">"Vælg alle"</string>
+    <string name="a11y_deselect_all" msgid="6535215299362628830">"Fravælg alle"</string>
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# mailadresse}one{# mailadresse}other{# mailadresser}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# telefonnummer}one{# telefonnummer}other{# telefonnumre}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} ud af # mailadresse}one{{selected_count} ud af # mailadresse}other{{selected_count} ud af # mailadresser}}"</string>
@@ -68,8 +70,8 @@
     <string name="no_results_found_description" msgid="3316948006890920245">"Prøv at søge med en anden stavemåde"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Personlig"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Ukendt bruger"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s apps er sat på pause"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Hvis du vil åbne %1$s kontakter, skal du aktivere dine %2$s apps og derefter prøve igen"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"Arbejdsapps er sat på pause"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"Hvis du vil se kontakter for denne profil, skal du genoptage arbejdsapps og prøve igen"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"Adgangen er blokeret af din it-administrator"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Kontakt vedkommende, hvis du har spørgsmål"</string>
 </resources>

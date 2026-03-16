@@ -40,6 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"కుదించండి"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ఫోన్"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"ఈమెయిల్"</string>
+    <string name="a11y_select_all" msgid="7721156399480254682">"అన్నీ ఎంచుకోండి"</string>
+    <string name="a11y_deselect_all" msgid="6535215299362628830">"అన్నింటి ఎంపికను తొలగించండి"</string>
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# ఈమెయిల్ అడ్రస్}other{# ఈమెయిల్ అడ్రస్‌లు}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# ఫోన్ నంబర్}other{# ఫోన్ నంబర్‌లు}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{# ఈమెయిల్‌లో {selected_count}}other{# ఈమెయిల్స్‌లో {selected_count}}}"</string>
@@ -68,8 +70,8 @@
     <string name="no_results_found_description" msgid="3316948006890920245">"వేరే స్పెల్లింగ్‌తో సెర్చ్ చేయడానికి ట్రై చేయండి"</string>
     <string name="user_type_personal" msgid="45376141973820399">"వ్యక్తిగతం"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"తెలియని యూజర్"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s యాప్‌లు పాజ్ చేయబడ్డాయి"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"%1$s కాంటాక్ట్‌లను తెరవడానికి, మీ %2$s యాప్‌లను ఆన్ చేసి, ఆపై మళ్లీ ట్రై చేయండి"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"వర్క్ యాప్‌లను పాజ్ చేశారు"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"ఈ ప్రొఫైల్‌కు సంబంధించిన కాంటాక్ట్‌లను చూడటానికి, వర్క్ యాప్‌లను పునరుద్ధరించి, మళ్లీ ట్రై చేయండి"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"మీ IT అడ్మిన్ యాక్సెస్‌ను బ్లాక్ చేశారు"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"మీకు ఏవైనా సందేహాలు ఉంటే వారిని సంప్రదించండి"</string>
 </resources>

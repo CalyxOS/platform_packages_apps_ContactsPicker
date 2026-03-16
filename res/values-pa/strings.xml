@@ -40,6 +40,10 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"ਸਮੇਟੋ"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"ਫ਼ੋਨ"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"ਈਮੇਲ"</string>
+    <!-- no translation found for a11y_select_all (7721156399480254682) -->
+    <skip />
+    <!-- no translation found for a11y_deselect_all (6535215299362628830) -->
+    <skip />
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# ਈਮੇਲ ਪਤਾ}one{# ਈਮੇਲ ਪਤਾ}other{# ਈਮੇਲ ਪਤੇ}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# ਫ਼ੋਨ ਨੰਬਰ}one{# ਫ਼ੋਨ ਨੰਬਰ}other{# ਫ਼ੋਨ ਨੰਬਰ}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{# ਈਮੇਲ ਵਿੱਚੋਂ {selected_count}}one{# ਈਮੇਲ ਵਿੱਚੋਂ {selected_count}}other{# ਈਮੇਲਾਂ ਵਿੱਚੋਂ {selected_count}}}"</string>
@@ -68,8 +72,8 @@
     <string name="no_results_found_description" msgid="3316948006890920245">"ਕਿਸੇ ਵੱਖਰੇ ਸ਼ਬਦ-ਜੋੜ ਨਾਲ ਖੋਜ ਕੇ ਦੇਖੋ"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Personal"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"ਅਗਿਆਤ ਵਰਤੋਂਕਾਰ"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s ਐਪਾਂ ਨੂੰ ਰੋਕਿਆ ਗਿਆ ਹੈ"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"%1$s ਸੰਪਰਕਾਂ ਨੂੰ ਖੋਲ੍ਹਣ ਲਈ, ਆਪਣੀਆਂ %2$s ਐਪਾਂ ਨੂੰ ਚਾਲੂ ਕਰ ਕੇ ਫਿਰ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਨੂੰ ਰੋਕਿਆ ਗਿਆ ਹੈ"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"ਇਸ ਪ੍ਰੋਫਾਈਲ ਲਈ ਸੰਪਰਕ ਦੇਖਣ ਵਾਸਤੇ, ਕੰਮ ਸੰਬੰਧੀ ਐਪਾਂ ਤੋਂ ਰੋਕ ਹਟਾਓ ਅਤੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"ਤੁਹਾਡੇ ਆਈ.ਟੀ. ਪ੍ਰਸ਼ਾਸਕ ਵੱਲੋਂ ਪਹੁੰਚ ਨੂੰ ਬਲਾਕ ਕੀਤਾ ਗਿਆ ਹੈ"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"ਜੇ ਤੁਹਾਡਾ ਕੋਈ ਸਵਾਲ ਹੈ, ਤਾਂ ਉਨ੍ਹਾਂ ਨਾਲ ਸੰਪਰਕ ਕਰੋ"</string>
 </resources>

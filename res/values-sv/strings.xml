@@ -40,6 +40,10 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Komprimera"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefon"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"E-post"</string>
+    <!-- no translation found for a11y_select_all (7721156399480254682) -->
+    <skip />
+    <!-- no translation found for a11y_deselect_all (6535215299362628830) -->
+    <skip />
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# e-postadress}other{# e-postadresser}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# telefonnummer}other{# telefonnummer}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} av # e-postmeddelande}other{{selected_count} av # e-postmeddelanden}}"</string>
@@ -68,8 +72,8 @@
     <string name="no_results_found_description" msgid="3316948006890920245">"Testa att söka med en annan stavning"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Privat"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Okänd användare"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s appar har pausats"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Om du vill öppna kontakter för %1$s aktiverar du dina appar för %2$s och försöker igen"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"Jobbappar har pausats"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"Återuppta jobbapparna och försök igen om du vill visa kontakter för den här profilen"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"Åtkomsten blockeras av IT-administratören"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Kontakta hen om du har frågor"</string>
 </resources>

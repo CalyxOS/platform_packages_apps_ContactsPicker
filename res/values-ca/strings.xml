@@ -40,6 +40,10 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Replega"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telèfon"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Correu electrònic"</string>
+    <!-- no translation found for a11y_select_all (7721156399480254682) -->
+    <skip />
+    <!-- no translation found for a11y_deselect_all (6535215299362628830) -->
+    <skip />
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# adreça electrònica}other{# adreces electròniques}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# número de telèfon}other{# números de telèfon}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} d’# adreça electrònica}other{{selected_count} de # adreces electròniques}}"</string>
@@ -65,11 +69,11 @@
     <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Sense contactes amb dades necessàries"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Els contactes que creïs o importis al dispositiu es mostraran aquí"</string>
     <string name="no_results_found" msgid="8513853958245248109">"No s\'ha trobat cap resultat"</string>
-    <string name="no_results_found_description" msgid="3316948006890920245">"Prova de cercar amb una altra grafia"</string>
+    <string name="no_results_found_description" msgid="3316948006890920245">"Prova d\'escriure-ho d\'una altra manera"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Personal"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Usuari desconegut"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"Les aplicacions de %s estan en pausa"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Per obrir %1$s contactes, activa les aplicacions de %2$s i torna-ho a provar"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"Les aplicacions de treball s\'han posat en pausa"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"Per veure els contactes d\'aquest perfil, reactiva les aplicacions de treball i torna-ho a provar"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"El teu administrador de TI ha bloquejat l\'accés"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Contacta-hi si tens cap pregunta"</string>
 </resources>
