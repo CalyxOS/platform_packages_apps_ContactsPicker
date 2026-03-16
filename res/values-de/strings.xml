@@ -40,6 +40,10 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Minimieren"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefon"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"E‑Mail"</string>
+    <!-- no translation found for a11y_select_all (7721156399480254682) -->
+    <skip />
+    <!-- no translation found for a11y_deselect_all (6535215299362628830) -->
+    <skip />
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# E-Mail-Adresse}other{# E-Mail-Adressen}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# Telefonnummer}other{# Telefonnummern}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} von # E‑Mail}other{{selected_count} von # E‑Mails}}"</string>
@@ -65,11 +69,11 @@
     <string name="no_custom_details_contacts_title" msgid="8492259954778971307">"Keine Kontakte mit erforderlichen Infos"</string>
     <string name="no_contacts_description" msgid="2146615362021064099">"Hier werden die Kontakte angezeigt, die du erstellst oder auf dein Gerät importierst"</string>
     <string name="no_results_found" msgid="8513853958245248109">"Keine Ergebnisse gefunden"</string>
-    <string name="no_results_found_description" msgid="3316948006890920245">"Versuchen Sie es mit einer anderen Schreibweise"</string>
+    <string name="no_results_found_description" msgid="3316948006890920245">"Versuche es mit einer anderen Schreibweise"</string>
     <string name="user_type_personal" msgid="45376141973820399">"privaten"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Unbekannter Nutzer"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"%s Apps sind pausiert"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Wenn du %1$s Kontakte öffnen möchtest, aktiviere deine %2$s Apps und versuche es noch einmal"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"Geschäftliche Apps sind pausiert"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"Wenn du Kontakte für dieses Profil ansehen möchtest, hebe die Pausierung geschäftlicher Apps auf und versuche es noch einmal"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"Zugriff durch IT-Administrator blockiert"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Bei Fragen kannst du dich an den Administrator wenden"</string>
 </resources>

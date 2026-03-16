@@ -40,6 +40,10 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Zwiń"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefon"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"E-mail"</string>
+    <!-- no translation found for a11y_select_all (7721156399480254682) -->
+    <skip />
+    <!-- no translation found for a11y_deselect_all (6535215299362628830) -->
+    <skip />
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# adres e-mail}few{# adresy e-mail}many{# adresów e-mail}other{# adresu e-mail}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# numer telefonu}few{# numery telefonów}many{# numerów telefonów}other{# numeru telefonu}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} z # adresu e-mail}few{{selected_count} z # adresów e-mail}many{{selected_count} z # adresów e-mail}other{{selected_count} z # adresu e-mail}}"</string>
@@ -68,8 +72,8 @@
     <string name="no_results_found_description" msgid="3316948006890920245">"Spróbuj wyszukać, używając innej pisowni"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Osobiste"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Nieznany użytkownik"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"Aplikacje %s są wstrzymane"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Aby otworzyć kontakty profilu %1$s, włącz aplikacje profilu %2$s i spróbuj ponownie"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"Aplikacje służbowe są wstrzymane"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"Aby wyświetlić kontakty w tym profilu, wznów działanie aplikacji służbowych i spróbuj ponownie"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"Dostęp zablokowany przez administratora IT"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Skontaktuj się z nim, jeśli masz jakieś pytania"</string>
 </resources>

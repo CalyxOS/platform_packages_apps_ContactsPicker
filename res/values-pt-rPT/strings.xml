@@ -40,6 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Reduzir"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Telefone"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Email"</string>
+    <string name="a11y_select_all" msgid="7721156399480254682">"Selecionar tudo"</string>
+    <string name="a11y_deselect_all" msgid="6535215299362628830">"Desmarcar tudo"</string>
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# endereço de email}other{# endereços de email}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# número de telefone}other{# números de telefone}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} de # email}other{{selected_count} de # emails}}"</string>
@@ -68,8 +70,8 @@
     <string name="no_results_found_description" msgid="3316948006890920245">"Experimente pesquisar com uma grafia diferente"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Pessoal"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Utilizador desconhecido"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"As apps %s estão pausadas"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Para abrir os contactos de %1$s, ative as suas apps %2$s e tente novamente"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"As apps de trabalho estão pausadas"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"Para ver os contactos deste perfil, retome as apps de trabalho e tente novamente"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"Acesso bloqueado pelo administrador de TI"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Contacte o administrador de TI se tiver alguma dúvida"</string>
 </resources>

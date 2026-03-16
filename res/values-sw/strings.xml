@@ -40,6 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Kunja"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Simu"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Barua pepe"</string>
+    <string name="a11y_select_all" msgid="7721156399480254682">"Chagua vyote"</string>
+    <string name="a11y_deselect_all" msgid="6535215299362628830">"Ondoa alama ya kuchagua vyote"</string>
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{Anwani # ya barua pepe}other{Anwani # za barua pepe}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{Namba # ya simu}other{Namba # za simu}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{Barua pepe {selected_count} kati ya #}other{Barua pepe {selected_count} kati ya #}}"</string>
@@ -68,8 +70,8 @@
     <string name="no_results_found_description" msgid="3316948006890920245">"Jaribu kutafuta ukitumia tahajia tofauti"</string>
     <string name="user_type_personal" msgid="45376141973820399">"Binafsi"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"Mtumiaji Asiyejulikana"</string>
-    <string name="picker_profile_paused_title" msgid="4083321530415544679">"Programu %s zimesitishwa"</string>
-    <string name="picker_profile_paused_msg" msgid="2824051504891136577">"Ili ufungue anwani %1$s, washa programu zako za %2$s kisha ujaribu tena"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"Umesitisha programu za kazini"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"Ili uangalie anwani za wasifu huu, acha kusitisha programu za kazini kisha ujaribu tena"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"Msimamizi wako wa TEHAMA amezuia ufikiaji"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"Wasiliana naye ikiwa una maswali yoyote"</string>
 </resources>
