@@ -54,7 +54,6 @@ import com.android.contactspicker.data.model.SwitchableProfileInfo
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.model.UserType
 import com.android.contactspicker.data.model.emptyContactsSelection
-import com.android.contactspicker.data.repository.UserRepository
 import com.android.contactspicker.fakes.FakeContactsPickerSessionProviderRepository
 import com.android.contactspicker.fakes.FakeContactsRepository
 import com.android.contactspicker.fakes.FakePrivacyBannerRepository
@@ -146,7 +145,7 @@ class ContactsViewModelTest {
     private lateinit var fakeContactsPickerSessionProviderRepository:
         FakeContactsPickerSessionProviderRepository
     private lateinit var fakePrivacyBannerRepository: FakePrivacyBannerRepository
-    private lateinit var mockUserRepository: UserRepository
+    private lateinit var mockProfileSelectionHandler: ProfileSelectionHandler
 
     private lateinit var mockContactsPickerLogger: ContactsPickerLogger
     private lateinit var viewModel: ContactsViewModel
@@ -164,7 +163,7 @@ class ContactsViewModelTest {
         fakeContactsRepository = FakeContactsRepository()
         fakeContactsPickerSessionProviderRepository = FakeContactsPickerSessionProviderRepository()
         fakePrivacyBannerRepository = FakePrivacyBannerRepository()
-        mockUserRepository = mock()
+        mockProfileSelectionHandler = mock()
         mockContactsPickerLogger = mock()
         userStateFlow.value =
             PickerUserState.Success(
@@ -172,7 +171,7 @@ class ContactsViewModelTest {
                 selectedUserId = USER_ID_PERSONAL,
             )
         runBlocking {
-            whenever(mockUserRepository.getUserState(anyOrNull(), anyInt()))
+            whenever(mockProfileSelectionHandler.getUserStateFlow(anyOrNull(), anyInt()))
                 .thenReturn(userStateFlow)
         }
 
@@ -186,7 +185,7 @@ class ContactsViewModelTest {
                 fakeContactsRepository,
                 fakeContactsPickerSessionProviderRepository,
                 fakePrivacyBannerRepository,
-                Lazy { mockUserRepository },
+                Lazy { mockProfileSelectionHandler },
                 fakeFactory,
                 mockContactsPickerLogger,
             )
@@ -1781,7 +1780,7 @@ class ContactsViewModelTest {
     fun handleIntent_actionPick_doesNotClearSelectedUser() = runTest {
         initializeViewModelForLegacyActionPick(emptyList())
 
-        verify(mockUserRepository, never()).clearSelectedUser()
+        verify(mockProfileSelectionHandler, never()).clearSelectedUser()
     }
 
     @Test
@@ -1811,7 +1810,7 @@ class ContactsViewModelTest {
     fun handleIntent_actionPickContacts_clearsSelectedUser() = runTest {
         initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
 
-        verify(mockUserRepository).clearSelectedUser()
+        verify(mockProfileSelectionHandler).clearSelectedUser()
     }
 
     @Test
@@ -1822,7 +1821,7 @@ class ContactsViewModelTest {
         viewModel.onProfileSelected(newUserId)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        verify(mockUserRepository).setSelectedUser(newUserId)
+        verify(mockProfileSelectionHandler).setSelectedUser(newUserId)
     }
 
     @Test
@@ -1833,7 +1832,7 @@ class ContactsViewModelTest {
         viewModel.onProfileSelected(currentUserId)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        verify(mockUserRepository, never()).setSelectedUser(anyInt())
+        verify(mockProfileSelectionHandler, never()).setSelectedUser(anyInt())
     }
 
     @Test
@@ -1843,7 +1842,7 @@ class ContactsViewModelTest {
         viewModel.onProfileClicked(WORK_PROFILE)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        verify(mockUserRepository).setSelectedUser(USER_ID_WORK)
+        verify(mockProfileSelectionHandler).setSelectedUser(USER_ID_WORK)
     }
 
     @Test
@@ -2081,7 +2080,7 @@ class ContactsViewModelTest {
         viewModel.onProfileClicked(inertProfile)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        verify(mockUserRepository, never()).setSelectedUser(anyInt())
+        verify(mockProfileSelectionHandler, never()).setSelectedUser(anyInt())
         val successState = viewModel.currentSuccessUserState
         assertThat(successState.profileBlockedDialogData).isNull()
     }

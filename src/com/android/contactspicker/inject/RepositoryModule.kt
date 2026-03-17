@@ -21,8 +21,6 @@ import com.android.contactspicker.data.repository.ContactsRepository
 import com.android.contactspicker.data.repository.ContactsRepositoryImpl
 import com.android.contactspicker.data.repository.PrivacyBannerRepository
 import com.android.contactspicker.data.repository.PrivacyBannerRepositoryImpl
-import com.android.contactspicker.data.repository.UserRepository
-import com.android.contactspicker.data.repository.UserRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -45,6 +43,4 @@ abstract class RepositoryModule {
     abstract fun bindPrivacyRepository(
         privacyRepositoryImpl: PrivacyBannerRepositoryImpl
     ): PrivacyBannerRepository
-
-    @Binds abstract fun bindUserRepository(userRepositoryImpl: UserRepositoryImpl): UserRepository
 }

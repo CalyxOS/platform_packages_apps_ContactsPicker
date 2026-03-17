@@ -51,7 +51,6 @@ import com.android.contactspicker.data.model.emptyContactsSelection
 import com.android.contactspicker.data.repository.ContactsPickerSessionProviderRepository
 import com.android.contactspicker.data.repository.ContactsRepository
 import com.android.contactspicker.data.repository.PrivacyBannerRepository
-import com.android.contactspicker.data.repository.UserRepository
 import com.android.contactspicker.logging.ContactsPickerLogger
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -116,7 +115,7 @@ constructor(
     private val contactsRepository: ContactsRepository,
     private val contactsPickerSessionProviderRepository: ContactsPickerSessionProviderRepository,
     private val privacyBannerRepository: PrivacyBannerRepository,
-    private val userRepository: Lazy<UserRepository>,
+    private val profileSelectionHandler: Lazy<ProfileSelectionHandler>,
     private val selectionHandlerFactory: ContactsSelectionHandler.Factory,
     private val contactsPickerLogger: ContactsPickerLogger,
 ) : ViewModel() {
@@ -246,7 +245,7 @@ constructor(
                     result.pickerAction == ContactsPickerAction.ACTION_PICK_CONTACTS
 
                 if (isUserSwitchingEnabled) {
-                    viewModelScope.launch { userRepository.get().clearSelectedUser() }
+                    profileSelectionHandler.get().clearSelectedUser()
                     startObservingUserState(result)
                 } else {
                     val defaultState =
@@ -314,9 +313,9 @@ constructor(
         userStateCollectorJob?.cancel()
         userStateCollectorJob =
             viewModelScope.launch {
-                userRepository
+                profileSelectionHandler
                     .get()
-                    .getUserState(callingPackageName, UserHandle.getUserId(callingAppUid))
+                    .getUserStateFlow(callingPackageName, UserHandle.getUserId(callingAppUid))
                     .collect { userState ->
                         if (userState !is PickerUserState.Success) {
                             _userState.value = userState
@@ -564,7 +563,7 @@ constructor(
         val userState = _userState.value as? PickerUserState.Success ?: return
         if (userId == userState.selectedUserId) return
 
-        viewModelScope.launch { userRepository.get().setSelectedUser(userId) }
+        profileSelectionHandler.get().setSelectedUser(userId)
     }
 
     /**
