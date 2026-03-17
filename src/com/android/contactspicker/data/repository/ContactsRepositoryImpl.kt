@@ -702,9 +702,6 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                         val displayNameSource = c.getInt(sourceIndex)
 
                         if (!name.isNullOrBlank() && !dataValue.isNullOrBlank()) {
-                            // TODO(b/451963918) Confirm if we return aggregated contacts or single
-                            // data
-                            // rows
                             add(
                                 parseContact(
                                     id,
