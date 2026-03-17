@@ -29,11 +29,9 @@ import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.model.UserType
 import javax.inject.Inject
 import javax.inject.Provider
-import javax.inject.Singleton
 
 private const val TAG = "UserProfileFactory"
 
-@Singleton
 open class UserProfileFactory
 @Inject
 constructor(

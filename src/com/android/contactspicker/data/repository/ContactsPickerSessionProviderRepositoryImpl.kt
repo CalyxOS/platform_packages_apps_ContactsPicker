@@ -22,7 +22,6 @@ import android.net.Uri
 import android.provider.ContactsPickerSessionContract
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -30,7 +29,6 @@ import kotlinx.coroutines.withContext
  * Implementation of [SessionProviderRepository] that uses [ContactsPickerSessionContract] to create
  * sessions.
  */
-@Singleton
 class ContactsPickerSessionProviderRepositoryImpl
 @Inject
 constructor(@param:ApplicationContext private val context: Context) :
