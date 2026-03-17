@@ -16,6 +16,7 @@
 
 package com.android.contactspicker.viewmodel
 
+import android.Manifest.permission.INTERACT_ACROSS_USERS
 import android.content.ContentProvider
 import android.content.ContentUris
 import android.content.Context
@@ -33,6 +34,7 @@ import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsPickerSessionContract
 import androidx.test.core.app.ApplicationProvider
+import com.android.bedstead.nene.TestApis
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
@@ -1825,7 +1827,11 @@ class ContactsViewModelTest {
         )
         testDispatcher.scheduler.advanceUntilIdle()
 
-        viewModel.onDoneClicked()
+        // Granting INTERACT_ACROSS_USERS as it's required when creating cross-profile
+        // result URIs.
+        TestApis.permissions().withPermission(INTERACT_ACROSS_USERS).use {
+            viewModel.onDoneClicked()
+        }
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertThat(fakeContactsPickerSessionProviderRepository.lastSourceUserId)
@@ -1961,7 +1967,11 @@ class ContactsViewModelTest {
         val job = launch { viewModel.pickerResultEvents.toList(events) }
 
         try {
-            viewModel.onDoneClicked()
+            // Granting INTERACT_ACROSS_USERS as it's required when creating
+            // cross-profile result URIs.
+            TestApis.permissions().withPermission(INTERACT_ACROSS_USERS).use {
+                viewModel.onDoneClicked()
+            }
             testDispatcher.scheduler.advanceUntilIdle()
             return events
         } finally {
