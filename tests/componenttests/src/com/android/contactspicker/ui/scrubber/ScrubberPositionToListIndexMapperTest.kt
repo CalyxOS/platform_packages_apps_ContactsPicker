@@ -229,4 +229,38 @@ class ScrubberPositionToListIndexMapperTest {
         // (1.5f - 1) / 10 = 0.5f / 10 = 0.05f
         assertThat(mapper.toVerticalOffsetFraction(1.5f)).isWithin(0.01f).of(0.05f)
     }
+
+    @Test
+    fun getSectionKeyForContactIndex_multipleSections_mapsCorrectly() {
+        val contacts = ContactTestDataFactory.createContactList(21)
+        val sections: Map<SectionKey, List<Contact>> =
+            sortedMapOf(
+                SectionKey.COMPARATOR,
+                LetterKey('A') to contacts.subList(0, 5),
+                LetterKey('B') to contacts.subList(5, 10),
+                LetterKey('C') to contacts.subList(10, 15),
+                LetterKey('D') to contacts.subList(15, 21),
+            )
+        val mapper = ScrubberPositionToListIndexMapper(sections, showPrivacyBanner = false)
+
+        assertThat(mapper.getSectionKeyForContactIndex(0)).isEqualTo(LetterKey('A'))
+        assertThat(mapper.getSectionKeyForContactIndex(4)).isEqualTo(LetterKey('A'))
+        assertThat(mapper.getSectionKeyForContactIndex(5)).isEqualTo(LetterKey('B'))
+        assertThat(mapper.getSectionKeyForContactIndex(9)).isEqualTo(LetterKey('B'))
+        assertThat(mapper.getSectionKeyForContactIndex(10)).isEqualTo(LetterKey('C'))
+        assertThat(mapper.getSectionKeyForContactIndex(14)).isEqualTo(LetterKey('C'))
+        assertThat(mapper.getSectionKeyForContactIndex(15)).isEqualTo(LetterKey('D'))
+        assertThat(mapper.getSectionKeyForContactIndex(20)).isEqualTo(LetterKey('D'))
+    }
+
+    @Test
+    fun getSectionKeyForContactIndex_outOfBounds_returnsNull() {
+        val sections: Map<SectionKey, List<Contact>> =
+            sortedMapOf(
+                SectionKey.COMPARATOR,
+                LetterKey('A') to ContactTestDataFactory.createContactList(5),
+            )
+        val mapper = ScrubberPositionToListIndexMapper(sections, showPrivacyBanner = false)
+        assertThat(mapper.getSectionKeyForContactIndex(-1)).isNull()
+    }
 }
