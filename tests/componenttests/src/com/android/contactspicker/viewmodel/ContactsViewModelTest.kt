@@ -420,17 +420,19 @@ class ContactsViewModelTest {
         assertThat(errorState.message).isEqualTo("Unsupported action")
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun handleIntent_withInvalidAction_throwsException() {
-        viewModel.handleIntent(
-            intentAction = "INVALID_ACTION",
-            intentType = null,
-            intentExtras = null,
-            callingAppName = TEST_APP_NAME,
-            callingPackageName = TEST_PACKAGE_NAME,
-            callingAppUid = TEST_CALLING_UID,
-            callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD,
-        )
+        assertFailsWith<IllegalArgumentException> {
+            viewModel.handleIntent(
+                intentAction = "INVALID_ACTION",
+                intentType = null,
+                intentExtras = null,
+                callingAppName = TEST_APP_NAME,
+                callingPackageName = TEST_PACKAGE_NAME,
+                callingAppUid = TEST_CALLING_UID,
+                callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD,
+            )
+        }
     }
 
     @Test
@@ -1272,28 +1274,34 @@ class ContactsViewModelTest {
         assertThat(state is ContactsListState.Success).isTrue()
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun handleIntent_whenSelectMultipleEnabledAndLimitExceedsMax_throwsException() = runTest {
-        initializeViewModelForLegacyActionPick(
-            ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
-            buildIntentExtrasWithSelectionLimit(true, MAX_ALLOWED_SELECTION_LIMIT + 1),
-        )
+        assertFailsWith<IllegalArgumentException> {
+            initializeViewModelForLegacyActionPick(
+                ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
+                buildIntentExtrasWithSelectionLimit(true, MAX_ALLOWED_SELECTION_LIMIT + 1),
+            )
+        }
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun handleIntent_whenSelectMultipleEnabledAndLimitZero_throwsException() = runTest {
-        initializeViewModelForLegacyActionPick(
-            ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
-            buildIntentExtrasWithSelectionLimit(true, 0),
-        )
+        assertFailsWith<IllegalArgumentException> {
+            initializeViewModelForLegacyActionPick(
+                ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
+                buildIntentExtrasWithSelectionLimit(true, 0),
+            )
+        }
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun handleIntent_whenSelectMultipleEnabledAndLimitNegative_throwsException() = runTest {
-        initializeViewModelForLegacyActionPick(
-            ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
-            buildIntentExtrasWithSelectionLimit(true, -1),
-        )
+        assertFailsWith<IllegalArgumentException> {
+            initializeViewModelForLegacyActionPick(
+                ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
+                buildIntentExtrasWithSelectionLimit(true, -1),
+            )
+        }
     }
 
     @Test

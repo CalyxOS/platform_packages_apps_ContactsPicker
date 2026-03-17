@@ -1,7 +1,15 @@
 {
   "presubmit": [
     {
-      "name": "ContactsPickerComponentTests"
+      "name": "ContactsPickerComponentTests",
+      "options": [
+              {
+                "exclude-annotation": "androidx.test.filters.LargeTest"
+              },
+              {
+                "exclude-annotation": "org.junit.Ignore"
+              }
+            ]
     },
     {
       "name": "ContactsPickerIntegrationTests",
@@ -23,6 +31,14 @@
           "include-annotation": "androidx.test.filters.LargeTest"
         }
       ]
-    }
+    },
+    {
+          "name": "ContactsPickerComponentTests",
+          "options": [
+            {
+              "include-annotation": "androidx.test.filters.LargeTest"
+            }
+          ]
+        }
   ]
 }
