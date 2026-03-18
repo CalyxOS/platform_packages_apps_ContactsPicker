@@ -44,7 +44,6 @@ import com.android.contactspicker.viewmodel.GroupedContactsData
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.LinkedHashMap
 import javax.inject.Inject
-import javax.inject.Singleton
 import kotlin.math.min
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -54,7 +53,6 @@ private const val CONTACTS_URI_PATH = "contacts"
 private const val MIMES_URI_PATH = "mimes"
 private const val CONTACTS_DATA_FILTER_URI_PATH = "filter"
 
-@Singleton
 class ContactsRepositoryImpl
 @Inject
 constructor(@param:ApplicationContext private val context: Context) : ContactsRepository {
