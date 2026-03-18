@@ -50,6 +50,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
@@ -74,7 +75,6 @@ fun ContactsPickerSearchBar(
     onToggleEntrySelection: (Long, Long, SelectionSource) -> Unit,
     onExitSearch: () -> Unit,
 ) {
-
     var query by rememberSaveable { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -97,7 +97,11 @@ fun ContactsPickerSearchBar(
                     val hintRes =
                         if (expanded) R.string.contacts_picker_search_expanded_hint
                         else R.string.contacts_picker_top_bar_search_placeholder_hint
-                    Text(stringResource(hintRes))
+                    Text(
+                        text = stringResource(hintRes),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
                 },
                 leadingIcon = {
                     SearchBarLeadingIcon(

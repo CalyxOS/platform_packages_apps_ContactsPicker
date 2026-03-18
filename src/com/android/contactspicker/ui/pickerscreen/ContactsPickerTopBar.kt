@@ -15,11 +15,22 @@
  */
 package com.android.contactspicker.ui.pickerscreen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
@@ -41,10 +52,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.android.contactspicker.ContactsUiState
 import com.android.contactspicker.R
 import com.android.contactspicker.SearchState
@@ -70,14 +83,27 @@ fun ContactsPickerTopBar(
     onProfileClicked: (UserProfile) -> Unit,
 ) {
     val isSearchExpanded by remember { derivedStateOf { uiState.value is SearchState } }
+
+    val animatedPadding by
+        animateDpAsState(
+            targetValue = if (isSearchExpanded) 4.dp else 16.dp,
+            label = "topBarPaddingAnimation",
+        )
+
+    val animatedSpacing by
+        animateDpAsState(
+            targetValue = if (isSearchExpanded) 0.dp else 8.dp,
+            label = "topBarSpacingAnimation",
+        )
     Row(
-        modifier =
-            Modifier.fillMaxWidth().padding(horizontal = if (isSearchExpanded) 4.dp else 16.dp),
-        horizontalArrangement =
-            if (isSearchExpanded) Arrangement.spacedBy(0.dp) else Arrangement.spacedBy(8.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = animatedPadding),
+        horizontalArrangement = Arrangement.spacedBy(animatedSpacing),
     ) {
         ContactsPickerSearchBar(
-            modifier = Modifier.weight(1.0f),
+            modifier =
+                Modifier.weight(1.0f)
+                    // SearchBar stays on top as it expands (1f)
+                    .zIndex(1f),
             expanded = isSearchExpanded,
             uiState = uiState,
             onExpandedChange = onSearchBarToggled,
@@ -86,8 +112,56 @@ fun ContactsPickerTopBar(
             onToggleEntrySelection = onToggleEntrySelection,
             onExitSearch = onExitSearch,
         )
-        if (!isSearchExpanded) {
-            Row(modifier = Modifier.padding(vertical = 12.dp)) {
+        val spatialExpandShrinkDuration = 250 // Material duration medium1
+        val fadeDuration = 150 // Material duration short3
+        val fadeInDelayDuration = 100 // Material duration short2
+        AnimatedVisibility(
+            visible = !isSearchExpanded,
+            modifier =
+                Modifier
+                    // The icons are always behind the SearchBar during animations (0f).
+                    .zIndex(0f)
+                    .padding(top = 8.dp),
+            // Enter animation (SearchBar collapsing): Expand the icon's space first, then fade in.
+            enter =
+                expandHorizontally(
+                    animationSpec =
+                        tween(
+                            durationMillis = spatialExpandShrinkDuration,
+                            easing = LinearOutSlowInEasing,
+                        ),
+                    expandFrom = Alignment.End,
+                    clip = false,
+                ) +
+                    fadeIn(
+                        animationSpec =
+                            tween(
+                                durationMillis = fadeDuration,
+                                delayMillis = fadeInDelayDuration,
+                                easing = LinearEasing,
+                            )
+                    ),
+            // Exit animation (SearchBar expanding): Fade out icons then shrink space.
+            exit =
+                fadeOut(
+                    animationSpec = tween(durationMillis = fadeDuration, easing = LinearEasing)
+                ) +
+                    shrinkHorizontally(
+                        animationSpec =
+                            tween(
+                                durationMillis = spatialExpandShrinkDuration,
+                                easing = FastOutLinearInEasing,
+                            ),
+                        shrinkTowards = Alignment.End,
+                        clip = false,
+                    ),
+        ) {
+            Row(
+                // unbounded = true prevents icons from distorting during animations
+                modifier = Modifier.wrapContentWidth(unbounded = true),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
                 ProfileSwitcher(userState = userState, onProfileClicked = onProfileClicked)
                 OverflowMenu(onClickPrivacyDetailsMenuItem = onPrivacyDetailsOverflowMenuClicked)
             }

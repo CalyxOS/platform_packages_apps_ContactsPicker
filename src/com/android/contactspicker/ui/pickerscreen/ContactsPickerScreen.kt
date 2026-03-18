@@ -15,13 +15,21 @@
  */
 package com.android.contactspicker.ui.pickerscreen
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterExitState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.IntOffset
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
@@ -55,65 +63,110 @@ fun ContactsPickerScreen(
     onProfileClicked: (UserProfile) -> Unit,
     onDismissProfileBlockedDialog: () -> Unit,
 ) {
-    Column(
+    val standardSpatialSpec = MaterialTheme.motionScheme.defaultSpatialSpec<IntOffset>()
+
+    AnimatedContent(
+        targetState = uiState.value,
         modifier = modifier.fillMaxSize().testTag(CONTACTS_PICKER_SCREEN_TEST_TAG),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        when (val uiStateValue = uiState.value) {
-            is ContactsPreviewState -> {
-                PreviewScreen(
-                    onBackPressed = onBackFromPreview,
-                    uiState = uiStateValue,
-                    onToggleContactSelection = onToggleContactSelection,
-                    onToggleEntrySelection = onToggleEntrySelection,
-                )
-            }
-
-            is PrivacyDetailsState -> {
-                PrivacyDetailsScreen(
-                    onBackPressed = onBackFromPrivacyDetails,
-                    uiState = uiStateValue,
-                )
-            }
-
-            else -> {
-                ContactsPickerTopBar(
-                    uiState = uiState,
-                    userState = userState,
-                    onSearchBarToggled = { isExpanded ->
-                        if (isExpanded) {
-                            onExpandRequest()
-                            onQueryChange("")
-                        } else {
-                            onExitSearch()
-                        }
-                    },
-                    onQueryChange = onQueryChange,
-                    onToggleContactSelection = onToggleContactSelection,
-                    onToggleEntrySelection = onToggleEntrySelection,
-                    onExitSearch = onExitSearch,
-                    onPrivacyDetailsOverflowMenuClicked = onPrivacyDetailsOverflowMenuClicked,
-                    onProfileClicked = onProfileClicked,
-                )
-
-                if (uiStateValue is ContactsListState) {
-                    ContactsListContent(
-                        uiState = uiStateValue,
-                        onPrivacyBannerMoreDetails = onPrivacyDetailsBannerClicked,
-                        onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
-                        onToggleContactSelection = onToggleContactSelection,
-                        onToggleEntrySelection = onToggleEntrySelection,
-                    )
+        transitionSpec = {
+            val isEnteringSecondaryScreen =
+                targetState is PrivacyDetailsState || targetState is ContactsPreviewState
+            val direction =
+                if (isEnteringSecondaryScreen) {
+                    AnimatedContentTransitionScope.SlideDirection.Left
+                } else {
+                    AnimatedContentTransitionScope.SlideDirection.Right
                 }
 
-                if (
-                    userState is PickerUserState.Success &&
-                        userState.profileBlockedDialogData != null
-                ) {
-                    ProfileBlockedDialog(
-                        data = userState.profileBlockedDialogData,
-                        onDismissRequest = onDismissProfileBlockedDialog,
+            val isExitingPreview =
+                initialState is ContactsPreviewState && !isEnteringSecondaryScreen
+
+            val animationSpec =
+                if (isExitingPreview) {
+                    // add additional delay for the preview exit to allow the bottom to top
+                    // animation of each visible contact item
+                    tween(durationMillis = 500, delayMillis = 350)
+                } else {
+                    standardSpatialSpec
+                }
+
+            slideIntoContainer(direction, animationSpec = animationSpec) togetherWith
+                slideOutOfContainer(direction, animationSpec = animationSpec)
+        },
+        contentKey = { targetUiState ->
+            when (targetUiState) {
+                is ContactsPreviewState -> "PreviewScreen"
+                is PrivacyDetailsState -> "PrivacyDetailsScreen"
+                // The main contacts list and the search screen are under the same key "MainScreen"
+                // to prevent the screen from crossfading with itself when transitioning between
+                // the contacts list and the expanded search bar state
+                else -> "MainScreen"
+            }
+        },
+        label = "ScreenTransition",
+    ) { uiStateValue ->
+        val isExitingPreview = transition.targetState == EnterExitState.PostExit
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            when (uiStateValue) {
+                is ContactsPreviewState ->
+                    PreviewScreen(
+                        onBackPressed = onBackFromPreview,
+                        uiState = uiStateValue,
+                        onToggleContactSelection = onToggleContactSelection,
+                        onToggleEntrySelection = onToggleEntrySelection,
+                        isExiting = isExitingPreview,
                     )
+
+                is PrivacyDetailsState ->
+                    PrivacyDetailsScreen(
+                        onBackPressed = onBackFromPrivacyDetails,
+                        uiState = uiStateValue,
+                    )
+
+                else -> {
+                    val animatingUiState = rememberUpdatedState(uiStateValue)
+                    ContactsPickerTopBar(
+                        uiState = animatingUiState,
+                        userState = userState,
+                        onSearchBarToggled = { isExpanded ->
+                            if (isExpanded) {
+                                onExpandRequest()
+                                onQueryChange("")
+                            } else {
+                                onExitSearch()
+                            }
+                        },
+                        onQueryChange = onQueryChange,
+                        onToggleContactSelection = onToggleContactSelection,
+                        onToggleEntrySelection = onToggleEntrySelection,
+                        onExitSearch = onExitSearch,
+                        onPrivacyDetailsOverflowMenuClicked = onPrivacyDetailsOverflowMenuClicked,
+                        onProfileClicked = onProfileClicked,
+                    )
+
+                    if (uiStateValue is ContactsListState) {
+                        ContactsListContent(
+                            uiState = uiStateValue,
+                            onPrivacyBannerMoreDetails = onPrivacyDetailsBannerClicked,
+                            onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
+                            onToggleContactSelection = onToggleContactSelection,
+                            onToggleEntrySelection = onToggleEntrySelection,
+                        )
+                    }
+
+                    if (
+                        userState is PickerUserState.Success &&
+                            userState.profileBlockedDialogData != null
+                    ) {
+                        ProfileBlockedDialog(
+                            data = userState.profileBlockedDialogData,
+                            onDismissRequest = onDismissProfileBlockedDialog,
+                        )
+                    }
                 }
             }
         }
