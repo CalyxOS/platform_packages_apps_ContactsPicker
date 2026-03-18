@@ -16,6 +16,7 @@
 
 package com.android.contactspicker.viewmodel
 
+import android.Manifest.permission.INTERACT_ACROSS_USERS
 import android.content.ContentProvider
 import android.content.ContentUris
 import android.content.Context
@@ -33,6 +34,7 @@ import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.ContactsContract.CommonDataKinds.Phone
 import android.provider.ContactsPickerSessionContract
 import androidx.test.core.app.ApplicationProvider
+import com.android.bedstead.nene.TestApis
 import com.android.contactspicker.ContactsListState
 import com.android.contactspicker.ContactsPreviewState
 import com.android.contactspicker.ContactsUiState
@@ -418,17 +420,19 @@ class ContactsViewModelTest {
         assertThat(errorState.message).isEqualTo("Unsupported action")
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun handleIntent_withInvalidAction_throwsException() {
-        viewModel.handleIntent(
-            intentAction = "INVALID_ACTION",
-            intentType = null,
-            intentExtras = null,
-            callingAppName = TEST_APP_NAME,
-            callingPackageName = TEST_PACKAGE_NAME,
-            callingAppUid = TEST_CALLING_UID,
-            callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD,
-        )
+        assertFailsWith<IllegalArgumentException> {
+            viewModel.handleIntent(
+                intentAction = "INVALID_ACTION",
+                intentType = null,
+                intentExtras = null,
+                callingAppName = TEST_APP_NAME,
+                callingPackageName = TEST_PACKAGE_NAME,
+                callingAppUid = TEST_CALLING_UID,
+                callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD,
+            )
+        }
     }
 
     @Test
@@ -1270,28 +1274,34 @@ class ContactsViewModelTest {
         assertThat(state is ContactsListState.Success).isTrue()
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun handleIntent_whenSelectMultipleEnabledAndLimitExceedsMax_throwsException() = runTest {
-        initializeViewModelForLegacyActionPick(
-            ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
-            buildIntentExtrasWithSelectionLimit(true, MAX_ALLOWED_SELECTION_LIMIT + 1),
-        )
+        assertFailsWith<IllegalArgumentException> {
+            initializeViewModelForLegacyActionPick(
+                ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
+                buildIntentExtrasWithSelectionLimit(true, MAX_ALLOWED_SELECTION_LIMIT + 1),
+            )
+        }
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun handleIntent_whenSelectMultipleEnabledAndLimitZero_throwsException() = runTest {
-        initializeViewModelForLegacyActionPick(
-            ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
-            buildIntentExtrasWithSelectionLimit(true, 0),
-        )
+        assertFailsWith<IllegalArgumentException> {
+            initializeViewModelForLegacyActionPick(
+                ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
+                buildIntentExtrasWithSelectionLimit(true, 0),
+            )
+        }
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test
     fun handleIntent_whenSelectMultipleEnabledAndLimitNegative_throwsException() = runTest {
-        initializeViewModelForLegacyActionPick(
-            ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
-            buildIntentExtrasWithSelectionLimit(true, -1),
-        )
+        assertFailsWith<IllegalArgumentException> {
+            initializeViewModelForLegacyActionPick(
+                ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
+                buildIntentExtrasWithSelectionLimit(true, -1),
+            )
+        }
     }
 
     @Test
@@ -1825,7 +1835,11 @@ class ContactsViewModelTest {
         )
         testDispatcher.scheduler.advanceUntilIdle()
 
-        viewModel.onDoneClicked()
+        // Granting INTERACT_ACROSS_USERS as it's required when creating cross-profile
+        // result URIs.
+        TestApis.permissions().withPermission(INTERACT_ACROSS_USERS).use {
+            viewModel.onDoneClicked()
+        }
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertThat(fakeContactsPickerSessionProviderRepository.lastSourceUserId)
@@ -1961,7 +1975,11 @@ class ContactsViewModelTest {
         val job = launch { viewModel.pickerResultEvents.toList(events) }
 
         try {
-            viewModel.onDoneClicked()
+            // Granting INTERACT_ACROSS_USERS as it's required when creating
+            // cross-profile result URIs.
+            TestApis.permissions().withPermission(INTERACT_ACROSS_USERS).use {
+                viewModel.onDoneClicked()
+            }
             testDispatcher.scheduler.advanceUntilIdle()
             return events
         } finally {

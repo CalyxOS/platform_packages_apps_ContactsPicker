@@ -24,7 +24,7 @@
     </application>
 
     <instrumentation
-        android:name="androidx.test.runner.AndroidJUnitRunner"
+        android:name="com.android.contactspicker.HiltTestRunner"
         android:targetPackage="com.android.contactspicker.componenttests"
         android:label="Component Tests for ContactsPicker"/>
 
