@@ -40,10 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Sakļaut"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Tālruņa numurs"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"E-pasta adrese"</string>
-    <!-- no translation found for a11y_select_all (7721156399480254682) -->
-    <skip />
-    <!-- no translation found for a11y_deselect_all (6535215299362628830) -->
-    <skip />
+    <string name="a11y_select_all" msgid="7721156399480254682">"Atlasīt visu"</string>
+    <string name="a11y_deselect_all" msgid="6535215299362628830">"Noņemt visu atlasi"</string>
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# e-pasta adrese}zero{# e-pasta adrešu}one{# e-pasta adrese}other{# e-pasta adreses}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# tālruņa numurs}zero{# tālruņa numuru}one{# tālruņa numurs}other{# tālruņa numuri}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} no # e-pasta adreses}zero{{selected_count} no # e-pasta adresēm}one{{selected_count} no # e-pasta adreses}other{{selected_count} no # e-pasta adresēm}}"</string>

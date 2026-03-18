@@ -40,10 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"Contraer"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"Teléfono"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"Correo electrónico"</string>
-    <!-- no translation found for a11y_select_all (7721156399480254682) -->
-    <skip />
-    <!-- no translation found for a11y_deselect_all (6535215299362628830) -->
-    <skip />
+    <string name="a11y_select_all" msgid="7721156399480254682">"Seleccionar todo"</string>
+    <string name="a11y_deselect_all" msgid="6535215299362628830">"Anular toda la selección"</string>
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# dirección de correo electrónico}other{# direcciones de correo electrónico}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# número de teléfono}other{# números de teléfono}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} de # correo electrónico}other{{selected_count} de # correos electrónicos}}"</string>
