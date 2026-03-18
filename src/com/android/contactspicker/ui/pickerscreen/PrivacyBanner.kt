@@ -100,7 +100,7 @@ private fun PrivacyBannerActions(
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End,
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
     ) {
         ActionButton(textResId = R.string.privacy_banner_dismiss, onClick = onDismissRequest)
         ActionButton(textResId = R.string.privacy_banner_more_details, onClick = onMoreDetails)
@@ -109,10 +109,7 @@ private fun PrivacyBannerActions(
 
 @Composable
 private fun ActionButton(@StringRes textResId: Int, onClick: () -> Unit) {
-    TextButton(
-        onClick = onClick,
-        modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-    ) {
+    TextButton(onClick = onClick) {
         Text(
             text = stringResource(textResId),
             style = MaterialTheme.typography.labelLarge,
