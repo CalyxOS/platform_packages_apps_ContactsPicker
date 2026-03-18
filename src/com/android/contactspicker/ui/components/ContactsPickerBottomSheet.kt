@@ -48,7 +48,6 @@ import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -98,7 +97,8 @@ fun ContactsPickerBottomSheet(
     onToggleContactSelection: (Contact, SelectionSource) -> Unit,
     onToggleEntrySelection: (Long, Long, SelectionSource) -> Unit,
     onClearSelection: () -> Unit,
-    onPrivacyDetailsClicked: () -> Unit,
+    onPrivacyDetailsBannerClicked: () -> Unit,
+    onPrivacyDetailsOverflowMenuClicked: () -> Unit,
     onBackFromPrivacyDetails: () -> Unit,
     onPrivacyBannerDismissRequest: () -> Unit,
     bottomSheetState: SheetState =
@@ -173,7 +173,8 @@ fun ContactsPickerBottomSheet(
                     userState = userState,
                     onToggleContactSelection = onToggleContactSelection,
                     onToggleEntrySelection = onToggleEntrySelection,
-                    onPrivacyDetailsClicked = onPrivacyDetailsClicked,
+                    onPrivacyDetailsBannerClicked = onPrivacyDetailsBannerClicked,
+                    onPrivacyDetailsOverflowMenuClicked = onPrivacyDetailsOverflowMenuClicked,
                     onBackFromPrivacyDetails = onBackFromPrivacyDetails,
                     onPrivacyBannerDismissRequest = onPrivacyBannerDismissRequest,
                     onExpandRequest = { scope.launch { bottomSheetState.expand() } },

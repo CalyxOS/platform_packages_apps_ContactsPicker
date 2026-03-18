@@ -61,4 +61,16 @@ interface ContactsPickerLogger {
      * finished is logged.
      */
     fun privacyBannerDismissedByUser()
+
+    /**
+     * Marks that the privacy details page has been opened from the privacy banner. Will be logged
+     * when the session finished is logged.
+     */
+    fun privacyDetailsBannerOpened()
+
+    /**
+     * Marks that the privacy details page has been opened from the overflow menu. Will be logged
+     * when the session finished is logged.
+     */
+    fun privacyDetailsOverflowMenuOpened()
 }

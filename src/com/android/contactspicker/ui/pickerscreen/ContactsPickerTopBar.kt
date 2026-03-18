@@ -67,7 +67,7 @@ fun ContactsPickerTopBar(
     onToggleContactSelection: (Contact, SelectionSource) -> Unit,
     onToggleEntrySelection: (Long, Long, SelectionSource) -> Unit,
     onExitSearch: () -> Unit,
-    onPrivacyDetailsClicked: () -> Unit,
+    onPrivacyDetailsOverflowMenuClicked: () -> Unit,
     onProfileClicked: (UserProfile) -> Unit,
 ) {
     val isSearchExpanded by remember { derivedStateOf { uiState.value is SearchState } }
@@ -90,7 +90,7 @@ fun ContactsPickerTopBar(
         )
         if (!isSearchExpanded) {
             ProfileSwitcher(userState = userState, onProfileClicked = onProfileClicked)
-            OverflowMenu(onClickPrivacyDetailsMenuItem = onPrivacyDetailsClicked)
+            OverflowMenu(onClickPrivacyDetailsMenuItem = onPrivacyDetailsOverflowMenuClicked)
         }
     }
 }

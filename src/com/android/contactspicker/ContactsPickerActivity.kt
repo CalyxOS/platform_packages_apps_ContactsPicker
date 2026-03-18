@@ -211,7 +211,10 @@ class ContactsPickerActivity : Hilt_ContactsPickerActivity() {
                     onToggleContactSelection = contactsViewModel::toggleContactSelection,
                     onToggleEntrySelection = contactsViewModel::toggleEntrySelection,
                     onClearSelection = contactsViewModel::clearSelection,
-                    onPrivacyDetailsClicked = contactsViewModel::onPrivacyDetailsClicked,
+                    onPrivacyDetailsBannerClicked =
+                        contactsViewModel::onPrivacyDetailsBannerClicked,
+                    onPrivacyDetailsOverflowMenuClicked =
+                        contactsViewModel::onPrivacyDetailsOverflowMenuClicked,
                     onBackFromPrivacyDetails = contactsViewModel::onBackFromPrivacyDetails,
                     onPrivacyBannerDismissRequest = contactsViewModel::hidePrivacyBanner,
                     onDoneClicked = contactsViewModel::onDoneClicked,
