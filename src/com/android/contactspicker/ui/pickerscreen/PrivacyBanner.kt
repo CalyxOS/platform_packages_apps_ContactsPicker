@@ -56,7 +56,7 @@ fun PrivacyBanner(
     Column(
         modifier =
             Modifier.fillMaxWidth()
-                .padding(top = 8.dp, start = 16.dp, end = 16.dp)
+                .padding(16.dp)
                 .background(
                     color = MaterialTheme.colorScheme.surfaceContainerHighest,
                     shape = RoundedCornerShape(28.dp),
