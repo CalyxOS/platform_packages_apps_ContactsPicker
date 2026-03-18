@@ -185,14 +185,13 @@ private fun ContactsList(
         modifier = Modifier.fillMaxWidth().testTag(CONTACTS_LIST_TEST_TAG),
         contentPadding = listContentPadding,
     ) {
-        if (showPrivacyBanner) {
-            item(key = "privacy_banner") {
-                PrivacyBanner(
-                    callingAppName = callingAppName,
-                    onDismissRequest = onPrivacyBannerDismissRequest,
-                    onMoreDetails = onPrivacyBannerMoreDetails,
-                )
-            }
+        item(key = "privacy_banner") {
+            PrivacyBanner(
+                visible = showPrivacyBanner,
+                callingAppName = callingAppName,
+                onDismissRequest = onPrivacyBannerDismissRequest,
+                onMoreDetails = onPrivacyBannerMoreDetails,
+            )
         }
         availableContactsGroups.forEach { (sectionKey, contactsInGroup) ->
             stickyHeader(key = "header_${sectionKey.uniqueId}") { SectionHeaderForKey(sectionKey) }
