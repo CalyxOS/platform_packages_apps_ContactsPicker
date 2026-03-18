@@ -22,7 +22,6 @@ import android.provider.ContactsContract
 import android.provider.ContactsPickerSessionContract
 import android.widget.Toast
 
-// TODO(b/442397528): support all mime types for ACTION_PICK_CONTACTS
 enum class MimeType(
     val label: String,
     val mimeTypeString: String,
@@ -90,14 +89,21 @@ internal fun buildActionPickContactsIntent(
 
 data class SessionDataRow(val id: Long, val mimeType: String, val value: Any?)
 
+data class SessionFlatRow(val contactId: Long, val displayName: String?, val row: SessionDataRow)
+
 data class SessionContact(
     val contactId: Long,
     val displayName: String?,
     val dataRows: List<SessionDataRow>,
 )
 
-/** Queries the session URI for the contact data and converts it to a list of [SessionContact]. */
-internal fun parseSessionResult(context: Context, uri: Uri): List<SessionContact> {
+data class SessionParseResult(
+    val orderedRows: List<SessionFlatRow>,
+    val aggregatedContacts: List<SessionContact>,
+)
+
+/** Queries the session URI for the contact data and converts it to a [SessionParseResult]. */
+internal fun parseSessionResult(context: Context, uri: Uri): SessionParseResult {
     val projection =
         arrayOf(
             ContactsContract.Data.CONTACT_ID,
@@ -108,15 +114,13 @@ internal fun parseSessionResult(context: Context, uri: Uri): List<SessionContact
             ContactsContract.Data._ID,
         )
 
-    // TODO(b/452020367): add another view that shows the order of the returned data rows.
-    // TODO(b/452020367): verify the desired order of returned values.
-    val sortOrder = "${ContactsContract.Data.CONTACT_ID} ASC"
-
     val contentResolver = context.contentResolver
+
+    val orderedRows = mutableListOf<SessionFlatRow>()
     val contactsMap = mutableMapOf<Long, MutableList<SessionDataRow>>()
     val namesMap = mutableMapOf<Long, String?>()
 
-    contentResolver.query(uri, projection, null, null, sortOrder)?.use { cursor ->
+    contentResolver.query(uri, projection, null, null)?.use { cursor ->
         val idCol = cursor.getColumnIndexOrThrow(ContactsContract.Data.CONTACT_ID)
         val nameCol = cursor.getColumnIndexOrThrow(ContactsContract.Data.DISPLAY_NAME_PRIMARY)
         val mimeCol = cursor.getColumnIndexOrThrow(ContactsContract.Data.MIMETYPE)
@@ -137,12 +141,16 @@ internal fun parseSessionResult(context: Context, uri: Uri): List<SessionContact
                     cursor.getString(dataCol)
                 }
 
+            val row = SessionDataRow(dataId, mimeType, value)
+
+            orderedRows.add(SessionFlatRow(contactId, name, row))
+
             namesMap.putIfAbsent(contactId, name)
-            contactsMap
-                .computeIfAbsent(contactId) { mutableListOf() }
-                .add(SessionDataRow(dataId, mimeType, value))
+            contactsMap.computeIfAbsent(contactId) { mutableListOf() }.add(row)
         }
     }
 
-    return contactsMap.map { (id, rows) -> SessionContact(id, namesMap[id], rows) }
+    val aggregatedContacts =
+        contactsMap.map { (id, rows) -> SessionContact(id, namesMap[id], rows) }
+    return SessionParseResult(orderedRows, aggregatedContacts)
 }
