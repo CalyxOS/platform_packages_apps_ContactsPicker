@@ -18,6 +18,7 @@ package com.android.contactspicker.logging
 import android.os.SystemClock
 import androidx.annotation.VisibleForTesting
 import com.android.contactspicker.ContactsPickerStatsLog
+import com.android.contactspicker.config.ConfigErrorType
 import com.android.contactspicker.config.ContactsPickerAction
 import com.android.contactspicker.data.model.MimeType
 import javax.inject.Inject
@@ -46,17 +47,29 @@ class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
     override fun logContactsPickerSessionStarted(
         callingAppUid: Int,
         callingAppTargetSdk: Int,
-        pickerIntentAction: ContactsPickerAction,
-        requestedMimeTypes: List<MimeType>,
+        pickerIntentAction: ContactsPickerAction?,
+        requestedMimeTypes: List<MimeType>?,
         useSystemContactsPicker: Boolean,
         matchAllRequestedMimeTypes: Boolean,
     ) {
+        val actionEnumValue =
+            pickerIntentAction?.toLoggingEnumValue()
+                ?: ContactsPickerStatsLog
+                    .CONTACTS_PICKER_SESSION_STARTED_REPORTED__INTENT_ACTION__INTENT_ACTION_TYPE_UNSPECIFIED
+
+        val mimeTypesEnumArray =
+            requestedMimeTypes?.convertToLoggingEnumList()
+                ?: intArrayOf(
+                    ContactsPickerStatsLog
+                        .CONTACTS_PICKER_SESSION_STARTED_REPORTED__REQUESTED_MIMETYPES__MIME_TYPE_UNSPECIFIED
+                )
+
         val currentLoggingData =
             LoggingSessionData(
                     callingAppUid = callingAppUid,
                     callingAppTargetSdk = callingAppTargetSdk,
-                    pickerIntentAction = pickerIntentAction.toLoggingEnumValue(),
-                    requestedMimeTypes = requestedMimeTypes.convertToLoggingEnumList(),
+                    pickerIntentAction = actionEnumValue,
+                    requestedMimeTypes = mimeTypesEnumArray,
                     useSystemContactsPicker = useSystemContactsPicker,
                     matchAllRequestedMimeTypes = matchAllRequestedMimeTypes,
                 )
@@ -78,6 +91,53 @@ class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
         contactsSelectedFromFavorites: Boolean,
         contactsSelectedFromSearch: Boolean,
     ) {
+        logSessionFinishedInternal(
+            sessionResult =
+                ContactsPickerStatsLog
+                    .CONTACTS_PICKER_SESSION_FINISHED_REPORTED__SESSION_RESULT__SESSION_RESULT_SUCCESS,
+            numContactsSelected = numContactsSelected,
+            contactsSelectedFromFavorites = contactsSelectedFromFavorites,
+            contactsSelectedFromSearch = contactsSelectedFromSearch,
+        )
+    }
+
+    override fun logContactsPickerSessionFailed(errorType: ConfigErrorType) {
+        val statsdErrorType =
+            when (errorType) {
+                ConfigErrorType.UNSUPPORTED_ACTION ->
+                    ContactsPickerStatsLog
+                        .CONTACTS_PICKER_SESSION_FINISHED_REPORTED__ERROR_TYPE__ERROR_UNSUPPORTED_ACTION
+                ConfigErrorType.UNSUPPORTED_MIME_TYPE ->
+                    ContactsPickerStatsLog
+                        .CONTACTS_PICKER_SESSION_FINISHED_REPORTED__ERROR_TYPE__ERROR_UNSUPPORTED_MIME_TYPE
+                ConfigErrorType.UNSUPPORTED_SELECTION_LIMIT ->
+                    ContactsPickerStatsLog
+                        .CONTACTS_PICKER_SESSION_FINISHED_REPORTED__ERROR_TYPE__ERROR_UNSUPPORTED_SELECTION_LIMIT
+                // TODO(441483549): Add new ERROR_MISSING_REQUESTED_MIME_TYPE enum and change to it
+                ConfigErrorType.EMPTY_REQUESTED_MIME_TYPE ->
+                    ContactsPickerStatsLog
+                        .CONTACTS_PICKER_SESSION_FINISHED_REPORTED__ERROR_TYPE__ERROR_UNSUPPORTED_MIME_TYPE
+            }
+
+        logSessionFinishedInternal(
+            sessionResult =
+                ContactsPickerStatsLog
+                    .CONTACTS_PICKER_SESSION_FINISHED_REPORTED__SESSION_RESULT__SESSION_RESULT_FAILED,
+            errorType = statsdErrorType,
+        )
+    }
+
+    /**
+     * Shared helper to write the final CONTACTS_PICKER_SESSION_FINISHED_REPORTED atom. Default
+     * values represent a session with no selection or error.
+     */
+    private fun logSessionFinishedInternal(
+        sessionResult: Int,
+        errorType: Int = 0,
+        numContactsSelected: Int = 0,
+        contactsSelectedFromFavorites: Boolean = false,
+        contactsSelectedFromSearch: Boolean = false,
+    ) {
         val currentLoggingData = loggingData ?: return
         val sessionDurationMs =
             SystemClock.elapsedRealtime() - currentLoggingData.sessionStartTimeMs
@@ -92,9 +152,8 @@ class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
                 .useSystemContactsPicker,
             /* intent_extra_pick_contacts_match_all_data_fields */ currentLoggingData
                 .matchAllRequestedMimeTypes,
-            /* session_result */ ContactsPickerStatsLog
-                .CONTACTS_PICKER_SESSION_FINISHED_REPORTED__SESSION_RESULT__SESSION_RESULT_SUCCESS,
-            /* error_type */ 0, // No error
+            /* session_result */ sessionResult,
+            /* error_type */ errorType,
             /* session_duration_ms */ sessionDurationMs,
             /* startup_loading_time_ms */ currentLoggingData.loadingTimeMs,
             /* num_contacts_selected */ numContactsSelected,
@@ -109,6 +168,9 @@ class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
             /* privacy_banner_opened_from_overflow_menu */ false, // TODO(b/441483549): Log priv
             // banner opened from overflow menu
         )
+
+        // Clear logging data to prevent duplicate log submissions for the same session
+        loggingData = null
     }
 
     override fun allContactsLoadingStarted() {

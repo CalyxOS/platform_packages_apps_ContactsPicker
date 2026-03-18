@@ -15,6 +15,7 @@
  */
 package com.android.contactspicker.logging
 
+import com.android.contactspicker.config.ConfigErrorType
 import com.android.contactspicker.config.ContactsPickerAction
 import com.android.contactspicker.data.model.MimeType
 
@@ -22,8 +23,8 @@ interface ContactsPickerLogger {
     fun logContactsPickerSessionStarted(
         callingAppUid: Int,
         callingAppTargetSdk: Int,
-        pickerIntentAction: ContactsPickerAction,
-        requestedMimeTypes: List<MimeType>,
+        pickerIntentAction: ContactsPickerAction?,
+        requestedMimeTypes: List<MimeType>?,
         useSystemContactsPicker: Boolean,
         matchAllRequestedMimeTypes: Boolean,
     )
@@ -33,6 +34,8 @@ interface ContactsPickerLogger {
         contactsSelectedFromFavorites: Boolean,
         contactsSelectedFromSearch: Boolean,
     )
+
+    fun logContactsPickerSessionFailed(errorType: ConfigErrorType)
 
     fun allContactsLoadingStarted()
 

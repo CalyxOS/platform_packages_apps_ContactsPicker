@@ -17,6 +17,7 @@ package com.android.contactspicker.logging
 
 import android.content.flags.Flags
 import android.os.statsd.contactspicker.ContactMimeType
+import android.os.statsd.contactspicker.ContactsPickerErrorType
 import android.os.statsd.contactspicker.ContactsPickerSessionResult
 import android.os.statsd.contactspicker.IntentActionType
 import android.platform.test.annotations.RequiresFlagsEnabled
@@ -27,6 +28,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.ContactsPickerSessionFinishedReported
 import com.android.contactspicker.ContactsPickerSessionStartedReported
 import com.android.contactspicker.ContactspickerExtensionAtoms
+import com.android.contactspicker.config.ConfigErrorType
 import com.android.contactspicker.config.ContactsPickerAction
 import com.android.contactspicker.data.model.MimeType
 import com.android.dx.mockito.inline.extended.ExtendedMockito
@@ -236,11 +238,69 @@ class ContactsPickerLoggerImplTest {
         )
     }
 
+    @Test
+    fun logContactsPickerSessionStarted_withNulls_logsUnspecified() {
+        verifySessionStartedEventFields(intentAction = null, requestedMimetypesList = null)
+    }
+
+    @Test
+    fun logContactsPickerSessionFailed_unsupportedAction_logsCorrectly() {
+        verifySessionFinishedEventFields(
+            intentAction = null,
+            requestedMimetypesList = null,
+            sessionResult = ContactsPickerSessionResult.SESSION_RESULT_FAILED,
+            configErrorType = ConfigErrorType.UNSUPPORTED_ACTION,
+        )
+    }
+
+    @Test
+    fun logContactsPickerSessionFailed_missingMimeType_logsCorrectly() {
+        verifySessionFinishedEventFields(
+            intentAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
+            requestedMimetypesList = null,
+            sessionResult = ContactsPickerSessionResult.SESSION_RESULT_FAILED,
+            configErrorType = ConfigErrorType.EMPTY_REQUESTED_MIME_TYPE,
+        )
+    }
+
+    @Test
+    fun logContactsPickerSessionFailed_unsupportedSelectionLimit_logsCorrectly() {
+        verifySessionFinishedEventFields(
+            intentAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
+            requestedMimetypesList = listOf(MimeType.EMAIL),
+            sessionResult = ContactsPickerSessionResult.SESSION_RESULT_FAILED,
+            configErrorType = ConfigErrorType.UNSUPPORTED_SELECTION_LIMIT,
+        )
+    }
+
+    @Test
+    fun logContactsPickerSessionFailed_noSessionStartedCalled_doesNotLog() {
+        capturedSessionFinishedAtoms.clear()
+
+        logger.logContactsPickerSessionFailed(ConfigErrorType.UNSUPPORTED_ACTION)
+
+        assertThat(capturedSessionFinishedAtoms).isEmpty()
+    }
+
+    @Test
+    fun logContactsPickerSessionFailed_calledTwice_onlyLogsOnce() {
+        // log session started
+        verifySessionStartedEventFields()
+        capturedSessionFinishedAtoms.clear()
+
+        // log failure twice (e.g., an unexpected race condition in the UI/ViewModel)
+        logger.logContactsPickerSessionFailed(ConfigErrorType.EMPTY_REQUESTED_MIME_TYPE)
+        logger.logContactsPickerSessionFailed(ConfigErrorType.EMPTY_REQUESTED_MIME_TYPE)
+
+        // verify it only logged once
+        assertThat(capturedSessionFinishedAtoms).hasSize(1)
+    }
+
     private fun verifySessionStartedEventFields(
         callingAppPackageUid: Int = DEFAULT_TEST_CALLING_APP_UID,
         callingAppTargetSdk: Int = DEFAULT_TEST_CALLING_APP_TARGET_SDK,
-        intentAction: ContactsPickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
-        requestedMimetypesList: List<MimeType> = listOf(MimeType.PHONE, MimeType.STRUCTURED_NAME),
+        intentAction: ContactsPickerAction? = ContactsPickerAction.ACTION_PICK_CONTACTS,
+        requestedMimetypesList: List<MimeType>? = listOf(MimeType.PHONE, MimeType.STRUCTURED_NAME),
         useSystemContactsPicker: Boolean = false,
         matchAllRequestedMimeTypes: Boolean = false,
     ) {
@@ -260,14 +320,27 @@ class ContactsPickerLoggerImplTest {
 
         assertThat(event.callingAppPackageUid).isEqualTo(callingAppPackageUid)
         assertThat(event.callingAppTargetSdk).isEqualTo(callingAppTargetSdk)
-        assertThat(event.intentAction)
-            .isEqualTo(IntentActionType.forNumber(intentAction.toLoggingEnumValue()))
-        assertThat(event.requestedMimetypesList)
-            .containsExactlyElementsIn(
-                requestedMimetypesList.convertToLoggingEnumList().map {
-                    ContactMimeType.forNumber(it)
-                }
-            )
+
+        if (intentAction != null) {
+            assertThat(event.intentAction)
+                .isEqualTo(IntentActionType.forNumber(intentAction.toLoggingEnumValue()))
+        } else {
+            assertThat(event.intentAction)
+                .isEqualTo(IntentActionType.INTENT_ACTION_TYPE_UNSPECIFIED)
+        }
+
+        if (requestedMimetypesList != null) {
+            assertThat(event.requestedMimetypesList)
+                .containsExactlyElementsIn(
+                    requestedMimetypesList.convertToLoggingEnumList().map {
+                        ContactMimeType.forNumber(it)
+                    }
+                )
+        } else {
+            assertThat(event.requestedMimetypesList)
+                .containsExactly(ContactMimeType.MIME_TYPE_UNSPECIFIED)
+        }
+
         assertThat(event.intentExtraUseSystemContactsPicker).isEqualTo(useSystemContactsPicker)
         assertThat(event.intentExtraPickContactsMatchAllDataFields)
             .isEqualTo(matchAllRequestedMimeTypes)
@@ -276,12 +349,13 @@ class ContactsPickerLoggerImplTest {
     private fun verifySessionFinishedEventFields(
         callingAppPackageUid: Int = DEFAULT_TEST_CALLING_APP_UID,
         callingAppTargetSdk: Int = DEFAULT_TEST_CALLING_APP_TARGET_SDK,
-        intentAction: ContactsPickerAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
-        requestedMimetypesList: List<MimeType> = listOf(MimeType.PHONE, MimeType.STRUCTURED_NAME),
+        intentAction: ContactsPickerAction? = ContactsPickerAction.ACTION_PICK_CONTACTS,
+        requestedMimetypesList: List<MimeType>? = listOf(MimeType.PHONE, MimeType.STRUCTURED_NAME),
         useSystemContactsPicker: Boolean = false,
         matchAllRequestedMimeTypes: Boolean = false,
         sessionResult: ContactsPickerSessionResult =
             ContactsPickerSessionResult.SESSION_RESULT_SUCCESS,
+        configErrorType: ConfigErrorType? = null,
         numContactsSelected: Int = DEFAULT_NUM_CONTACTS_SELECTED,
         startupLoadingTimeLogged: Boolean = false,
         contactsSelectedFromFavorites: Boolean = false,
@@ -305,30 +379,72 @@ class ContactsPickerLoggerImplTest {
 
         midLoggingSessionBlock()
 
-        logger.logContactsPickerSessionFinishedSuccessfully(
-            numContactsSelected = numContactsSelected,
-            contactsSelectedFromFavorites = contactsSelectedFromFavorites,
-            contactsSelectedFromSearch = contactsSelectedFromSearch,
-        )
+        if (configErrorType != null) {
+            logger.logContactsPickerSessionFailed(configErrorType)
+        } else {
+            logger.logContactsPickerSessionFinishedSuccessfully(
+                numContactsSelected = numContactsSelected,
+                contactsSelectedFromFavorites = contactsSelectedFromFavorites,
+                contactsSelectedFromSearch = contactsSelectedFromSearch,
+            )
+        }
 
         assertThat(capturedSessionFinishedAtoms).hasSize(1)
         val event = capturedSessionFinishedAtoms[0]
 
         assertThat(event.callingAppPackageUid).isEqualTo(callingAppPackageUid)
         assertThat(event.callingAppTargetSdk).isEqualTo(callingAppTargetSdk)
-        assertThat(event.intentAction)
-            .isEqualTo(IntentActionType.forNumber(intentAction.toLoggingEnumValue()))
-        assertThat(event.requestedMimetypesList)
-            .containsExactlyElementsIn(
-                requestedMimetypesList.convertToLoggingEnumList().map {
-                    ContactMimeType.forNumber(it)
-                }
-            )
+
+        if (intentAction != null) {
+            assertThat(event.intentAction)
+                .isEqualTo(IntentActionType.forNumber(intentAction.toLoggingEnumValue()))
+        } else {
+            assertThat(event.intentAction)
+                .isEqualTo(IntentActionType.INTENT_ACTION_TYPE_UNSPECIFIED)
+        }
+
+        if (requestedMimetypesList != null) {
+            assertThat(event.requestedMimetypesList)
+                .containsExactlyElementsIn(
+                    requestedMimetypesList.convertToLoggingEnumList().map {
+                        ContactMimeType.forNumber(it)
+                    }
+                )
+        } else {
+            assertThat(event.requestedMimetypesList)
+                .containsExactly(ContactMimeType.MIME_TYPE_UNSPECIFIED)
+        }
+
         assertThat(event.intentExtraUseSystemContactsPicker).isEqualTo(useSystemContactsPicker)
         assertThat(event.intentExtraPickContactsMatchAllDataFields)
             .isEqualTo(matchAllRequestedMimeTypes)
         assertThat(event.sessionResult).isEqualTo(sessionResult)
-        assertThat(event.numContactsSelected).isEqualTo(numContactsSelected)
+
+        val expectedStatsErrorType =
+            when (configErrorType) {
+                ConfigErrorType.UNSUPPORTED_ACTION ->
+                    ContactsPickerErrorType.ERROR_UNSUPPORTED_ACTION
+                ConfigErrorType.UNSUPPORTED_MIME_TYPE ->
+                    ContactsPickerErrorType.ERROR_UNSUPPORTED_MIME_TYPE
+                ConfigErrorType.UNSUPPORTED_SELECTION_LIMIT ->
+                    ContactsPickerErrorType.ERROR_UNSUPPORTED_SELECTION_LIMIT
+                ConfigErrorType.EMPTY_REQUESTED_MIME_TYPE ->
+                    ContactsPickerErrorType.ERROR_UNSUPPORTED_MIME_TYPE
+                null -> ContactsPickerErrorType.ERROR_UNSPECIFIED
+            }
+        assertThat(event.errorType).isEqualTo(expectedStatsErrorType)
+
+        if (configErrorType != null) {
+            assertThat(event.numContactsSelected).isEqualTo(0)
+            assertThat(event.contactsSelectedFromFavorites).isFalse()
+            assertThat(event.contactsSelectedFromSearchResults).isFalse()
+        } else {
+            assertThat(event.numContactsSelected).isEqualTo(numContactsSelected)
+            assertThat(event.contactsSelectedFromFavorites).isEqualTo(contactsSelectedFromFavorites)
+            assertThat(event.contactsSelectedFromSearchResults)
+                .isEqualTo(contactsSelectedFromSearch)
+        }
+
         assertThat(event.sessionDurationMs).isAtLeast(0L)
         if (startupLoadingTimeLogged) assertThat(event.startupLoadingTimeMs).isAtLeast(0L)
         else assertThat(event.startupLoadingTimeMs).isEqualTo(LOADING_TIME_UNSET)
