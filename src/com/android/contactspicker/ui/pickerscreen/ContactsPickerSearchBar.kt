@@ -60,7 +60,7 @@ import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.ui.components.EmptyContactsScreen
 
-private val CollapsedSearchBarPaddingValues = PaddingValues(start = 8.dp, end = 8.dp)
+private val CollapsedSearchBarPaddingValues = PaddingValues(start = 8.dp, end = 0.dp)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
