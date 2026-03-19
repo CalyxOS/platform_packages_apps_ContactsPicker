@@ -40,10 +40,8 @@
     <string name="contact_item_collapse_button_content_description" msgid="6742731080975214281">"접기"</string>
     <string name="contact_item_phone_icon_content_description" msgid="8117150273224121391">"전화"</string>
     <string name="contact_item_email_icon_content_description" msgid="286900034009619231">"이메일"</string>
-    <!-- no translation found for a11y_select_all (7721156399480254682) -->
-    <skip />
-    <!-- no translation found for a11y_deselect_all (6535215299362628830) -->
-    <skip />
+    <string name="a11y_select_all" msgid="7721156399480254682">"모두 선택"</string>
+    <string name="a11y_deselect_all" msgid="6535215299362628830">"모두 선택 해제"</string>
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{이메일 주소 #개}other{이메일 주소 #개}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{전화번호 #개}other{전화번호 #개}}"</string>
     <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{이메일 #개 중 {selected_count}개}other{이메일 #개 중 {selected_count}개}}"</string>
