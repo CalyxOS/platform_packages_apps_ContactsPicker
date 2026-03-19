@@ -39,9 +39,7 @@ import com.android.contactspicker.config.ContactsPickerConfigError
 import com.android.contactspicker.config.ContactsPickerRequestConfig
 import com.android.contactspicker.config.ContactsQueryMode
 import com.android.contactspicker.data.model.Contact
-import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.PausedReason
-import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.ProfileBlockedDialogData
 import com.android.contactspicker.data.model.SelectionSource
@@ -738,30 +736,19 @@ constructor(
 
         cachedStateBeforeNavigation = currentState
 
-        val (availableContacts, selectedIds, isMultiSelectEnabled) =
+        val (selectedIds, isMultiSelectEnabled) =
             when (currentState) {
                 is ContactsListState.Success ->
-                    Triple(
-                        initialContacts,
-                        currentState.selectedContacts,
-                        currentState.isMultiSelectEnabled,
-                    )
-
+                    currentState.selectedContacts to currentState.isMultiSelectEnabled
                 is SearchState.Success -> {
-                    val aggregatedContacts = currentState.getAggregatedContacts(config.queryMode)
-                    Triple(
-                        aggregatedContacts,
-                        currentState.selectedContacts,
-                        config.isMultiSelectEnabled,
-                    )
+                    currentState.selectedContacts to config.isMultiSelectEnabled
                 }
                 else -> return
             }
 
         contactsPickerLogger.previewOpened()
 
-        val previewList =
-            availableContacts.filter { contact -> selectedIds.containsKey(contact.id) }
+        val previewList = initialContacts.filter { contact -> selectedIds.containsKey(contact.id) }
 
         _uiState.value =
             ContactsPreviewState(
@@ -826,33 +813,3 @@ constructor(
         cachedStateBeforeNavigation = null
     }
 }
-
-/** Aggregates search results into a list of unique contacts, grouping entries by contact ID. */
-// TODO(b/441480198): Add unit tests to verify the correctness of this aggregation.
-private fun SearchState.Success.getAggregatedContacts(queryMode: ContactsQueryMode): List<Contact> =
-    when (queryMode) {
-        ContactsQueryMode.EmailsOnly -> {
-            val emailContacts = searchResults.map { it as EmailContact }
-            emailContacts
-                .groupBy { it.id }
-                .values
-                .map { contacts ->
-                    contacts
-                        .first()
-                        .copy(emails = contacts.flatMap { it.emails }.distinctBy { it.id })
-                }
-        }
-        ContactsQueryMode.PhonesOnly -> {
-            val phoneContacts = searchResults.map { it as PhoneContact }
-            phoneContacts
-                .groupBy { it.id }
-                .values
-                .map { contacts ->
-                    contacts
-                        .first()
-                        .copy(phones = contacts.flatMap { it.phones }.distinctBy { it.id })
-                }
-        }
-        ContactsQueryMode.DisplayNamesOnly,
-        is ContactsQueryMode.Custom -> searchResults
-    }

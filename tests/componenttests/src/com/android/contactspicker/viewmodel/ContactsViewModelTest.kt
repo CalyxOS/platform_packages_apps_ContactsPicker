@@ -1470,6 +1470,48 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun onPreviewClicked_fromSearchState_displaysAllSelectedContacts() = runTest {
+        val contact1 = ContactTestDataFactory.createDisplayNameContact(1L, "Alice")
+        val contact2 = ContactTestDataFactory.createDisplayNameContact(2L, "Bob")
+        val query = "Bob"
+
+        // mock the search to only return contact2
+        fakeContactsRepository.setSearchResults(query, listOf(contact2))
+
+        initializeViewModelForActionPickContacts(
+            listOf(contact1, contact2),
+            listOf(Phone.CONTENT_ITEM_TYPE, Email.CONTENT_ITEM_TYPE),
+            isMultiSelect = true,
+        )
+
+        // select contact1 from the list state
+        viewModel.toggleContactSelection(contact1, SELECTION_SOURCE_MAIN_LIST)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // start search mode for "Bob"
+        viewModel.onSearchQueryChanged(query)
+        testDispatcher.scheduler.advanceTimeBy(SEARCH_DEBOUNCE_MS)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // verify search state
+        assertThat(viewModel.uiState.value).isInstanceOf(SearchState.Success::class.java)
+
+        // select contact2 from the search results
+        viewModel.toggleContactSelection(contact2, SelectionSource.SEARCH)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // click preview while in SearchState
+        viewModel.onPreviewClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // verify PreviewState contains both contacts
+        val previewStateSearch = viewModel.uiState.value
+        assertThat(previewStateSearch).isInstanceOf(ContactsPreviewState::class.java)
+        val contactsToDisplay = (previewStateSearch as ContactsPreviewState).contactsToDisplay
+        assertThat(contactsToDisplay).containsExactlyElementsIn(listOf(contact1, contact2))
+    }
+
+    @Test
     fun onPreviewClicked_callsLoggerPreviewOpened() = runTest {
         val contact = ContactTestDataFactory.GENERIC_PHONE_CONTACT
         initializeViewModelForLegacyActionPickInMultiSelectMode(listOf(contact))
