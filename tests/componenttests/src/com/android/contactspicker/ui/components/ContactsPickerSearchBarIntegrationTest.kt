@@ -56,10 +56,15 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
+/**
+ * Unlike ContactsPickerSearchBarTest which tests ContactsPickerSearchBar composable in isolation,
+ * this test uses ActivityScenario and invokes the [ContactsPickerActivity] to test the search bar
+ * behaviour in the activity's compose hierarchy.
+ */
 @RequiresFlagsEnabled(Flags.FLAG_ENABLE_SYSTEM_CONTACTS_PICKER)
 @UninstallModules(AppModule::class, ActivityModule::class)
 @HiltAndroidTest
-class ContactsPickerSearchBarTest {
+class ContactsPickerSearchBarIntegrationTest {
 
     @get:Rule(order = 0) val hiltRule = HiltAndroidRule(this)
     @get:Rule(order = 1)
@@ -97,7 +102,7 @@ class ContactsPickerSearchBarTest {
                 action = Intent.ACTION_PICK
                 type = ContactsContract.Contacts.CONTENT_TYPE
             }
-        scenario = ActivityScenario.launch<ContactsPickerActivity>(intent)
+        scenario = ActivityScenario.launch(intent)
     }
 
     @After
