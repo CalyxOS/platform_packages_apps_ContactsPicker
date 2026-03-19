@@ -21,8 +21,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -91,10 +90,10 @@ fun Avatar(displayName: String, profilePictureUri: String?) {
                     )
                 } else {
                     Icon(
-                        imageVector = Icons.Filled.Person,
+                        painter = painterResource(id = R.drawable.ic_person_silhouette),
                         contentDescription = null,
                         modifier =
-                            Modifier.size(32.dp).testTag(AVATAR_FALLBACK_PERSON_ICON_TEST_TAG),
+                            Modifier.fillMaxSize().testTag(AVATAR_FALLBACK_PERSON_ICON_TEST_TAG),
                         tint = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
                 }

@@ -26,16 +26,16 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,11 +48,13 @@ import com.android.democontactspickerclientapp.CommonOptions
 import com.android.democontactspickerclientapp.LaunchPickerButton
 import com.android.democontactspickerclientapp.LegacyActionPickConfiguration
 import com.android.democontactspickerclientapp.LegacyDemoConfigState
-import com.android.democontactspickerclientapp.ResultDisplay
 import com.android.democontactspickerclientapp.ScreenTitle
 import com.android.democontactspickerclientapp.SwitchOption
+import com.android.democontactspickerclientapp.actionPickResultDisplay
 import com.android.democontactspickerclientapp.buildLegacyPickerIntent
 import com.android.democontactspickerclientapp.handlePickerResult
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 enum class Sdk37IntentType(val label: String) {
     LEGACY_ACTION_PICK("Legacy ACTION_PICK"),
@@ -82,15 +84,22 @@ private fun Sdk37Screen(targetSdk: Int) {
     var selectionLimit by remember { mutableStateOf(0) }
     val context = LocalContext.current
 
+    // state for ACTION_PICK_CONTACTS
+    var selectedTab by remember { mutableStateOf(ResultTab.CONTACTS) }
+    var sessionParseResult by remember { mutableStateOf<SessionParseResult?>(null) }
+
+    // state for ACTION_PICK
+    var legacyActivityResult by remember { mutableStateOf<ActivityResult?>(null) }
+
+    var isLoading by remember { mutableStateOf(false) }
+
     val pickerLauncher =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.StartActivityForResult()
         ) { result ->
             when (intentType) {
                 Sdk37IntentType.LEGACY_ACTION_PICK -> {
-                    val pickerResult =
-                        handlePickerResult(context, result, legacyConfig.legacyPickerType)
-                    legacyConfig = legacyConfig.copy(pickerResult = pickerResult)
+                    legacyActivityResult = result
                 }
 
                 Sdk37IntentType.NEW_ACTION_PICK_CONTACTS -> {
@@ -100,94 +109,135 @@ private fun Sdk37Screen(targetSdk: Int) {
             }
         }
 
-    Column(
-        modifier =
-            Modifier.fillMaxSize()
-                .systemBarsPadding()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
+    // async data parsing for ACTION_PICK_CONTACTS
+    LaunchedEffect(contactsPickerSession.uri) {
+        val uri = contactsPickerSession.uri
+        if (uri != null) {
+            isLoading = true
+            sessionParseResult = withContext(Dispatchers.IO) { parseSessionResult(context, uri) }
+            isLoading = false
+        }
+    }
+
+    // async data parsing for ACTION_PICK
+    LaunchedEffect(legacyActivityResult) {
+        val result = legacyActivityResult
+        if (result != null) {
+            isLoading = true
+            val pickerResult =
+                withContext(Dispatchers.IO) {
+                    handlePickerResult(context, result, legacyConfig.legacyPickerType)
+                }
+            legacyConfig = legacyConfig.copy(pickerResult = pickerResult)
+            isLoading = false
+        }
+    }
+
+    LazyColumn(
+        modifier = Modifier.fillMaxSize().systemBarsPadding().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        ScreenTitle(targetSdk = targetSdk)
-        Spacer(modifier = Modifier.height(20.dp))
+        item {
+            ScreenTitle(targetSdk = targetSdk)
+            Spacer(modifier = Modifier.height(20.dp))
 
-        Sdk37IntentTypeSelector(intentType) { intentType = it }
-        Spacer(modifier = Modifier.height(12.dp))
+            Sdk37IntentTypeSelector(intentType) { intentType = it }
+            Spacer(modifier = Modifier.height(12.dp))
 
-        when (intentType) {
-            Sdk37IntentType.LEGACY_ACTION_PICK -> {
-                LegacyActionPickConfiguration(legacyConfig) { newConfig ->
-                    legacyConfig = newConfig
+            when (intentType) {
+                Sdk37IntentType.LEGACY_ACTION_PICK -> {
+                    LegacyActionPickConfiguration(legacyConfig) { newConfig ->
+                        legacyConfig = newConfig
+                    }
+                }
+
+                Sdk37IntentType.NEW_ACTION_PICK_CONTACTS -> {
+                    ActionPickContactsConfiguration(
+                        selectedMimeTypes = selectedMimeTypes,
+                        onMimeTypesChange = { selectedMimeTypes = it },
+                    )
                 }
             }
 
-            Sdk37IntentType.NEW_ACTION_PICK_CONTACTS -> {
-                ActionPickContactsConfiguration(
-                    selectedMimeTypes = selectedMimeTypes,
-                    onMimeTypesChange = { selectedMimeTypes = it },
+            Spacer(modifier = Modifier.height(20.dp))
+            CommonOptions(
+                allowMultiple = allowMultiple,
+                onAllowMultipleChange = { allowMultiple = it },
+                overrideSelectionLimit = overrideSelectionLimit,
+                onOverrideSelectionLimitChange = { overrideSelectionLimit = it },
+                selectionLimit = selectionLimit,
+                onSelectionLimitChange = { selectionLimit = it },
+            )
+            if (intentType == Sdk37IntentType.NEW_ACTION_PICK_CONTACTS) {
+                SwitchOption(
+                    title = "Match all data fields",
+                    checked = matchAllDataFields,
+                    onCheckedChange = { matchAllDataFields = it },
                 )
             }
-        }
+            Spacer(modifier = Modifier.height(24.dp))
 
-        Spacer(modifier = Modifier.height(20.dp))
-        CommonOptions(
-            allowMultiple = allowMultiple,
-            onAllowMultipleChange = { allowMultiple = it },
-            overrideSelectionLimit = overrideSelectionLimit,
-            onOverrideSelectionLimitChange = { overrideSelectionLimit = it },
-            selectionLimit = selectionLimit,
-            onSelectionLimitChange = { selectionLimit = it },
-        )
-        if (intentType == Sdk37IntentType.NEW_ACTION_PICK_CONTACTS) {
-            SwitchOption(
-                title = "Match all data fields",
-                checked = matchAllDataFields,
-                onCheckedChange = { matchAllDataFields = it },
-            )
-        }
-        Spacer(modifier = Modifier.height(24.dp))
+            LaunchPickerButton {
+                val intent =
+                    when (intentType) {
+                        Sdk37IntentType.LEGACY_ACTION_PICK ->
+                            buildLegacyPickerIntent(
+                                legacyConfig,
+                                allowMultiple,
+                                overrideSelectionLimit = overrideSelectionLimit,
+                                selectionLimit = selectionLimit,
+                            )
 
-        LaunchPickerButton {
-            val intent =
-                when (intentType) {
-                    Sdk37IntentType.LEGACY_ACTION_PICK ->
-                        buildLegacyPickerIntent(
-                            legacyConfig,
-                            allowMultiple,
-                            overrideSelectionLimit = overrideSelectionLimit,
-                            selectionLimit = selectionLimit,
-                        )
-
-                    Sdk37IntentType.NEW_ACTION_PICK_CONTACTS ->
-                        buildActionPickContactsIntent(
-                            context,
-                            selectedMimeTypes,
-                            allowMultiple,
-                            matchAllDataFields,
-                            overrideSelectionLimit,
-                            selectionLimit,
-                        )
-                }
-            intent?.let {
-                try {
-                    pickerLauncher.launch(it)
-                } catch (_: ActivityNotFoundException) {
-                    Toast.makeText(
-                            context,
-                            "No handler for intent ${intent.action} found.",
-                            Toast.LENGTH_SHORT,
-                        )
-                        .show()
+                        Sdk37IntentType.NEW_ACTION_PICK_CONTACTS ->
+                            buildActionPickContactsIntent(
+                                context,
+                                selectedMimeTypes,
+                                allowMultiple,
+                                matchAllDataFields,
+                                overrideSelectionLimit,
+                                selectionLimit,
+                            )
+                    }
+                intent?.let {
+                    try {
+                        pickerLauncher.launch(it)
+                    } catch (_: ActivityNotFoundException) {
+                        Toast.makeText(
+                                context,
+                                "No handler for intent ${intent.action} found.",
+                                Toast.LENGTH_SHORT,
+                            )
+                            .show()
+                    }
                 }
             }
+            Spacer(modifier = Modifier.height(20.dp))
         }
-        Spacer(modifier = Modifier.height(20.dp))
 
+        // Render results
         when (intentType) {
-            Sdk37IntentType.LEGACY_ACTION_PICK -> ResultDisplay(legacyConfig.pickerResult)
-
-            Sdk37IntentType.NEW_ACTION_PICK_CONTACTS ->
-                ActionPickContactsResultDisplay(contactsPickerSession.uri)
+            Sdk37IntentType.LEGACY_ACTION_PICK -> {
+                if (isLoading) {
+                    item {
+                        Text(
+                            "Loading legacy data...",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                } else {
+                    actionPickResultDisplay(legacyConfig.pickerResult)
+                }
+            }
+            Sdk37IntentType.NEW_ACTION_PICK_CONTACTS -> {
+                actionPickContactsResultDisplay(
+                    uri = contactsPickerSession.uri,
+                    isLoading = isLoading,
+                    parseResult = sessionParseResult,
+                    selectedTab = selectedTab,
+                    onTabSelected = { selectedTab = it },
+                )
+            }
         }
     }
 }

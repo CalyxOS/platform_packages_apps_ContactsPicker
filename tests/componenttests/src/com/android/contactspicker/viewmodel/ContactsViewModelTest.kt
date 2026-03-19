@@ -42,6 +42,7 @@ import com.android.contactspicker.Flags.FLAG_ENABLE_ACTION_PICK_TAKEOVER_IN_DROI
 import com.android.contactspicker.PrivacyDetailsState
 import com.android.contactspicker.R
 import com.android.contactspicker.SearchState
+import com.android.contactspicker.config.ConfigErrorType
 import com.android.contactspicker.config.ContactsPickerAction
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.MimeType
@@ -53,7 +54,6 @@ import com.android.contactspicker.data.model.SwitchableProfileInfo
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.model.UserType
 import com.android.contactspicker.data.model.emptyContactsSelection
-import com.android.contactspicker.data.repository.UserRepository
 import com.android.contactspicker.fakes.FakeContactsPickerSessionProviderRepository
 import com.android.contactspicker.fakes.FakeContactsRepository
 import com.android.contactspicker.fakes.FakePrivacyBannerRepository
@@ -145,7 +145,7 @@ class ContactsViewModelTest {
     private lateinit var fakeContactsPickerSessionProviderRepository:
         FakeContactsPickerSessionProviderRepository
     private lateinit var fakePrivacyBannerRepository: FakePrivacyBannerRepository
-    private lateinit var mockUserRepository: UserRepository
+    private lateinit var mockProfileSelectionHandler: ProfileSelectionHandler
 
     private lateinit var mockContactsPickerLogger: ContactsPickerLogger
     private lateinit var viewModel: ContactsViewModel
@@ -163,7 +163,7 @@ class ContactsViewModelTest {
         fakeContactsRepository = FakeContactsRepository()
         fakeContactsPickerSessionProviderRepository = FakeContactsPickerSessionProviderRepository()
         fakePrivacyBannerRepository = FakePrivacyBannerRepository()
-        mockUserRepository = mock()
+        mockProfileSelectionHandler = mock()
         mockContactsPickerLogger = mock()
         userStateFlow.value =
             PickerUserState.Success(
@@ -171,7 +171,7 @@ class ContactsViewModelTest {
                 selectedUserId = USER_ID_PERSONAL,
             )
         runBlocking {
-            whenever(mockUserRepository.getUserState(anyOrNull(), anyInt()))
+            whenever(mockProfileSelectionHandler.getUserStateFlow(anyOrNull(), anyInt()))
                 .thenReturn(userStateFlow)
         }
 
@@ -185,7 +185,7 @@ class ContactsViewModelTest {
                 fakeContactsRepository,
                 fakeContactsPickerSessionProviderRepository,
                 fakePrivacyBannerRepository,
-                Lazy { mockUserRepository },
+                Lazy { mockProfileSelectionHandler },
                 fakeFactory,
                 mockContactsPickerLogger,
             )
@@ -421,8 +421,11 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun handleIntent_withInvalidAction_throwsException() {
-        assertFailsWith<IllegalArgumentException> {
+    fun handleIntent_withInvalidAction_emitsCancelAndFinishAndLogsFailure() = runTest {
+        val events = mutableListOf<PickerResultEvent>()
+        val job = launch { viewModel.pickerResultEvents.toList(events) }
+
+        val result =
             viewModel.handleIntent(
                 intentAction = "INVALID_ACTION",
                 intentType = null,
@@ -432,7 +435,16 @@ class ContactsViewModelTest {
                 callingAppUid = TEST_CALLING_UID,
                 callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD,
             )
-        }
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(result).isTrue() // Handled internally
+        assertThat(events).hasSize(1)
+        assertThat(events.first()).isInstanceOf(PickerResultEvent.CancelAndFinish::class.java)
+
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionFailed(ConfigErrorType.UNSUPPORTED_ACTION)
+
+        job.cancel()
     }
 
     @Test
@@ -1275,33 +1287,137 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun handleIntent_whenSelectMultipleEnabledAndLimitExceedsMax_throwsException() = runTest {
-        assertFailsWith<IllegalArgumentException> {
-            initializeViewModelForLegacyActionPick(
-                ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
-                buildIntentExtrasWithSelectionLimit(true, MAX_ALLOWED_SELECTION_LIMIT + 1),
+    fun handleIntent_whenSelectMultipleEnabledAndLimitExceedsMax_emitsCancelAndFinish() = runTest {
+        val events = mutableListOf<PickerResultEvent>()
+        val job = launch { viewModel.pickerResultEvents.toList(events) }
+
+        val result =
+            viewModel.handleIntent(
+                intentAction = Intent.ACTION_PICK,
+                intentType = ContactsContract.Contacts.CONTENT_TYPE,
+                intentExtras =
+                    buildIntentExtrasWithSelectionLimit(true, MAX_ALLOWED_SELECTION_LIMIT + 1),
+                callingAppName = TEST_APP_NAME,
+                callingPackageName = TEST_PACKAGE_NAME,
+                callingAppUid = TEST_CALLING_UID,
+                callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD,
             )
-        }
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(result).isTrue()
+        assertThat(events).hasSize(1)
+        assertThat(events.first()).isInstanceOf(PickerResultEvent.CancelAndFinish::class.java)
+
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionFailed(ConfigErrorType.UNSUPPORTED_SELECTION_LIMIT)
+
+        job.cancel()
     }
 
     @Test
-    fun handleIntent_whenSelectMultipleEnabledAndLimitZero_throwsException() = runTest {
-        assertFailsWith<IllegalArgumentException> {
-            initializeViewModelForLegacyActionPick(
-                ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
-                buildIntentExtrasWithSelectionLimit(true, 0),
+    fun handleIntent_whenSelectMultipleEnabledAndLimitZero_emitsCancelAndFinish() = runTest {
+        val events = mutableListOf<PickerResultEvent>()
+        val job = launch { viewModel.pickerResultEvents.toList(events) }
+
+        val result =
+            viewModel.handleIntent(
+                intentAction = Intent.ACTION_PICK,
+                intentType = ContactsContract.Contacts.CONTENT_TYPE,
+                intentExtras = buildIntentExtrasWithSelectionLimit(true, 0),
+                callingAppName = TEST_APP_NAME,
+                callingPackageName = TEST_PACKAGE_NAME,
+                callingAppUid = TEST_CALLING_UID,
+                callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD,
             )
-        }
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(result).isTrue()
+        assertThat(events).hasSize(1)
+        assertThat(events.first()).isInstanceOf(PickerResultEvent.CancelAndFinish::class.java)
+
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionFailed(ConfigErrorType.UNSUPPORTED_SELECTION_LIMIT)
+
+        job.cancel()
     }
 
     @Test
-    fun handleIntent_whenSelectMultipleEnabledAndLimitNegative_throwsException() = runTest {
-        assertFailsWith<IllegalArgumentException> {
-            initializeViewModelForLegacyActionPick(
-                ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT_LIST,
-                buildIntentExtrasWithSelectionLimit(true, -1),
+    fun handleIntent_whenSelectMultipleEnabledAndLimitNegative_emitsCancelAndFinish() = runTest {
+        val events = mutableListOf<PickerResultEvent>()
+        val job = launch { viewModel.pickerResultEvents.toList(events) }
+
+        val result =
+            viewModel.handleIntent(
+                intentAction = Intent.ACTION_PICK,
+                intentType = ContactsContract.Contacts.CONTENT_TYPE,
+                intentExtras = buildIntentExtrasWithSelectionLimit(true, -1),
+                callingAppName = TEST_APP_NAME,
+                callingPackageName = TEST_PACKAGE_NAME,
+                callingAppUid = TEST_CALLING_UID,
+                callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD,
             )
-        }
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(result).isTrue()
+        assertThat(events).hasSize(1)
+        assertThat(events.first()).isInstanceOf(PickerResultEvent.CancelAndFinish::class.java)
+
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionFailed(ConfigErrorType.UNSUPPORTED_SELECTION_LIMIT)
+
+        job.cancel()
+    }
+
+    @Test
+    fun handleIntent_invalidLimit_logsStartedWithAlreadyCollectedDataAndFails() = runTest {
+        val events = mutableListOf<PickerResultEvent>()
+        val job = launch { viewModel.pickerResultEvents.toList(events) }
+
+        // selection limit too high error is caught when several other fields are already collected
+        val mimes = ArrayList(listOf(Email.CONTENT_ITEM_TYPE))
+        val extras =
+            Bundle().apply {
+                putBoolean(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                putBoolean(
+                    ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_MATCH_ALL_DATA_FIELDS,
+                    true,
+                )
+                putInt(
+                    ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_SELECTION_LIMIT,
+                    MAX_ALLOWED_SELECTION_LIMIT + 1,
+                )
+                putStringArrayList(
+                    ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_REQUESTED_DATA_FIELDS,
+                    mimes,
+                )
+            }
+
+        viewModel.handleIntent(
+            intentAction = ContactsPickerSessionContract.ACTION_PICK_CONTACTS,
+            intentType = null,
+            intentExtras = extras,
+            callingAppName = TEST_APP_NAME,
+            callingPackageName = TEST_PACKAGE_NAME,
+            callingAppUid = TEST_CALLING_UID,
+            callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD,
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // verify the session started was called with already collected fields
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionStarted(
+                callingAppUid = TEST_CALLING_UID,
+                callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD,
+                pickerIntentAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
+                requestedMimeTypes = listOf(MimeType.EMAIL),
+                useSystemContactsPicker = false,
+                matchAllRequestedMimeTypes = true,
+            )
+
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionFailed(ConfigErrorType.UNSUPPORTED_SELECTION_LIMIT)
+
+        job.cancel()
     }
 
     @Test
@@ -1366,11 +1482,11 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun onPrivacyDetailsClicked_updatesStateToPrivacyDetails() = runTest {
+    fun onPrivacyDetailsBannerClicked_updatesStateToPrivacyDetailsBanner() = runTest {
         val contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
         initializeViewModelForActionPickContacts(listOf(contact), listOf(Phone.CONTENT_ITEM_TYPE))
 
-        viewModel.onPrivacyDetailsClicked()
+        viewModel.onPrivacyDetailsBannerClicked()
         testDispatcher.scheduler.advanceUntilIdle()
 
         val state = viewModel.uiState.value
@@ -1381,12 +1497,54 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun onPrivacyDetailsBannerClicked_callsLoggerPrivacyDetailsBannerOpened() = runTest {
+        initializeViewModelForActionPickContacts(
+            listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT),
+            listOf(Phone.CONTENT_ITEM_TYPE),
+        )
+
+        viewModel.onPrivacyDetailsBannerClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        verify(mockContactsPickerLogger).privacyDetailsBannerOpened()
+    }
+
+    @Test
+    fun onPrivacyDetailsOverflowMenuClicked_updatesStateToPrivacyDetailsBanner() = runTest {
+        val contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
+        initializeViewModelForActionPickContacts(listOf(contact), listOf(Phone.CONTENT_ITEM_TYPE))
+
+        viewModel.onPrivacyDetailsOverflowMenuClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertThat(state).isInstanceOf(PrivacyDetailsState::class.java)
+        val privacyState = state as PrivacyDetailsState
+        assertThat(privacyState.callingAppName).isEqualTo(TEST_APP_NAME)
+        assertThat(privacyState.requestedMimeTypes).containsExactly(MimeType.PHONE)
+    }
+
+    @Test
+    fun onPrivacyDetailsOverflowMenuClicked_callsLoggerPrivacyDetailsOverflowMenuOpened() =
+        runTest {
+            initializeViewModelForActionPickContacts(
+                listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT),
+                listOf(Phone.CONTENT_ITEM_TYPE),
+            )
+
+            viewModel.onPrivacyDetailsOverflowMenuClicked()
+            testDispatcher.scheduler.advanceUntilIdle()
+
+            verify(mockContactsPickerLogger).privacyDetailsOverflowMenuOpened()
+        }
+
+    @Test
     fun onBackFromPrivacyDetails_revertsToPreviousState() = runTest {
         val contact = ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT
         initializeViewModelForLegacyActionPick(listOf(contact))
         val previousSuccessState = viewModel.uiState.value
 
-        viewModel.onPrivacyDetailsClicked()
+        viewModel.onPrivacyDetailsBannerClicked()
         testDispatcher.scheduler.advanceUntilIdle()
         assertThat(viewModel.uiState.value).isInstanceOf(PrivacyDetailsState::class.java)
 
@@ -1399,10 +1557,10 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun onPrivacyDetailsClicked_inLoadingState_throwsException() = runTest {
+    fun onPrivacyDetailsBannerClicked_inLoadingState_throwsException() = runTest {
         // The ViewModel starts in the Loading state by default.
         // It should throw an IllegalArgumentException because of the require() check.
-        assertFailsWith<IllegalArgumentException> { viewModel.onPrivacyDetailsClicked() }
+        assertFailsWith<IllegalArgumentException> { viewModel.onPrivacyDetailsBannerClicked() }
     }
 
     @Test
@@ -1664,7 +1822,7 @@ class ContactsViewModelTest {
     fun handleIntent_actionPick_doesNotClearSelectedUser() = runTest {
         initializeViewModelForLegacyActionPick(emptyList())
 
-        verify(mockUserRepository, never()).clearSelectedUser()
+        verify(mockProfileSelectionHandler, never()).clearSelectedUser()
     }
 
     @Test
@@ -1694,7 +1852,7 @@ class ContactsViewModelTest {
     fun handleIntent_actionPickContacts_clearsSelectedUser() = runTest {
         initializeViewModelForActionPickContacts(emptyList(), listOf(Email.CONTENT_ITEM_TYPE))
 
-        verify(mockUserRepository).clearSelectedUser()
+        verify(mockProfileSelectionHandler).clearSelectedUser()
     }
 
     @Test
@@ -1705,7 +1863,7 @@ class ContactsViewModelTest {
         viewModel.onProfileSelected(newUserId)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        verify(mockUserRepository).setSelectedUser(newUserId)
+        verify(mockProfileSelectionHandler).setSelectedUser(newUserId)
     }
 
     @Test
@@ -1716,7 +1874,7 @@ class ContactsViewModelTest {
         viewModel.onProfileSelected(currentUserId)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        verify(mockUserRepository, never()).setSelectedUser(anyInt())
+        verify(mockProfileSelectionHandler, never()).setSelectedUser(anyInt())
     }
 
     @Test
@@ -1726,7 +1884,7 @@ class ContactsViewModelTest {
         viewModel.onProfileClicked(WORK_PROFILE)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        verify(mockUserRepository).setSelectedUser(USER_ID_WORK)
+        verify(mockProfileSelectionHandler).setSelectedUser(USER_ID_WORK)
     }
 
     @Test
@@ -1964,7 +2122,7 @@ class ContactsViewModelTest {
         viewModel.onProfileClicked(inertProfile)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        verify(mockUserRepository, never()).setSelectedUser(anyInt())
+        verify(mockProfileSelectionHandler, never()).setSelectedUser(anyInt())
         val successState = viewModel.currentSuccessUserState
         assertThat(successState.profileBlockedDialogData).isNull()
     }

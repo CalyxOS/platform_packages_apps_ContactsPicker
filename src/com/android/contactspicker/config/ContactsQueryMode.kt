@@ -57,7 +57,7 @@ sealed class ContactsQueryMode {
             pickerAction: ContactsPickerAction,
             intentType: String?,
             intentExtras: Bundle?,
-        ): ContactsQueryMode {
+        ): ParseResult<ContactsQueryMode> {
             return when (pickerAction) {
                 ContactsPickerAction.ACTION_PICK -> parseActionPick(intentType)
                 ContactsPickerAction.ACTION_PICK_CONTACTS -> parseActionPickContacts(intentExtras)
@@ -65,55 +65,62 @@ sealed class ContactsQueryMode {
         }
 
         /** Handles parsing for the legacy ACTION_PICK intent. */
-        private fun parseActionPick(intentType: String?): ContactsQueryMode {
+        private fun parseActionPick(intentType: String?): ParseResult<ContactsQueryMode> {
             return when (intentType) {
-                Email.CONTENT_TYPE -> EmailsOnly
-
-                Phone.CONTENT_TYPE -> PhonesOnly
-
-                Contacts.CONTENT_TYPE -> DisplayNamesOnly
-
+                Email.CONTENT_TYPE -> ParseResult.Success(EmailsOnly)
+                Phone.CONTENT_TYPE -> ParseResult.Success(PhonesOnly)
+                Contacts.CONTENT_TYPE -> ParseResult.Success(DisplayNamesOnly)
                 else ->
-                    throw IllegalArgumentException(
-                        "Unsupported intent type for ACTION_PICK: $intentType"
+                    ParseResult.Error(
+                        ConfigErrorType.UNSUPPORTED_MIME_TYPE,
+                        "Unsupported intent type for ACTION_PICK: $intentType",
                     )
             }
         }
 
         /** Handles parsing for the new ACTION_PICK_CONTACTS intent. */
-        private fun parseActionPickContacts(intentExtras: Bundle?): ContactsQueryMode {
+        private fun parseActionPickContacts(intentExtras: Bundle?): ParseResult<ContactsQueryMode> {
             val mimeTypeStrings =
                 intentExtras?.getStringArrayList(
                     ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_REQUESTED_DATA_FIELDS
                 ) ?: emptyList()
 
             if (mimeTypeStrings.isEmpty()) {
-                throw IllegalArgumentException(
-                    "Missing or empty EXTRA_PICK_CONTACTS_REQUESTED_DATA_FIELDS for ACTION_PICK_CONTACTS"
+                return ParseResult.Error(
+                    ConfigErrorType.EMPTY_REQUESTED_MIME_TYPE,
+                    "Missing or empty EXTRA_PICK_CONTACTS_REQUESTED_DATA_FIELDS",
                 )
             }
 
-            val validatedMimeTypes =
-                mimeTypeStrings.map { mimeString ->
-                    val mappedType = MimeType.fromString(mimeString)
-                    mappedType.validateForActionPickContacts()
-                    mappedType
-                }
+            return try {
+                val validatedMimeTypes =
+                    mimeTypeStrings.map { mimeString ->
+                        MimeType.fromString(mimeString).apply { validateForActionPickContacts() }
+                    }
 
-            val matchAll =
-                intentExtras?.getBoolean(
-                    ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_MATCH_ALL_DATA_FIELDS,
-                    false,
-                ) ?: false
+                val matchAll =
+                    intentExtras?.getBoolean(
+                        ContactsPickerSessionContract.EXTRA_PICK_CONTACTS_MATCH_ALL_DATA_FIELDS,
+                        false,
+                    ) ?: false
 
-            return if (validatedMimeTypes.size == 1) {
-                when (validatedMimeTypes.first()) {
-                    MimeType.EMAIL -> EmailsOnly
-                    MimeType.PHONE -> PhonesOnly
-                    else -> Custom(validatedMimeTypes, matchAll)
-                }
-            } else {
-                Custom(validatedMimeTypes, matchAll)
+                val mode =
+                    if (validatedMimeTypes.size == 1) {
+                        when (validatedMimeTypes.first()) {
+                            MimeType.EMAIL -> EmailsOnly
+                            MimeType.PHONE -> PhonesOnly
+                            else -> Custom(validatedMimeTypes, matchAll)
+                        }
+                    } else {
+                        Custom(validatedMimeTypes, matchAll)
+                    }
+                ParseResult.Success(mode)
+            } catch (e: IllegalArgumentException) {
+                // MimeType.fromString throws if it receives unsupported mime types
+                ParseResult.Error(
+                    ConfigErrorType.UNSUPPORTED_MIME_TYPE,
+                    e.message ?: "Invalid MIME type provided",
+                )
             }
         }
     }

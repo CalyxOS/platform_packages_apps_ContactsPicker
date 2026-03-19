@@ -20,7 +20,6 @@ import com.android.contactspicker.data.model.MimeType
 import com.android.contactspicker.room.dao.PrivacyBannerShownDao
 import com.android.contactspicker.room.entity.PrivacyBannerShown
 import javax.inject.Inject
-import javax.inject.Singleton
 
 private const val TAG = "PrivacyBannerRepository"
 // TODO(b/462100085): Validate the privacy banner's show/hide logic during exception handling
@@ -30,7 +29,6 @@ private const val DEFAULT_PRIVACY_BANNER_SHOWN_STATE_FALLBACK = false
  * A repository for persisting the state of the privacy banner shown state. This class uses DAO
  * object to store whether the banner has been shown to the user.
  */
-@Singleton
 class PrivacyBannerRepositoryImpl @Inject constructor(private val dao: PrivacyBannerShownDao) :
     PrivacyBannerRepository {
 

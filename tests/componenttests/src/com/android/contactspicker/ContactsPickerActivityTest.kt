@@ -509,7 +509,7 @@ class ContactsPickerActivityTest {
                 null
             }
             .whenever(mockViewModel)
-            .onPrivacyDetailsClicked()
+            .onPrivacyDetailsBannerClicked()
 
         val scenario = ActivityScenario.launch<ContactsPickerActivity>(baseIntent)
 
@@ -555,7 +555,7 @@ class ContactsPickerActivityTest {
                 null
             }
             .whenever(mockViewModel)
-            .onPrivacyDetailsClicked()
+            .onPrivacyDetailsBannerClicked()
 
         // Mock backward navigation
         doAnswer {

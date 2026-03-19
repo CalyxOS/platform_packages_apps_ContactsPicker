@@ -42,7 +42,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,7 +60,7 @@ import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.ui.components.EmptyContactsScreen
 
-private val CollapsedSearchBarPaddingValues = PaddingValues(start = 8.dp, end = 8.dp)
+private val CollapsedSearchBarPaddingValues = PaddingValues(start = 8.dp, end = 0.dp)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,7 +75,7 @@ fun ContactsPickerSearchBar(
     onExitSearch: () -> Unit,
 ) {
 
-    var query by remember { mutableStateOf("") }
+    var query by rememberSaveable { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     SearchBar(
