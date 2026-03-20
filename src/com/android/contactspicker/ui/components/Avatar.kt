@@ -98,7 +98,7 @@ fun Avatar(displayName: String, lookupKey: String, profilePictureUri: String?) {
                     Text(
                         text = firstChar.uppercase(),
                         color = foregroundColor,
-                        fontSize = 18.sp,
+                        fontSize = 24.sp,
                         textAlign = TextAlign.Center,
                     )
                 } else {
