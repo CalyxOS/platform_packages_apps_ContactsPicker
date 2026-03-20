@@ -70,8 +70,8 @@
     <string name="no_results_found_description" msgid="3316948006890920245">"कोई दूसरी स्पेलिंग डालकर खोजें"</string>
     <string name="user_type_personal" msgid="45376141973820399">"व्यक्तिगत"</string>
     <string name="user_type_unknown_label" msgid="7034460972310129198">"अज्ञात उपयोगकर्ता"</string>
-    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"वर्क ऐप्लिकेशन बंद किए गए हैं"</string>
-    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"इस प्रोफ़ाइल के लिए संपर्क देखने के लिए, वर्क ऐप्लिकेशन को फिर से चालू करें और दोबारा कोशिश करें"</string>
+    <string name="picker_work_profile_paused_title" msgid="1406097130222928887">"वर्क ऐप्लिकेशन रोके गए हैं"</string>
+    <string name="picker_work_profile_paused_msg" msgid="3470110322422571891">"इस प्रोफ़ाइल से जुड़े संपर्कों की सूची देखने के लिए, वर्क ऐप्लिकेशन को फिर से चलाएं और दोबारा कोशिश करें"</string>
     <string name="picker_profile_blocked_admin_title" msgid="120810913376185332">"आपके आईटी एडमिन ने ऐक्सेस ब्लॉक कर दिया है"</string>
     <string name="picker_profile_blocked_admin_msg" msgid="3792456887042138155">"अगर आपका कोई सवाल है, तो एडमिन से संपर्क करें"</string>
 </resources>
