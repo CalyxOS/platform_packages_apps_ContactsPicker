@@ -80,6 +80,7 @@ object ContactTestDataFactory {
         id: Long,
         displayName: String,
         isFavorite: Boolean = false,
+        lookupKey: String = "key_$id",
         phones: List<PhoneEntry>,
         profilePictureUri: String? = null,
     ): PhoneContact {
@@ -88,6 +89,7 @@ object ContactTestDataFactory {
             displayName = displayName,
             displayNameSource = ContactsContract.DisplayNameSources.STRUCTURED_NAME,
             isFavorite = isFavorite,
+            lookupKey = lookupKey,
             phones = phones,
             profilePictureUri = profilePictureUri,
         )
@@ -98,6 +100,7 @@ object ContactTestDataFactory {
         id: Long,
         displayName: String,
         isFavorite: Boolean = false,
+        lookupKey: String = "key_$id",
         emails: List<EmailEntry>,
         profilePictureUri: String? = null,
     ): EmailContact {
@@ -106,6 +109,7 @@ object ContactTestDataFactory {
             displayName = displayName,
             displayNameSource = ContactsContract.DisplayNameSources.STRUCTURED_NAME,
             isFavorite = isFavorite,
+            lookupKey = lookupKey,
             emails = emails,
             profilePictureUri = profilePictureUri,
         )

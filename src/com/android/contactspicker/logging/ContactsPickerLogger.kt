@@ -37,6 +37,16 @@ interface ContactsPickerLogger {
 
     fun logContactsPickerSessionFailed(errorType: ConfigErrorType)
 
+    /**
+     * Logs that the contacts picker session has been cancelled without making a selection.
+     *
+     * Note: Finishes the logging session. If the session was already finished by another logging
+     * function, this call is ignored.
+     */
+    fun logContactsPickerSessionCancelled()
+
+    fun logContactsPickerSessionForwarded()
+
     fun allContactsLoadingStarted()
 
     /**

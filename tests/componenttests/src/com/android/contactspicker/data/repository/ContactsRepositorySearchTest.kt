@@ -85,7 +85,15 @@ class ContactsRepositorySearchTest {
     fun searchContacts_inEmailMode_returnsEmailContacts() = runTest {
         val cursor = MatrixCursor(EMAIL_FILTER_PROJECTION)
         cursor.addRow(
-            arrayOf<Any?>(1L, "John Doe", null, "john.doe@example.com", 101L, DISPLAY_NAME_SOURCE)
+            arrayOf<Any?>(
+                1L,
+                "John Doe",
+                null,
+                "lookupKeyJohn",
+                "john.doe@example.com",
+                101L,
+                DISPLAY_NAME_SOURCE,
+            )
         )
         val query = "john"
         val filterUri = Email.CONTENT_FILTER_URI.buildUpon().appendPath(query).build()
@@ -108,7 +116,15 @@ class ContactsRepositorySearchTest {
     fun searchContacts_inPhoneMode_returnsPhoneContacts() = runTest {
         val cursor = MatrixCursor(PHONE_FILTER_PROJECTION)
         cursor.addRow(
-            arrayOf<Any?>(2L, "Jane Doe", null, "123-456-7890", 102L, DISPLAY_NAME_SOURCE)
+            arrayOf<Any?>(
+                2L,
+                "Jane Doe",
+                null,
+                "lookupKeyJane",
+                "123-456-7890",
+                102L,
+                DISPLAY_NAME_SOURCE,
+            )
         )
         val query = "jane"
         val filterUri = Phone.CONTENT_FILTER_URI.buildUpon().appendPath(query).build()

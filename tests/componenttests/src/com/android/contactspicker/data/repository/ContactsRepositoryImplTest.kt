@@ -86,7 +86,6 @@ class ContactsRepositoryImplTest {
         private const val TEST_CONTACT_ID = 1L
         private const val TEST_CONTACT_NAME = "Test Contact"
         private const val TEST_CONTACT_NAME_2 = "Test Contact2"
-        private const val TEST_CONTACT_LOOKUP_KEY = "contact_lookup_key"
         private const val TEST_CONTACT_DATA_ID_1 = 101L
         private const val TEST_CONTACT_DATA_ID_2 = 102L
         private const val TEST_EMAIL = "test@example.com"
@@ -553,7 +552,6 @@ class ContactsRepositoryImplTest {
                         id = TEST_CONTACT_ID,
                         displayName = TEST_CONTACT_NAME_2,
                         photoUri = fakeUri,
-                        lookupKey = TEST_CONTACT_LOOKUP_KEY + 1,
                     )
                 }
             )
@@ -795,7 +793,7 @@ class ContactsRepositoryImplTest {
         displayName: String? = TEST_CONTACT_NAME,
         photoUri: String? = null,
         starred: Int = 0,
-        lookupKey: String = TEST_CONTACT_LOOKUP_KEY,
+        lookupKey: String = "lookupKey_$id",
     ) {
         addRow(arrayOf<Any?>(id, displayName, photoUri, starred, lookupKey, DISPLAY_NAME_SOURCE))
     }
@@ -808,6 +806,7 @@ class ContactsRepositoryImplTest {
         displayName: String? = TEST_CONTACT_NAME,
         photoUri: String? = null,
         starred: Int = 0,
+        lookupKey: String = "lookupKey_$id",
         address: String = TEST_EMAIL,
         dataId: Long = TEST_CONTACT_DATA_ID_1,
         type: Int = Email.TYPE_HOME,
@@ -819,6 +818,7 @@ class ContactsRepositoryImplTest {
                 displayName,
                 photoUri,
                 starred,
+                lookupKey,
                 address,
                 dataId,
                 type,
@@ -836,6 +836,7 @@ class ContactsRepositoryImplTest {
         displayName: String? = TEST_CONTACT_NAME,
         photoUri: String? = null,
         starred: Int = 0,
+        lookupKey: String = "lookupKey_$id",
         number: String = TEST_PHONE_1,
         dataId: Long = TEST_CONTACT_DATA_ID_1,
         type: Int = Phone.TYPE_HOME,
@@ -847,6 +848,7 @@ class ContactsRepositoryImplTest {
                 displayName,
                 photoUri,
                 starred,
+                lookupKey,
                 number,
                 dataId,
                 type,

@@ -39,9 +39,7 @@ import com.android.contactspicker.config.ContactsPickerConfigError
 import com.android.contactspicker.config.ContactsPickerRequestConfig
 import com.android.contactspicker.config.ContactsQueryMode
 import com.android.contactspicker.data.model.Contact
-import com.android.contactspicker.data.model.EmailContact
 import com.android.contactspicker.data.model.PausedReason
-import com.android.contactspicker.data.model.PhoneContact
 import com.android.contactspicker.data.model.PickerUserState
 import com.android.contactspicker.data.model.ProfileBlockedDialogData
 import com.android.contactspicker.data.model.SelectionSource
@@ -232,9 +230,7 @@ constructor(
                 )
 
                 if (!shouldHandleIntent(callingAppTargetSdk, useSystemContactsPicker)) {
-
-                    // TODO(b/441483549): Log ContactsPickerSessionFinished with
-                    //  ContactsPickerSessionResult.SESSION_RESULT_FORWARDED
+                    contactsPickerLogger.logContactsPickerSessionForwarded()
                     return false
                 }
 
@@ -456,6 +452,7 @@ constructor(
         val handler = checkNotNull(selectionHandler)
         viewModelScope.launch {
             if (handler.selectedContacts.value.isEmpty()) {
+                contactsPickerLogger.logContactsPickerSessionCancelled()
                 _pickerResultEvents.send(PickerResultEvent.CancelAndFinish)
                 return@launch
             }
@@ -738,30 +735,19 @@ constructor(
 
         cachedStateBeforeNavigation = currentState
 
-        val (availableContacts, selectedIds, isMultiSelectEnabled) =
+        val (selectedIds, isMultiSelectEnabled) =
             when (currentState) {
                 is ContactsListState.Success ->
-                    Triple(
-                        initialContacts,
-                        currentState.selectedContacts,
-                        currentState.isMultiSelectEnabled,
-                    )
-
+                    currentState.selectedContacts to currentState.isMultiSelectEnabled
                 is SearchState.Success -> {
-                    val aggregatedContacts = currentState.getAggregatedContacts(config.queryMode)
-                    Triple(
-                        aggregatedContacts,
-                        currentState.selectedContacts,
-                        config.isMultiSelectEnabled,
-                    )
+                    currentState.selectedContacts to config.isMultiSelectEnabled
                 }
                 else -> return
             }
 
         contactsPickerLogger.previewOpened()
 
-        val previewList =
-            availableContacts.filter { contact -> selectedIds.containsKey(contact.id) }
+        val previewList = initialContacts.filter { contact -> selectedIds.containsKey(contact.id) }
 
         _uiState.value =
             ContactsPreviewState(
@@ -825,34 +811,13 @@ constructor(
         _uiState.value = currentCachedState
         cachedStateBeforeNavigation = null
     }
-}
 
-/** Aggregates search results into a list of unique contacts, grouping entries by contact ID. */
-// TODO(b/441480198): Add unit tests to verify the correctness of this aggregation.
-private fun SearchState.Success.getAggregatedContacts(queryMode: ContactsQueryMode): List<Contact> =
-    when (queryMode) {
-        ContactsQueryMode.EmailsOnly -> {
-            val emailContacts = searchResults.map { it as EmailContact }
-            emailContacts
-                .groupBy { it.id }
-                .values
-                .map { contacts ->
-                    contacts
-                        .first()
-                        .copy(emails = contacts.flatMap { it.emails }.distinctBy { it.id })
-                }
-        }
-        ContactsQueryMode.PhonesOnly -> {
-            val phoneContacts = searchResults.map { it as PhoneContact }
-            phoneContacts
-                .groupBy { it.id }
-                .values
-                .map { contacts ->
-                    contacts
-                        .first()
-                        .copy(phones = contacts.flatMap { it.phones }.distinctBy { it.id })
-                }
-        }
-        ContactsQueryMode.DisplayNamesOnly,
-        is ContactsQueryMode.Custom -> searchResults
+    /** Override the ViewModel lifecycle method to catch when the view model is destroyed */
+    override fun onCleared() {
+        // Always send a signal to the logger. If the session end was logged as success/failure
+        // earlier, the session data will be null and this call will be a no-op. It will log if the
+        // view model is destroyed because the user exited the app with an unfinished session.
+        contactsPickerLogger.logContactsPickerSessionCancelled()
+        super.onCleared()
     }
+}

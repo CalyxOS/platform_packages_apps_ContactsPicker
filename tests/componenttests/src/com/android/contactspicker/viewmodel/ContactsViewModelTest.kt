@@ -54,6 +54,9 @@ import com.android.contactspicker.data.model.SwitchableProfileInfo
 import com.android.contactspicker.data.model.UserProfile
 import com.android.contactspicker.data.model.UserType
 import com.android.contactspicker.data.model.emptyContactsSelection
+import com.android.contactspicker.data.repository.ContactsPickerSessionProviderRepository
+import com.android.contactspicker.data.repository.ContactsRepository
+import com.android.contactspicker.data.repository.PrivacyBannerRepository
 import com.android.contactspicker.fakes.FakeContactsPickerSessionProviderRepository
 import com.android.contactspicker.fakes.FakeContactsRepository
 import com.android.contactspicker.fakes.FakePrivacyBannerRepository
@@ -244,6 +247,24 @@ class ContactsViewModelTest {
                 callingAppTargetSdk = 36,
             )
         assertThat(result).isTrue()
+    }
+
+    @Test
+    @RequiresFlagsDisabled(FLAG_ENABLE_ACTION_PICK_TAKEOVER_IN_DROIDFOOD)
+    fun handleIntent_lowSdk_logsSessionForwarded() = runTest {
+        val result =
+            viewModel.handleIntent(
+                intentAction = Intent.ACTION_PICK,
+                intentType = Phone.CONTENT_TYPE,
+                intentExtras = null,
+                callingAppName = TEST_APP_NAME,
+                callingPackageName = TEST_PACKAGE_NAME,
+                callingAppUid = TEST_CALLING_UID,
+                callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD - 1,
+            )
+
+        assertThat(result).isFalse()
+        verify(mockContactsPickerLogger).logContactsPickerSessionForwarded()
     }
 
     @Test
@@ -643,7 +664,7 @@ class ContactsViewModelTest {
     }
 
     @Test
-    fun onDoneClicked_withNoSelection_sendsCancelEvent() = runTest {
+    fun onDoneClicked_withNoSelection_sendsCancelEventAndLogsCancelled() = runTest {
         initializeViewModelForLegacyActionPick(
             listOf(ContactTestDataFactory.GENERIC_DISPLAY_NAME_CONTACT)
         )
@@ -652,6 +673,7 @@ class ContactsViewModelTest {
 
         assertThat(events).hasSize(1)
         assertThat(events.first()).isInstanceOf(PickerResultEvent.CancelAndFinish::class.java)
+        verify(mockContactsPickerLogger).logContactsPickerSessionCancelled()
     }
 
     @Test
@@ -1008,6 +1030,28 @@ class ContactsViewModelTest {
         assertThat(events).hasSize(1)
         assertThat(events.first()).isInstanceOf(PickerResultEvent.SetResultAndFinish::class.java)
         verify(mockContactsPickerLogger).logContactsPickerSessionFinishedSuccessfully(2, true, true)
+    }
+
+    @Test
+    fun onCleared_callsLoggerSessionCancelled() = runTest {
+        // Consider changing to ViewModelScenario once it is available in the platform targets.
+        val testableViewModel =
+            TestableContactsViewModel(
+                ApplicationProvider.getApplicationContext(),
+                fakeContactsRepository,
+                fakeContactsPickerSessionProviderRepository,
+                fakePrivacyBannerRepository,
+                { mockProfileSelectionHandler },
+                { isMultiSelect, limit, listener ->
+                    ContactsSelectionHandler(isMultiSelect, limit, listener)
+                },
+                mockContactsPickerLogger,
+            )
+
+        testableViewModel.onCleared()
+
+        // Verify the ViewModel called the logger
+        verify(mockContactsPickerLogger).logContactsPickerSessionCancelled()
     }
 
     @Test
@@ -1467,6 +1511,48 @@ class ContactsViewModelTest {
         assertThat(previewState.contactsToDisplay).containsExactly(contact)
         assertThat(previewState.selectedContacts).isEqualTo(currentSelection)
         assertThat(previewState.isMultiSelectEnabled).isFalse()
+    }
+
+    @Test
+    fun onPreviewClicked_fromSearchState_displaysAllSelectedContacts() = runTest {
+        val contact1 = ContactTestDataFactory.createDisplayNameContact(1L, "Alice")
+        val contact2 = ContactTestDataFactory.createDisplayNameContact(2L, "Bob")
+        val query = "Bob"
+
+        // mock the search to only return contact2
+        fakeContactsRepository.setSearchResults(query, listOf(contact2))
+
+        initializeViewModelForActionPickContacts(
+            listOf(contact1, contact2),
+            listOf(Phone.CONTENT_ITEM_TYPE, Email.CONTENT_ITEM_TYPE),
+            isMultiSelect = true,
+        )
+
+        // select contact1 from the list state
+        viewModel.toggleContactSelection(contact1, SELECTION_SOURCE_MAIN_LIST)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // start search mode for "Bob"
+        viewModel.onSearchQueryChanged(query)
+        testDispatcher.scheduler.advanceTimeBy(SEARCH_DEBOUNCE_MS)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // verify search state
+        assertThat(viewModel.uiState.value).isInstanceOf(SearchState.Success::class.java)
+
+        // select contact2 from the search results
+        viewModel.toggleContactSelection(contact2, SelectionSource.SEARCH)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // click preview while in SearchState
+        viewModel.onPreviewClicked()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // verify PreviewState contains both contacts
+        val previewStateSearch = viewModel.uiState.value
+        assertThat(previewStateSearch).isInstanceOf(ContactsPreviewState::class.java)
+        val contactsToDisplay = (previewStateSearch as ContactsPreviewState).contactsToDisplay
+        assertThat(contactsToDisplay).containsExactlyElementsIn(listOf(contact1, contact2))
     }
 
     @Test
@@ -2248,5 +2334,33 @@ class ContactsViewModelTest {
 
         assertThat(events).hasSize(1)
         assertThat(getUrisFromClipData(events.first())).containsExactly(uri1, uri2)
+    }
+}
+
+/**
+ * A test-only subclass used to elevate the visibility of the protected [onCleared] method without
+ * resorting to reflection, since ViewModelScenario is not yet available in the platform tree.
+ */
+class TestableContactsViewModel(
+    context: Context,
+    contactsRepository: ContactsRepository,
+    sessionProviderRepository: ContactsPickerSessionProviderRepository,
+    privacyBannerRepository: PrivacyBannerRepository,
+    profileSelectionHandler: Lazy<ProfileSelectionHandler>,
+    selectionHandlerFactory: ContactsSelectionHandler.Factory,
+    logger: ContactsPickerLogger,
+) :
+    ContactsViewModel(
+        context,
+        contactsRepository,
+        sessionProviderRepository,
+        privacyBannerRepository,
+        profileSelectionHandler,
+        selectionHandlerFactory,
+        logger,
+    ) {
+    // change the visibility to public so it can be called directly in the test
+    public override fun onCleared() {
+        super.onCleared()
     }
 }
