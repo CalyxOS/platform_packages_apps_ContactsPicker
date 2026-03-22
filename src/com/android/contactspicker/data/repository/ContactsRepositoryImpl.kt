@@ -311,14 +311,11 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                     if (headerIterator.hasNext()) headerIterator.next() else FALLBACK_SECTION_HEADER
 
                 val contactId = c.getLong(idIndex)
-                val name = c.getString(nameIndex)
+                val name = c.getString(nameIndex).displayNameOrNoNamePlaceholder(context)
                 val address = c.getString(addressIndex)
                 val lookupKey = c.getString(lookupKeyIndex)
 
-                // TODO(b/436818961): support displaying contacts that do not have display name
-                if (
-                    !name.isNullOrBlank() && !address.isNullOrBlank() && !lookupKey.isNullOrBlank()
-                ) {
+                if (!address.isNullOrBlank() && !lookupKey.isNullOrBlank()) {
                     val profilePictureUri = c.getString(profilePictureUriIndex)
                     val isFavorite = c.getInt(starredIndex) == 1
                     val dataId = c.getLong(dataIdIndex)
@@ -393,13 +390,11 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                     if (headerIterator.hasNext()) headerIterator.next() else FALLBACK_SECTION_HEADER
 
                 val contactId = c.getLong(idIndex)
-                val name = c.getString(nameIndex)
+                val name = c.getString(nameIndex).displayNameOrNoNamePlaceholder(context)
                 val number = c.getString(numberIndex)
                 val lookupKey = c.getString(lookupKeyIndex)
 
-                if (
-                    !name.isNullOrBlank() && !number.isNullOrBlank() && !lookupKey.isNullOrBlank()
-                ) {
+                if (!number.isNullOrBlank() && !lookupKey.isNullOrBlank()) {
                     val profilePictureUri = c.getString(profilePictureUriIndex)
                     val isFavorite = c.getInt(starredIndex) == 1
                     val dataId = c.getLong(dataIdIndex)
@@ -564,9 +559,7 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
                 val contactId = cursor.getLong(idIndex)
                 onRowVisited(contactId)
 
-                val name =
-                    cursor.getString(nameIndex)?.takeIf { nameStr -> nameStr.isNotBlank() }
-                        ?: context.getString(R.string.no_name_placeholder)
+                val name = cursor.getString(nameIndex).displayNameOrNoNamePlaceholder(context)
                 val profilePictureUri = cursor.getString(profilePictureUriIndex)
                 val isFavorite = cursor.getInt(starredIndex) == 1
                 val lookupKey = cursor.getString(lookupKeyIndex)
@@ -658,12 +651,13 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
 
                     while (c.moveToNext()) {
                         val contactId = c.getLong(idIndex)
-                        val displayName = c.getString(nameIndex)
+                        val displayName =
+                            c.getString(nameIndex).displayNameOrNoNamePlaceholder(context)
                         val profilePictureUri = c.getString(profilePictureUriIndex)
                         val lookupKey = c.getString(lookupKeyIndex)
                         val displayNameSource = c.getInt(sourceIndex)
 
-                        if (!displayName.isNullOrBlank() && !lookupKey.isNullOrBlank()) {
+                        if (!lookupKey.isNullOrBlank()) {
                             add(
                                 DisplayNameContact(
                                     id = contactId,
@@ -714,18 +708,14 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
 
                     while (c.moveToNext()) {
                         val id = c.getLong(idIndex)
-                        val name = c.getString(nameIndex)
+                        val name = c.getString(nameIndex).displayNameOrNoNamePlaceholder(context)
                         val profilePictureUri = c.getString(profilePictureUriIndex)
                         val lookupKey = c.getString(lookupKeyIndex)
                         val dataValue = c.getString(dataValueIndex)
                         val dataId = c.getLong(dataIdIndex)
                         val displayNameSource = c.getInt(sourceIndex)
 
-                        if (
-                            !name.isNullOrBlank() &&
-                                !dataValue.isNullOrBlank() &&
-                                !lookupKey.isNullOrBlank()
-                        ) {
+                        if (!dataValue.isNullOrBlank() && !lookupKey.isNullOrBlank()) {
                             add(
                                 parseContact(
                                     id,
@@ -747,4 +737,13 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
         photoUriStr
             ?.takeIf { it.isNotBlank() }
             ?.let { ContentProvider.maybeAddUserId(it.toUri(), userId).toString() }
+
+    /**
+     * Returns the string if it is not null and not blank. Otherwise, returns the default
+     * placeholder string for a missing name "(No name)".
+     *
+     * @param context The context to access string resources.
+     */
+    internal fun String?.displayNameOrNoNamePlaceholder(context: Context): String =
+        this?.takeIf { it.isNotBlank() } ?: context.getString(R.string.no_name_placeholder)
 }
