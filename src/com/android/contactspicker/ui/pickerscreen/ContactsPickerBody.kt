@@ -31,9 +31,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Mood
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,18 +40,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.hideFromAccessibility
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.android.contactspicker.R
 import com.android.contactspicker.data.model.Contact
 import com.android.contactspicker.data.model.ContactsSelection
 import com.android.contactspicker.data.model.SectionKey
-import com.android.contactspicker.data.model.SectionKey.EmojiSection
 import com.android.contactspicker.data.model.SectionKey.FavoriteSection
-import com.android.contactspicker.data.model.SectionKey.LetterKey
-import com.android.contactspicker.data.model.SectionKey.StringKey
 import com.android.contactspicker.data.model.SelectionSource
 import com.android.contactspicker.ui.scrubber.AnimatedScrubber
 import com.android.contactspicker.ui.scrubber.ScrubberController
@@ -194,7 +184,7 @@ private fun ContactsList(
             )
         }
         availableContactsGroups.forEach { (sectionKey, contactsInGroup) ->
-            stickyHeader(key = "header_${sectionKey.uniqueId}") { SectionHeaderForKey(sectionKey) }
+            stickyHeader(key = "header_${sectionKey.uniqueId}") { SectionHeader(sectionKey) }
 
             val currentSource =
                 if (sectionKey is FavoriteSection) {
@@ -296,36 +286,6 @@ private fun LazyListState.getFractionalFirstVisibleItemIndex(): Float {
         }
 
     return firstItem.index + offsetFraction
-}
-
-// TODO(b/489972870): Validate and remove SectionHeader/ScrubberLabel duplication in UI when
-// handling SectionKey
-@Composable
-private fun SectionHeaderForKey(sectionKey: SectionKey) {
-    when (sectionKey) {
-        is LetterKey -> {
-            SectionHeader(sectionKey.letter.toString())
-        }
-        is StringKey -> {
-            SectionHeader(sectionKey.header)
-        }
-        is FavoriteSection -> {
-            SectionHeader(
-                imageVector = Icons.Filled.Star,
-                iconContentDescription =
-                    stringResource(R.string.favorites_header_icon_content_description),
-                text = stringResource(R.string.contacts_picker_favorites_header),
-                modifier = Modifier.semantics { hideFromAccessibility() },
-            )
-        }
-        is EmojiSection -> {
-            SectionHeader(
-                imageVector = Icons.Filled.Mood,
-                iconContentDescription =
-                    stringResource(R.string.emoji_header_icon_content_description),
-            )
-        }
-    }
 }
 
 private fun itemPosition(index: Int, groupSize: Int): ItemPosition {

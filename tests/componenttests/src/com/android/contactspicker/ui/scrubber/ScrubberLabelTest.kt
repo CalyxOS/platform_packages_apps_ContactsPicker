@@ -27,6 +27,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.android.contactspicker.data.model.SectionKey.EmojiSection
 import com.android.contactspicker.data.model.SectionKey.FavoriteSection
 import com.android.contactspicker.data.model.SectionKey.LetterKey
+import com.android.contactspicker.data.model.SectionKey.StringKey
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -50,6 +51,14 @@ class ScrubberLabelTest {
         composeTestRule.setContent { ScrubberLabel(sectionKey = letterKey) }
         assertLabelContent(visibleTag = SCRUBBER_LABEL_TEXT_TEST_TAG)
         composeTestRule.onNodeWithTag(SCRUBBER_LABEL_TEXT_TEST_TAG).assertTextEquals("A")
+    }
+
+    @Test
+    fun scrubberLabel_whenSectionKeyIsString_displaysText() {
+        val stringKey = StringKey("Header")
+        composeTestRule.setContent { ScrubberLabel(sectionKey = stringKey) }
+        assertLabelContent(visibleTag = SCRUBBER_LABEL_TEXT_TEST_TAG)
+        composeTestRule.onNodeWithTag(SCRUBBER_LABEL_TEXT_TEST_TAG).assertTextEquals("Header")
     }
 
     @Test
