@@ -42,12 +42,23 @@ sealed class SectionDisplay {
     ) : SectionDisplay()
 }
 
+private const val ELLIPSE_HEADER_SYMBOL = "\u2026"
+
 /** Returns the [SectionDisplay] for the given [SectionKey]. */
 @Composable
 fun SectionKey.getSectionDisplay(): SectionDisplay {
     return when (this) {
         is LetterKey -> SectionDisplay.Text(text = letter.toString())
-        is StringKey -> SectionDisplay.Text(text = header)
+        is StringKey ->
+            if (header == ELLIPSE_HEADER_SYMBOL) {
+                SectionDisplay.Icon(
+                    icon = Icons.Filled.Mood,
+                    iconContentDescription =
+                        stringResource(R.string.emoji_header_icon_content_description),
+                )
+            } else {
+                SectionDisplay.Text(text = header)
+            }
         FavoriteSection ->
             SectionDisplay.Icon(
                 text = stringResource(R.string.contacts_picker_favorites_header),

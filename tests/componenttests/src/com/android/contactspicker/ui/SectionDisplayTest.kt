@@ -66,6 +66,20 @@ class SectionDisplayTest {
     }
 
     @Test
+    fun getSectionDisplay_forStringKeyWithDots_returnsEmojiIcon() {
+        val key = StringKey("\u2026")
+        var display: SectionDisplay? = null
+        composeTestRule.setContent { display = key.getSectionDisplay() }
+
+        assertThat(display).isInstanceOf(SectionDisplay.Icon::class.java)
+        val iconOnly = display as SectionDisplay.Icon
+        assertThat(iconOnly.icon).isEqualTo(Icons.Filled.Mood)
+        assertThat(iconOnly.iconContentDescription)
+            .isEqualTo(context.getString(R.string.emoji_header_icon_content_description))
+        assertThat(iconOnly.text).isNull()
+    }
+
+    @Test
     fun getSectionDisplay_forFavoriteSection_returnsIconWithText() {
         val key = FavoriteSection
         var display: SectionDisplay? = null
