@@ -18,7 +18,6 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.contactspicker">
-    <!-- TODO(b/442391700): Check behaviour of launchMode -->
     <application
         android:name=".ContactsPickerApplication"
         android:label="@string/contacts_picker_app_label"
