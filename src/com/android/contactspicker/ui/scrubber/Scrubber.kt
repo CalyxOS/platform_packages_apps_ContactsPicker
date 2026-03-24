@@ -76,7 +76,7 @@ fun Scrubber(
     Layout(
         content = {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 label()
@@ -133,7 +133,7 @@ private fun Handle(draggableState: DraggableState, scrubberState: ScrubberState)
             painter = painterResource(id = R.drawable.ic_scrubber_handle_background),
             contentDescription = stringResource(id = R.string.scrubber_handle_content_description),
             modifier = Modifier.matchParentSize(),
-            tint = MaterialTheme.colorScheme.surfaceBright,
+            tint = MaterialTheme.colorScheme.surfaceContainerLowest,
         )
         Icon(
             painter = painterResource(id = R.drawable.ic_scrubber_handle_arrows),
@@ -145,5 +145,5 @@ private fun Handle(draggableState: DraggableState, scrubberState: ScrubberState)
 }
 
 internal const val SCRUBBER_HANDLE_TEST_TAG = "scrubber_handle"
-internal val ScrubberHandleWidth = 49.dp
-internal val ScrubberHandleHeight = 64.dp
+internal val ScrubberHandleWidth = 55.dp
+internal val ScrubberHandleHeight = 70.dp
