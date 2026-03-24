@@ -55,8 +55,8 @@ import com.android.contactspicker.data.model.SectionKey.StringKey
 fun ScrubberLabel(sectionKey: SectionKey?) {
     if (sectionKey != null) {
         Surface(
-            shape = MaterialTheme.shapes.large,
-            color = MaterialTheme.colorScheme.surfaceContainerHighest,
+            shape = MaterialTheme.shapes.extraLarge,
+            color = MaterialTheme.colorScheme.surfaceContainerLowest,
             modifier = Modifier.testTag(SCRUBBER_LABEL_TEST_TAG),
             shadowElevation = 4.dp,
         ) {
