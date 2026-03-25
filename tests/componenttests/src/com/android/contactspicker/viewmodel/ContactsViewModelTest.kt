@@ -2124,6 +2124,63 @@ class ContactsViewModelTest {
     }
 
     @Test
+    fun userStateChange_privacyBannerPersistsAcrossProfileSwitches() = runTest {
+        val contacts = listOf(ContactTestDataFactory.GENERIC_EMAIL_CONTACT)
+        initializeViewModelForActionPickContacts(
+            initialContacts = contacts,
+            requestedMimeTypes = listOf(Email.CONTENT_ITEM_TYPE),
+        )
+        // the banner is shown initially
+        var successState = viewModel.currentSuccessState
+        assertThat(successState.showPrivacyBanner).isTrue()
+
+        // make the banner as shown in the fakePrivacyBannerRepository
+        // (which usually happens as a side effect of displaying it the first time)
+        fakePrivacyBannerRepository.markPrivacyBannerAsShown(
+            TEST_CALLING_UID,
+            listOf(MimeType.EMAIL),
+        )
+
+        // switch to the Work profile
+        val newUserId = USER_ID_WORK
+        val newUserState = PickerUserState.Success(emptyMap(), newUserId)
+
+        userStateFlow.emit(newUserState)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Verify the banner is still shown because the ViewModel  didn't re-evaluate the repository
+        successState = viewModel.currentSuccessState
+        assertThat(successState.showPrivacyBanner).isTrue()
+    }
+
+    @Test
+    fun handleIntent_calledMultipleTimes_reevaluatesPrivacyBanner() = runTest {
+        val contacts = listOf(ContactTestDataFactory.GENERIC_EMAIL_CONTACT)
+        fakeContactsRepository.setInitialContacts(contacts)
+
+        val requestedMimeTypes = arrayListOf(Email.CONTENT_ITEM_TYPE)
+
+        initializeViewModelForActionPickContacts(contacts, requestedMimeTypes)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.hidePrivacyBanner()
+        var successState = viewModel.currentSuccessState
+        assertThat(successState.showPrivacyBanner).isFalse()
+
+        // call handleIntent again
+        initializeViewModelForActionPickContacts(
+            contacts,
+            arrayListOf(Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE),
+        )
+
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Verify the ViewModel re-evaluated the banner for the new intent
+        successState = viewModel.currentSuccessState
+        assertThat(successState.showPrivacyBanner).isTrue()
+    }
+
+    @Test
     fun onDoneClicked_customQueryMode_passesUserIdToGetContacts() = runTest {
         val selectedUserId = USER_ID_WORK
         userStateFlow.value = PickerUserState.Success(emptyMap(), selectedUserId)
