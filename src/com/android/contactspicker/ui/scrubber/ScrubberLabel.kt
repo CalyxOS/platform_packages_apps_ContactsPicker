@@ -19,9 +19,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Mood
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,15 +27,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.android.contactspicker.R
 import com.android.contactspicker.data.model.SectionKey
-import com.android.contactspicker.data.model.SectionKey.EmojiSection
-import com.android.contactspicker.data.model.SectionKey.FavoriteSection
-import com.android.contactspicker.data.model.SectionKey.LetterKey
-import com.android.contactspicker.data.model.SectionKey.StringKey
+import com.android.contactspicker.ui.SectionDisplay
+import com.android.contactspicker.ui.getSectionDisplay
 
 // TODO(b/468919056): Add FadeIn/FadeOut animation for ScrubberLabel
 /**
@@ -55,8 +48,8 @@ import com.android.contactspicker.data.model.SectionKey.StringKey
 fun ScrubberLabel(sectionKey: SectionKey?) {
     if (sectionKey != null) {
         Surface(
-            shape = MaterialTheme.shapes.large,
-            color = MaterialTheme.colorScheme.surfaceContainerHighest,
+            shape = MaterialTheme.shapes.extraLarge,
+            color = MaterialTheme.colorScheme.surfaceContainerLowest,
             modifier = Modifier.testTag(SCRUBBER_LABEL_TEST_TAG),
             shadowElevation = 4.dp,
         ) {
@@ -72,38 +65,32 @@ fun ScrubberLabel(sectionKey: SectionKey?) {
 
 @Composable
 private fun ScrubberContent(targetKey: SectionKey) {
-    when (targetKey) {
-        is LetterKey ->
+    when (val display = targetKey.getSectionDisplay()) {
+        is SectionDisplay.Text -> {
             Text(
-                text = targetKey.letter.toString(),
+                text = display.text,
                 style = MaterialTheme.typography.displayLarge,
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.testTag(SCRUBBER_LABEL_TEXT_TEST_TAG),
             )
-        is StringKey ->
-            Text(
-                text = targetKey.header,
-                style = MaterialTheme.typography.displayLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.testTag(SCRUBBER_LABEL_TEXT_TEST_TAG),
-            )
-        is FavoriteSection ->
+        }
+        is SectionDisplay.Icon -> {
             Image(
-                imageVector = Icons.Filled.Star,
-                contentDescription =
-                    stringResource(R.string.favorites_header_icon_content_description),
+                imageVector = display.icon,
+                contentDescription = display.iconContentDescription,
                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                modifier = Modifier.size(56.dp).testTag(SCRUBBER_LABEL_FAVORITE_ICON_TEST_TAG),
+                modifier =
+                    Modifier.size(56.dp)
+                        .testTag(
+                            if (targetKey is SectionKey.FavoriteSection) {
+                                SCRUBBER_LABEL_FAVORITE_ICON_TEST_TAG
+                            } else {
+                                SCRUBBER_LABEL_EMOJI_ICON_TEST_TAG
+                            }
+                        ),
             )
-        is EmojiSection ->
-            Image(
-                imageVector = Icons.Filled.Mood,
-                contentDescription = stringResource(R.string.emoji_header_icon_content_description),
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface),
-                modifier = Modifier.size(56.dp).testTag(SCRUBBER_LABEL_EMOJI_ICON_TEST_TAG),
-            )
+        }
     }
 }
 
