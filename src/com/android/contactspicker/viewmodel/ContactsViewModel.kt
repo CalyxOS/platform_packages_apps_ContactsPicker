@@ -150,6 +150,7 @@ constructor(
     private var pickerConfig: ContactsPickerRequestConfig? = null
 
     private var showPrivacyBanner = false
+    private var privacyBannerVisibilityEvaluated = false
 
     /**
      * Toggles the selection state for an entire contact.
@@ -189,6 +190,9 @@ constructor(
         this.callingAppName = callingAppName
         this.callingPackageName = callingPackageName
         this.callingAppUid = callingAppUid
+
+        // reset to ensure it's evaluated for the new intent
+        privacyBannerVisibilityEvaluated = false
 
         val useSystemContactsPicker =
             intentExtras?.getBoolean(Intent.EXTRA_USE_SYSTEM_CONTACTS_PICKER, false) ?: false
@@ -242,6 +246,8 @@ constructor(
 
                 if (isUserSwitchingEnabled) {
                     profileSelectionHandler.get().clearSelectedUser()
+                    // reset to ensure it's evaluated for a new intent
+                    _userState.value = PickerUserState.Loading
                     startObservingUserState(result)
                 } else {
                     val defaultState =
@@ -363,12 +369,15 @@ constructor(
                     Trace.endSection()
                     if (initialContacts.isNotEmpty()) {
                         // Only show the privacy banner if user hasn't seen it before for this
-                        // combination of uid and MIME types.
-                        showPrivacyBanner =
-                            !privacyBannerRepository.wasPrivacyBannerShown(
-                                callingAppUid,
-                                config.requestedMimeTypes,
-                            )
+                        // combination of uid and MIME types. Evaluate only once per picker session.
+                        if (!privacyBannerVisibilityEvaluated) {
+                            showPrivacyBanner =
+                                !privacyBannerRepository.wasPrivacyBannerShown(
+                                    callingAppUid,
+                                    config.requestedMimeTypes,
+                                )
+                            privacyBannerVisibilityEvaluated = true
+                        }
 
                         _uiState.value =
                             ContactsListState.Success(
