@@ -61,6 +61,7 @@ import com.android.contactspicker.fakes.FakeContactsPickerSessionProviderReposit
 import com.android.contactspicker.fakes.FakeContactsRepository
 import com.android.contactspicker.fakes.FakePrivacyBannerRepository
 import com.android.contactspicker.logging.ContactsPickerLogger
+import com.android.contactspicker.logging.ContactsPickerRuntimeError
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.google.common.truth.Truth.assertThat
 import dagger.Lazy
@@ -439,6 +440,31 @@ class ContactsViewModelTest {
         assertThat(result).isTrue()
         val errorState = viewModel.uiState.value as ContactsListState.Error
         assertThat(errorState.message).isEqualTo("Unsupported action")
+    }
+
+    @Test
+    fun handleIntent_repositoryThrows_logsLoadingContactsFailed() = runTest {
+        val testException = IllegalArgumentException("Database corrupted")
+        fakeContactsRepository.setException(testException)
+
+        val result =
+            viewModel.handleIntent(
+                intentAction = Intent.ACTION_PICK,
+                intentType = Phone.CONTENT_TYPE,
+                intentExtras = null,
+                callingAppName = TEST_APP_NAME,
+                callingPackageName = TEST_PACKAGE_NAME,
+                callingAppUid = TEST_CALLING_UID,
+                callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD,
+            )
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(result).isTrue()
+        val errorState = viewModel.uiState.value as ContactsListState.Error
+        assertThat(errorState.message).isEqualTo("Database corrupted")
+
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionFailed(ContactsPickerRuntimeError.LOADING_CONTACTS_FAILED)
     }
 
     @Test
@@ -1030,6 +1056,60 @@ class ContactsViewModelTest {
         assertThat(events).hasSize(1)
         assertThat(events.first()).isInstanceOf(PickerResultEvent.SetResultAndFinish::class.java)
         verify(mockContactsPickerLogger).logContactsPickerSessionFinishedSuccessfully(2, true, true)
+    }
+
+    @Test
+    fun onDoneClicked_actionPickContacts_repositoryThrows_logsCreatingResultException() = runTest {
+        val contact = ContactTestDataFactory.createEmailContact(1L, "A")
+
+        initializeViewModelForActionPickContacts(
+            initialContacts = listOf(contact),
+            requestedMimeTypes = listOf(Email.CONTENT_ITEM_TYPE),
+            callingUid = TEST_CALLING_UID,
+        )
+
+        viewModel.toggleEntrySelection(
+            contact.id,
+            contact.emails.first().id,
+            SELECTION_SOURCE_MAIN_LIST,
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        fakeContactsPickerSessionProviderRepository.setException(
+            RuntimeException("IPC Transaction Failed")
+        )
+
+        callOnDoneAndCaptureEvents()
+
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionFailed(ContactsPickerRuntimeError.CREATING_RESULT_EXCEPTION)
+    }
+
+    @Test
+    fun onDoneClicked_actionPickContacts_emptyResolvedIds_logsCreatingResultIntentNull() = runTest {
+        val contact = ContactTestDataFactory.createDisplayNameContact(1L, "A")
+        // make fakeContactsRepository return nulls for the data rows
+        fakeContactsRepository.setDataRowIdsResult(
+            contactIds = listOf(contact.id),
+            mimeTypes = listOf(MimeType.EMAIL, MimeType.PHONE),
+            dataIds = emptyList(),
+        )
+        initializeViewModelForActionPickContacts(
+            initialContacts = listOf(contact),
+            requestedMimeTypes = listOf(Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE),
+            callingUid = TEST_CALLING_UID,
+            isMultiSelect = true,
+        )
+        viewModel.toggleContactSelection(contact, SELECTION_SOURCE_MAIN_LIST)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val events = callOnDoneAndCaptureEvents()
+
+        assertThat(events).hasSize(1)
+        assertThat(events.first()).isInstanceOf(PickerResultEvent.CancelAndFinish::class.java)
+
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionFailed(ContactsPickerRuntimeError.CREATING_RESULT_INTENT_NULL)
     }
 
     @Test

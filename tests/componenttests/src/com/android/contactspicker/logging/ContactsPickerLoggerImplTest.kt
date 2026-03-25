@@ -313,6 +313,18 @@ class ContactsPickerLoggerImplTest {
     }
 
     @Test
+    fun logContactsPickerSessionFailed_contactsPickerRuntimeError_logsCorrectly() {
+        ContactsPickerRuntimeError.entries.forEach { error ->
+            verifySessionFinishedEventFields(
+                intentAction = ContactsPickerAction.ACTION_PICK_CONTACTS,
+                requestedMimetypesList = listOf(MimeType.EMAIL),
+                sessionResult = ContactsPickerSessionResult.SESSION_RESULT_FAILED,
+                pickerRuntimeError = error,
+            )
+        }
+    }
+
+    @Test
     fun logContactsPickerSessionCancelled_logsSessionResultCorrectly() {
         logger.logContactsPickerSessionStarted(
             DEFAULT_TEST_CALLING_APP_UID,
@@ -435,6 +447,7 @@ class ContactsPickerLoggerImplTest {
         sessionResult: ContactsPickerSessionResult =
             ContactsPickerSessionResult.SESSION_RESULT_SUCCESS,
         configErrorType: ConfigErrorType? = null,
+        pickerRuntimeError: ContactsPickerRuntimeError? = null,
         numContactsSelected: Int = DEFAULT_NUM_CONTACTS_SELECTED,
         startupLoadingTimeLogged: Boolean = false,
         contactsSelectedFromFavorites: Boolean = false,
@@ -460,8 +473,12 @@ class ContactsPickerLoggerImplTest {
 
         midLoggingSessionBlock()
 
+        // Disallow both types of failure for tests correctness
+        assertThat(configErrorType != null && pickerRuntimeError != null).isFalse()
         if (configErrorType != null) {
             logger.logContactsPickerSessionFailed(configErrorType)
+        } else if (pickerRuntimeError != null) {
+            logger.logContactsPickerSessionFailed(pickerRuntimeError)
         } else {
             logger.logContactsPickerSessionFinishedSuccessfully(
                 numContactsSelected = numContactsSelected,
@@ -502,20 +519,34 @@ class ContactsPickerLoggerImplTest {
         assertThat(event.sessionResult).isEqualTo(sessionResult)
 
         val expectedStatsErrorType =
-            when (configErrorType) {
-                ConfigErrorType.UNSUPPORTED_ACTION ->
-                    ContactsPickerErrorType.ERROR_UNSUPPORTED_ACTION
-                ConfigErrorType.UNSUPPORTED_MIME_TYPE ->
-                    ContactsPickerErrorType.ERROR_UNSUPPORTED_MIME_TYPE
-                ConfigErrorType.UNSUPPORTED_SELECTION_LIMIT ->
-                    ContactsPickerErrorType.ERROR_UNSUPPORTED_SELECTION_LIMIT
-                ConfigErrorType.EMPTY_REQUESTED_MIME_TYPE ->
-                    ContactsPickerErrorType.ERROR_UNSUPPORTED_MIME_TYPE
-                null -> ContactsPickerErrorType.ERROR_UNSPECIFIED
-            }
+            if (configErrorType != null) {
+                when (configErrorType) {
+                    ConfigErrorType.UNSUPPORTED_ACTION ->
+                        ContactsPickerErrorType.ERROR_UNSUPPORTED_ACTION
+
+                    ConfigErrorType.UNSUPPORTED_MIME_TYPE ->
+                        ContactsPickerErrorType.ERROR_UNSUPPORTED_MIME_TYPE
+
+                    ConfigErrorType.UNSUPPORTED_SELECTION_LIMIT ->
+                        ContactsPickerErrorType.ERROR_UNSUPPORTED_SELECTION_LIMIT
+
+                    ConfigErrorType.EMPTY_REQUESTED_MIME_TYPE ->
+                        ContactsPickerErrorType.ERROR_MISSING_REQUESTED_MIME_TYPE
+                }
+            } else if (pickerRuntimeError != null) {
+                when (pickerRuntimeError) {
+                    ContactsPickerRuntimeError.LOADING_CONTACTS_FAILED ->
+                        ContactsPickerErrorType.ERROR_LOADING_CONTACTS_FAILED
+                    ContactsPickerRuntimeError.CREATING_RESULT_INTENT_NULL ->
+                        ContactsPickerErrorType.ERROR_CREATING_RESULT_INTENT_NULL
+                    ContactsPickerRuntimeError.CREATING_RESULT_EXCEPTION ->
+                        ContactsPickerErrorType.ERROR_CREATING_RESULT_EXCEPTION
+                }
+            } else ContactsPickerErrorType.ERROR_UNSPECIFIED
+
         assertThat(event.errorType).isEqualTo(expectedStatsErrorType)
 
-        if (configErrorType != null) {
+        if (configErrorType != null || pickerRuntimeError != null) {
             assertThat(event.numContactsSelected).isEqualTo(0)
             assertThat(event.contactsSelectedFromFavorites).isFalse()
             assertThat(event.contactsSelectedFromSearchResults).isFalse()

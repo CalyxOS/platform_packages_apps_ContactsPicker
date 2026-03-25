@@ -50,6 +50,7 @@ import com.android.contactspicker.data.repository.ContactsPickerSessionProviderR
 import com.android.contactspicker.data.repository.ContactsRepository
 import com.android.contactspicker.data.repository.PrivacyBannerRepository
 import com.android.contactspicker.logging.ContactsPickerLogger
+import com.android.contactspicker.logging.ContactsPickerRuntimeError
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -424,6 +425,9 @@ constructor(
                     Log.e(TAG, "An unexpected error occurred during load.", e)
                     _uiState.value =
                         ContactsListState.Error(e.message ?: "An unexpected error occurred.")
+                    contactsPickerLogger.logContactsPickerSessionFailed(
+                        ContactsPickerRuntimeError.LOADING_CONTACTS_FAILED
+                    )
                 } finally {
                     Trace.endSection()
                 }
@@ -466,40 +470,55 @@ constructor(
                 return@launch
             }
 
-            val (resultIntent, numContactsSelected) =
-                when (config.pickerAction) {
-                    ContactsPickerAction.ACTION_PICK -> {
-                        val finalUris = handler.resolveSelectedUris(initialContacts)
-                        createActionPickResult(finalUris, config.isMultiSelectEnabled) to
-                            finalUris.size
-                    }
-                    ContactsPickerAction.ACTION_PICK_CONTACTS -> {
-                        try {
-                            Trace.beginSection("$TAG#finishingPickerSession")
-                            // TODO(b/37307800): consider setting _uiState.update {
-                            // it.copy(isLoading = true) }
-                            val selectedIds = handler.getSelectedIds()
+            try {
+                val (resultIntent, numContactsSelected) =
+                    when (config.pickerAction) {
+                        ContactsPickerAction.ACTION_PICK -> {
+                            val finalUris = handler.resolveSelectedUris(initialContacts)
+                            createActionPickResult(finalUris, config.isMultiSelectEnabled) to
+                                finalUris.size
+                        }
 
-                            val userId =
-                                (_userState.value as? PickerUserState.Success)?.selectedUserId
-                                    ?: UserHandle.getUserId(callingAppUid)
-                            createActionPickContactsResult(selectedIds, config.queryMode, userId)
-                        } finally {
-                            Trace.endSection()
+                        ContactsPickerAction.ACTION_PICK_CONTACTS -> {
+                            try {
+                                Trace.beginSection("$TAG#finishingPickerSession")
+                                // TODO(b/37307800): consider setting _uiState.update {
+                                // it.copy(isLoading = true) }
+                                val selectedIds = handler.getSelectedIds()
+
+                                val userId =
+                                    (_userState.value as? PickerUserState.Success)?.selectedUserId
+                                        ?: UserHandle.getUserId(callingAppUid)
+                                createActionPickContactsResult(
+                                    selectedIds,
+                                    config.queryMode,
+                                    userId,
+                                )
+                            } finally {
+                                Trace.endSection()
+                            }
                         }
                     }
-                }
 
-            if (resultIntent != null) {
-                contactsPickerLogger.logContactsPickerSessionFinishedSuccessfully(
-                    numContactsSelected = numContactsSelected,
-                    contactsSelectedFromFavorites =
-                        handler.wasSelectedFrom(SelectionSource.FAVORITES),
-                    contactsSelectedFromSearch = handler.wasSelectedFrom(SelectionSource.SEARCH),
+                if (resultIntent != null) {
+                    contactsPickerLogger.logContactsPickerSessionFinishedSuccessfully(
+                        numContactsSelected = numContactsSelected,
+                        contactsSelectedFromFavorites =
+                            handler.wasSelectedFrom(SelectionSource.FAVORITES),
+                        contactsSelectedFromSearch = handler.wasSelectedFrom(SelectionSource.SEARCH),
+                    )
+                    _pickerResultEvents.send(PickerResultEvent.SetResultAndFinish(resultIntent))
+                } else {
+                    contactsPickerLogger.logContactsPickerSessionFailed(
+                        ContactsPickerRuntimeError.CREATING_RESULT_INTENT_NULL
+                    )
+                    _pickerResultEvents.send(PickerResultEvent.CancelAndFinish)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to create picker result intent", e)
+                contactsPickerLogger.logContactsPickerSessionFailed(
+                    ContactsPickerRuntimeError.CREATING_RESULT_EXCEPTION
                 )
-                _pickerResultEvents.send(PickerResultEvent.SetResultAndFinish(resultIntent))
-            } else {
-                // TODO(b/441483549): Log cancelled event with correct error code
                 _pickerResultEvents.send(PickerResultEvent.CancelAndFinish)
             }
         }
@@ -545,17 +564,18 @@ constructor(
                     throw IllegalStateException("Wrong query mode for ACTION_PICK_CONTACTS")
             }
 
+        if (finalIds.isEmpty()) {
+            return null to 0
+        }
+
         return getActionPickContactsIntent(finalIds, userId) to finalIds.size
     }
 
     private suspend fun getActionPickContactsIntent(dataIds: List<Long>, userId: Int): Intent {
+        val sessionUri =
+            contactsPickerSessionProviderRepository.createSession(dataIds, callingAppUid, userId)
         return Intent().apply {
-            data =
-                contactsPickerSessionProviderRepository.createSession(
-                    dataIds,
-                    callingAppUid,
-                    userId,
-                )
+            data = sessionUri
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
     }

@@ -115,10 +115,9 @@ class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
                 ConfigErrorType.UNSUPPORTED_SELECTION_LIMIT ->
                     ContactsPickerStatsLog
                         .CONTACTS_PICKER_SESSION_FINISHED_REPORTED__ERROR_TYPE__ERROR_UNSUPPORTED_SELECTION_LIMIT
-                // TODO(441483549): Add new ERROR_MISSING_REQUESTED_MIME_TYPE enum and change to it
                 ConfigErrorType.EMPTY_REQUESTED_MIME_TYPE ->
                     ContactsPickerStatsLog
-                        .CONTACTS_PICKER_SESSION_FINISHED_REPORTED__ERROR_TYPE__ERROR_UNSUPPORTED_MIME_TYPE
+                        .CONTACTS_PICKER_SESSION_FINISHED_REPORTED__ERROR_TYPE__ERROR_MISSING_REQUESTED_MIME_TYPE
             }
 
         logSessionFinishedInternal(
@@ -126,6 +125,15 @@ class ContactsPickerLoggerImpl @Inject constructor() : ContactsPickerLogger {
                 ContactsPickerStatsLog
                     .CONTACTS_PICKER_SESSION_FINISHED_REPORTED__SESSION_RESULT__SESSION_RESULT_FAILED,
             errorType = statsdErrorType,
+        )
+    }
+
+    override fun logContactsPickerSessionFailed(pickerRuntimeError: ContactsPickerRuntimeError) {
+        logSessionFinishedInternal(
+            sessionResult =
+                ContactsPickerStatsLog
+                    .CONTACTS_PICKER_SESSION_FINISHED_REPORTED__SESSION_RESULT__SESSION_RESULT_FAILED,
+            errorType = pickerRuntimeError.toLoggingEnumValue(),
         )
     }
 
@@ -280,4 +288,20 @@ private fun MimeType.toLoggingEnumValue(): Int =
         MimeType.CONTACTS ->
             ContactsPickerStatsLog
                 .CONTACTS_PICKER_SESSION_STARTED_REPORTED__REQUESTED_MIMETYPES__MIME_TYPE_FULL_CONTACT
+    }
+
+@VisibleForTesting
+internal fun ContactsPickerRuntimeError.toLoggingEnumValue(): Int =
+    when (this) {
+        ContactsPickerRuntimeError.LOADING_CONTACTS_FAILED ->
+            ContactsPickerStatsLog
+                .CONTACTS_PICKER_SESSION_FINISHED_REPORTED__ERROR_TYPE__ERROR_LOADING_CONTACTS_FAILED
+
+        ContactsPickerRuntimeError.CREATING_RESULT_INTENT_NULL ->
+            ContactsPickerStatsLog
+                .CONTACTS_PICKER_SESSION_FINISHED_REPORTED__ERROR_TYPE__ERROR_CREATING_RESULT_INTENT_NULL
+
+        ContactsPickerRuntimeError.CREATING_RESULT_EXCEPTION ->
+            ContactsPickerStatsLog
+                .CONTACTS_PICKER_SESSION_FINISHED_REPORTED__ERROR_TYPE__ERROR_CREATING_RESULT_EXCEPTION
     }
