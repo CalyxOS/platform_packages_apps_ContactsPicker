@@ -25,7 +25,7 @@ import com.android.contactspicker.data.model.SectionKey.FavoriteSection
 import com.android.contactspicker.data.model.SectionKey.LetterKey
 import java.util.TreeMap
 
-internal const val FALLBACK_SECTION_HEADER = "\u2026" // ellipsis
+internal const val FALLBACK_SECTION_HEADER = "?"
 
 /** Helper class for grouping contacts into sections to be displayed on UI */
 class ContactsGrouper(
