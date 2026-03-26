@@ -232,10 +232,6 @@ constructor(@param:ApplicationContext private val context: Context) : ContactsRe
 
         val selection = "$keySelection AND $mimeSelection"
 
-        // TODO(b/452020367): add json to work-around the 999 limit, see comment on ag/37450004.
-        //  (lookupKeys.size + mimeTypes.size) must never exceed 999 (the Android SQLite limit).
-        //  Max size of contactIds is 100 (max selection limit) and max size of mimeTypes is ~11
-        //  (number of supported mime types).
         val selectionArgs =
             Array(contactIds.size + mimeTypes.size) { index ->
                 if (index < contactIds.size) contactIds[index].toString()

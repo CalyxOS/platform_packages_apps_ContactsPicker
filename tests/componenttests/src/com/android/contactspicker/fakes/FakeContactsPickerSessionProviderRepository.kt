@@ -20,6 +20,7 @@ import com.android.contactspicker.data.repository.ContactsPickerSessionProviderR
 
 class FakeContactsPickerSessionProviderRepository : ContactsPickerSessionProviderRepository {
 
+    private var exceptionToThrow: Exception? = null
     private val results = mutableMapOf<Pair<List<Long>, Int>, Uri>()
     var lastSourceUserId: Int? = null
         private set
@@ -32,11 +33,16 @@ class FakeContactsPickerSessionProviderRepository : ContactsPickerSessionProvide
         results[dataIds to callingUid] = resultUri
     }
 
+    fun setException(exception: Exception) {
+        exceptionToThrow = exception
+    }
+
     override suspend fun createSession(
         dataIds: List<Long>,
         callingUid: Int,
         sourceUserId: Int,
     ): Uri {
+        exceptionToThrow?.let { throw it }
         lastSourceUserId = sourceUserId
         return results[dataIds to callingUid] ?: Uri.EMPTY
     }

@@ -61,6 +61,7 @@ import com.android.contactspicker.fakes.FakeContactsPickerSessionProviderReposit
 import com.android.contactspicker.fakes.FakeContactsRepository
 import com.android.contactspicker.fakes.FakePrivacyBannerRepository
 import com.android.contactspicker.logging.ContactsPickerLogger
+import com.android.contactspicker.logging.ContactsPickerRuntimeError
 import com.android.contactspicker.testdata.ContactTestDataFactory
 import com.google.common.truth.Truth.assertThat
 import dagger.Lazy
@@ -439,6 +440,31 @@ class ContactsViewModelTest {
         assertThat(result).isTrue()
         val errorState = viewModel.uiState.value as ContactsListState.Error
         assertThat(errorState.message).isEqualTo("Unsupported action")
+    }
+
+    @Test
+    fun handleIntent_repositoryThrows_logsLoadingContactsFailed() = runTest {
+        val testException = IllegalArgumentException("Database corrupted")
+        fakeContactsRepository.setException(testException)
+
+        val result =
+            viewModel.handleIntent(
+                intentAction = Intent.ACTION_PICK,
+                intentType = Phone.CONTENT_TYPE,
+                intentExtras = null,
+                callingAppName = TEST_APP_NAME,
+                callingPackageName = TEST_PACKAGE_NAME,
+                callingAppUid = TEST_CALLING_UID,
+                callingAppTargetSdk = ACTION_PICK_TAKEOVER_TARGET_SDK_THRESHOLD,
+            )
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertThat(result).isTrue()
+        val errorState = viewModel.uiState.value as ContactsListState.Error
+        assertThat(errorState.message).isEqualTo("Database corrupted")
+
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionFailed(ContactsPickerRuntimeError.LOADING_CONTACTS_FAILED)
     }
 
     @Test
@@ -1030,6 +1056,60 @@ class ContactsViewModelTest {
         assertThat(events).hasSize(1)
         assertThat(events.first()).isInstanceOf(PickerResultEvent.SetResultAndFinish::class.java)
         verify(mockContactsPickerLogger).logContactsPickerSessionFinishedSuccessfully(2, true, true)
+    }
+
+    @Test
+    fun onDoneClicked_actionPickContacts_repositoryThrows_logsCreatingResultException() = runTest {
+        val contact = ContactTestDataFactory.createEmailContact(1L, "A")
+
+        initializeViewModelForActionPickContacts(
+            initialContacts = listOf(contact),
+            requestedMimeTypes = listOf(Email.CONTENT_ITEM_TYPE),
+            callingUid = TEST_CALLING_UID,
+        )
+
+        viewModel.toggleEntrySelection(
+            contact.id,
+            contact.emails.first().id,
+            SELECTION_SOURCE_MAIN_LIST,
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        fakeContactsPickerSessionProviderRepository.setException(
+            RuntimeException("IPC Transaction Failed")
+        )
+
+        callOnDoneAndCaptureEvents()
+
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionFailed(ContactsPickerRuntimeError.CREATING_RESULT_EXCEPTION)
+    }
+
+    @Test
+    fun onDoneClicked_actionPickContacts_emptyResolvedIds_logsCreatingResultIntentNull() = runTest {
+        val contact = ContactTestDataFactory.createDisplayNameContact(1L, "A")
+        // make fakeContactsRepository return nulls for the data rows
+        fakeContactsRepository.setDataRowIdsResult(
+            contactIds = listOf(contact.id),
+            mimeTypes = listOf(MimeType.EMAIL, MimeType.PHONE),
+            dataIds = emptyList(),
+        )
+        initializeViewModelForActionPickContacts(
+            initialContacts = listOf(contact),
+            requestedMimeTypes = listOf(Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE),
+            callingUid = TEST_CALLING_UID,
+            isMultiSelect = true,
+        )
+        viewModel.toggleContactSelection(contact, SELECTION_SOURCE_MAIN_LIST)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val events = callOnDoneAndCaptureEvents()
+
+        assertThat(events).hasSize(1)
+        assertThat(events.first()).isInstanceOf(PickerResultEvent.CancelAndFinish::class.java)
+
+        verify(mockContactsPickerLogger)
+            .logContactsPickerSessionFailed(ContactsPickerRuntimeError.CREATING_RESULT_INTENT_NULL)
     }
 
     @Test
@@ -2121,6 +2201,63 @@ class ContactsViewModelTest {
 
         val state = viewModel.uiState.value
         assertThat(state).isInstanceOf(ContactsListState.NoResults::class.java)
+    }
+
+    @Test
+    fun userStateChange_privacyBannerPersistsAcrossProfileSwitches() = runTest {
+        val contacts = listOf(ContactTestDataFactory.GENERIC_EMAIL_CONTACT)
+        initializeViewModelForActionPickContacts(
+            initialContacts = contacts,
+            requestedMimeTypes = listOf(Email.CONTENT_ITEM_TYPE),
+        )
+        // the banner is shown initially
+        var successState = viewModel.currentSuccessState
+        assertThat(successState.showPrivacyBanner).isTrue()
+
+        // make the banner as shown in the fakePrivacyBannerRepository
+        // (which usually happens as a side effect of displaying it the first time)
+        fakePrivacyBannerRepository.markPrivacyBannerAsShown(
+            TEST_CALLING_UID,
+            listOf(MimeType.EMAIL),
+        )
+
+        // switch to the Work profile
+        val newUserId = USER_ID_WORK
+        val newUserState = PickerUserState.Success(emptyMap(), newUserId)
+
+        userStateFlow.emit(newUserState)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Verify the banner is still shown because the ViewModel  didn't re-evaluate the repository
+        successState = viewModel.currentSuccessState
+        assertThat(successState.showPrivacyBanner).isTrue()
+    }
+
+    @Test
+    fun handleIntent_calledMultipleTimes_reevaluatesPrivacyBanner() = runTest {
+        val contacts = listOf(ContactTestDataFactory.GENERIC_EMAIL_CONTACT)
+        fakeContactsRepository.setInitialContacts(contacts)
+
+        val requestedMimeTypes = arrayListOf(Email.CONTENT_ITEM_TYPE)
+
+        initializeViewModelForActionPickContacts(contacts, requestedMimeTypes)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        viewModel.hidePrivacyBanner()
+        var successState = viewModel.currentSuccessState
+        assertThat(successState.showPrivacyBanner).isFalse()
+
+        // call handleIntent again
+        initializeViewModelForActionPickContacts(
+            contacts,
+            arrayListOf(Email.CONTENT_ITEM_TYPE, Phone.CONTENT_ITEM_TYPE),
+        )
+
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Verify the ViewModel re-evaluated the banner for the new intent
+        successState = viewModel.currentSuccessState
+        assertThat(successState.showPrivacyBanner).isTrue()
     }
 
     @Test
