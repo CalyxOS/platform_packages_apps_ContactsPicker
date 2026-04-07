@@ -44,8 +44,8 @@
     <string name="a11y_deselect_all" msgid="6535215299362628830">"Tout désélectionner"</string>
     <string name="contact_item_emails_count" msgid="2351800816629653553">"{count,plural, =1{# adresse e-mail}one{# adresse e-mail}other{# adresses e-mail}}"</string>
     <string name="contact_item_phones_count" msgid="1433705901810867685">"{count,plural, =1{# numéro de téléphone}one{# numéro de téléphone}other{# numéros de téléphone}}"</string>
-    <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} adresse e-mail sur #}one{{selected_count} adresse e-mail sur #}other{{selected_count} adresses e-mail sur #}}"</string>
-    <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} numéro de téléphone sur #}one{{selected_count} numéro de téléphone sur #}other{{selected_count} numéros de téléphone sur #}}"</string>
+    <string name="contact_item_emails_selected_count" msgid="5996362003818614724">"{total_count,plural, =1{{selected_count} sélectionnée(s) sur # adresse e-mail}one{{selected_count} sélectionnée(s) sur # adresse e-mail}other{{selected_count} sélectionnée(s) sur # adresses e-mail}}"</string>
+    <string name="contact_item_phones_selected_count" msgid="4762497214231618256">"{total_count,plural, =1{{selected_count} sélectionné(s) sur # numéro de téléphone}one{{selected_count} sélectionné(s) sur # numéro de téléphone}other{{selected_count} sélectionné(s) sur # numéros de téléphone}}"</string>
     <string name="contacts_selection_limit_reached_message" msgid="4501460255611012354">"{count,plural, =1{Vous ne pouvez partager que # contact à la fois}one{Vous ne pouvez partager que # contact à la fois}other{Vous ne pouvez partager que # contacts à la fois}}"</string>
     <string name="contact_item_selected_content_description" msgid="2909197675609882501">"%1$s sélectionné"</string>
     <string name="selection_bottom_bar_clear_button_content_description" msgid="7573236319352718670">"Tout désélectionner"</string>
